@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/booking/confirm_booking.dart';
 import 'package:ngoc_huong/screen/services/modal/modal_chi_nhanh_tu_van.dart';
 import 'package:ngoc_huong/screen/services/modal/modal_dich_vu_tu_van.dart';
 
@@ -550,7 +551,13 @@ class _BookingStep2State extends State<BookingStep2> {
                         left: 15,
                         right: 15),
                     child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ConfirmBooking()));
+                        },
                         style: ButtonStyle(
                             shape: MaterialStateProperty.all(
                                 const RoundedRectangleBorder(
@@ -579,9 +586,9 @@ class _BookingStep2State extends State<BookingStep2> {
                             Expanded(
                               flex: 1,
                               child: Image.asset(
-                                "assets/images/calendar-black.png",
+                                "assets/images/calendar-white.png",
                                 width: 25,
-                                height: 25,
+                                height: 30,
                                 fit: BoxFit.contain,
                               ),
                             )

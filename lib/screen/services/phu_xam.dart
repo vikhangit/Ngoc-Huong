@@ -97,9 +97,9 @@ class _PhunXamScreenState extends State<PhunXamScreen> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            // bottomNavigationBar: const MyBottomMenu(
-            //   active: 0,
-            // ),
+            bottomNavigationBar: const MyBottomMenu(
+              active: 0,
+            ),
             appBar: AppBar(
               centerTitle: true,
               bottomOpacity: 0.0,
@@ -150,10 +150,27 @@ class _PhunXamScreenState extends State<PhunXamScreen> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ChiTietScreen()));
+                              showModalBottomSheet<void>(
+                                  backgroundColor: Colors.white,
+                                  // shape: const RoundedRectangleBorder(
+                                  //   borderRadius: BorderRadius.vertical(
+                                  //     top: Radius.circular(15.0),
+                                  //   ),
+                                  // ),
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.95,
+                                        child: ChiTietScreen());
+                                  });
                             },
                             child: Container(
                                 alignment: Alignment.center,
@@ -214,10 +231,27 @@ class _PhunXamScreenState extends State<PhunXamScreen> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ChiTietScreen()));
+                              showModalBottomSheet<void>(
+                                  backgroundColor: Colors.white,
+                                  // shape: const RoundedRectangleBorder(
+                                  //   borderRadius: BorderRadius.vertical(
+                                  //     top: Radius.circular(15.0),
+                                  //   ),
+                                  // ),
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.95,
+                                        child: ChiTietScreen());
+                                  });
                             },
                             child: Container(
                                 alignment: Alignment.center,
@@ -352,10 +386,27 @@ class _PhunXamScreenState extends State<PhunXamScreen> {
                           height: 130,
                           child: TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ChiTietScreen()));
+                              showModalBottomSheet<void>(
+                                  backgroundColor: Colors.white,
+                                  // shape: const RoundedRectangleBorder(
+                                  //   borderRadius: BorderRadius.vertical(
+                                  //     top: Radius.circular(15.0),
+                                  //   ),
+                                  // ),
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.95,
+                                        child: ChiTietScreen());
+                                  });
                             },
                             style: ButtonStyle(
                               padding: MaterialStateProperty.all(

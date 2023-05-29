@@ -43,6 +43,7 @@ dependencies:
   flutter_html_v3: ^3.0.6
   dio: ^5.1.2
   calendar_date_picker2: ^0.5.2
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_test:
@@ -80,9 +81,23 @@ flutter:
     - assets/images/icon/notifications-red.png
     - assets/images/icon/profile-black.png
     - assets/images/icon/profile-red.png
+    - assets/images/voucher.png
+    - assets/images/thanh-toan.png
+    - assets/images/point.png
     - assets/images/calendar.png
     - assets/images/calendar-red.png
+    - assets/images/calendar-solid-white.png
+    - assets/images/calendar-white.png
     - assets/images/call.png
+    - assets/images/cart-black.png
+    - assets/images/cart-red.png
+    - assets/images/call-solid-red.png
+    - assets/images/location-solid-red.png
+    - assets/images/location-solid-black.png
+    - assets/images/time-solid-red.png
+    - assets/images/time-solid-black.png
+    - assets/images/note-solid-red.png
+    - assets/images/info-red.png
     - assets/images/calendar-black.png
     - assets/images/call-black.png
     - assets/images/avatar.png
@@ -140,6 +155,9 @@ flutter:
     - assets/images/Services/MyPham/Icon/danh-cho-mat.png
     - assets/images/Services/MyPham/Icon/duong-moi.png
     - assets/images/Services/MyPham/DeXuat/img1.png
+    - assets/images/Services/MyPham/DeXuat/img1-2.png
+    - assets/images/Services/MyPham/DeXuat/img1-3.png
+    - assets/images/Services/MyPham/DeXuat/img1-4.png
     - assets/images/Services/MyPham/DeXuat/img2.png
     - assets/images/Services/MyPham/DeXuat/img3.png
     - assets/images/Services/MyPham/DeXuat/img4.png

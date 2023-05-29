@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:draggable_home/draggable_home.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/home/banner.dart';
 import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
 import 'package:ngoc_huong/screen/login/modal_phone.dart';
+import 'package:ngoc_huong/screen/services/chi_tiet_tin_tuc.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,18 +40,7 @@ List toolServices = [
   {"icon": "assets/images/Home/Services/tu-van.png", "title": "Tư vấn"},
 ];
 
-List newsList = [
-  {
-    "image": "assets/images/Home/News/news1.jpg",
-    "title": "Ưu đãi cực sốc tại sự kiện khai trương chi nhánh mới",
-    "date": "26/04/2022"
-  },
-  {
-    "image": "assets/images/Home/News/news2.jpg",
-    "title": "Tương bừng khai trương CN mới 5 sao Cần Thơ",
-    "date": "04/03/2022"
-  },
-];
+List newsList = [];
 bool showAppBar = false;
 int current = 0;
 CarouselController buttonCarouselController = CarouselController();
@@ -61,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     // storage.setItem("authen", "false");
+    callNewsApi().then((value) => setState(() => newsList = value));
     super.initState();
 
     _pageController = PageController(viewportFraction: 0.8);
@@ -210,11 +203,11 @@ ListView listView(BuildContext context,
           int index = toolServices.indexOf(item);
           return SizedBox(
             width: MediaQuery.of(context).size.width / 4 - 15,
-            height: 90,
+            // height: 90,
             child: TextButton(
               style: ButtonStyle(
                   padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 0))),
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 0))),
               onPressed: () {
                 goToService(context, index);
               },
@@ -326,50 +319,74 @@ ListView listView(BuildContext context,
                 )
               ],
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: newsList.length,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                    child: Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 220,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Image.asset(
-                            newsList[index]["image"],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        height: 10,
-                      ),
-                      Text(newsList[index]["title"],
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w400)),
-                      Container(
-                        height: 10,
-                      ),
-                      Text(
-                        newsList[index]["date"],
-                        style: const TextStyle(
-                            color: Color(0xFF555555),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w300),
-                      )
-                    ],
-                  ),
-                ));
-              },
-            )
+            if (newsList.isNotEmpty)
+              Column(
+                children: newsList.map((item) {
+                  return item["cate_name"].toString().toLowerCase() == "tin tức"
+                      ? GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet<void>(
+                                backgroundColor: Colors.white,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.95,
+                                      child: ChiTietTinTuc(
+                                        detail: item,
+                                      ));
+                                });
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 220,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: Image.network(
+                                      "$apiUrl${item["picture"]}?$token",
+                                      height: 135,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 10,
+                                ),
+                                Text(item["title"],
+                                    maxLines: 2,
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400)),
+                                Container(
+                                  height: 10,
+                                ),
+                                Text(
+                                  DateFormat("dd/MM/yyyy").format(
+                                      DateTime.parse(item["date_updated"])),
+                                  style: const TextStyle(
+                                      color: Color(0xFF555555),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w300),
+                                )
+                              ],
+                            ),
+                          ))
+                      : Container();
+                }).toList(),
+              )
           ],
         ),
       )

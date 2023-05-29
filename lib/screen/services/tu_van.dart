@@ -441,13 +441,14 @@ class _TuVanScreenState extends State<TuVanScreen> {
                               ),
                             ),
                           ),
-                          const Expanded(
-                            flex: 1,
-                            child: Icon(
-                              Icons.calendar_month_outlined,
-                              color: Colors.white,
-                            ),
-                          )
+                          Expanded(
+                              flex: 1,
+                              child: Image.asset(
+                                "assets/images/calendar-white.png",
+                                width: 25,
+                                height: 30,
+                                fit: BoxFit.contain,
+                              ))
                         ],
                       )),
                 )

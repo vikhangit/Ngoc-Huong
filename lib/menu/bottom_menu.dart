@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/screen/account/accoutScreen.dart';
-import 'package:ngoc_huong/screen/brand/brand.dart';
-import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
 import 'package:ngoc_huong/screen/login/modal_phone.dart';
 
@@ -21,9 +18,9 @@ List bottomList = [
     "title": "Trang chủ"
   },
   {
-    "icon": "assets/images/icon/brand-black.png",
-    "icon_active": "assets/images/icon/brand-red.png",
-    "title": "Thương hiệu"
+    "icon": "assets/images/cart-black.png",
+    "icon_active": "assets/images/cart-red.png",
+    "title": "Giỏ hàng"
   },
   {
     "icon": "assets/images/icon/notifications-black.png",
@@ -49,7 +46,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
         switch (index) {
           case 1:
             {
-              Navigator.pushNamed(context, "brand");
+              Navigator.pushNamed(context, "cart");
               break;
             }
           case 2:
@@ -60,6 +57,11 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
           case 3:
             {
               Navigator.pushNamed(context, "account");
+              break;
+            }
+          case 4:
+            {
+              Navigator.pushNamed(context, "booking");
               break;
             }
           default:
@@ -121,7 +123,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                   focusColor: Colors.white,
                   splashColor: Colors.white,
                   onPressed: () {
-                    Navigator.pushNamed(context, "booking");
+                    onItemTapped(4);
                   },
                   child: Image.asset(
                     "assets/images/logo.png",

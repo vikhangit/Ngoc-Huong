@@ -79,9 +79,9 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            // bottomNavigationBar: const MyBottomMenu(
-            //   active: 0,
-            // ),
+            bottomNavigationBar: const MyBottomMenu(
+              active: 0,
+            ),
             appBar: AppBar(
               centerTitle: true,
               bottomOpacity: 0.0,
@@ -440,7 +440,7 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
                       }).toList(),
                     ),
                     const SizedBox(
-                      height: 15,
+                      height: 20,
                     ),
                   ],
                 ),

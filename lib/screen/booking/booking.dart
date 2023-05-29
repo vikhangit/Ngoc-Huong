@@ -15,6 +15,20 @@ class BookingServices extends StatefulWidget {
 
 List diaChi = ["TP Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Cần Thơ"];
 int choose = 0;
+List chooseService = [
+  {
+    "icon": "assets/images/Home/Services/phun-xam.png",
+    "title": "Dịch vụ phun xăm",
+  },
+  {
+    "icon": "assets/images/Home/Services/lam-dep-da.png",
+    "title": "Dịch vụ chăm sóc da",
+  },
+  {
+    "icon": "assets/images/Home/Services/spa.png",
+    "title": "Dịch vụ spa",
+  }
+];
 
 class _BookingServicesState extends State<BookingServices> {
   void chooseDiaChi(int index) {
@@ -135,179 +149,72 @@ class _BookingServicesState extends State<BookingServices> {
                       height: 10,
                     ),
                     Wrap(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 1,
-                                blurRadius: 8,
-                                offset: const Offset(
-                                    4, 4), // changes position of shadow
+                      children: chooseService
+                          .map(
+                            (item) => Container(
+                              margin: const EdgeInsets.only(top: 15),
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 1,
+                                    blurRadius: 8,
+                                    offset: const Offset(
+                                        4, 4), // changes position of shadow
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          child: TextButton(
-                            style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 28)),
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              shape: MaterialStateProperty.all(
-                                  const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10)))),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const BookingStep2()));
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(children: [
-                                  Image.asset(
-                                    "assets/images/Home/Services/phun-xam.png",
-                                    width: 40,
-                                    height: 40,
-                                  ),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  const Text(
-                                    "Dịch vụ phun xăm",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w300),
-                                  )
-                                ]),
-                                const Icon(
-                                  Icons.keyboard_arrow_down_outlined,
-                                  color: Colors.black,
-                                  size: 24,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 15),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 1,
-                                blurRadius: 8,
-                                offset: const Offset(
-                                    4, 4), // changes position of shadow
+                              child: TextButton(
+                                style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      const EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 28)),
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                  shape: MaterialStateProperty.all(
+                                      const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)))),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const BookingStep2()));
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(children: [
+                                      Image.asset(
+                                        item["icon"],
+                                        width: 40,
+                                        height: 40,
+                                      ),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      Text(
+                                        item["title"],
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w300),
+                                      )
+                                    ]),
+                                    const Icon(
+                                      Icons.keyboard_arrow_down_outlined,
+                                      color: Colors.black,
+                                      size: 24,
+                                    )
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                          child: TextButton(
-                            style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 28)),
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              shape: MaterialStateProperty.all(
-                                  const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10)))),
                             ),
-                            onPressed: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(children: [
-                                  Image.asset(
-                                    "assets/images/Home/Services/lam-dep-da.png",
-                                    width: 40,
-                                    height: 40,
-                                  ),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  const Text(
-                                    "Dịch vụ chăm sóc da",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w300),
-                                  )
-                                ]),
-                                const Icon(
-                                  Icons.keyboard_arrow_down_outlined,
-                                  color: Colors.black,
-                                  size: 24,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 15),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 1,
-                                blurRadius: 8,
-                                offset: const Offset(
-                                    4, 4), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: TextButton(
-                            style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 28)),
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              shape: MaterialStateProperty.all(
-                                  const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10)))),
-                            ),
-                            onPressed: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(children: [
-                                  Image.asset(
-                                    "assets/images/Home/Services/spa.png",
-                                    width: 40,
-                                    height: 40,
-                                  ),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  const Text(
-                                    "Dịch vụ spa",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w300),
-                                  )
-                                ]),
-                                const Icon(
-                                  Icons.keyboard_arrow_down_outlined,
-                                  color: Colors.black,
-                                  size: 24,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                          )
+                          .toList(),
                     ),
                     const SizedBox(
                       height: 40,
@@ -413,16 +320,17 @@ class _BookingServicesState extends State<BookingServices> {
                                           child: Column(
                                         children: [
                                           Row(
-                                            children: const [
-                                              Icon(
-                                                Icons.watch_later,
-                                                color: Colors.black,
-                                                size: 20,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/time-solid-black.png",
+                                                width: 20,
+                                                height: 20,
+                                                fit: BoxFit.contain,
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 5,
                                               ),
-                                              Text(
+                                              const Text(
                                                 "15:00",
                                                 style: TextStyle(
                                                     color: Colors.black,
@@ -437,16 +345,17 @@ class _BookingServicesState extends State<BookingServices> {
                                           Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
-                                            children: const [
-                                              Icon(
-                                                Icons.fmd_good,
-                                                size: 20,
-                                                color: Colors.black,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/location-solid-black.png",
+                                                width: 20,
+                                                height: 20,
+                                                fit: BoxFit.contain,
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 5,
                                               ),
-                                              Flexible(
+                                              const Flexible(
                                                   child: Text(
                                                 "199 Phan Đăng Lưu, Phường 1, Quận Phú Nhuận",
                                                 style: TextStyle(
@@ -582,16 +491,17 @@ class _BookingServicesState extends State<BookingServices> {
                                           child: Column(
                                         children: [
                                           Row(
-                                            children: const [
-                                              Icon(
-                                                Icons.watch_later,
-                                                color: Colors.black,
-                                                size: 20,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/time-solid-black.png",
+                                                width: 20,
+                                                height: 20,
+                                                fit: BoxFit.contain,
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 5,
                                               ),
-                                              Text(
+                                              const Text(
                                                 "15:00",
                                                 style: TextStyle(
                                                     color: Colors.black,
@@ -606,16 +516,17 @@ class _BookingServicesState extends State<BookingServices> {
                                           Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
-                                            children: const [
-                                              Icon(
-                                                Icons.fmd_good,
-                                                size: 20,
-                                                color: Colors.black,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/location-solid-black.png",
+                                                width: 20,
+                                                height: 20,
+                                                fit: BoxFit.contain,
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 5,
                                               ),
-                                              Flexible(
+                                              const Flexible(
                                                   child: Text(
                                                 "199 Phan Đăng Lưu, Phường 1, Quận Phú Nhuận",
                                                 style: TextStyle(
@@ -626,13 +537,37 @@ class _BookingServicesState extends State<BookingServices> {
                                               ))
                                             ],
                                           ),
+
+                                          //   Row(
+                                          //     children: const [
+                                          //       SizedBox(
+                                          //         width: 21,
+                                          //         height: 21,
+                                          //         child: CircleAvatar(
+                                          //           backgroundImage: AssetImage(
+                                          //               "assets/images/avatar.png"),
+                                          //         ),
+                                          //       ),
+                                          //       SizedBox(
+                                          //         width: 5,
+                                          //       ),
+                                          //       Text(
+                                          //         "Vỉ Khang",
+                                          //         style: TextStyle(
+                                          //             color: Colors.black,
+                                          //             fontWeight:
+                                          //                 FontWeight.w400),
+                                          //       )
+                                          //     ],
+                                          //   )
+                                          //
                                         ],
                                       ))
                                     ],
                                   ),
                                 ],
                               ),
-                            ))
+                            )),
                       ],
                     )
                   ],

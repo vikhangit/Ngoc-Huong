@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/services/chi_tiet_tin_tuc.dart';
 import 'package:ngoc_huong/screen/services/modal/modal_chi_nhanh.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class KienThucScreen extends StatefulWidget {
   const KienThucScreen({super.key});
@@ -10,76 +13,17 @@ class KienThucScreen extends StatefulWidget {
   State<KienThucScreen> createState() => _KienThucScreenState();
 }
 
-List uudaidatbiet = [
-  {
-    "img": "assets/images/Services/UuDai/DatBiet/img1.png",
-    "title": "Valentine nhân 2 ưu đãi - Làm đẹp giảm đến 75%",
-    "date": "01/02/2023"
-  },
-  {
-    "img": "assets/images/Services/UuDai/DatBiet/img2.jpg",
-    "title": "Tân trang nhan sắc - Vui đón xuân sang",
-    "date": "12/01/2023"
-  },
-  {
-    "img": "assets/images/Services/UuDai/DatBiet/img1.png",
-    "title": "Valentine nhân 2 ưu đãi - Làm đẹp giảm đến 75%",
-    "date": "01/02/2023"
-  },
-  {
-    "img": "assets/images/Services/UuDai/DatBiet/img2.jpg",
-    "title": "Tân trang nhan sắc - Vui đón xuân sang",
-    "date": "01/02/2023"
-  },
-];
-
-List uudaidanhchoban = [
-  {
-    "img": "assets/images/Services/KienThuc/img1.jpg",
-    "title": "Màu môi phun đẹp cho người da ngăm đẹp nhất",
-    "date": "14/03/2023"
-  },
-  {
-    "img": "assets/images/Services/KienThuc/img2.jpg",
-    "title": "Cách làm mờ chân mày mới xăm đơn giản, hiệu quả",
-    "date": "18/03/2023"
-  },
-  {
-    "img": "assets/images/Services/KienThuc/img3.jpg",
-    "title": "Tại sao môi trên thâm hơn môi dưới?",
-    "date": "12/03/2023"
-  },
-  {
-    "img": "assets/images/Services/KienThuc/img4.jpg",
-    "title": "[Chi tiết] Thực đơn 7 ngày dành cho người xăm môi",
-    "date": "09/03/2023"
-  },
-  {
-    "img": "assets/images/Services/KienThuc/img5.jpg",
-    "title": "Phun xăm môi đỏ cam xu hướng HOT TREND mới nhất",
-    "date": "05/03/2023"
-  },
-  {
-    "img": "assets/images/Services/KienThuc/img6.jpg",
-    "title": "[14 Ngày] Cách chăm sóc môi sau phun lên màu chuẩn",
-    "date": "21/02/2023"
-  },
-  {
-    "img": "assets/images/Services/KienThuc/img7.jpg",
-    "title": "[14 Ngày] Cách chăm sóc môi sau phun lên màu chuẩn",
-    "date": "21/02/2023"
-  },
-  {
-    "img": "assets/images/Services/KienThuc/img8.jpg",
-    "title": "[14 Ngày] Cách chăm sóc môi sau phun lên màu chuẩn",
-    "date": "21/02/2023"
-  },
-];
-
+List kenThucList = [];
 int activeChiNhanh = -1;
 List chiNhanh = ["TP Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Cần Thơ"];
 
 class _KienThucScreenState extends State<KienThucScreen> {
+  @override
+  void initState() {
+    callNewsApi().then((value) => setState(() => kenThucList = value));
+    super.initState();
+  }
+
   void chooseChiNhanh(int index) {
     setState(() {
       activeChiNhanh = index;
@@ -93,9 +37,9 @@ class _KienThucScreenState extends State<KienThucScreen> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            // bottomNavigationBar: const MyBottomMenu(
-            //   active: 0,
-            // ),
+            bottomNavigationBar: const MyBottomMenu(
+              active: 0,
+            ),
             appBar: AppBar(
               centerTitle: true,
               bottomOpacity: 0.0,
@@ -119,76 +63,87 @@ class _KienThucScreenState extends State<KienThucScreen> {
             ),
             drawer: const MyLeftMenu(),
             body: SingleChildScrollView(
-              // reverse: true,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 15,
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      margin:
-                          const EdgeInsets.only(top: 20, left: 15, right: 15),
-                      child: Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        spacing: 15,
-                        runSpacing: 10,
-                        children: uudaidanhchoban.map((item) {
-                          // int index = uudaidanhchoban.indexOf(item);
-                          return InkWell(
-                            onTap: () {},
-                            child: SizedBox(
-                                height: 200,
-                                width: MediaQuery.of(context).size.width / 2 -
-                                    22.5,
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(14)),
-                                      child: Image.asset(
-                                        item["img"],
-                                        height: 135,
-                                        fit: BoxFit.cover,
-                                      ),
+                // reverse: true,
+                child: Container(
+              margin: const EdgeInsets.only(
+                  top: 10, left: 15, right: 15, bottom: 15),
+              child: Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                spacing: 15,
+                children: kenThucList.map((item) {
+                  // int index = uudaiList.indexOf(item);
+                  return item["cate_name"].toString().toLowerCase() ==
+                          "kiến thức"
+                      ? InkWell(
+                          onTap: () {
+                            showModalBottomSheet<void>(
+                                backgroundColor: Colors.white,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.95,
+                                      child: ChiTietTinTuc(
+                                        detail: item,
+                                      ));
+                                });
+                          },
+                          child: SizedBox(
+                              height: 205,
+                              width:
+                                  MediaQuery.of(context).size.width / 2 - 22.5,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(14)),
+                                    child: Image.network(
+                                      "$apiUrl${item["picture"]}?$token",
+                                      height: 135,
+                                      fit: BoxFit.cover,
                                     ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text(
-                                      "${item["title"]}",
-                                      textAlign: TextAlign.left,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      style: const TextStyle(
-                                          color: Color(0xFF212121),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      "${item["date"]}",
-                                      textAlign: TextAlign.left,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                          fontSize: 10,
-                                          color: Color(0xFF8B8B8B),
-                                          fontWeight: FontWeight.w400),
-                                    )
-                                  ],
-                                )),
-                          );
-                        }).toList(),
-                      ),
-                    )
-                  ],
-                ),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    "${item["title"]}",
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: const TextStyle(
+                                        color: Color(0xFF212121),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    DateFormat("dd/MM/yyyy").format(
+                                        DateTime.parse(item["date_updated"])),
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Color(0xFF8B8B8B),
+                                        fontWeight: FontWeight.w400),
+                                  )
+                                ],
+                              )),
+                        )
+                      : Container();
+                }).toList(),
               ),
-            )));
+            ))));
   }
 }

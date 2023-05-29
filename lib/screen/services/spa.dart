@@ -52,9 +52,9 @@ class _SpaScreenState extends State<SpaScreen> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            // bottomNavigationBar: const MyBottomMenu(
-            //   active: 0,
-            // ),
+            bottomNavigationBar: const MyBottomMenu(
+              active: 0,
+            ),
             appBar: AppBar(
               centerTitle: true,
               bottomOpacity: 0.0,
@@ -70,7 +70,7 @@ class _SpaScreenState extends State<SpaScreen> {
                   color: Colors.black,
                 ),
               ),
-              title: const Text("Chăm sóc da",
+              title: const Text("Spa",
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -517,6 +517,9 @@ class _SpaScreenState extends State<SpaScreen> {
                         );
                       }).toList(),
                     ),
+                    const SizedBox(
+                      height: 20,
+                    )
                   ],
                 ),
               ),

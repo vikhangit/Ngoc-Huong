@@ -4,7 +4,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/booking/booking_step2.dart';
-import 'package:ngoc_huong/screen/brand/brand.dart';
+import 'package:ngoc_huong/screen/cart/cart.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/notifications/notification.dart';
 import 'package:ngoc_huong/screen/services/kien_thuc.dart';
@@ -49,7 +49,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         'start': (context) => const StartScreen(),
         'home': (context) => const HomeScreen(),
-        'brand': (context) => const BrandScreen(),
+        'cart': (context) => const CartScreen(),
         'account': (context) => const AccountScreen(),
         "notifications": (context) => const NotificationScreen(),
         "phunXam": (context) => const PhunXamScreen(),

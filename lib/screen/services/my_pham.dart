@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/services/chi_tiet_san_pham.dart';
 
 class MyPhamScreen extends StatefulWidget {
   const MyPhamScreen({super.key});
@@ -170,9 +171,9 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
         child: Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      // bottomNavigationBar: const MyBottomMenu(
-      //   active: 0,
-      // ),
+      bottomNavigationBar: const MyBottomMenu(
+        active: 0,
+      ),
       appBar: AppBar(
         centerTitle: true,
         bottomOpacity: 0.0,
@@ -300,7 +301,38 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
                                         const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(15))))),
-                                onPressed: () {},
+                                onPressed: () {
+                                  showModalBottomSheet<void>(
+                                      backgroundColor: Colors.white,
+                                      // shape: const RoundedRectangleBorder(
+                                      //   borderRadius: BorderRadius.vertical(
+                                      //     top: Radius.circular(15.0),
+                                      //   ),
+                                      // ),
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          padding: EdgeInsets.only(
+                                              bottom: MediaQuery.of(context)
+                                                  .viewInsets
+                                                  .bottom),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.95,
+                                          child: ProductDetail(
+                                            details: item,
+                                            index: index,
+                                            checkColor: (index) =>
+                                                checkColor(index),
+                                            checkTextColor: (index) =>
+                                                checkColorText(index),
+                                          ),
+                                        );
+                                      });
+                                },
                                 child: Column(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,

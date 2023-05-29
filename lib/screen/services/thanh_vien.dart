@@ -186,9 +186,9 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            // bottomNavigationBar: const MyBottomMenu(
-            //   active: 0,
-            // ),
+            bottomNavigationBar: const MyBottomMenu(
+              active: 0,
+            ),
             appBar: AppBar(
               centerTitle: true,
               bottomOpacity: 0.0,
@@ -635,6 +635,9 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                     ]),
                   ),
                 ),
+                const SizedBox(
+                  height: 15,
+                )
               ],
             )));
   }
