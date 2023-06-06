@@ -1,18 +1,97 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/booking/booking_success.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class ConfirmBooking extends StatefulWidget {
-  const ConfirmBooking({super.key});
+  final String serviceName;
+  final String chinhanhName;
+  final String maKho;
+  final String diaChiCuThe;
+  final String time;
+  final String day;
+  final String month;
+  final String year;
+  const ConfirmBooking(
+      {super.key,
+      required this.serviceName,
+      required this.chinhanhName,
+      required this.maKho,
+      required this.diaChiCuThe,
+      required this.time,
+      required this.day,
+      required this.month,
+      required this.year});
 
   @override
   State<ConfirmBooking> createState() => _ConfirmBookingState();
 }
 
 class _ConfirmBookingState extends State<ConfirmBooking> {
+  final LocalStorage storage = LocalStorage('auth');
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void addBooking() async {
+    Map data = {
+      "ten_vt": widget.serviceName,
+      "time_book": widget.time,
+      "date_book": "${widget.year}-${widget.month}-${widget.day}",
+      "ngay": int.parse(widget.day),
+      "thang": int.parse(widget.month),
+      "nam": int.parse(widget.year),
+      "chi_nhanh": widget.maKho,
+      "trang_thai": 1,
+      "dien_giai": "Đang chờ",
+    };
+    await postBooking(data);
+  }
+
   @override
   Widget build(BuildContext context) {
+    String firstName = storage.getItem("firstname");
+    String lastName = storage.getItem("lastname");
+    String phone = storage.getItem("phone");
+    String serviceName = widget.serviceName;
+    String chinhanhName = widget.chinhanhName;
+    String diaChiCuThe = widget.diaChiCuThe;
+    String time = widget.time;
+    String date = "${widget.day}/${widget.month}/${widget.year}";
+    void onLoading() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Loading"),
+              ],
+            ),
+          ));
+        },
+      );
+      Future.delayed(const Duration(seconds: 3), () {
+        addBooking();
+        Navigator.pop(context);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const BookingSuccess())); //pop dialog
+      });
+    }
+
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
@@ -46,11 +125,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                 // reverse: true,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 15),
-                    height: MediaQuery.of(context).size.height - 180,
+                  Expanded(
                     child: ListView(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       children: [
                         const Text(
                           "Xác nhận thông tin",
@@ -101,9 +178,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                     const SizedBox(
                                       width: 8,
                                     ),
-                                    const Text(
-                                      "Vỉ Khang",
-                                      style: TextStyle(
+                                    Text(
+                                      "$firstName $lastName",
+                                      style: const TextStyle(
                                           fontSize: 14,
                                           color: Colors.black,
                                           fontWeight: FontWeight.w300),
@@ -122,9 +199,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                     const SizedBox(
                                       width: 8,
                                     ),
-                                    const Text(
-                                      "0378759723",
-                                      style: TextStyle(
+                                    Text(
+                                      phone,
+                                      style: const TextStyle(
                                           fontSize: 14,
                                           color: Colors.black,
                                           fontWeight: FontWeight.w300),
@@ -179,20 +256,20 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                             child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
-                                          children: const [
+                                          children: [
                                             Text(
-                                              "Chi nhánh TP. Hồ Chí Minh",
-                                              style: TextStyle(
+                                              "Chi nhánh $chinhanhName",
+                                              style: const TextStyle(
                                                   fontSize: 14,
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.w400),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 8,
                                             ),
                                             Text(
-                                              "199 Phan Đăng Lưu, Phường 1, Quận Phú Nhuận, TP. Hồ Chí Minh",
-                                              style: TextStyle(
+                                              "$diaChiCuThe, $chinhanhName",
+                                              style: const TextStyle(
                                                   fontSize: 14,
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.w300),
@@ -245,9 +322,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                     const SizedBox(
                                       width: 8,
                                     ),
-                                    const Text(
-                                      "15:00 06/04/2023",
-                                      style: TextStyle(
+                                    Text(
+                                      "$time $date",
+                                      style: const TextStyle(
                                           fontSize: 14,
                                           color: Colors.black,
                                           fontWeight: FontWeight.w300),
@@ -298,10 +375,10 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                     const SizedBox(
                                       width: 8,
                                     ),
-                                    const Expanded(
+                                    Expanded(
                                         child: Text(
-                                      "Phun xăm môi - Cấy son tươi Hàn Quốc",
-                                      style: TextStyle(
+                                      serviceName.toString(),
+                                      style: const TextStyle(
                                           fontSize: 14,
                                           color: Colors.black,
                                           fontWeight: FontWeight.w300),
@@ -313,6 +390,61 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                 ],
                               ),
                             ),
+                            // if (widget.dienGiai.isNotEmpty)
+                            //   Container(
+                            //     padding: const EdgeInsets.all(16),
+                            //     margin: const EdgeInsets.only(top: 20),
+                            //     decoration: BoxDecoration(
+                            //       color: Colors.white,
+                            //       borderRadius: const BorderRadius.all(
+                            //           Radius.circular(10)),
+                            //       boxShadow: [
+                            //         BoxShadow(
+                            //           color: Colors.grey.withOpacity(0.5),
+                            //           spreadRadius: 1,
+                            //           blurRadius: 8,
+                            //           offset: const Offset(
+                            //               4, 4), // changes position of shadow
+                            //         ),
+                            //       ],
+                            //     ),
+                            //     child: Column(
+                            //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //       children: [
+                            //         const Text(
+                            //           "Ghi chú",
+                            //           style: TextStyle(
+                            //               fontSize: 14,
+                            //               fontWeight: FontWeight.w400),
+                            //         ),
+                            //         const SizedBox(
+                            //           height: 15,
+                            //         ),
+                            //         Row(children: [
+                            //           Image.asset(
+                            //             "assets/images/note-solid-red.png",
+                            //             width: 22,
+                            //             height: 22,
+                            //             fit: BoxFit.contain,
+                            //           ),
+                            //           const SizedBox(
+                            //             width: 8,
+                            //           ),
+                            //           Expanded(
+                            //               child: Text(
+                            //             widget.dienGiai.toString(),
+                            //             style: const TextStyle(
+                            //                 fontSize: 14,
+                            //                 color: Colors.black,
+                            //                 fontWeight: FontWeight.w300),
+                            //           )),
+                            //         ]),
+                            //         const SizedBox(
+                            //           height: 6,
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
                           ],
                         ),
                       ],
@@ -325,11 +457,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                         right: 15),
                     child: TextButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const BookingSuccess()));
+                          onLoading();
                         },
                         style: ButtonStyle(
                             shape: MaterialStateProperty.all(

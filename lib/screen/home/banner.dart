@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
 import 'package:ngoc_huong/screen/login/modal_phone.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 Widget banner(
     BuildContext context,
     Function(int index, CarouselPageChangedReason reason) pageChange,
-    List<String> imageList,
+    List bannerList,
     Function(int index) clickDotPageChange,
     String user,
     LocalStorage storage,
@@ -29,7 +30,7 @@ Widget banner(
           initialPage: current,
           onPageChanged: pageChange,
         ),
-        items: imageList.map((i) {
+        items: bannerList.map((i) {
           return Builder(
             builder: (BuildContext context) {
               return FractionallySizedBox(
@@ -37,8 +38,10 @@ Widget banner(
                 heightFactor: 1,
                 child: FittedBox(
                   fit: BoxFit.fill,
-                  child: Image.asset(
-                    i,
+                  child: Image.network(
+                    "$apiUrl${i["hinh_anh"]}?$token",
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -121,8 +124,8 @@ Widget banner(
                             fontSize: 16, fontWeight: FontWeight.w400),
                       ),
                 Row(
-                    children: imageList.map((e) {
-                  int index = imageList.indexOf(e);
+                    children: bannerList.map((e) {
+                  int index = bannerList.indexOf(e);
                   return InkWell(
                     onTap: () {
                       clickDotPageChange(index);

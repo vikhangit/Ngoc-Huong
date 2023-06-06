@@ -1,20 +1,12 @@
-import 'dart:convert';
-
-import 'package:bottom_picker/bottom_picker.dart';
-import 'package:bottom_picker/resources/arrays.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/login/InfoField/button_confirm.dart';
 import 'package:ngoc_huong/screen/login/InfoField/field_birthDay.dart';
 import 'package:ngoc_huong/screen/login/InfoField/field_email.dart';
 import 'package:ngoc_huong/screen/login/InfoField/field_gender.dart';
 import 'package:ngoc_huong/screen/login/InfoField/field_name.dart';
-import 'package:ngoc_huong/screen/login/modal_otp.dart';
 
 class ModalInfo extends StatefulWidget {
   const ModalInfo({super.key});
@@ -137,10 +129,10 @@ class _ModalInfoState extends State<ModalInfo> {
 Widget intro(BuildContext context) {
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
-    child: Column(
+    child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Text(
             "Nhập thông tin",
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),

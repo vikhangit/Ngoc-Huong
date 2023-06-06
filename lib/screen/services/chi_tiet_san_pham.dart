@@ -1,32 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:intl/intl.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:star_rating/star_rating.dart';
 
 class ProductDetail extends StatefulWidget {
   final Map details;
-  final int index;
-  final Function(int index) checkColor;
-  final Function(int index) checkTextColor;
-  const ProductDetail(
-      {super.key,
-      required this.details,
-      required this.index,
-      required this.checkColor,
-      required this.checkTextColor});
+  const ProductDetail({
+    super.key,
+    required this.details,
+  });
 
   @override
   State<ProductDetail> createState() => _ProductDetailState();
 }
 
-String html =
-    "<p>Cấy son tươi Hàn Quốc là phương pháp độc quyền tại Hệ thống TMV Ngọc Hường. Công nghệ cấy son tươi Hàn Quốc sử dụng máy phun xăm hiện đại với đầu cấy siêu vi điểm kết hợp với dòng mực tốt nhất thế giới nhẹ nhàng đưa hạt mực vào bên dưới da mà không gây sưng đau như các công nghệ cũ trên thị trường hiện nay. Đảm bảo đôi môi sau bong sẽ căng bóng, mềm mịn, màu lên trong, đẹp.</p><br /><p>Đầu kim sử dụng trong phun xăm siêu nhỏ chỉ lướt nhẹ trên lớp thượng bì không làm chảy máu, không làm tổn thương tế bào môi, đi đến đâu màu bám đến đấy. Làm xong màu môi trong, mỏng mịn và có thể ăn uống, rửa mặt bình thường không phải kiêng cữ bất cứ món gì. Với phương pháp Cấy son tươi Hàn Quốc môi sẽ lên màu tự nhiên, tạo độ căng bóng cho màu môi mỏng, hồng hào nhưng vẫn có độ trẻ trung, đồng thời dáng môi cũng được định hình, viền môi rõ nét hơn.</p></br><p>Tại Ngọc Hường, chúng tôi sử dụng màu mực tốt nhất thế giới với đa dạng bảng màu phù hợp với sở thích của từng</p>";
-
 int choose = 0;
 int? _selectedIndex;
 int? _selectedIndex2;
 int quantity = 1;
+int starLength = 5;
+double _rating = 0;
 
 class _ProductDetailState extends State<ProductDetail>
     with TickerProviderStateMixin {
@@ -37,7 +31,15 @@ class _ProductDetailState extends State<ProductDetail>
     super.initState();
     tabController = TabController(length: 2, vsync: this);
     tabController?.addListener(_getActiveTabIndex);
-    tabController2 = TabController(length: 4, vsync: this);
+    tabController2 = TabController(
+        length: widget.details["picture4"] != null
+            ? 4
+            : widget.details["picture3"] != null
+                ? 3
+                : widget.details["picture2"] != null
+                    ? 2
+                    : 1,
+        vsync: this);
     tabController2?.addListener(_getActiveTabIndex2);
   }
 
@@ -52,10 +54,7 @@ class _ProductDetailState extends State<ProductDetail>
   @override
   Widget build(BuildContext context) {
     Map productDetail = widget.details;
-    int index = widget.index;
-    Color checkColor = widget.checkColor(index);
-    Color checkTextColor = widget.checkTextColor(index);
-    return Container(
+    return SizedBox(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -107,14 +106,13 @@ class _ProductDetailState extends State<ProductDetail>
                 MediaQuery.of(context).viewInsets.bottom,
             child: ListView(
               children: [
-                pictureProduct(
-                    context, productDetail, checkColor, checkTextColor),
+                pictureProduct(context, productDetail),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const SizedBox(
                     height: 30,
                   ),
                   Text(
-                    "${productDetail["title"]}",
+                    "${productDetail["ten_vt"]}",
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(
@@ -122,8 +120,8 @@ class _ProductDetailState extends State<ProductDetail>
                   ),
                   Row(
                     children: [
-                      Wrap(
-                        children: const [
+                      const Wrap(
+                        children: [
                           Icon(
                             Icons.star,
                             size: 20,
@@ -169,11 +167,26 @@ class _ProductDetailState extends State<ProductDetail>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "${productDetail["price"]} đ",
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Theme.of(context).colorScheme.primary),
+                      Row(
+                        children: [
+                          Text(
+                            NumberFormat.currency(locale: "vi_VI", symbol: "")
+                                .format(
+                              productDetail["gia_ban_le"],
+                            ),
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).colorScheme.primary),
+                          ),
+                          Text(
+                            "đ",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: 15,
+                              decoration: TextDecoration.underline,
+                            ),
+                          )
+                        ],
                       ),
                       Row(
                         children: [
@@ -236,7 +249,7 @@ class _ProductDetailState extends State<ProductDetail>
                   ),
                   // infomation()
                 ]),
-                infomation(),
+                infomation(productDetail["mieu_ta"]),
               ],
             ),
           ),
@@ -330,8 +343,7 @@ class _ProductDetailState extends State<ProductDetail>
     );
   }
 
-  Widget pictureProduct(BuildContext context, Map productDetail,
-      Color checkColor, Color checkTextColor) {
+  Widget pictureProduct(BuildContext context, Map productDetail) {
     return Column(
       children: [
         SizedBox(
@@ -343,60 +355,59 @@ class _ProductDetailState extends State<ProductDetail>
               TabBarView(controller: tabController2, children: [
                 Container(
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: checkColor,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10))),
-                  child: Image.asset(
-                    productDetail["img"],
-                    height: 263,
-                    width: 255,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Image.network(
+                    "$apiUrl${productDetail["picture"]}?$token",
+                    // height: 263,
+                    // width: 255,
                     fit: BoxFit.contain,
                   ),
                 ),
-                Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: checkColor,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10))),
-                  child: Image.asset(
-                    "assets/images/Services/MyPham/DeXuat/img1-2.png",
-                    height: 263,
-                    width: 255,
-                    fit: BoxFit.contain,
+                if (productDetail["picture2"] != null)
+                  Container(
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                        // color: checkColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Image.network(
+                      "$apiUrl${productDetail["picture2"]}?$token",
+                      // height: 263,
+                      // width: 255,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: checkColor,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10))),
-                  child: Image.asset(
-                    "assets/images/Services/MyPham/DeXuat/img1-3.png",
-                    height: 263,
-                    width: 255,
-                    fit: BoxFit.contain,
+                if (productDetail["picture3"] != null)
+                  Container(
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                        // color: checkColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Image.network(
+                      "$apiUrl${productDetail["picture3"]}?$token",
+                      // height: 263,
+                      // width: 255,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: checkColor,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10))),
-                  child: Image.asset(
-                    "assets/images/Services/MyPham/DeXuat/img1-4.png",
-                    height: 263,
-                    width: 255,
-                    fit: BoxFit.contain,
+                if (productDetail["picture4"] != null)
+                  Container(
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                        // color: checkColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Image.network(
+                      "$apiUrl${productDetail["picture4"]}?$token",
+                      // height: 263,
+                      // width: 255,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
               ]),
               Positioned(
-                  top: 10,
-                  right: 10,
+                  top: 5,
+                  right: 15,
                   width: 30,
                   height: 30,
                   child: TextButton(
@@ -406,10 +417,10 @@ class _ProductDetailState extends State<ProductDetail>
                     onPressed: () {
                       print("likes");
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.favorite,
                       size: 24,
-                      color: checkTextColor,
+                      // color: checkTextColor,
                     ),
                   ))
             ],
@@ -442,57 +453,61 @@ class _ProductDetailState extends State<ProductDetail>
                   fontSize: 14,
                   fontFamily: "LexendDeca"),
               tabs: [
-                SizedBox(
-                  width: 50,
-                  child: Tab(
-                    child: Image.asset(
-                      "assets/images/Services/MyPham/DeXuat/img1.png",
-                      width: 50,
-                      height: 60,
-                      fit: BoxFit.contain,
+                if (productDetail["picture"] != null)
+                  SizedBox(
+                    width: 50,
+                    child: Tab(
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture"]}?$token",
+                        width: 50,
+                        height: 60,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 50,
-                  child: Tab(
-                    child: Image.asset(
-                      "assets/images/Services/MyPham/DeXuat/img1-2.png",
-                      width: 50,
-                      height: 60,
-                      fit: BoxFit.contain,
+                if (productDetail["picture2"] != null)
+                  SizedBox(
+                    width: 50,
+                    child: Tab(
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture2"]}?$token",
+                        width: 50,
+                        height: 60,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 50,
-                  child: Tab(
-                    child: Image.asset(
-                      "assets/images/Services/MyPham/DeXuat/img1-3.png",
-                      width: 50,
-                      height: 60,
-                      fit: BoxFit.contain,
+                if (productDetail["picture3"] != null)
+                  SizedBox(
+                    width: 50,
+                    child: Tab(
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture3"]}?$token",
+                        width: 50,
+                        height: 60,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 50,
-                  child: Tab(
-                    child: Image.asset(
-                      "assets/images/Services/MyPham/DeXuat/img1-4.png",
-                      width: 50,
-                      height: 60,
-                      fit: BoxFit.contain,
+                if (productDetail["picture4"] != null)
+                  SizedBox(
+                    width: 50,
+                    child: Tab(
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture4"]}?$token",
+                        width: 50,
+                        height: 60,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                )
               ]),
         ),
       ],
     );
   }
 
-  Widget infomation() {
+  Widget infomation(String mieu_ta) {
     return Column(
       children: [
         SizedBox(
@@ -533,7 +548,7 @@ class _ProductDetailState extends State<ProductDetail>
               ListView(
                 children: [
                   Html(
-                    data: html,
+                    data: mieu_ta,
                     style: {
                       "p": Style(
                           lineHeight: const LineHeight(1.5),
@@ -641,13 +656,16 @@ class _ProductDetailState extends State<ProductDetail>
                             const SizedBox(
                               height: 10,
                             ),
-                            Row(
-                              children: const [
-                                Text(
-                                  "Sản phẩm chất lượng, làn da được cải thiện một cách rõ ràng.",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
+                            const Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Sản phẩm chất lượng, làn da được cải thiện một cách rõ ràng.",
+                                    textAlign: TextAlign.left,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w300),
+                                  ),
+                                )
                               ],
                             ),
                             const SizedBox(
@@ -686,9 +704,9 @@ class _ProductDetailState extends State<ProductDetail>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
+                                const Row(
                                   children: [
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 36,
                                       height: 36,
                                       child: CircleAvatar(
@@ -697,21 +715,21 @@ class _ProductDetailState extends State<ProductDetail>
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 8,
                                     ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text("Trần Như Quỳnh"),
-                                        const SizedBox(
+                                        Text("Trần Như Quỳnh"),
+                                        SizedBox(
                                           height: 4,
                                         ),
                                         Row(
                                           children: [
                                             Row(
-                                              children: const [
+                                              children: [
                                                 Icon(
                                                   Icons.star,
                                                   size: 20,
@@ -739,10 +757,10 @@ class _ProductDetailState extends State<ProductDetail>
                                                 ),
                                               ],
                                             ),
-                                            const SizedBox(
+                                            SizedBox(
                                               width: 5,
                                             ),
-                                            const Text(
+                                            Text(
                                               "5.0",
                                               style: TextStyle(
                                                   fontSize: 13,
@@ -768,12 +786,15 @@ class _ProductDetailState extends State<ProductDetail>
                             const SizedBox(
                               height: 10,
                             ),
-                            Row(
-                              children: const [
-                                Text(
-                                  "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
+                            const Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w300),
+                                  ),
+                                )
                               ],
                             ),
                             const SizedBox(
@@ -812,9 +833,9 @@ class _ProductDetailState extends State<ProductDetail>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
+                                const Row(
                                   children: [
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 36,
                                       height: 36,
                                       child: CircleAvatar(
@@ -823,21 +844,21 @@ class _ProductDetailState extends State<ProductDetail>
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 8,
                                     ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text("Trần Như Quỳnh"),
-                                        const SizedBox(
+                                        Text("Trần Như Quỳnh"),
+                                        SizedBox(
                                           height: 4,
                                         ),
                                         Row(
                                           children: [
                                             Row(
-                                              children: const [
+                                              children: [
                                                 Icon(
                                                   Icons.star,
                                                   size: 20,
@@ -865,10 +886,10 @@ class _ProductDetailState extends State<ProductDetail>
                                                 ),
                                               ],
                                             ),
-                                            const SizedBox(
+                                            SizedBox(
                                               width: 5,
                                             ),
-                                            const Text(
+                                            Text(
                                               "5.0",
                                               style: TextStyle(
                                                   fontSize: 13,
@@ -894,12 +915,15 @@ class _ProductDetailState extends State<ProductDetail>
                             const SizedBox(
                               height: 10,
                             ),
-                            Row(
-                              children: const [
-                                Text(
-                                  "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
+                            const Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w300),
+                                  ),
+                                )
                               ],
                             ),
                             const SizedBox(
@@ -938,9 +962,9 @@ class _ProductDetailState extends State<ProductDetail>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
+                                const Row(
                                   children: [
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 36,
                                       height: 36,
                                       child: CircleAvatar(
@@ -949,21 +973,21 @@ class _ProductDetailState extends State<ProductDetail>
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 8,
                                     ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text("Trần Như Quỳnh"),
-                                        const SizedBox(
+                                        Text("Trần Như Quỳnh"),
+                                        SizedBox(
                                           height: 4,
                                         ),
                                         Row(
                                           children: [
                                             Row(
-                                              children: const [
+                                              children: [
                                                 Icon(
                                                   Icons.star,
                                                   size: 20,
@@ -991,10 +1015,10 @@ class _ProductDetailState extends State<ProductDetail>
                                                 ),
                                               ],
                                             ),
-                                            const SizedBox(
+                                            SizedBox(
                                               width: 5,
                                             ),
-                                            const Text(
+                                            Text(
                                               "5.0",
                                               style: TextStyle(
                                                   fontSize: 13,
@@ -1020,12 +1044,15 @@ class _ProductDetailState extends State<ProductDetail>
                             const SizedBox(
                               height: 10,
                             ),
-                            Row(
-                              children: const [
-                                Text(
-                                  "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
+                            const Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w300),
+                                  ),
+                                )
                               ],
                             ),
                             const SizedBox(
@@ -1066,40 +1093,24 @@ class _ProductDetailState extends State<ProductDetail>
                   ),
                   Row(
                     children: [
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.star,
-                            size: 20,
-                            color: Colors.orange,
-                          ),
-                          Icon(
-                            Icons.star,
-                            size: 20,
-                            color: Colors.orange,
-                          ),
-                          Icon(
-                            Icons.star,
-                            size: 20,
-                            color: Colors.orange,
-                          ),
-                          Icon(
-                            Icons.star,
-                            size: 20,
-                            color: Colors.orange,
-                          ),
-                          Icon(
-                            Icons.star,
-                            size: 20,
-                            color: Colors.grey,
-                          ),
-                        ],
+                      StarRating(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        length: starLength,
+                        rating: _rating,
+                        color: Colors.orange,
+                        between: 5,
+                        starSize: 20,
+                        onRaitingTap: (rating) {
+                          setState(() {
+                            _rating = rating;
+                          });
+                        },
                       ),
                       const SizedBox(
                         width: 8,
                       ),
-                      const Text(
-                        "4.0",
+                      Text(
+                        _rating.toString(),
                         style: TextStyle(fontWeight: FontWeight.w300),
                       )
                     ],

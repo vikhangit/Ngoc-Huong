@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
@@ -113,7 +111,14 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                     const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
               ),
               SizedBox(
-                child: Html(data: uudaiDetail["content"]),
+                child: Html(
+                  data: uudaiDetail["content"],
+                  style: {
+                    "*:not(img)": Style(
+                        lineHeight: LineHeight(1.5),
+                        margin: Margins.only(left: 0))
+                  },
+                ),
               ),
             ])),
           ),

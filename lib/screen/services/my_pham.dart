@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_san_pham.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class MyPhamScreen extends StatefulWidget {
   const MyPhamScreen({super.key});
@@ -13,51 +15,52 @@ class MyPhamScreen extends StatefulWidget {
 List listAction = [
   {
     "img": "assets/images/Services/MyPham/Icon/lam-trang.png",
-    "title": "Làm trắng da",
+    "title": "Làm trắng",
+    "category": "64784ee4706fa019e673a722"
   },
   {
     "img": "assets/images/Services/MyPham/Icon/duong-am.png",
     "title": "Dưỡng ẩm",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/nang-co.png",
-    "title": "Nâng cơ - Giảm nhăn",
+    "category": "64784ea8706fa019e673a709"
   },
   {
     "img": "assets/images/Services/MyPham/Icon/dinh-duong-da.png",
     "title": "Dinh dưỡng da",
+    "category": "64785397706fa019e673aede"
   },
   {
-    "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
-    "title": "Nuôi dưỡng phục hồi",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/lam-sach.png",
-    "title": "Làm sạch",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/da-mun.png",
-    "title": "Dành cho da mụn",
+    "img": "assets/images/Services/MyPham/Icon/nang-co.png",
+    "title": "Nâng cơ - Giảm nhăn",
+    "category": "647853c8706fa019e673af18"
   },
   {
     "img": "assets/images/Services/MyPham/Icon/danh-cho-mat.png",
     "title": "Dành cho mắt",
+    "category": "647853da706fa019e673af54"
+  },
+  {
+    "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
+    "title": "Nuôi dưỡng và phục hồi",
+    "category": "647853ec706fa019e673af6a"
+  },
+  {
+    "img": "assets/images/Services/MyPham/Icon/da-mun.png",
+    "title": "Dành cho da mụn",
+    "category": "64785427706fa019e673afa6"
   },
   {
     "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
     "title": "Dưỡng môi",
+    "category": "64785434706fa019e673b008"
   },
   {
-    "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
-    "title": "Dưỡng môi",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
-    "title": "Dưỡng môi",
+    "img": "assets/images/Services/MyPham/Icon/lam-sach.png",
+    "title": "Làm sạch",
+    "category": "647854b2706fa019e673b0d9"
   },
 ];
 
-int active = 0;
+String idProduct = "64784ee4706fa019e673a722";
 
 List listDeXuat = [
   {
@@ -93,76 +96,16 @@ List listDeXuat = [
 ];
 
 class _MyPhamScreenState extends State<MyPhamScreen> {
-  void goToAction(int index) {
+  @override
+  void dispose() {
+    idProduct = "64784ee4706fa019e673a722";
+    super.dispose();
+  }
+
+  void goToAction(String cate) {
     setState(() {
-      active = index;
+      idProduct = cate;
     });
-  }
-
-  Color checkColor(int index) {
-    Color color = Colors.black;
-    switch (index) {
-      case 0:
-        {
-          return Colors.pink[50]!;
-        }
-      case 1:
-        {
-          return Colors.greenAccent[100]!;
-        }
-      case 2:
-        {
-          return Colors.lightBlue[100]!;
-        }
-      case 3:
-        {
-          return Colors.grey[300]!;
-        }
-      case 4:
-        {
-          return Colors.orangeAccent[100]!;
-        }
-      case 5:
-        {
-          return Colors.black12;
-        }
-      default:
-        {}
-    }
-    return color;
-  }
-
-  Color checkColorText(int index) {
-    Color color = Colors.black;
-    switch (index) {
-      case 0:
-        {
-          return Colors.pink;
-        }
-      case 1:
-        {
-          return Colors.green;
-        }
-      case 2:
-        {
-          return Colors.lightBlue[700]!;
-        }
-      case 3:
-        {
-          return Colors.grey[800]!;
-        }
-      case 4:
-        {
-          return Colors.orangeAccent[700]!;
-        }
-      case 5:
-        {
-          return Colors.black54;
-        }
-      default:
-        {}
-    }
-    return color;
   }
 
   @override
@@ -208,11 +151,10 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
                 width: MediaQuery.of(context).size.width * .25,
                 child: ListView(
                   children: listAction.map((item) {
-                    int index = listAction.indexOf(item);
                     return Container(
                       decoration: BoxDecoration(
                           border: Border(
-                              left: active == index
+                              left: idProduct == item["category"]
                                   ? const BorderSide(
                                       width: 3, color: Colors.red)
                                   : BorderSide.none)),
@@ -224,7 +166,7 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
                                 const EdgeInsets.symmetric(
                                     vertical: 18, horizontal: 10)),
                             backgroundColor: MaterialStateProperty.all(
-                                active == index
+                                idProduct == item["category"]
                                     ? Colors.red[100]
                                     : Colors.blue[100]),
                             shape: MaterialStateProperty.all(
@@ -232,7 +174,7 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(0))))),
                         onPressed: () {
-                          goToAction(index);
+                          goToAction(item["category"]);
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -267,148 +209,169 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
                 child: ListView(
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Wrap(
-                      runSpacing: 15,
-                      spacing: 15,
-                      children: listDeXuat.map((item) {
-                        int index = listDeXuat.indexOf(item);
-                        return Stack(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 1,
-                                    blurRadius: 8,
-                                    offset: const Offset(
-                                        4, 4), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              width:
-                                  MediaQuery.of(context).size.width * .7 / 2 -
-                                      8,
-                              height: 160,
-                              child: TextButton(
-                                style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 6)),
-                                    backgroundColor: MaterialStateProperty.all(
-                                        checkColor(index)),
-                                    shape: MaterialStateProperty.all(
-                                        const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15))))),
-                                onPressed: () {
-                                  showModalBottomSheet<void>(
-                                      backgroundColor: Colors.white,
-                                      // shape: const RoundedRectangleBorder(
-                                      //   borderRadius: BorderRadius.vertical(
-                                      //     top: Radius.circular(15.0),
-                                      //   ),
-                                      // ),
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (BuildContext context) {
-                                        return Container(
-                                          padding: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
-                                                  .viewInsets
-                                                  .bottom),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.95,
-                                          child: ProductDetail(
-                                            details: item,
-                                            index: index,
-                                            checkColor: (index) =>
-                                                checkColor(index),
-                                            checkTextColor: (index) =>
-                                                checkColorText(index),
-                                          ),
-                                        );
-                                      });
-                                },
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      item["img"],
-                                      width: 90,
-                                      height: 90,
-                                      fit: BoxFit.contain,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Flexible(
-                                        child: Text(
-                                      item["title"],
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    )),
-                                    const SizedBox(
-                                      height: 3,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          item["price"],
-                                          style: TextStyle(
-                                              color: checkColorText(index),
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w300),
+                    FutureBuilder(
+                      future: callProductApi(idProduct),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Wrap(
+                            runSpacing: 15,
+                            spacing: 15,
+                            children: snapshot.data!.map((item) {
+                              int index = snapshot.data!.indexOf(item);
+                              return Stack(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 1,
+                                          blurRadius: 8,
+                                          offset: const Offset(4,
+                                              4), // changes position of shadow
                                         ),
-                                        const SizedBox(
-                                          width: 3,
-                                        ),
-                                        Text(
-                                          "đ",
-                                          style: TextStyle(
-                                            color: checkColorText(index),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            decoration:
-                                                TextDecoration.underline,
-                                          ),
-                                        )
                                       ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                                top: 5,
-                                right: 5,
-                                width: 25,
-                                height: 25,
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(0))),
-                                  onPressed: () {
-                                    print("likes");
-                                  },
-                                  child: Icon(
-                                    Icons.favorite_border_outlined,
-                                    size: 20,
-                                    color: checkColorText(index),
+                                    ),
+                                    width: MediaQuery.of(context).size.width *
+                                            .7 /
+                                            2 -
+                                        8,
+                                    height: 210,
+                                    child: TextButton(
+                                      style: ButtonStyle(
+                                          padding: MaterialStateProperty.all(
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 0, horizontal: 0)),
+                                          backgroundColor: MaterialStateProperty
+                                              .all(Colors.white),
+                                          shape: MaterialStateProperty.all(
+                                              const RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              6))))),
+                                      onPressed: () {
+                                        showModalBottomSheet<void>(
+                                            backgroundColor: Colors.white,
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
+                                            context: context,
+                                            isScrollControlled: true,
+                                            builder: (BuildContext context) {
+                                              return Container(
+                                                padding: EdgeInsets.only(
+                                                    bottom:
+                                                        MediaQuery.of(context)
+                                                            .viewInsets
+                                                            .bottom),
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.95,
+                                                child: ProductDetail(
+                                                  details: item,
+                                                ),
+                                              );
+                                            });
+                                      },
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.vertical(
+                                                    top: Radius.circular(6)),
+                                            child: Image.network(
+                                              "$apiUrl${item["picture"]}?$token",
+                                              // width: 90,
+                                              // height: 90,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 7),
+                                            child: Flexible(
+                                                child: Text(
+                                              item["ten_vt"],
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                            )),
+                                          ),
+                                          const SizedBox(
+                                            height: 3,
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 7),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  NumberFormat.currency(
+                                                          locale: "vi_VI",
+                                                          symbol: "")
+                                                      .format(
+                                                    item["gia_ban_le"],
+                                                  ),
+                                                  style: const TextStyle(
+                                                      // color: checkColorText(index),
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.w300),
+                                                ),
+                                                const Text(
+                                                  "đ",
+                                                  style: TextStyle(
+                                                    // color: checkColorText(index),
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w300,
+                                                    decoration: TextDecoration
+                                                        .underline,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                ))
-                          ],
-                        );
-                      }).toList(),
+                                  Positioned(
+                                      top: 5,
+                                      right: 5,
+                                      width: 25,
+                                      height: 25,
+                                      child: TextButton(
+                                        style: ButtonStyle(
+                                            padding: MaterialStateProperty.all(
+                                                const EdgeInsets.all(0))),
+                                        onPressed: () {
+                                          print("likes");
+                                        },
+                                        child: const Icon(
+                                          Icons.favorite_border_outlined,
+                                          size: 20,
+                                          // color: checkColorText(index),
+                                        ),
+                                      ))
+                                ],
+                              );
+                            }).toList(),
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
                     ),
                     const SizedBox(
                       height: 50,

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
-import 'package:ngoc_huong/screen/booking/booking_step2.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/notifications/notification.dart';
@@ -13,6 +11,7 @@ import 'package:ngoc_huong/screen/services/my_pham.dart';
 import 'package:ngoc_huong/screen/services/phu_xam.dart';
 import 'package:ngoc_huong/screen/services/spa.dart';
 import 'package:ngoc_huong/screen/services/thanh_vien.dart';
+import 'package:ngoc_huong/screen/services/tin_tuc.dart';
 import 'package:ngoc_huong/screen/services/tu_van.dart';
 import 'package:ngoc_huong/screen/services/uu_dai.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -59,9 +58,9 @@ class _MyAppState extends State<MyApp> {
         "uudai": (context) => const UuDaiScreen(),
         "kienthuc": (context) => const KienThucScreen(),
         "tuvan": (context) => const TuVanScreen(),
+        "tin_tuc": (context) => const TinTucScreen(),
         "hangthanhvien": (context) => const ThanhVienScreen(),
         "booking": (context) => const BookingServices(),
-        "booking_step_2": (context) => const BookingStep2()
       },
       theme: ThemeData(
           fontFamily: "LexendDeca",

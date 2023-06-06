@@ -11,8 +11,8 @@ Widget fieldName(BuildContext context, Function(String fName) changeFirstName,
             flex: 48,
             child: Column(
               children: [
-                Row(
-                  children: const [
+                const Row(
+                  children: [
                     Text("Họ",
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w300)),
@@ -68,8 +68,8 @@ Widget fieldName(BuildContext context, Function(String fName) changeFirstName,
             flex: 48,
             child: Column(
               children: [
-                Row(
-                  children: const [
+                const Row(
+                  children: [
                     Text("Tên",
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w300)),

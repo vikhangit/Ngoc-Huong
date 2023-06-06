@@ -1,38 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
-import 'package:ngoc_huong/menu/bottom_menu.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/booking/booking_step2.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:star_rating/star_rating.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChiTietScreen extends StatefulWidget {
-  const ChiTietScreen({super.key});
+  final Map detail;
+  const ChiTietScreen({super.key, required this.detail});
 
   @override
   State<ChiTietScreen> createState() => _ChiTietScreenState();
 }
 
-String html =
-    "<p>Cấy son tươi Hàn Quốc là phương pháp độc quyền tại Hệ thống TMV Ngọc Hường. Công nghệ cấy son tươi Hàn Quốc sử dụng máy phun xăm hiện đại với đầu cấy siêu vi điểm kết hợp với dòng mực tốt nhất thế giới nhẹ nhàng đưa hạt mực vào bên dưới da mà không gây sưng đau như các công nghệ cũ trên thị trường hiện nay. Đảm bảo đôi môi sau bong sẽ căng bóng, mềm mịn, màu lên trong, đẹp.</p><br /><p>Đầu kim sử dụng trong phun xăm siêu nhỏ chỉ lướt nhẹ trên lớp thượng bì không làm chảy máu, không làm tổn thương tế bào môi, đi đến đâu màu bám đến đấy. Làm xong màu môi trong, mỏng mịn và có thể ăn uống, rửa mặt bình thường không phải kiêng cữ bất cứ món gì. Với phương pháp Cấy son tươi Hàn Quốc môi sẽ lên màu tự nhiên, tạo độ căng bóng cho màu môi mỏng, hồng hào nhưng vẫn có độ trẻ trung, đồng thời dáng môi cũng được định hình, viền môi rõ nét hơn.</p></br><p>Tại Ngọc Hường, chúng tôi sử dụng màu mực tốt nhất thế giới với đa dạng bảng màu phù hợp với sở thích của từng</p>";
-
-int choose = 0;
 int? _selectedIndex;
+int? _selectedIndex2;
+
+int starLength = 5;
+double _rating = 0;
 
 class _ChiTietScreenState extends State<ChiTietScreen>
     with TickerProviderStateMixin {
   TabController? tabController;
-
+  TabController? tabController2;
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 3, vsync: this);
+    tabController2 = TabController(
+        length: widget.detail["picture4"] != null
+            ? 4
+            : widget.detail["picture3"] != null
+                ? 3
+                : widget.detail["picture2"] != null
+                    ? 2
+                    : 1,
+        vsync: this);
     tabController?.addListener(_getActiveTabIndex);
+    tabController2?.addListener(_getActiveTabIndex2);
+  }
+
+  _makingPhoneCall() async {
+    var url = Uri.parse("tel:9776765434");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   void _getActiveTabIndex() {
     _selectedIndex = tabController?.index;
   }
 
+  void _getActiveTabIndex2() {
+    _selectedIndex2 = tabController2?.index;
+  }
+
   @override
   Widget build(BuildContext context) {
+    Map detail = widget.detail;
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,8 +115,8 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                 Center(
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    child: Image.asset(
-                      "assets/images/Services/PhunXamMoi/img1.jpg",
+                    child: Image.network(
+                      "$apiUrl${detail["picture"]}?$token",
                       height: 210,
                       width: MediaQuery.of(context).size.width * 0.8,
                       fit: BoxFit.cover,
@@ -104,9 +131,9 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                         const SizedBox(
                           height: 20,
                         ),
-                        const Text(
-                          "Phun xăm môi - Cấy son tươi Hàn Quốc",
-                          style: TextStyle(fontSize: 17),
+                        Text(
+                          detail["ten_vt"],
+                          style: const TextStyle(fontSize: 17),
                         ),
                         const SizedBox(
                           height: 10,
@@ -197,13 +224,21 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                           ListView(
                             children: [
                               Html(
-                                data: html,
+                                data: detail["mieu_ta"],
                                 style: {
+                                  "*": Style(margin: Margins.only(left: 0)),
                                   "p": Style(
-                                      lineHeight: const LineHeight(1.5),
+                                      lineHeight: const LineHeight(1.8),
                                       fontSize: FontSize(15),
                                       fontWeight: FontWeight.w300)
                                 },
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              pictureProduct(context, detail),
+                              const SizedBox(
+                                height: 20,
                               ),
                             ],
                           ),
@@ -212,44 +247,8 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                               return Container(
                                 margin: const EdgeInsets.only(top: 20),
                                 child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      choose = index;
-                                    });
-                                  },
                                   child: Row(
                                     children: [
-                                      Container(
-                                        width: 20,
-                                        height: 20,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: choose == index
-                                                    ? Theme.of(context)
-                                                        .colorScheme
-                                                        .primary
-                                                    : Colors.black),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(40))),
-                                        child: choose == index
-                                            ? Container(
-                                                margin: const EdgeInsets.all(3),
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                40))),
-                                              )
-                                            : Container(),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
                                       Text(
                                         "Bảo hành $index",
                                         style: const TextStyle(
@@ -269,42 +268,26 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                               ),
                               Row(
                                 children: [
-                                  Row(
-                                    children: const [
-                                      Icon(
-                                        Icons.star,
-                                        size: 20,
-                                        color: Colors.orange,
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        size: 20,
-                                        color: Colors.orange,
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        size: 20,
-                                        color: Colors.orange,
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        size: 20,
-                                        color: Colors.orange,
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        size: 20,
-                                        color: Colors.grey,
-                                      ),
-                                    ],
+                                  StarRating(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    length: starLength,
+                                    rating: _rating,
+                                    color: Colors.orange,
+                                    between: 5,
+                                    starSize: 20,
+                                    onRaitingTap: (rating) {
+                                      setState(() {
+                                        _rating = rating;
+                                      });
+                                    },
                                   ),
                                   const SizedBox(
                                     width: 8,
                                   ),
-                                  const Text(
-                                    "4.0",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w300),
+                                  Text(
+                                    _rating.toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
                                   )
                                 ],
                               ),
@@ -408,7 +391,9 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                           Radius.circular(12)))),
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.white)),
-                          onPressed: () {},
+                          onPressed: () {
+                            _makingPhoneCall();
+                          },
                           child: Image.asset(
                             "assets/images/call-black.png",
                             width: 30,
@@ -433,7 +418,29 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                     .colorScheme
                                     .primary
                                     .withOpacity(0.4))),
-                        onPressed: () {},
+                        onPressed: () {
+                          showModalBottomSheet<void>(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(15.0),
+                                ),
+                              ),
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return Container(
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    height:
+                                        MediaQuery.of(context).size.height * .8,
+                                    child: ModalDiaChi(
+                                      activeService: detail["ten_vt"],
+                                    ));
+                              });
+                        },
                         child: Row(
                           children: [
                             Expanded(flex: 1, child: Container()),
@@ -461,6 +468,328 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                           ],
                         )))
               ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget pictureProduct(BuildContext context, Map productDetail) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 150,
+          width: MediaQuery.of(context).size.width - 30,
+          child: Expanded(
+            child: TabBarView(controller: tabController2, children: [
+              Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                    child: Image.network(
+                      "$apiUrl${productDetail["picture"]}?$token",
+                      width: 220,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+              if (productDetail["picture2"] != null)
+                Container(
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                        // color: checkColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: ClipRRect(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(10.0)),
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture2"]}?$token",
+                        width: 220,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    )),
+              if (productDetail["picture3"] != null)
+                Container(
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                        // color: checkColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: ClipRRect(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(10.0)),
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture3"]}?$token",
+                        width: 220,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    )),
+              if (productDetail["picture4"] != null)
+                Container(
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                        // color: checkColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: ClipRRect(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(10.0)),
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture4"]}?$token",
+                        width: 220,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    )),
+            ]),
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        SizedBox(
+          height: 70,
+          child: TabBar(
+              controller: tabController2,
+              // padding: EdgeInsets.zero,
+              // indicatorPadding: EdgeInsets.zero,
+              onTap: (tabIndex) {
+                setState(() {
+                  _selectedIndex2 = tabIndex;
+                });
+              },
+              labelColor: Theme.of(context).colorScheme.primary,
+              isScrollable: true,
+              unselectedLabelColor: Colors.black,
+              indicatorColor: Colors.transparent,
+              indicator: BoxDecoration(
+                  border: Border.all(
+                      width: 1, color: Theme.of(context).colorScheme.primary),
+                  borderRadius: const BorderRadius.all(Radius.circular(10))),
+              labelStyle: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  fontFamily: "LexendDeca"),
+              tabs: [
+                if (productDetail["picture"] != null)
+                  SizedBox(
+                    width: 40,
+                    child: Tab(
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture"]}?$token",
+                        width: 50,
+                        height: 60,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                if (productDetail["picture2"] != null)
+                  SizedBox(
+                    width: 40,
+                    child: Tab(
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture2"]}?$token",
+                        width: 50,
+                        height: 60,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                if (productDetail["picture3"] != null)
+                  SizedBox(
+                    width: 40,
+                    child: Tab(
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture3"]}?$token",
+                        width: 50,
+                        height: 60,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                if (productDetail["picture4"] != null)
+                  SizedBox(
+                    width: 40,
+                    child: Tab(
+                      child: Image.network(
+                        "$apiUrl${productDetail["picture4"]}?$token",
+                        width: 50,
+                        height: 60,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+              ]),
+        ),
+      ],
+    );
+  }
+}
+
+class ModalDiaChi extends StatefulWidget {
+  final String activeService;
+  const ModalDiaChi({super.key, required this.activeService});
+
+  @override
+  State<ModalDiaChi> createState() => _ModalDiaChiState();
+}
+
+int active = -1;
+
+class _ModalDiaChiState extends State<ModalDiaChi> {
+  void chooseDiaChi(int index) {
+    setState(() {
+      active = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String activeServie = widget.activeService;
+    return Container(
+      child: Column(
+        children: [
+          Column(
+            children: [
+              Container(
+                height: 50,
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Chọn chi nhánh",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      width: 25,
+                      height: 25,
+                      child: TextButton(
+                          style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.all(0)),
+                              shape: MaterialStateProperty.all(
+                                  const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(30))))),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(
+                            Icons.close,
+                            size: 20,
+                            color: Colors.black,
+                          )),
+                    )
+                  ],
+                ),
+              ),
+              FutureBuilder(
+                future: callChiNhanhApi(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List list = snapshot.data!.toList();
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * .8 - 130,
+                      child: ListView.builder(
+                        itemCount: list.length,
+                        itemBuilder: (context, index) {
+                          return SizedBox(
+                            height: 50,
+                            child: TextButton(
+                              onPressed: () {
+                                chooseDiaChi(index);
+                                // Navigator.pop(context);
+                              },
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      const EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 0))),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${list[index]["ten_kho"]}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black),
+                                  ),
+                                  if (active == index)
+                                    const Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                      size: 20,
+                                    )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              )
+            ],
+          ),
+          Container(
+            height: 50,
+            margin: const EdgeInsets.all(15.0),
+            child: TextButton(
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)))),
+                  backgroundColor: MaterialStateProperty.all(
+                      Theme.of(context).colorScheme.primary),
+                  padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+                      vertical: 12, horizontal: 20))),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BookingStep2(
+                              choose: active > 0 ? active : 0,
+                              serviceName: activeServie,
+                              maKho:
+                                  active > 0 ? chiNhanh[active]["ma_kho"] : "",
+                            )));
+              },
+              child: Row(
+                children: [
+                  Expanded(flex: 1, child: Container()),
+                  const Expanded(
+                    flex: 8,
+                    child: Center(
+                      child: Text(
+                        "Tiếp tục",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Image.asset(
+                      "assets/images/calendar-white.png",
+                      width: 20,
+                      height: 25,
+                      fit: BoxFit.contain,
+                    ),
+                  )
+                ],
+              ),
             ),
           )
         ],

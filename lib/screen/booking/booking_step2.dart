@@ -1,18 +1,21 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/booking/confirm_booking.dart';
-import 'package:ngoc_huong/screen/services/modal/modal_chi_nhanh_tu_van.dart';
-import 'package:ngoc_huong/screen/services/modal/modal_dich_vu_tu_van.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class BookingStep2 extends StatefulWidget {
-  const BookingStep2({super.key});
+  final int choose;
+  final String serviceName;
+  final String maKho;
+  const BookingStep2(
+      {super.key,
+      required this.choose,
+      required this.serviceName,
+      required this.maKho});
 
   @override
   State<BookingStep2> createState() => _BookingStep2State();
@@ -30,25 +33,35 @@ List<String> weekDaysName = [
   'Thứ 6',
   'Thứ 7'
 ];
-
 int activeChiNhanhTuVan = -1;
-List chiNhanhTuVan = ["TP Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Cần Thơ"];
+List chiNhanh = [];
 int activeDichVuTuVan = -1;
-List dichvuTuVan = ["Dịch vụ 1", "Dịch vụ 2", "Dịch vụ 3", "Dịch vụ 4"];
-int activeWeekIndex =
-    DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString())
-        .weekday;
-String weekNameActive =
-    activeWeekIndex > 6 ? weekDaysName[0] : weekDaysName[activeWeekIndex];
-int dayActive =
-    DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()).day;
-String monthActive = DateFormat("MM").format(
+String dienGiai = "";
+// int dayActive =
+//     DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()).day;
+String activeDate = DateFormat("dd/MM/yyyy").format(
     DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()));
-
-int activeTime = 0;
+String activeDate2 = DateFormat("yyyy-MM-dd").format(
+    DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()));
+String activeTime = "08:00";
+List timeList = [];
 
 class _BookingStep2State extends State<BookingStep2> {
   final LocalStorage storage = LocalStorage('auth');
+
+  @override
+  void initState() {
+    setState(() {
+      activeChiNhanhTuVan = widget.choose;
+      dienGiai = "";
+    });
+    callChiNhanhApi().then((value) => setState(() => chiNhanh = value));
+    callTimeBookingApi(widget.maKho, activeDate2)
+        .then((value) => setState(() => timeList = value));
+
+    super.initState();
+  }
+
   void chooseChiNhanhTuVan(int index) {
     setState(() {
       activeChiNhanhTuVan = index;
@@ -63,9 +76,9 @@ class _BookingStep2State extends State<BookingStep2> {
     Navigator.pop(context);
   }
 
-  void chooseTime(int index) {
+  void chooseTime(String time) {
     setState(() {
-      activeTime = index;
+      activeTime = time;
     });
   }
 
@@ -87,11 +100,51 @@ class _BookingStep2State extends State<BookingStep2> {
     }, currentTime: DateTime.now(), locale: LocaleType.vi);
   }
 
+  void showAlertDialog(BuildContext context, String err) {
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () => Navigator.pop(context, 'OK'),
+    );
+    AlertDialog alert = AlertDialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      content: Builder(
+        builder: (context) {
+          return SizedBox(
+            // height: 30,
+            width: MediaQuery.of(context).size.width,
+            child: Text(
+              style: const TextStyle(height: 1.6),
+              err,
+            ),
+          );
+        },
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String firstName = storage.getItem("firstname");
     String lastName = storage.getItem("lastname");
     String phone = storage.getItem("phone");
+    String serviceName = widget.serviceName;
+    String activeDay = DateFormat("dd").format(
+        DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()));
+    String activeMonth = DateFormat("MM").format(
+        DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()));
+    String activeYear = DateFormat("yyyy").format(
+        DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()));
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
@@ -147,77 +200,94 @@ class _BookingStep2State extends State<BookingStep2> {
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w400),
                               ),
-                              Container(
-                                margin:
-                                    const EdgeInsets.only(top: 10, bottom: 20),
-                                width: MediaQuery.of(context).size.width,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 20),
-                                decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.3)),
-                                child: Wrap(
-                                    alignment: WrapAlignment.spaceBetween,
-                                    runSpacing: 10,
-                                    children: List.generate(10, (index) {
-                                      return InkWell(
-                                          onTap: () {
-                                            chooseTime(index);
-                                          },
-                                          child: Stack(
-                                            clipBehavior: Clip.none,
-                                            children: [
-                                              Container(
-                                                alignment: Alignment.center,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 6),
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    border: Border.all(
-                                                        width: 1,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .primary
-                                                            .withOpacity(
-                                                                activeTime ==
-                                                                        index
-                                                                    ? 1
-                                                                    : 0.3)),
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                10))),
-                                                width: MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        5 -
-                                                    15,
-                                                child: Text("${index + 8}:00"),
-                                              ),
-                                              if (activeTime == index)
-                                                Positioned(
-                                                  right: -1,
-                                                  top: -1,
-                                                  child: Container(
-                                                    width: 8,
-                                                    height: 8,
-                                                    decoration: const BoxDecoration(
-                                                        color: Colors.red,
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    10))),
-                                                  ),
-                                                )
-                                            ],
-                                          ));
-                                    })),
-                              )
+                              timeList.isNotEmpty
+                                  ? Container(
+                                      margin: const EdgeInsets.only(
+                                          top: 10, bottom: 20),
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 20),
+                                      decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10)),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withOpacity(0.3)),
+                                      child: Wrap(
+                                          alignment: WrapAlignment.start,
+                                          spacing: 6,
+                                          runSpacing: 10,
+                                          children: timeList.map((item) {
+                                            int index = timeList.indexOf(item);
+                                            return InkWell(
+                                                onTap: () {
+                                                  chooseTime(item["time"]);
+                                                },
+                                                child: Stack(
+                                                  clipBehavior: Clip.none,
+                                                  children: [
+                                                    Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 6),
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(
+                                                              width: 1,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primary
+                                                                  .withOpacity(
+                                                                      activeTime == item["time"]
+                                                                          ? 1
+                                                                          : 0.3)),
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                      .all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                      .size
+                                                                      .width /
+                                                                  5 -
+                                                              15,
+                                                      child: Text(
+                                                        "${item["time"]}",
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w300),
+                                                      ),
+                                                    ),
+                                                    if (activeTime ==
+                                                        item["time"])
+                                                      Positioned(
+                                                        right: -1,
+                                                        top: -1,
+                                                        child: Container(
+                                                          width: 8,
+                                                          height: 8,
+                                                          decoration: const BoxDecoration(
+                                                              color: Colors.red,
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10))),
+                                                        ),
+                                                      )
+                                                  ],
+                                                ));
+                                          }).toList()),
+                                    )
+                                  : const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
                             ],
                           ),
                         ),
@@ -239,7 +309,7 @@ class _BookingStep2State extends State<BookingStep2> {
                               TextField(
                                 readOnly: true,
                                 controller: TextEditingController(
-                                    text: firstName + lastName),
+                                    text: "$firstName $lastName"),
                                 textAlignVertical: TextAlignVertical.center,
                                 style: const TextStyle(
                                     fontSize: 14,
@@ -247,7 +317,7 @@ class _BookingStep2State extends State<BookingStep2> {
                                     fontWeight: FontWeight.w300),
                                 decoration: InputDecoration(
                                   filled: true, //<-- SEE HERE
-                                  fillColor: Colors.grey[300],
+                                  fillColor: Colors.grey[200],
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(10)),
@@ -301,7 +371,7 @@ class _BookingStep2State extends State<BookingStep2> {
                                     fontWeight: FontWeight.w300),
                                 decoration: InputDecoration(
                                   filled: true, //<-- SEE HERE
-                                  fillColor: Colors.grey[300],
+                                  fillColor: Colors.grey[200],
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(10)),
@@ -346,33 +416,35 @@ class _BookingStep2State extends State<BookingStep2> {
                                 ),
                               ),
                               InkWell(
-                                onTap: () {
-                                  showModalBottomSheet<void>(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      context: context,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(15.0),
-                                        ),
-                                      ),
-                                      isScrollControlled: true,
-                                      builder: (BuildContext context) {
-                                        return Container(
-                                          padding: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
-                                                  .viewInsets
-                                                  .bottom),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .8,
-                                          child: ModalChiNhanhTuVan(
-                                            chooseChiNhanhTuVan: (index) =>
-                                                chooseChiNhanhTuVan(index),
-                                          ),
-                                        );
-                                      });
-                                },
+                                // onTap: () {
+                                //   showModalBottomSheet<void>(
+                                //       clipBehavior: Clip.antiAliasWithSaveLayer,
+                                //       context: context,
+                                //       shape: const RoundedRectangleBorder(
+                                //         borderRadius: BorderRadius.vertical(
+                                //           top: Radius.circular(15.0),
+                                //         ),
+                                //       ),
+                                //       isScrollControlled: true,
+                                //       builder: (BuildContext context) {
+                                //         return Container(
+                                //           padding: EdgeInsets.only(
+                                //               bottom: MediaQuery.of(context)
+                                //                   .viewInsets
+                                //                   .bottom),
+                                //           height: MediaQuery.of(context)
+                                //                   .size
+                                //                   .height *
+                                //               .8,
+                                //           child: ModalChiNhanhStep2(
+                                //             chooseChiNhanh: (index) =>
+                                //                 chooseChiNhanhTuVan(index),
+                                //             listChiNhanh: chiNhanh,
+                                //             active: activeChiNhanhTuVan,
+                                //           ),
+                                //         );
+                                //       });
+                                // },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 18),
@@ -385,17 +457,23 @@ class _BookingStep2State extends State<BookingStep2> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        activeChiNhanhTuVan < 0
-                                            ? "Chọn chi nhánh"
-                                            : "${chiNhanhTuVan[activeChiNhanhTuVan]}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: activeChiNhanhTuVan < 0
-                                                ? Colors.black.withOpacity(0.3)
-                                                : Colors.black,
-                                            fontWeight: FontWeight.w300),
-                                      ),
+                                      chiNhanh.isNotEmpty
+                                          ? Text(
+                                              activeChiNhanhTuVan < 0
+                                                  ? "Chọn chi nhánh"
+                                                  : "${chiNhanh[activeChiNhanhTuVan]["ten_kho"]}",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: activeChiNhanhTuVan < 0
+                                                      ? Colors.black
+                                                          .withOpacity(0.3)
+                                                      : Colors.black,
+                                                  fontWeight: FontWeight.w300),
+                                            )
+                                          : const Align(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
                                       Icon(
                                         Icons.keyboard_arrow_down_outlined,
                                         color: activeChiNhanhTuVan < 0
@@ -425,37 +503,11 @@ class _BookingStep2State extends State<BookingStep2> {
                                 ),
                               ),
                               InkWell(
-                                onTap: () {
-                                  showModalBottomSheet<void>(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      context: context,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(15.0),
-                                        ),
-                                      ),
-                                      isScrollControlled: true,
-                                      builder: (BuildContext context) {
-                                        return Container(
-                                          padding: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
-                                                  .viewInsets
-                                                  .bottom),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .8,
-                                          child: ModalDichVuTuVan(
-                                            chooseDichVuTuVan: (index) =>
-                                                chooseDichVuTuVan(index),
-                                          ),
-                                        );
-                                      });
-                                },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 18),
                                   decoration: BoxDecoration(
+                                      color: Colors.grey[200],
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(10)),
                                       border: Border.all(
@@ -465,22 +517,15 @@ class _BookingStep2State extends State<BookingStep2> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        activeDichVuTuVan < 0
-                                            ? "Chọn dịch vụ"
-                                            : "${dichvuTuVan[activeDichVuTuVan]}",
-                                        style: TextStyle(
+                                        serviceName,
+                                        style: const TextStyle(
                                             fontSize: 14,
-                                            color: activeDichVuTuVan < 0
-                                                ? Colors.black.withOpacity(0.3)
-                                                : Colors.black,
+                                            color: Colors.black,
                                             fontWeight: FontWeight.w300),
                                       ),
-                                      Icon(
-                                        Icons.keyboard_arrow_down_outlined,
-                                        color: activeDichVuTuVan < 0
-                                            ? Colors.black.withOpacity(0.3)
-                                            : Colors.black,
-                                      )
+                                      const Icon(
+                                          Icons.keyboard_arrow_down_outlined,
+                                          color: Colors.black)
                                     ],
                                   ),
                                 ),
@@ -510,6 +555,11 @@ class _BookingStep2State extends State<BookingStep2> {
                                     fontSize: 14,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w300),
+                                onChanged: (value) {
+                                  setState(() {
+                                    dienGiai = value;
+                                  });
+                                },
                                 decoration: InputDecoration(
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: const BorderRadius.all(
@@ -552,11 +602,28 @@ class _BookingStep2State extends State<BookingStep2> {
                         right: 15),
                     child: TextButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ConfirmBooking()));
+                          if (activeChiNhanhTuVan < 0) {
+                            showAlertDialog(context, "Bạn chưa chọn chi nhánh");
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ConfirmBooking(
+                                          serviceName: serviceName,
+                                          chinhanhName:
+                                              chiNhanh[activeChiNhanhTuVan]
+                                                  ["ten_kho"],
+                                          maKho: chiNhanh[activeChiNhanhTuVan]
+                                              ["ma_kho"],
+                                          diaChiCuThe:
+                                              chiNhanh[activeChiNhanhTuVan]
+                                                  ["exfields"]["dia_chi"],
+                                          time: activeTime,
+                                          day: activeDay,
+                                          month: activeMonth,
+                                          year: activeYear,
+                                        )));
+                          }
                         },
                         style: ButtonStyle(
                             shape: MaterialStateProperty.all(
@@ -607,20 +674,19 @@ class _BookingStep2State extends State<BookingStep2> {
       weekdayLabelTextStyle: const TextStyle(
         color: Colors.black87,
         fontSize: 13,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
       ),
       firstDayOfWeek: 1,
       controlsHeight: 50,
       controlsTextStyle:
-          TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 17),
+          TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 16),
       selectedDayTextStyle: const TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.w400,
       ),
-      dayTextStyle: const TextStyle(fontWeight: FontWeight.w400, fontSize: 13),
-      disabledDayTextStyle: const TextStyle(
-        color: Colors.grey,
-      ),
+      dayTextStyle: const TextStyle(fontWeight: FontWeight.w300, fontSize: 13),
+      disabledDayTextStyle:
+          const TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),
       selectableDayPredicate: (day) => !day
           .difference(DateTime.now().subtract(const Duration(days: 1)))
           .isNegative,

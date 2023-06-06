@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/login/modal_otp.dart';
@@ -172,10 +170,10 @@ Widget header(BuildContext context) {
 Widget intro(BuildContext context) {
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 0),
-    child: Column(
+    child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Text(
             "Ngọc Hường xin chào!",
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),

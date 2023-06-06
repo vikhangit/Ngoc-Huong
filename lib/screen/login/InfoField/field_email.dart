@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 Widget fieldEmail(BuildContext context, Function(String value) changeEmail) {
   return Column(
     children: [
-      Row(
-        children: const [
+      const Row(
+        children: [
           Text("Email",
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)),
           SizedBox(

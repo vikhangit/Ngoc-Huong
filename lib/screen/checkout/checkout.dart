@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/checkout/checkout_step2.dart';
-import 'package:ngoc_huong/screen/services/phu_xam.dart';
 
 class CheckOutScreen extends StatefulWidget {
   const CheckOutScreen({super.key});
