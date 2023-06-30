@@ -10,30 +10,30 @@ class NotificationScreen extends StatefulWidget {
 }
 
 List listNotify = [
-  {
-    "tieu_de": "Gói thu nhỏ lỗ chân lông - Bảo hành",
-    "tieu_de_phu": "Ngày trị liệu: 20/10/2023",
-    "date": "11/5/2023",
-    "trang_thai": "new"
-  },
-  {
-    "tieu_de": "Title 1",
-    "tieu_de_phu": "Ngày trị liệu: 20/10/2023",
-    "date": "11/5/2023",
-    "trang_thai": "new"
-  },
-  {
-    "tieu_de": "Title 2",
-    "tieu_de_phu": "Ngày trị liệu: 20/10/2023",
-    "date": "11/5/2023",
-    "trang_thai": ""
-  },
-  {
-    "tieu_de": "Title 3",
-    "tieu_de_phu": "Ngày trị liệu: 20/10/2023",
-    "date": "11/5/2023",
-    "trang_thai": "new"
-  }
+  // {
+  //   "tieu_de": "Gói thu nhỏ lỗ chân lông - Bảo hành",
+  //   "tieu_de_phu": "Ngày trị liệu: 20/10/2023",
+  //   "date": "11/5/2023",
+  //   "trang_thai": "new"
+  // },
+  // {
+  //   "tieu_de": "Title 1",
+  //   "tieu_de_phu": "Ngày trị liệu: 20/10/2023",
+  //   "date": "11/5/2023",
+  //   "trang_thai": "new"
+  // },
+  // {
+  //   "tieu_de": "Title 2",
+  //   "tieu_de_phu": "Ngày trị liệu: 20/10/2023",
+  //   "date": "11/5/2023",
+  //   "trang_thai": ""
+  // },
+  // {
+  //   "tieu_de": "Title 3",
+  //   "tieu_de_phu": "Ngày trị liệu: 20/10/2023",
+  //   "date": "11/5/2023",
+  //   "trang_thai": "new"
+  // }
 ];
 
 class _NotificationScreenState extends State<NotificationScreen> {
@@ -77,37 +77,38 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
                   children: [
-                    Container(
-                      height: 40,
-                      margin: const EdgeInsets.only(top: 40),
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {},
-                            child: Container(
-                              alignment: Alignment.center,
-                              margin:
-                                  EdgeInsets.only(left: index != 0 ? 15 : 0),
-                              decoration: BoxDecoration(
-                                  color: Colors.amber[100],
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(20))),
-                              width: 100,
-                              child: const Text(
-                                "#tatca",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.black),
+                    if (listNotify.isNotEmpty)
+                      Container(
+                        height: 40,
+                        margin: const EdgeInsets.only(top: 40),
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {},
+                              child: Container(
+                                alignment: Alignment.center,
+                                margin:
+                                    EdgeInsets.only(left: index != 0 ? 15 : 0),
+                                decoration: BoxDecoration(
+                                    color: Colors.amber[100],
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(20))),
+                                width: 100,
+                                child: const Text(
+                                  "#tatca",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.black),
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
                     const SizedBox(
                       height: 30,
                     ),

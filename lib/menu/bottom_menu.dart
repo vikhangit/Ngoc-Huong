@@ -35,14 +35,15 @@ List bottomList = [
 ];
 
 class _MyBottomMenuState extends State<MyBottomMenu> {
-  final LocalStorage storage = LocalStorage('auth');
+  LocalStorage storage = LocalStorage('auth');
+  LocalStorage storageToken = LocalStorage('token');
   String a = "";
   void onItemTapped(int index) {
     if (index == 0) {
       Navigator.pushNamed(context, "home");
     } else {
-      if (storage.getItem("authen") != null &&
-          storage.getItem("lastname") != null) {
+      if (storage.getItem("existAccount") != null &&
+          storage.getItem("phone") != null) {
         switch (index) {
           case 1:
             {
@@ -66,8 +67,8 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
             }
           default:
         }
-      } else if (storage.getItem("authen") == null &&
-          storage.getItem("lastname") != null) {
+      } else if (storage.getItem("existAccount") != null &&
+          storage.getItem("phone") == null) {
         showModalBottomSheet<void>(
             clipBehavior: Clip.antiAliasWithSaveLayer,
             shape: const RoundedRectangleBorder(
@@ -79,7 +80,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
               return Container(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),
-                height: MediaQuery.of(context).size.height * 0.9,
+                height: MediaQuery.of(context).size.height * 0.96,
                 child: const ModalPassExist(),
               );
             });

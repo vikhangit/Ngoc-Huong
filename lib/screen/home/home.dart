@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:draggable_home/draggable_home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
-import 'package:ngoc_huong/screen/home/banner.dart';
+import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
+import 'package:ngoc_huong/screen/login/modal_phone.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_tin_tuc.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
@@ -16,12 +19,6 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
-// List<String> bannerList = [
-//   "assets/images/Home/banner1.jpg",
-//   "assets/images/Home/banner2.jpg",
-//   "assets/images/Home/banner3.jpg"
-// ];
 
 List toolServices = [
   {"icon": "assets/images/Home/Services/phun-xam.png", "title": "Phun xăm"},
@@ -35,45 +32,24 @@ List toolServices = [
 ];
 bool showAppBar = false;
 int current = 0;
-CarouselController buttonCarouselController = CarouselController();
-Widget view = Container();
-late PageController _pageController;
 
-class _HomeScreenState extends State<HomeScreen> {
-  LocalStorage storage = LocalStorage("auth");
-  GlobalKey<CarouselSliderState> _sliderKey = GlobalKey();
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  final CarouselController controller = CarouselController();
+  LocalStorage storageAuth = LocalStorage("auth");
+  LocalStorage storageToken = LocalStorage('token');
+
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.8);
   }
 
   @override
   void dispose() {
-    // storage.setItem("authen", "false");
     super.dispose();
-  }
-
-  // final LocalStorage storage = LocalStorage("auth.json");
-  void pageChange(int index, CarouselPageChangedReason reason) {
-    setState(() {
-      current = index;
-    });
-  }
-
-  void clickDotPageChange(int index) {
-    setState(() {
-      current = index;
-      buttonCarouselController.animateToPage(index,
-          duration: const Duration(milliseconds: 300), curve: Curves.linear);
-    });
-  }
-
-  void checkView(int index) {
-    switch (index) {
-      case 0:
-        break;
-      default:
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
+    } else if (Platform.isIOS) {
+      exit(0);
     }
   }
 
@@ -131,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
+    print(storageAuth.getItem("phone"));
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
@@ -153,16 +130,223 @@ class _HomeScreenState extends State<HomeScreen> {
               future: callBannerHoemApi(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return banner(
-                      context,
-                      (index, reason) => pageChange(index, reason),
-                      snapshot.data!,
-                      (index) => clickDotPageChange(index),
-                      storage.getItem("lastname").toString(),
-                      storage,
-                      buttonCarouselController,
-                      current,
-                      _sliderKey);
+                  List list = snapshot.data!.toList();
+                  return Stack(
+                    fit: StackFit.passthrough,
+                    children: [
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.25,
+                          child: CarouselSlider(
+                            carouselController: controller,
+                            options: CarouselOptions(
+                                aspectRatio: 16 / 9,
+                                viewportFraction: 1,
+                                initialPage: 0,
+                                enableInfiniteScroll: true,
+                                reverse: false,
+                                autoPlay: true,
+                                autoPlayInterval: const Duration(seconds: 3),
+                                autoPlayAnimationDuration:
+                                    const Duration(milliseconds: 1000),
+                                autoPlayCurve: Curves.fastOutSlowIn,
+                                enlargeCenterPage: true,
+                                enlargeFactor: 0.3,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.25),
+                            items: list.map((item) {
+                              return FractionallySizedBox(
+                                widthFactor: 1,
+                                heightFactor: 1,
+                                child: FittedBox(
+                                  fit: BoxFit.fill,
+                                  child: Image.network(
+                                    "$apiUrl${item["hinh_anh"]}?$token",
+                                    height: MediaQuery.of(context).size.height *
+                                        0.25,
+                                    width: MediaQuery.of(context).size.width,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          )),
+                      Positioned(
+                          bottom: 10,
+                          left: 0,
+                          width: MediaQuery.of(context).size.width,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                storageAuth.getItem("existAccount") == null &&
+                                        storageAuth.getItem("phone") == null
+                                    ? InkWell(
+                                        onTap: () {
+                                          storage.deleteItem("typeOTP");
+                                          showModalBottomSheet<void>(
+                                              clipBehavior:
+                                                  Clip.antiAliasWithSaveLayer,
+                                              context: context,
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.vertical(
+                                                  top: Radius.circular(15.0),
+                                                ),
+                                              ),
+                                              isScrollControlled: true,
+                                              builder: (BuildContext context) {
+                                                return Container(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: MediaQuery.of(
+                                                                context)
+                                                            .viewInsets
+                                                            .bottom),
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.96,
+                                                    child: const ModalPhone());
+                                              });
+                                        },
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                              color: Colors.transparent,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(20.0))),
+                                          child: Row(
+                                            children: [
+                                              Image.asset(
+                                                width: 35,
+                                                height: 35,
+                                                "assets/images/account.png",
+                                              ),
+                                              const Text(
+                                                "Đăng nhập",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    : storageAuth.getItem("existAccount") !=
+                                                null &&
+                                            storageAuth.getItem("phone") == null
+                                        ? InkWell(
+                                            onTap: () {
+                                              storage.deleteItem("typeOTP");
+                                              showModalBottomSheet<void>(
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  context: context,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                      top:
+                                                          Radius.circular(15.0),
+                                                    ),
+                                                  ),
+                                                  isScrollControlled: true,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                      padding: EdgeInsets.only(
+                                                          bottom: MediaQuery.of(
+                                                                  context)
+                                                              .viewInsets
+                                                              .bottom),
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.96,
+                                                      child:
+                                                          const ModalPassExist(),
+                                                    );
+                                                  });
+                                            },
+                                            child: Container(
+                                              decoration: const BoxDecoration(
+                                                  color: Colors.transparent,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              20.0))),
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    width: 35,
+                                                    height: 35,
+                                                    "assets/images/account.png",
+                                                  ),
+                                                  const Text(
+                                                    "Đăng nhập",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        : FutureBuilder(
+                                            future: getProfile(
+                                                storageAuth.getItem("phone")),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                return Text(
+                                                  "Chào ${snapshot.data![0]["ten_kh"]}",
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                );
+                                              } else {
+                                                return const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                Row(
+                                    children:
+                                        List.generate(list.length, (index) {
+                                  return Container(
+                                    margin: EdgeInsets.only(
+                                        left: index == 0 ? 0 : 8),
+                                    height: 5,
+                                    width: 30,
+                                    child: TextButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.white),
+                                          padding: MaterialStateProperty.all(
+                                              const EdgeInsets.symmetric(
+                                                  vertical: 2, horizontal: 5))),
+                                      onPressed: () {
+                                        controller.animateToPage(index,
+                                            duration: const Duration(
+                                                milliseconds: 400),
+                                            curve: Curves.easeIn);
+                                      },
+                                      child: Container(),
+                                    ),
+                                  );
+                                }))
+                              ],
+                            ),
+                          )),
+                    ],
+                  );
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),

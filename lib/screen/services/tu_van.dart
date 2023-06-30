@@ -67,7 +67,7 @@ class _TuVanScreenState extends State<TuVanScreen> {
                   SizedBox(
                     width: 20,
                   ),
-                  Text("Loading"),
+                  Text("Đang xử lý"),
                 ],
               ),
             ));

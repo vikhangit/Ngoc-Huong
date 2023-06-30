@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ngoc_huong/screen/login/modal_Info.dart';
 import 'package:ngoc_huong/screen/login/modal_pass.dart';
 
 class ModalOTP extends StatefulWidget {
   final String phone;
-  const ModalOTP({super.key, required this.phone});
+  final String receivedID;
+  const ModalOTP({super.key, required this.phone, required this.receivedID});
 
   @override
   State<ModalOTP> createState() => _ModalOTPState();
@@ -16,12 +19,16 @@ String val1 = '';
 String val2 = '';
 String val3 = '';
 String val4 = '';
+String val5 = '';
+String val6 = '';
+String verificationID = "";
 
 int seconds = 59;
 bool isRunning = false;
 Timer? _timer;
 
 class _ModalOTPState extends State<ModalOTP> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   @override
   void initState() {
     setState(() {
@@ -29,7 +36,10 @@ class _ModalOTPState extends State<ModalOTP> {
       val2 = '';
       val3 = '';
       val4 = '';
+      val5 = '';
+      val6 = '';
     });
+    verificationID = widget.receivedID;
     _startTimer();
     super.initState();
   }
@@ -54,8 +64,159 @@ class _ModalOTPState extends State<ModalOTP> {
     });
   }
 
+  void showAlertDialog(BuildContext context, String err) {
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () => Navigator.pop(context, 'OK'),
+    );
+    AlertDialog alert = AlertDialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      content: Builder(
+        builder: (context) {
+          return SizedBox(
+            // height: 30,
+            width: MediaQuery.of(context).size.width,
+            child: Text(
+              style: const TextStyle(height: 1.6),
+              err,
+            ),
+          );
+        },
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      verificationID = widget.receivedID;
+    });
+    verifyOTPCode() async {
+      // String code = val1 + val2 + val3 + val4 + val5 + val6;
+      // var credential = await auth.signInWithCredential(
+      //     PhoneAuthProvider.credential(
+      //         verificationId: verificationID, smsCode: code));
+      // if (credential.user != null) {
+      //  } else {
+      //   showAlertDialog(context, "Mã xác thực otp không đúng");
+      // }
+    }
+
+    void onLoadingVefiOTP() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Đang xử lý"),
+              ],
+            ),
+          ));
+        },
+      );
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.pop(context);
+        verifyOTPCode();
+        showModalBottomSheet<void>(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(15.0),
+              ),
+            ),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return Container(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  height: MediaQuery.of(context).size.height * 0.88,
+                  child: ModalPass(
+                    phone: widget.phone,
+                  ));
+            });
+      });
+    }
+
+    sendOTP(String phoneNumber) async {
+      String phone = phoneNumber.replaceFirst(RegExp(r'0'), '+84');
+      await auth.verifyPhoneNumber(
+        phoneNumber: phone,
+        verificationCompleted: (PhoneAuthCredential credential) async {},
+        verificationFailed: (FirebaseAuthException e) {
+          if (e.code == 'invalid-phone-number') {
+            showAlertDialog(context, "Số điện thoại không hợp lệ");
+          } else {
+            showAlertDialog(context, "$e");
+          }
+        },
+        codeSent: (String verificationId, int? resendToken) async {
+          setState(() {
+            verificationID = verificationId;
+          });
+        },
+        timeout: const Duration(seconds: 20),
+        codeAutoRetrievalTimeout: (String verificationId) {
+          setState(() {
+            verificationID = verificationId;
+          });
+        },
+      );
+    }
+
+    void onLoadingSendOTP() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Đang xử lý"),
+              ],
+            ),
+          ));
+        },
+      );
+      Future.delayed(const Duration(seconds: 3), () {
+        sendOTP(widget.phone.toString());
+        Navigator.pop(context);
+        setState(() {
+          seconds = 59;
+        });
+        _startTimer();
+      });
+    }
+
     return Container(
         color: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
@@ -71,7 +232,7 @@ class _ModalOTPState extends State<ModalOTP> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       SizedBox(
-                        width: 60,
+                        width: 40,
                         child: TextField(
                           style: const TextStyle(
                               height: 1.2, color: Colors.black, fontSize: 24.0),
@@ -99,7 +260,7 @@ class _ModalOTPState extends State<ModalOTP> {
                         ),
                       ),
                       SizedBox(
-                        width: 60,
+                        width: 40,
                         child: TextField(
                           style: const TextStyle(
                               height: 1.2, color: Colors.black, fontSize: 24.0),
@@ -127,7 +288,7 @@ class _ModalOTPState extends State<ModalOTP> {
                         ),
                       ),
                       SizedBox(
-                        width: 60,
+                        width: 40,
                         child: TextField(
                           style: const TextStyle(
                               height: 1.2, color: Colors.black, fontSize: 24.0),
@@ -155,7 +316,7 @@ class _ModalOTPState extends State<ModalOTP> {
                         ),
                       ),
                       SizedBox(
-                        width: 60,
+                        width: 40,
                         child: TextField(
                           style: const TextStyle(
                               height: 1.2, color: Colors.black, fontSize: 24.0),
@@ -182,6 +343,62 @@ class _ModalOTPState extends State<ModalOTP> {
                           },
                         ),
                       ),
+                      SizedBox(
+                        width: 40,
+                        child: TextField(
+                          style: const TextStyle(
+                              height: 1.2, color: Colors.black, fontSize: 24.0),
+                          autofocus: true,
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.number,
+                          maxLength: 1,
+                          cursorColor: Theme.of(context).primaryColor,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              counterText: '',
+                              hintStyle: TextStyle(
+                                  color: Colors.black, fontSize: 20.0)),
+                          onChanged: (value) {
+                            setState(() {
+                              val5 = value;
+                            });
+                            if (value.length == 1) {
+                              FocusScope.of(context).nextFocus();
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                            }
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 40,
+                        child: TextField(
+                          style: const TextStyle(
+                              height: 1.2, color: Colors.black, fontSize: 24.0),
+                          autofocus: true,
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.center,
+                          keyboardType: TextInputType.number,
+                          maxLength: 1,
+                          cursorColor: Theme.of(context).primaryColor,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              counterText: '',
+                              hintStyle: TextStyle(
+                                  color: Colors.black, fontSize: 20.0)),
+                          onChanged: (value) {
+                            setState(() {
+                              val6 = value;
+                            });
+                            if (value.length == 1) {
+                              FocusScope.of(context).nextFocus();
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                            }
+                          },
+                        ),
+                      ),
                     ],
                   )
                 ],
@@ -191,10 +408,7 @@ class _ModalOTPState extends State<ModalOTP> {
                   seconds == 0
                       ? InkWell(
                           onTap: () {
-                            setState(() {
-                              seconds = 59;
-                            });
-                            _startTimer();
+                            onLoadingSendOTP();
                           },
                           child: Text(
                             "Gửi lại mã OTP",
@@ -217,7 +431,9 @@ class _ModalOTPState extends State<ModalOTP> {
                   val1.isNotEmpty &&
                           val2.isNotEmpty &&
                           val3.isNotEmpty &&
-                          val4.isNotEmpty
+                          val4.isNotEmpty &&
+                          val5.isNotEmpty &&
+                          val6.isNotEmpty
                       ? Container(
                           width: MediaQuery.of(context).size.width,
                           height: 60,
@@ -227,31 +443,33 @@ class _ModalOTPState extends State<ModalOTP> {
                                   Radius.circular(50.0))),
                           child: TextButton(
                               onPressed: () {
-                                setState(() {
-                                  otp = val1 + val2 + val3 + val4;
-                                });
-                                showModalBottomSheet<void>(
-                                    backgroundColor: Colors.white,
-                                    // shape: const RoundedRectangleBorder(
-                                    //   borderRadius: BorderRadius.vertical(
-                                    //     top: Radius.circular(15.0),
-                                    //   ),
-                                    // ),
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (BuildContext context) {
-                                      return Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.96,
-                                        child: const ModalPass(),
-                                      );
-                                    });
+                                // setState(() {
+                                //   otp = val1 + val2 + val3 + val4 + val5 + val6;
+                                // });
+                                // showModalBottomSheet<void>(
+                                //     backgroundColor: Colors.white,
+                                //     // shape: const RoundedRectangleBorder(
+                                //     //   borderRadius: BorderRadius.vertical(
+                                //     //     top: Radius.circular(15.0),
+                                //     //   ),
+                                //     // ),
+                                //     clipBehavior: Clip.antiAliasWithSaveLayer,
+                                //     context: context,
+                                //     isScrollControlled: true,
+                                //     builder: (BuildContext context) {
+                                //       return Container(
+                                //         padding: EdgeInsets.only(
+                                //             bottom: MediaQuery.of(context)
+                                //                 .viewInsets
+                                //                 .bottom),
+                                //         height:
+                                //             MediaQuery.of(context).size.height *
+                                //                 0.96,
+                                //         child: const ModalPass(),
+                                //       );
+                                //     });
+
+                                onLoadingVefiOTP();
                               },
                               style: ButtonStyle(
                                   padding: MaterialStateProperty.all(
@@ -309,7 +527,7 @@ Widget intro(BuildContext context, String p) {
           ),
           Row(
             children: [
-              const Text("Nhập mã 4 số được gữi đến",
+              const Text("Nhập mã 6 số được gữi đến",
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300)),
               Text(" $p",
                   style: const TextStyle(

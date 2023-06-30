@@ -10,11 +10,11 @@ Widget banner(
     Function(int index, CarouselPageChangedReason reason) pageChange,
     List bannerList,
     Function(int index) clickDotPageChange,
-    String user,
     LocalStorage storage,
     CarouselController buttonCarouselController,
     int current,
-    GlobalKey<CarouselSliderState> _sliderKey) {
+    GlobalKey<CarouselSliderState> _sliderKey,
+    LocalStorage storageToken) {
   return Stack(
     fit: StackFit.passthrough,
     children: [
@@ -60,41 +60,29 @@ Widget banner(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                storage.getItem("authen") == null
+                storage.getItem("existAccount") == null &&
+                        storage.getItem("phone") == null
                     ? InkWell(
                         onTap: () {
                           storage.deleteItem("typeOTP");
                           showModalBottomSheet<void>(
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               context: context,
-                              shape: RoundedRectangleBorder(
+                              shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(
-                                      storage.getItem("authen") == null &&
-                                              storage.getItem("lastname") ==
-                                                  null
-                                          ? 0
-                                          : 15.0),
+                                  top: Radius.circular(15.0),
                                 ),
                               ),
                               isScrollControlled: true,
                               builder: (BuildContext context) {
                                 return Container(
-                                  padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
-                                  height: MediaQuery.of(context).size.height *
-                                      (storage.getItem("authen") == null &&
-                                              storage.getItem("lastname") ==
-                                                  null
-                                          ? 0.96
-                                          : 0.9),
-                                  child: storage.getItem("authen") == null &&
-                                          storage.getItem("lastname") == null
-                                      ? const ModalPhone()
-                                      : const ModalPassExist(),
-                                );
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.96,
+                                    child: const ModalPhone());
                               });
                         },
                         child: Container(
@@ -118,11 +106,71 @@ Widget banner(
                           ),
                         ),
                       )
-                    : Text(
-                        "Chào $user",
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400),
-                      ),
+                    : storage.getItem("existAccount") != null &&
+                            storage.getItem("phone") == null
+                        ? InkWell(
+                            onTap: () {
+                              storage.deleteItem("typeOTP");
+                              showModalBottomSheet<void>(
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  context: context,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(15.0),
+                                    ),
+                                  ),
+                                  isScrollControlled: true,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.96,
+                                      child: const ModalPassExist(),
+                                    );
+                                  });
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0))),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    width: 35,
+                                    height: 35,
+                                    "assets/images/account.png",
+                                  ),
+                                  const Text(
+                                    "Đăng nhập",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        : FutureBuilder(
+                            future: getProfile(storage.getItem("phone")),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  "Chào ${snapshot.data![0]["ten_kh"]}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w400),
+                                );
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
+                          ),
                 Row(
                     children: bannerList.map((e) {
                   int index = bannerList.indexOf(e);

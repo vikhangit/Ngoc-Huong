@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "83126216779",
+    "project_id": "fir-ngoc-huong",
+    "storage_bucket": "fir-ngoc-huong.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:83126216779:android:ed4e82fc11c99e3f4245ce",
+        "android_client_info": {
+          "package_name": "com.example.ngoc_huong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "83126216779-uujn9ar3js02nsnmduil02eb3p088obp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv5HTUKVom46q7a94O5IyvnC3q1yPUXCU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "83126216779-uujn9ar3js02nsnmduil02eb3p088obp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

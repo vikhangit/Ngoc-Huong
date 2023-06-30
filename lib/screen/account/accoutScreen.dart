@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
+import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
+import 'package:ngoc_huong/screen/account/dieu_khoan_sd/dieu_khoan_sd.dart';
+import 'package:ngoc_huong/screen/account/gioi_thieu_ban_be/gioi_thieu_ban_be.dart';
+import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
+import 'package:ngoc_huong/screen/account/tran_history/tran_history.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -11,43 +19,127 @@ class AccountScreen extends StatefulWidget {
 
 List menu = [
   {
-    "icon": Icons.person_pin,
+    "icon": "assets/images/account/thong-tin.png",
     "title": "Thông tin tài khoản",
   },
   {
-    "icon": Icons.speaker_notes_outlined,
+    "icon": "assets/images/account/giao-dich.png",
     "title": "Lịch sử giao dịch",
   },
   {
-    "icon": Icons.backup_table_outlined,
-    "title": "Lịch sử đặt bàn",
+    "icon": "assets/images/account/dat-lich.png",
+    "title": "Lịch sử đặt lịch",
   },
   {
-    "icon": Icons.note_alt_outlined,
+    "icon": "assets/images/cart-black.png",
+    "title": "Lịch sử đặt hàng",
+  },
+  {
+    "icon": "assets/images/account/dieu-khoan.png",
     "title": "Điều khoản sử dụng",
   },
   {
-    "icon": Icons.people_outline,
+    "icon": "assets/images/account/gioi-thieu.png",
     "title": "Giới thiệu bạn bè",
   },
   {
-    "icon": Icons.location_on_outlined,
+    "icon": "assets/images/account/dia-chi.png",
     "title": "Quản lý địa chỉ",
   },
   {
-    "icon": Icons.settings_outlined,
+    "icon": "assets/images/account/cai-dat.png",
     "title": "Cài đặt",
   },
   {
-    "icon": Icons.info_outline,
+    "icon": "assets/images/account/ve-chung-toi.png",
     "title": "Về Ngọc Hường",
   }
 ];
+_makingPhoneCall() async {
+  var url = Uri.parse("tel:9776765434");
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 
 class _AccountScreenState extends State<AccountScreen> {
-  final LocalStorage storage = LocalStorage("auth");
+  LocalStorage storage = LocalStorage("auth");
+  LocalStorage storageToken = LocalStorage("token");
   @override
   Widget build(BuildContext context) {
+    void showAlertDialog(BuildContext context, String err) {
+      Widget okButton = TextButton(
+        child: const Text("OK"),
+        onPressed: () => Navigator.pop(context, 'OK'),
+      );
+      AlertDialog alert = AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        content: Builder(
+          builder: (context) {
+            return SizedBox(
+              // height: 30,
+              width: MediaQuery.of(context).size.width,
+              child: Text(
+                style: const TextStyle(height: 1.6),
+                err,
+              ),
+            );
+          },
+        ),
+        actions: [
+          okButton,
+        ],
+      );
+      // show the dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+
+    void goAction(int index) {
+      print(index);
+      switch (index) {
+        case 0:
+          Navigator.pushNamed(context, "informationAccount");
+          break;
+        case 1:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const TranHistory()));
+          break;
+        case 2:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const BookingHistory()));
+          break;
+        case 3:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const BuyHistory()));
+          break;
+        case 4:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
+          break;
+        case 5:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
+          break;
+        case 6:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
+          break;
+        case 7:
+          Navigator.pushNamed(context, "setting");
+          break;
+        default:
+      }
+    }
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.white,
@@ -67,7 +159,9 @@ class _AccountScreenState extends State<AccountScreen> {
                   children: [
                     Expanded(
                       child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            _makingPhoneCall();
+                          },
                           child: Row(
                             children: [
                               Image.asset(
@@ -151,16 +245,28 @@ class _AccountScreenState extends State<AccountScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Column(
-                children: const [
-                  Text("Tran Khang",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w400)),
-                  Text("Mã KH: 032131321",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w300))
-                ],
-              ),
+              if (storage.getItem("phone") != null)
+                FutureBuilder(
+                  future: getProfile(storage.getItem("phone")),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        children: [
+                          Text(snapshot.data![0]["ten_kh"],
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.w400)),
+                          Text(snapshot.data![0]["of_user"],
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w300))
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
               const SizedBox(
                 height: 20,
               ),
@@ -168,90 +274,101 @@ class _AccountScreenState extends State<AccountScreen> {
                 children: [
                   Expanded(
                       flex: 47,
-                      child: Container(
-                        margin: const EdgeInsets.only(left: 15),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 10),
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(6)),
-                            border: Border.all(width: 1, color: Colors.grey)),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.2),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(8))),
-                              child: Image.network(
-                                "https://cdn-icons-png.flaticon.com/512/2385/2385865.png",
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, "hangthanhvien");
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 15),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(6)),
+                              border: Border.all(width: 1, color: Colors.grey)),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.2),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8))),
+                                child: Image.network(
+                                  "https://cdn-icons-png.flaticon.com/512/2385/2385865.png",
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text("Silver",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w500)),
-                                Text("Nâng hạng",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w300))
-                              ],
-                            )
-                          ],
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Đồng",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
+                                  Text("Nâng hạng",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300))
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       )),
                   Expanded(flex: 6, child: Container()),
                   Expanded(
                       flex: 47,
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 15),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 10),
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(6)),
-                            border: Border.all(width: 1, color: Colors.grey)),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.2),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(8))),
-                              child: Image.network(
-                                "https://cdn-icons-png.flaticon.com/512/3702/3702999.png",
+                      child: InkWell(
+                        onTap: () {
+                          showAlertDialog(context,
+                              "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 15),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 10),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(6)),
+                              border: Border.all(width: 1, color: Colors.grey)),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.2),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8))),
+                                child: Image.network(
+                                  "https://cdn-icons-png.flaticon.com/512/3702/3702999.png",
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text("Ưu đãi",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w500)),
-                                Text("Dùng ngay",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w300))
-                              ],
-                            )
-                          ],
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Ưu đãi",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500)),
+                                  Text("Dùng ngay",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300))
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       )),
                 ],
@@ -334,34 +451,35 @@ class _AccountScreenState extends State<AccountScreen> {
                                   padding: MaterialStateProperty.all(
                                       const EdgeInsets.symmetric(
                                           horizontal: 15))),
-                              onPressed: () {},
+                              onPressed: () {
+                                goAction(index);
+                              },
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Row(
                                     children: [
                                       Container(
-                                        width: 35,
-                                        height: 35,
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                                .withOpacity(0.2),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(8))),
-                                        child: Icon(
-                                          element["icon"],
-                                          color: Colors.black,
-                                          size: 26,
-                                        ),
-                                      ),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 5),
+                                          decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                                  .withOpacity(0.2),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(8))),
+                                          child: Image.asset(
+                                            element["icon"],
+                                            width: 24,
+                                            height: 24,
+                                          )),
                                       Container(
                                         margin: const EdgeInsets.only(left: 20),
                                         width:
                                             MediaQuery.of(context).size.width -
-                                                85,
+                                                95,
                                         child: Text(
                                           "${element["title"]}",
                                           style: const TextStyle(

@@ -1,17 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:intl/intl.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
+import 'package:ngoc_huong/screen/booking/modal/modal_chi_tiet_booking.dart';
 import 'package:ngoc_huong/screen/checkout/checkout_step2.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class CheckOutScreen extends StatefulWidget {
-  const CheckOutScreen({super.key});
+  final int total;
+  const CheckOutScreen({super.key, required this.total});
 
   @override
   State<CheckOutScreen> createState() => _CheckOutScreenState();
 }
 
 class _CheckOutScreenState extends State<CheckOutScreen> {
+  LocalStorage storage = LocalStorage("auth");
   @override
   Widget build(BuildContext context) {
+    void showAlertDialog(BuildContext context, String err) {
+      Widget okButton = TextButton(
+        child: const Text("OK"),
+        onPressed: () => Navigator.pop(context, 'OK'),
+      );
+      AlertDialog alert = AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        content: Builder(
+          builder: (context) {
+            return SizedBox(
+              // height: 30,
+              width: MediaQuery.of(context).size.width,
+              child: Text(
+                style: const TextStyle(height: 1.6),
+                err,
+              ),
+            );
+          },
+        ),
+        actions: [
+          okButton,
+        ],
+      );
+      // show the dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
@@ -79,8 +121,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Expanded(
+                          children: [
+                            const Expanded(
                               child: Text(
                                 "Tên khách hàng",
                                 style: TextStyle(
@@ -89,12 +131,23 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               ),
                             ),
                             Expanded(
-                              child: Text(
-                                "Phương Nhi",
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
+                              child: FutureBuilder(
+                                future: getProfile(storage.getItem("phone")),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      snapshot.data![0]["ten_kh"],
+                                      textAlign: TextAlign.right,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black),
+                                    );
+                                  } else {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
                               ),
                             )
                           ],
@@ -107,8 +160,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Expanded(
+                          children: [
+                            const Expanded(
                                 child: Text(
                               "Số điện thoại",
                               style: TextStyle(
@@ -116,14 +169,24 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                   color: Colors.black),
                             )),
                             Expanded(
-                              child: Text(
-                                "0378759723",
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              ),
-                            )
+                                child: FutureBuilder(
+                              future: getProfile(storage.getItem("phone")),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    snapshot.data![0]["of_user"],
+                                    textAlign: TextAlign.right,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black),
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              },
+                            ))
                           ],
                         ),
                         Container(
@@ -132,119 +195,184 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           height: 1,
                           color: Colors.grey,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Expanded(
-                                flex: 30,
-                                child: Text(
-                                  "Chi nhánh",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black),
-                                )),
-                            Expanded(
-                                flex: 70,
-                                child: Text(
-                                  "199 Phan Đăng Lưu, phường 1, Quận Phú Nhuận",
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black),
-                                ))
-                          ],
-                        )
                       ],
                     )),
-                Column(
-                  children: List.generate(10, (index) {
-                    return Container(
-                      margin: EdgeInsets.only(
-                        left: 15,
-                        right: 15,
-                        top: index != 0 ? 20 : 0,
-                      ),
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                            offset: const Offset(
-                                4, 4), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      height: 145,
-                      child: TextButton(
-                        onPressed: () {},
-                        style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 8)),
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                          shape: MaterialStateProperty.all(
-                              const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)))),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                              child: Image.asset(
-                                "assets/images/Services/PhunXamMay/img1.jpg",
-                                width: 110,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Wrap(
-                                  children: [
-                                    const Text(
-                                      "Phun xăm môi-Cấy son tươi Hàn Quốc",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                    Container(
-                                        margin: const EdgeInsets.only(
-                                            top: 5, bottom: 5),
-                                        child: const Text(
-                                          "Cấy son tươi Hàn Quốc là phương pháp độc quyền tại Hệ thống TMV Ngọc Hường",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 3,
-                                          style: TextStyle(
-                                              color: Colors.black54,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w300),
-                                        )),
-                                    Text(
-                                      "899.000đ",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary),
-                                    ),
-                                  ],
+                FutureBuilder(
+                  future: callBookingApi(storage.getItem("phone")),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List list = snapshot.data!;
+                      if (snapshot.data!.isNotEmpty) {
+                        return Column(
+                            children: list.map((item) {
+                          int index = list.indexOf(item);
+                          return Container(
+                            margin: EdgeInsets.only(
+                                left: 15,
+                                right: 15,
+                                top: index != 0 ? 20 : 30,
+                                bottom: index == list.length - 1 ? 20 : 0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 1,
+                                  blurRadius: 8,
+                                  offset: const Offset(
+                                      4, 4), // changes position of shadow
                                 ),
                               ],
-                            ))
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
+                            ),
+                            height: 135,
+                            child: FutureBuilder(
+                              future: callServiceApiById(item["ten_vt"]),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return TextButton(
+                                      onPressed: () {
+                                        showModalBottomSheet<void>(
+                                            backgroundColor: Colors.white,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                top: Radius.circular(15.0),
+                                              ),
+                                            ),
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
+                                            context: context,
+                                            isScrollControlled: true,
+                                            builder: (BuildContext context) {
+                                              return Container(
+                                                  padding: EdgeInsets.only(
+                                                      bottom:
+                                                          MediaQuery.of(context)
+                                                              .viewInsets
+                                                              .bottom),
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.95,
+                                                  child: ModalChiTietBooking(
+                                                    details: item,
+                                                    details2:
+                                                        snapshot.data![0]!,
+                                                  ));
+                                            });
+                                      },
+                                      style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 8)),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                        shape: MaterialStateProperty.all(
+                                            const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10)))),
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10)),
+                                            child: Image.network(
+                                              "$apiUrl${snapshot.data![0]!["picture"]}?$token",
+                                              // width: 110,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                              child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Wrap(
+                                                children: [
+                                                  Text(
+                                                    "${snapshot.data![0]!["ten_vt"]}",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                  Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              bottom: 0,
+                                                              top: 5),
+                                                      child: Html(
+                                                          style: {
+                                                            "*": Style(
+                                                                margin: Margins
+                                                                    .only(
+                                                                        top: 0,
+                                                                        left:
+                                                                            0),
+                                                                maxLines: 2,
+                                                                fontSize:
+                                                                    FontSize(
+                                                                        14),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300,
+                                                                textOverflow:
+                                                                    TextOverflow
+                                                                        .ellipsis),
+                                                          },
+                                                          data: snapshot.data![
+                                                              0]!["mieu_ta"])),
+                                                  Text(
+                                                    NumberFormat.currency(
+                                                            locale: "vi_VI",
+                                                            symbol: "đ")
+                                                        .format(
+                                                      snapshot.data![0]![
+                                                          "gia_ban_le"],
+                                                    ),
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ))
+                                        ],
+                                      ));
+                                } else {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              },
+                            ),
+                          );
+                        }).toList());
+                      } else {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 50),
+                          child: const Text("Chưa có dịch vụ trong giỏ hàng"),
+                        );
+                      }
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
                 ),
                 const SizedBox(
                   height: 30,
@@ -274,7 +402,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)))),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showAlertDialog(context,
+                          "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -296,8 +427,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             )
                           ],
                         ),
-                        Row(
-                          children: const [
+                        const Row(
+                          children: [
                             Text("Chọn hoặc nhập mã",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
@@ -339,7 +470,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)))),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showAlertDialog(context,
+                          "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -399,7 +533,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)))),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showAlertDialog(context,
+                          "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -421,8 +558,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             )
                           ],
                         ),
-                        Row(
-                          children: const [
+                        const Row(
+                          children: [
                             Text("Ví",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
@@ -455,8 +592,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     offset: const Offset(4, 4), // changes position of shadow
                   ),
                 ],
-                border:
-                    Border(top: BorderSide(width: 1, color: Colors.black12))),
+                border: const Border(
+                    top: BorderSide(width: 1, color: Colors.black12))),
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Column(
               children: [
@@ -473,7 +610,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           color: Theme.of(context).colorScheme.primary),
                     ),
                     Text(
-                      "899.000đ",
+                      NumberFormat.currency(locale: "vi_VI", symbol: "đ")
+                          .format(widget.total),
                       style: TextStyle(
                           fontSize: 14,
                           color: Theme.of(context).colorScheme.primary),
@@ -497,10 +635,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                     .primary
                                     .withOpacity(0.4))),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const CheckOutStep2()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => const CheckOutStep2()));
+                          showAlertDialog(context,
+                              "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
                         },
                         child: Row(
                           children: [

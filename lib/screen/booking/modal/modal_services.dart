@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/booking/booking_step2.dart';
+import 'package:ngoc_huong/screen/booking/modal/modal_dia_chi.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalService extends StatefulWidget {
   final String id;
   final String title;
-  final String maKho;
+  final Map activeCN;
   const ModalService(
-      {super.key, required this.id, required this.title, required this.maKho});
+      {super.key,
+      required this.id,
+      required this.title,
+      required this.activeCN});
 
   @override
   State<ModalService> createState() => _ModalServiceState();
@@ -69,7 +72,6 @@ class _ModalServiceState extends State<ModalService> {
   @override
   Widget build(BuildContext context) {
     String title = widget.title;
-    String activeMaKho = widget.maKho;
     return SizedBox(
       child: Column(
         children: [
@@ -154,64 +156,102 @@ class _ModalServiceState extends State<ModalService> {
                         },
                       ),
                     ),
-                    Container(
-                      height: 50,
-                      margin: const EdgeInsets.only(
-                          left: 15, right: 15, bottom: 15),
-                      child: TextButton(
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
-                                const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(30)))),
-                            backgroundColor: MaterialStateProperty.all(
-                                Theme.of(context).colorScheme.primary),
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 20))),
-                        onPressed: () {
-                          if (activeId.isEmpty) {
-                            showAlertDialog(context,
-                                "Vui lòng chọn chi nhánh và dịch vụ muốn đặt");
-                          } else {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BookingStep2(
-                                          choose: choose,
-                                          serviceName: activeTitle,
-                                          maKho: activeMaKho,
-                                        )));
-                          }
-                        },
-                        child: Row(
-                          children: [
-                            Expanded(flex: 1, child: Container()),
-                            const Expanded(
-                              flex: 8,
-                              child: Center(
-                                child: Text(
-                                  "Tiếp tục",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white),
-                                ),
+                    activeId.isNotEmpty
+                        ? Container(
+                            height: 50,
+                            margin: const EdgeInsets.only(
+                                left: 15, right: 15, bottom: 15),
+                            child: TextButton(
+                              style: ButtonStyle(
+                                  shape: MaterialStateProperty.all(
+                                      const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(30)))),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Theme.of(context).colorScheme.primary),
+                                  padding: MaterialStateProperty.all(
+                                      const EdgeInsets.symmetric(
+                                          vertical: 12, horizontal: 20))),
+                              onPressed: () {
+                                if (activeId.isEmpty) {
+                                  showAlertDialog(context,
+                                      "Vui lòng chọn dịch vụ muốn đặt");
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => BookingStep2(
+                                                serviceName: activeTitle,
+                                                activeCN: activeCN,
+                                              )));
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  Expanded(flex: 1, child: Container()),
+                                  const Expanded(
+                                    flex: 8,
+                                    child: Center(
+                                      child: Text(
+                                        "Tiếp tục",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Image.asset(
+                                      "assets/images/calendar-white.png",
+                                      width: 20,
+                                      height: 25,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Image.asset(
-                                "assets/images/calendar-white.png",
-                                width: 20,
-                                height: 25,
-                                fit: BoxFit.contain,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    )
+                          )
+                        : Container(
+                            height: 50,
+                            margin: const EdgeInsets.only(
+                                left: 15, right: 15, bottom: 15),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 20),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(30)),
+                              color: Colors.grey[400],
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(flex: 1, child: Container()),
+                                const Expanded(
+                                  flex: 8,
+                                  child: Center(
+                                    child: Text(
+                                      "Tiếp tục",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Image.asset(
+                                    "assets/images/calendar-white.png",
+                                    width: 20,
+                                    height: 25,
+                                    fit: BoxFit.contain,
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
                   ],
                 );
               } else {

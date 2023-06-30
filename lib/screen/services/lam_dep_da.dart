@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/booking/booking_step2.dart';
+import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
+import 'package:ngoc_huong/screen/login/modal_phone.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,6 +18,8 @@ class LamDepDaScreen extends StatefulWidget {
 }
 
 class _LamDepDaScreenState extends State<LamDepDaScreen> {
+  LocalStorage storage = LocalStorage('auth');
+  LocalStorage storageToken = LocalStorage('token');
   _makingPhoneCall() async {
     var url = Uri.parse("tel:9776765434");
     if (await canLaunchUrl(url)) {
@@ -22,6 +27,11 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  Future refreshData() async {
+    await Future.delayed(const Duration(seconds: 3));
+    setState(() {});
   }
 
   @override
@@ -55,208 +65,16 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
                       color: Colors.black)),
             ),
             drawer: const MyLeftMenu(),
-            body: SingleChildScrollView(
-              // reverse: true,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: const EdgeInsets.only(left: 15, right: 15),
-                      child: const Text(
-                        "Dịch vụ cấy",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    FutureBuilder(
-                      future: callServiceApi("64756af6706fa019e6720d26"),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Container(
-                            height: 180,
-                            margin: const EdgeInsets.only(top: 20),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 15,
-                            ),
-                            child: ListView(
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              children: snapshot.data!.map((item) {
-                                int index = snapshot.data!.indexOf(item);
-                                return InkWell(
-                                  onTap: () {
-                                    showModalBottomSheet<void>(
-                                        backgroundColor: Colors.white,
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        context: context,
-                                        isScrollControlled: true,
-                                        builder: (BuildContext context) {
-                                          return Container(
-                                              padding: EdgeInsets.only(
-                                                  bottom: MediaQuery.of(context)
-                                                      .viewInsets
-                                                      .bottom),
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.95,
-                                              child: ChiTietScreen(
-                                                detail: item,
-                                              ));
-                                        });
-                                  },
-                                  child: Container(
-                                      alignment: Alignment.center,
-                                      margin: EdgeInsets.only(
-                                          left: index != 0 ? 15 : 0),
-                                      width: MediaQuery.of(context).size.width /
-                                              2 -
-                                          40,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(10)),
-                                            child: Image.network(
-                                              "$apiUrl${item["picture"]}?$token",
-                                              height: 130,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "${item["ten_vt"]}",
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w400),
-                                          )
-                                        ],
-                                      )),
-                                );
-                              }).toList(),
-                            ),
-                          );
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: const EdgeInsets.only(left: 15, right: 15),
-                      child: const Text(
-                        "Dịch vụ xóa",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    FutureBuilder(
-                      future: callServiceApi("64756ab8706fa019e6720cee"),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Container(
-                            height: 180,
-                            margin: const EdgeInsets.only(top: 20),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 15,
-                            ),
-                            child: ListView(
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              children: snapshot.data!.map((item) {
-                                int index = snapshot.data!.indexOf(item);
-                                return InkWell(
-                                  onTap: () {
-                                    showModalBottomSheet<void>(
-                                        backgroundColor: Colors.white,
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        context: context,
-                                        isScrollControlled: true,
-                                        builder: (BuildContext context) {
-                                          return Container(
-                                              padding: EdgeInsets.only(
-                                                  bottom: MediaQuery.of(context)
-                                                      .viewInsets
-                                                      .bottom),
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.95,
-                                              child: ChiTietScreen(
-                                                detail: item,
-                                              ));
-                                        });
-                                  },
-                                  child: Container(
-                                      alignment: Alignment.center,
-                                      margin: EdgeInsets.only(
-                                          left: index != 0 ? 15 : 0),
-                                      width: MediaQuery.of(context).size.width /
-                                              2 -
-                                          40,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(10)),
-                                            child: Image.network(
-                                              "$apiUrl${item["picture"]}?$token",
-                                              height: 130,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "${item["ten_vt"]}",
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w400),
-                                          )
-                                        ],
-                                      )),
-                                );
-                              }).toList(),
-                            ),
-                          );
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: const EdgeInsets.only(
-                          left: 15, right: 15, top: 20, bottom: 20),
-                      child: const Text(
-                        "Dịch vụ khác",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    FutureBuilder(
-                        future: callServiceApi("64756b06706fa019e6720d40"),
+            body: RefreshIndicator(
+              onRefresh: () => refreshData(),
+              child: SingleChildScrollView(
+                // reverse: true,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    children: [
+                      FutureBuilder(
+                        future: callServiceApi("64756979706fa019e6720b5d"),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return Column(
@@ -373,25 +191,73 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
                                               children: [
                                                 InkWell(
                                                   onTap: () {
-                                                    showModalBottomSheet<void>(
-                                                        clipBehavior: Clip
-                                                            .antiAliasWithSaveLayer,
-                                                        context: context,
-                                                        shape:
-                                                            const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .vertical(
-                                                            top:
-                                                                Radius.circular(
-                                                                    15.0),
+                                                    if (storage.getItem(
+                                                                "existAccount") !=
+                                                            null &&
+                                                        storageToken.getItem(
+                                                                "token") !=
+                                                            null) {
+                                                      showModalBottomSheet<
+                                                              void>(
+                                                          clipBehavior: Clip
+                                                              .antiAliasWithSaveLayer,
+                                                          context: context,
+                                                          shape:
+                                                              const RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .vertical(
+                                                              top: Radius
+                                                                  .circular(
+                                                                      15.0),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        isScrollControlled:
-                                                            true,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return Container(
+                                                          isScrollControlled:
+                                                              true,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return Container(
+                                                                padding: EdgeInsets.only(
+                                                                    bottom: MediaQuery.of(
+                                                                            context)
+                                                                        .viewInsets
+                                                                        .bottom),
+                                                                height: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .height *
+                                                                    .8,
+                                                                child:
+                                                                    ModalDiaChi(
+                                                                  activeService:
+                                                                      item[
+                                                                          "ten_vt"],
+                                                                ));
+                                                          });
+                                                    } else if (storage.getItem(
+                                                                "existAccount") !=
+                                                            null &&
+                                                        storageToken.getItem(
+                                                                "token") ==
+                                                            null) {
+                                                      showModalBottomSheet<
+                                                              void>(
+                                                          clipBehavior: Clip
+                                                              .antiAliasWithSaveLayer,
+                                                          shape:
+                                                              const RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.vertical(
+                                                                    top: Radius
+                                                                        .circular(
+                                                                            15)),
+                                                          ),
+                                                          context: context,
+                                                          isScrollControlled:
+                                                              true,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return Container(
                                                               padding: EdgeInsets.only(
                                                                   bottom: MediaQuery.of(
                                                                           context)
@@ -401,14 +267,37 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
                                                                           context)
                                                                       .size
                                                                       .height *
-                                                                  .8,
+                                                                  0.96,
                                                               child:
-                                                                  ModalDiaChi(
-                                                                activeService:
-                                                                    item[
-                                                                        "ten_vt"],
-                                                              ));
-                                                        });
+                                                                  const ModalPassExist(),
+                                                            );
+                                                          });
+                                                    } else {
+                                                      showModalBottomSheet<
+                                                              void>(
+                                                          clipBehavior: Clip
+                                                              .antiAliasWithSaveLayer,
+                                                          context: context,
+                                                          isScrollControlled:
+                                                              true,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return Container(
+                                                              padding: EdgeInsets.only(
+                                                                  bottom: MediaQuery.of(
+                                                                          context)
+                                                                      .viewInsets
+                                                                      .bottom),
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.96,
+                                                              child:
+                                                                  const ModalPhone(),
+                                                            );
+                                                          });
+                                                    }
                                                   },
                                                   child: Container(
                                                     padding:
@@ -555,11 +444,13 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
                               child: CircularProgressIndicator(),
                             );
                           }
-                        }),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
+                        },
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )));
@@ -574,12 +465,12 @@ class ModalDiaChi extends StatefulWidget {
   State<ModalDiaChi> createState() => _ModalDiaChiState();
 }
 
-int active = -1;
+Map CN = {};
 
 class _ModalDiaChiState extends State<ModalDiaChi> {
-  void chooseDiaChi(int index) {
+  void chooseDiaChi(Map item) {
     setState(() {
-      active = index;
+      CN = item;
     });
   }
 
@@ -639,7 +530,7 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                             height: 50,
                             child: TextButton(
                               onPressed: () {
-                                chooseDiaChi(index);
+                                chooseDiaChi(list[index]);
                                 // Navigator.pop(context);
                               },
                               style: ButtonStyle(
@@ -650,13 +541,47 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    "${list[index]["ten_kho"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${list[index]["ten_kho"]}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                        child: TextButton(
+                                            style: ButtonStyle(
+                                                padding: MaterialStateProperty.all(
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 0)),
+                                                shape: MaterialStateProperty.all(
+                                                    const ContinuousRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    15)),
+                                                        side: BorderSide(
+                                                            width: 1,
+                                                            color:
+                                                                Colors.blue)))),
+                                            onPressed: () {},
+                                            child: const Text(
+                                              "Xem vị trí",
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.blue),
+                                            )),
+                                      )
+                                    ],
                                   ),
-                                  if (active == index)
+                                  if (CN["ma_kho"] == list[index]["ma_kho"])
                                     const Icon(
                                       Icons.check,
                                       color: Colors.green,
@@ -678,56 +603,91 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
               )
             ],
           ),
-          Container(
-            height: 50,
-            margin: const EdgeInsets.all(15.0),
-            child: TextButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)))),
-                  backgroundColor: MaterialStateProperty.all(
-                      Theme.of(context).colorScheme.primary),
-                  padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
-                      vertical: 12, horizontal: 20))),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BookingStep2(
-                              choose: active > 0 ? active : 0,
-                              serviceName: activeServie,
-                              maKho:
-                                  active > 0 ? chiNhanh[active]["ma_kho"] : "",
-                            )));
-              },
-              child: Row(
-                children: [
-                  Expanded(flex: 1, child: Container()),
-                  const Expanded(
-                    flex: 8,
-                    child: Center(
-                      child: Text(
-                        "Tiếp tục",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white),
-                      ),
+          CN.isNotEmpty
+              ? Container(
+                  height: 50,
+                  margin: const EdgeInsets.all(15.0),
+                  child: TextButton(
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                            const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)))),
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).colorScheme.primary),
+                        padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 20))),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookingStep2(
+                                  serviceName: activeServie, activeCN: CN)));
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(flex: 1, child: Container()),
+                        const Expanded(
+                          flex: 8,
+                          child: Center(
+                            child: Text(
+                              "Tiếp tục",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Image.asset(
+                            "assets/images/calendar-white.png",
+                            width: 20,
+                            height: 25,
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Image.asset(
-                      "assets/images/calendar-white.png",
-                      width: 20,
-                      height: 25,
-                      fit: BoxFit.contain,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          )
+                )
+              : Container(
+                  height: 50,
+                  margin: const EdgeInsets.all(15.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      color: Colors.grey[400]!),
+                  child: Row(
+                    children: [
+                      Expanded(flex: 1, child: Container()),
+                      const Expanded(
+                        flex: 8,
+                        child: Center(
+                          child: Text(
+                            "Tiếp tục",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Image.asset(
+                          "assets/images/calendar-white.png",
+                          width: 20,
+                          height: 25,
+                          fit: BoxFit.contain,
+                        ),
+                      )
+                    ],
+                  ),
+                )
         ],
       ),
     );

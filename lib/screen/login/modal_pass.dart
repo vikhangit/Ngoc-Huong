@@ -1,14 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/screen/login/modal_Info.dart';
+import 'package:ngoc_huong/screen/login/signup_success.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalPass extends StatefulWidget {
-  const ModalPass({super.key});
+  final String phone;
+  const ModalPass({super.key, required this.phone});
 
   @override
   State<ModalPass> createState() => _ModalPassState();
 }
 
+String fName = "";
+String lName = "";
 String password = "";
 String confirmPassword = "";
 bool showPass = false;
@@ -16,267 +21,462 @@ bool showConfirm = false;
 bool check = true;
 
 class _ModalPassState extends State<ModalPass> {
-  final LocalStorage storage = LocalStorage('auth');
+  LocalStorage storage = LocalStorage('auth');
+  void showAlertDialog(BuildContext context, String err) {
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () => Navigator.pop(context, 'OK'),
+    );
+    AlertDialog alert = AlertDialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      content: Builder(
+        builder: (context) {
+          return SizedBox(
+            // height: 30,
+            width: MediaQuery.of(context).size.width,
+            child: Text(
+              style: const TextStyle(height: 1.6),
+              err,
+            ),
+          );
+        },
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
-  void initState() {
-    setState(() {
-      password = "";
-      confirmPassword = "";
-      showPass = false;
-      showConfirm = false;
-      check = true;
-    });
-    super.initState();
+  void dispose() {
+    password = "";
+    confirmPassword = "";
+    showPass = false;
+    showConfirm = false;
+    check = true;
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    void addUser() async {
+      Map data = {
+        "email": widget.phone,
+        "name": "$fName $lName",
+        "password": password,
+        "rePassword": confirmPassword,
+        "group_id": groupId,
+        "id_app": idApp
+      };
+      final dio = Dio();
+      try {
+        final response = await dio
+            .post("https://api.fostech.vn/signup", data: data)
+            .then((value) {
+          storage.setItem("existAccount", "true");
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const SignUpSuccess()));
+        });
+      } on DioException catch (e) {
+        showAlertDialog(context, "${e.response!.data["error"]}");
+      }
+    }
+
+    void saveUserInfo() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Đang xử lý"),
+              ],
+            ),
+          ));
+        },
+      );
+      Future.delayed(const Duration(seconds: 3), () {
+        addUser();
+        Navigator.pop(context);
+      });
+    }
+
     return Container(
         color: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  intro(context, storage),
-                  SizedBox(
-                    height: storage.getItem("typeOTP") == null ? 270 : 250,
-                    child: Expanded(
-                      child: ListView(
-                        children: [
-                          Text(
-                              storage.getItem("typeOTP") == null
-                                  ? "Tạo mật khẩu"
-                                  : "Mật khẩu mới",
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w300)),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextField(
-                            keyboardType: TextInputType.number,
-                            textAlignVertical: TextAlignVertical.center,
-                            style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500),
-                            onChanged: (value) {
-                              setState(() {
-                                password = value.toString();
-                              });
-                            },
-                            obscureText: !showPass,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            autofocus: true,
-                            decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    showPass = !showPass;
-                                  });
-                                },
-                                icon: showPass == false
-                                    ? const Icon(
-                                        Icons.visibility_outlined,
-                                        color: Colors.grey,
-                                      )
-                                    : const Icon(
-                                        Icons.visibility_off_outlined,
-                                        color: Colors.grey,
-                                      ),
-                              ),
-                              counterText: "",
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 18),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                                borderSide: BorderSide(
-                                    width: 1,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary), //<-- SEE HERE
-                              ),
-                              enabledBorder: const OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                borderSide: BorderSide(
-                                    width: 1,
-                                    color: Colors.grey), //<-- SEE HERE
-                              ),
-                              hintStyle: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black.withOpacity(0.3),
-                                  fontWeight: FontWeight.w400),
-                              hintText: '••••••',
-                            ),
-                          ),
-                          if (password.isNotEmpty && password.length < 6)
-                            Container(
-                              margin: const EdgeInsets.only(top: 5),
-                              child: const Text("Mật khẩu cần ít nhất 6 số",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w300)),
-                            ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          const Text("Xác nhận mật khẩu",
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w300)),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextField(
-                            keyboardType: TextInputType.number,
-                            textAlignVertical: TextAlignVertical.center,
-                            style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500),
-                            onChanged: (value) {
-                              setState(() {
-                                confirmPassword = value.toString();
-                              });
-                            },
-                            obscureText: !showConfirm,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            autofocus: true,
-                            decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showConfirm = !showConfirm;
-                                    });
-                                  },
-                                  icon: showConfirm == false
-                                      ? const Icon(
-                                          Icons.visibility_outlined,
-                                          color: Colors.grey,
-                                        )
-                                      : const Icon(
-                                          Icons.visibility_off_outlined,
-                                          color: Colors.grey,
-                                        ),
-                                ),
-                                counterText: "",
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 18),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10)),
-                                  borderSide: BorderSide(
-                                      width: 1,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary), //<-- SEE HERE
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  borderSide: BorderSide(
-                                      width: 1,
-                                      color: Colors.grey), //<-- SEE HERE
-                                ),
-                                hintStyle: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black.withOpacity(0.3),
-                                    fontWeight: FontWeight.w400),
-                                hintText: '••••••'),
-                          ),
-                          if (confirmPassword.length >= 6 &&
-                              confirmPassword != password)
-                            Container(
-                              margin: const EdgeInsets.only(top: 5),
-                              child: const Text("Xác nhận mật khẩu không đúng",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w300)),
-                            ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          if (storage.getItem("typeOTP") == null)
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              Expanded(
+                child: ListView(
+                  children: [
+                    intro(context, storage),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                            flex: 48,
+                            child: Column(
                               children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  width: 28,
-                                  height: 28,
-                                  decoration: BoxDecoration(
-                                      color:
-                                          check ? Colors.green : Colors.white,
-                                      border: Border.all(
-                                          width: 1,
-                                          color: check
-                                              ? Colors.green
-                                              : Colors.black),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8))),
-                                  child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          check = !check;
-                                        });
-                                      },
-                                      child: check == true
-                                          ? const Icon(
-                                              Icons.check,
-                                              color: Colors.white,
-                                              size: 18,
-                                            )
-                                          : null),
+                                const Row(
+                                  children: [
+                                    Text("Họ",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w300)),
+                                    SizedBox(
+                                      width: 3,
+                                    ),
+                                    Text("*",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.w300)),
+                                  ],
                                 ),
                                 const SizedBox(
-                                  width: 8,
+                                  height: 10,
                                 ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        "Bằng việc tiếp tục, bạn xác nhận đã đọc và",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            color:
-                                                Colors.black.withOpacity(0.7))),
-                                    Row(
-                                      children: [
-                                        Text("đồng ý với",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w300,
-                                                color: Colors.black
-                                                    .withOpacity(0.7))),
-                                        const SizedBox(
-                                          width: 3,
-                                        ),
-                                        InkWell(
-                                          onTap: () {},
-                                          child: const Text(
-                                              "Điều khoản và sử dụng",
-                                              style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontWeight: FontWeight.w500)),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                )
+                                TextField(
+                                  textAlignVertical: TextAlignVertical.center,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400),
+                                  onChanged: (value) {
+                                    fName = value;
+                                  },
+                                  decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      borderSide: BorderSide(
+                                          width: 1,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary), //<-- SEE HERE
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      borderSide: BorderSide(
+                                          width: 1,
+                                          color: Colors.grey), //<-- SEE HERE
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 18),
+                                    hintStyle: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black.withOpacity(0.3),
+                                        fontWeight: FontWeight.w300),
+                                    hintText: 'Họ của bạn...',
+                                  ),
+                                ),
                               ],
-                            )
-                        ],
+                            )),
+                        Expanded(flex: 4, child: Container()),
+                        Expanded(
+                            flex: 48,
+                            child: Column(
+                              children: [
+                                const Row(
+                                  children: [
+                                    Text("Tên",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w300)),
+                                    SizedBox(
+                                      width: 3,
+                                    ),
+                                    Text("*",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.w300)),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextField(
+                                  textAlignVertical: TextAlignVertical.center,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      lName = value;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      borderSide: BorderSide(
+                                          width: 1,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary), //<-- SEE HERE
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      borderSide: BorderSide(
+                                          width: 1,
+                                          color: Colors.grey), //<-- SEE HERE
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 18),
+                                    hintStyle: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black.withOpacity(0.3),
+                                        fontWeight: FontWeight.w300),
+                                    hintText: 'Tên của bạn...',
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                        storage.getItem("typeOTP") == null
+                            ? "Tạo mật khẩu"
+                            : "Mật khẩu mới",
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w300)),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      // keyboardType: TextInputType.number,
+                      textAlignVertical: TextAlignVertical.center,
+                      style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500),
+                      onChanged: (value) {
+                        setState(() {
+                          password = value.toString();
+                        });
+                      },
+                      obscureText: !showPass,
+                      enableSuggestions: false,
+                      autocorrect: false,
+
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              showPass = !showPass;
+                            });
+                          },
+                          icon: showPass == false
+                              ? const Icon(
+                                  Icons.visibility_outlined,
+                                  color: Colors.grey,
+                                )
+                              : const Icon(
+                                  Icons.visibility_off_outlined,
+                                  color: Colors.grey,
+                                ),
+                        ),
+                        counterText: "",
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 18),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(
+                              width: 1,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary), //<-- SEE HERE
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(
+                              width: 1, color: Colors.grey), //<-- SEE HERE
+                        ),
+                        hintStyle: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black.withOpacity(0.3),
+                            fontWeight: FontWeight.w400),
+                        hintText: '••••••',
                       ),
                     ),
-                  )
-                ],
+                    if (password.isNotEmpty && password.length < 6)
+                      Container(
+                        margin: const EdgeInsets.only(top: 5),
+                        child: const Text("Mật khẩu cần ít nhất 6 số",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.red,
+                                fontWeight: FontWeight.w300)),
+                      ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    const Text("Xác nhận mật khẩu",
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w300)),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      // keyboardType: TextInputType.number,
+                      textAlignVertical: TextAlignVertical.center,
+                      style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500),
+                      onChanged: (value) {
+                        setState(() {
+                          confirmPassword = value.toString();
+                        });
+                      },
+                      obscureText: !showConfirm,
+                      enableSuggestions: false,
+                      autocorrect: false,
+
+                      decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                showConfirm = !showConfirm;
+                              });
+                            },
+                            icon: showConfirm == false
+                                ? const Icon(
+                                    Icons.visibility_outlined,
+                                    color: Colors.grey,
+                                  )
+                                : const Icon(
+                                    Icons.visibility_off_outlined,
+                                    color: Colors.grey,
+                                  ),
+                          ),
+                          counterText: "",
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 18),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(
+                                width: 1,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary), //<-- SEE HERE
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(
+                                width: 1, color: Colors.grey), //<-- SEE HERE
+                          ),
+                          hintStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black.withOpacity(0.3),
+                              fontWeight: FontWeight.w400),
+                          hintText: '••••••'),
+                    ),
+                    if (confirmPassword.length >= 6 &&
+                        confirmPassword != password)
+                      Container(
+                        margin: const EdgeInsets.only(top: 5),
+                        child: const Text("Xác nhận mật khẩu không đúng",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.red,
+                                fontWeight: FontWeight.w300)),
+                      ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    if (storage.getItem("typeOTP") == null)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                                color: check ? Colors.green : Colors.white,
+                                border: Border.all(
+                                    width: 1,
+                                    color: check ? Colors.green : Colors.black),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8))),
+                            child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    check = !check;
+                                  });
+                                },
+                                child: check == true
+                                    ? const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 18,
+                                      )
+                                    : null),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Bằng việc tiếp tục, bạn xác nhận đã đọc và",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      color: Colors.black.withOpacity(0.7))),
+                              Row(
+                                children: [
+                                  Text("đồng ý với",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          color:
+                                              Colors.black.withOpacity(0.7))),
+                                  const SizedBox(
+                                    width: 3,
+                                  ),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: const Text("Điều khoản và sử dụng",
+                                        style: TextStyle(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.w500)),
+                                  )
+                                ],
+                              )
+                            ],
+                          )
+                        ],
+                      )
+                  ],
+                ),
               ),
               password.length >= 6 &&
                       confirmPassword.length >= 6 &&
@@ -285,33 +485,14 @@ class _ModalPassState extends State<ModalPass> {
                   ? Container(
                       width: MediaQuery.of(context).size.width,
                       height: 60,
+                      margin: const EdgeInsets.symmetric(vertical: 15),
                       decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(50.0))),
                       child: TextButton(
                           onPressed: () {
-                            if (storage.getItem("typeOTP") == null) {
-                              storage.setItem('pass', password);
-                              showModalBottomSheet<void>(
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      padding: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context)
-                                              .viewInsets
-                                              .bottom),
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.96,
-                                      child: const ModalInfo(),
-                                    );
-                                  });
-                            } else {
-                              Navigator.canPop(context);
-                            }
+                            saveUserInfo();
                           },
                           style: ButtonStyle(
                               padding: MaterialStateProperty.all(
@@ -327,6 +508,7 @@ class _ModalPassState extends State<ModalPass> {
                       width: MediaQuery.of(context).size.width,
                       alignment: Alignment.center,
                       height: 60,
+                      margin: const EdgeInsets.symmetric(vertical: 15),
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.3),
                           borderRadius:

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/booking/modal/modal_chi_tiet_booking.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BookingSuccess extends StatefulWidget {
@@ -14,6 +18,7 @@ double iconSize = 108;
 
 class _BookingSuccessState extends State<BookingSuccess>
     with TickerProviderStateMixin {
+  LocalStorage storageAuth = LocalStorage("auth");
   late AnimationController scaleController = AnimationController(
       duration: const Duration(milliseconds: 800), vsync: this);
   late Animation<double> scaleAnimation =
@@ -41,8 +46,10 @@ class _BookingSuccessState extends State<BookingSuccess>
     super.dispose();
   }
 
+  String htlm =
+      "<p>Nếu muốn thay đổi lịch hẹn bạn vui lòng gọi đến Hotline <a href='tel:1900123456'>1900123456</a> <strong>trước 1h</strong> với lịch đã hẹn trước đó</p>";
   _makingPhoneCall() async {
-    var url = Uri.parse("tel:9776765434");
+    var url = Uri.parse("tel:1900123456");
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else {
@@ -66,7 +73,7 @@ class _BookingSuccessState extends State<BookingSuccess>
                 automaticallyImplyLeading: false,
                 backgroundColor: Colors.white,
                 centerTitle: true,
-                title: const Text("Kiểm tra thông tin",
+                title: const Text("Thông báo",
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -79,8 +86,7 @@ class _BookingSuccessState extends State<BookingSuccess>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height - 175,
+                        Expanded(
                           child: ListView(
                             children: [
                               const SizedBox(
@@ -159,60 +165,24 @@ class _BookingSuccessState extends State<BookingSuccess>
                               const SizedBox(
                                 height: 20,
                               ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 5),
-                                    width: 5,
-                                    height: 5,
-                                    decoration: const BoxDecoration(
-                                        color: Colors.black,
-                                        shape: BoxShape.circle),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Expanded(
-                                      child: Wrap(
-                                    children: [
-                                      const Text(
-                                        "Nếu muốn thay đổi lịch hẹn bạn vui lòng gọi đến ",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () => _makingPhoneCall(),
-                                        child: Text(
-                                          "Hotline 1900 7067 ",
-                                          style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                      const Text(
-                                        "trước 1h ",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      const Text(
-                                        "với lịch đã hẹn trước đó",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                      ),
-                                    ],
-                                  ))
-                                ],
+                              Html(
+                                data: htlm,
+                                style: {
+                                  "*": Style(margin: Margins.only(left: 0)),
+                                  "a": Style(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      textDecoration: TextDecoration.none),
+                                  "p": Style(
+                                      lineHeight: const LineHeight(1.2),
+                                      fontSize: FontSize(15),
+                                      fontWeight: FontWeight.w400),
+                                },
+                                onLinkTap: (url, context, attributes, element) {
+                                  if (url == "tel:1900123456") {
+                                    _makingPhoneCall();
+                                  }
+                                },
                               ),
                             ],
                           ),
@@ -220,76 +190,139 @@ class _BookingSuccessState extends State<BookingSuccess>
                         Wrap(
                           spacing: 15,
                           children: [
+                            if (storageAuth.getItem("phone") != null)
+                              FutureBuilder(
+                                future: callBookingApi(
+                                    storageAuth.getItem("phone")),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    List list = snapshot.data!.toList();
+                                    return FutureBuilder(
+                                      future: callServiceApiById(
+                                          list[0]["ten_vt"] ?? ""),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return InkWell(
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: 55,
+                                                decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                40))),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const Text("Xem chi tiết",
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color:
+                                                                Colors.white)),
+                                                    const SizedBox(
+                                                      width: 15,
+                                                    ),
+                                                    Image.asset(
+                                                      "assets/images/calendar-white.png",
+                                                      width: 24,
+                                                      height: 24,
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              onTap: () {
+                                                Navigator.pushNamed(
+                                                    context, "cart");
+                                                showModalBottomSheet<void>(
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    clipBehavior: Clip
+                                                        .antiAliasWithSaveLayer,
+                                                    context: context,
+                                                    isScrollControlled: true,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return Container(
+                                                          padding: EdgeInsets.only(
+                                                              bottom: MediaQuery
+                                                                      .of(
+                                                                          context)
+                                                                  .viewInsets
+                                                                  .bottom),
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.95,
+                                                          child:
+                                                              ModalChiTietBooking(
+                                                            details: list[0],
+                                                            details2: snapshot
+                                                                .data![0],
+                                                          ));
+                                                    });
+                                              });
+                                        } else {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                      },
+                                    );
+                                  } else {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
+                              ),
+                            const SizedBox(
+                              height: 15,
+                            ),
                             InkWell(
                                 child: Container(
-                                  width: MediaQuery.of(context).size.width / 2 -
-                                      22.5,
-                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 55,
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withOpacity(0.2),
                                       borderRadius: const BorderRadius.all(
-                                          Radius.circular(15))),
+                                          Radius.circular(40)),
+                                      border: Border.all(
+                                          width: 1, color: Colors.grey)),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Image.asset(
-                                        "assets/images/icon/home-red.png",
-                                        width: 20,
-                                        height: 20,
-                                        fit: BoxFit.fill,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
                                       Text(
                                         "Về trang chủ",
                                         style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 15,
                                             fontWeight: FontWeight.w400,
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .primary),
-                                      )
+                                      ),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      Image.asset(
+                                        "assets/images/icon/home-red.png",
+                                        width: 24,
+                                        height: 24,
+                                        fit: BoxFit.fill,
+                                      ),
                                     ],
                                   ),
                                 ),
                                 onTap: () {
                                   Navigator.pushNamed(context, "home");
-                                }),
-                            InkWell(
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 2 -
-                                      22.5,
-                                  height: 50,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.orange,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15))),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text("Tiếp tục đặt lịch",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.white)),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/calendar-white.png",
-                                        width: 20,
-                                        height: 20,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.pushNamed(context, "booking");
                                 }),
                           ],
                         )

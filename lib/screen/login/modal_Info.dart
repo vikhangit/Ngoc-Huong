@@ -1,15 +1,26 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/login/InfoField/button_confirm.dart';
+import 'package:ngoc_huong/screen/login/InfoField/field_address.dart';
 import 'package:ngoc_huong/screen/login/InfoField/field_birthDay.dart';
 import 'package:ngoc_huong/screen/login/InfoField/field_email.dart';
 import 'package:ngoc_huong/screen/login/InfoField/field_gender.dart';
 import 'package:ngoc_huong/screen/login/InfoField/field_name.dart';
+import 'package:ngoc_huong/screen/login/signup_success.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalInfo extends StatefulWidget {
-  const ModalInfo({super.key});
+  final String phone;
+  final String password;
+  final String rePassword;
+  const ModalInfo(
+      {super.key,
+      required this.phone,
+      required this.password,
+      required this.rePassword});
 
   @override
   State<ModalInfo> createState() => _ModalInfoState();
@@ -19,6 +30,7 @@ String firstname = "";
 String lastname = "";
 String birthDay = "";
 String email = "";
+String address = "";
 
 List genderList = ["Nam", "Nữ", "Khác"];
 String genderValue = "Nam";
@@ -79,19 +91,98 @@ class _ModalInfoState extends State<ModalInfo> {
     });
   }
 
-  void saveUserInfo() async {
-    // storage.deleteItem("userInfo");
-    await storage.setItem("gender", genderValue);
-    await storage.setItem("firstname", firstname);
-    await storage.setItem("lastname", lastname);
-    await storage.setItem("birthday", birthDay);
-    await storage.setItem("email", email);
-    await storage.setItem("authen", "true");
-    storage.dispose();
+  void changeAddress(value) {
+    setState(() {
+      address = value;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    void showAlertDialog(BuildContext context, String err) {
+      Widget okButton = TextButton(
+        child: const Text("OK"),
+        onPressed: () => Navigator.pop(context, 'OK'),
+      );
+      AlertDialog alert = AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        content: Builder(
+          builder: (context) {
+            return SizedBox(
+              // height: 30,
+              width: MediaQuery.of(context).size.width,
+              child: Text(
+                style: const TextStyle(height: 1.6),
+                err,
+              ),
+            );
+          },
+        ),
+        actions: [
+          okButton,
+        ],
+      );
+      // show the dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+
+    void addUser() async {
+      Map data = {
+        "email": widget.phone,
+        "name": "$firstname $lastname",
+        "password": widget.password,
+        "rePassword": widget.rePassword,
+        "phone": email,
+        "group_id": groupId,
+        "id_app": idApp
+      };
+      print(data);
+      final dio = Dio();
+      try {
+        final response =
+            await dio.post("https://api.fostech.vn/signup", data: data);
+        print(response);
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    void saveUserInfo() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Đang xử lý"),
+              ],
+            ),
+          ));
+        },
+      );
+      Future.delayed(const Duration(seconds: 5), () {
+        Navigator.pop(context);
+        addUser();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const SignUpSuccess()));
+      });
+    }
+
     return Container(
         color: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
@@ -109,12 +200,13 @@ class _ModalInfoState extends State<ModalInfo> {
                     child: Expanded(
                       child: ListView(
                         children: [
-                          gender(context, (value) => changeGender(value)),
+                          // gender(context, (value) => changeGender(value)),
                           fieldName(context, (fName) => changeFirstName(fName),
                               (lName) => changeLastName(lName)),
-                          fieldBirthDay(
-                              context, (context) => selectBirthDay(context)),
-                          fieldEmail(context, (value) => changeEmail(value))
+                          // fieldBirthDay(
+                          //     context, (context) => selectBirthDay(context)),
+                          fieldEmail(context, (value) => changeEmail(value)),
+                          fieldAddress(context, (value) => changeAddress(value))
                         ],
                       ),
                     ),

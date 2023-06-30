@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:intl/intl.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/booking/booking_step2.dart';
+import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
+import 'package:ngoc_huong/screen/login/modal_phone.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 import 'package:star_rating/star_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,6 +25,8 @@ double _rating = 0;
 
 class _ChiTietScreenState extends State<ChiTietScreen>
     with TickerProviderStateMixin {
+  LocalStorage storage = LocalStorage('auth');
+  LocalStorage storageToken = LocalStorage('token');
   TabController? tabController;
   TabController? tabController2;
   @override
@@ -65,11 +71,11 @@ class _ChiTietScreenState extends State<ChiTietScreen>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: Row(
               children: [
                 Expanded(
-                    flex: 8,
+                    flex: 4,
                     child: SizedBox(
                       height: 20,
                       child: TextButton(
@@ -88,7 +94,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                       ),
                     )),
                 const Expanded(
-                  flex: 84,
+                  flex: 86,
                   child: Center(
                     child: Text(
                       "Chi tiết dịch vụ",
@@ -141,11 +147,30 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "899.000đ",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Theme.of(context).colorScheme.primary),
+                            Row(
+                              children: [
+                                Text(
+                                  NumberFormat.currency(
+                                          locale: "vi_VI", symbol: "")
+                                      .format(
+                                    detail["gia_ban_le"],
+                                  ),
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                ),
+                                Text(
+                                  "đ",
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontSize: 15,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                )
+                              ],
                             ),
                             Row(
                               children: [
@@ -263,94 +288,578 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                           ),
                           ListView(
                             children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  StarRating(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    length: starLength,
-                                    rating: _rating,
-                                    color: Colors.orange,
-                                    between: 5,
-                                    starSize: 20,
-                                    onRaitingTap: (rating) {
-                                      setState(() {
-                                        _rating = rating;
-                                      });
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Text(
-                                    _rating.toString(),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              TextField(
-                                maxLines: 4,
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400),
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary), //<-- SEE HERE
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.grey), //<-- SEE HERE
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 18),
-                                  hintStyle: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black.withOpacity(0.3),
-                                      fontWeight: FontWeight.w400),
-                                  hintText: 'Nhập đánh giá',
+                              SizedBox(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 15, top: 15),
+                                      decoration: const BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  width: 1,
+                                                  color: Color(0xFFEFEFEF)))),
+                                      child: Column(children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 36,
+                                                  height: 36,
+                                                  child: CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        "assets/images/avatar.png"),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text("Lê Mỹ Ngọc"),
+                                                    SizedBox(
+                                                      height: 4,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(
+                                                          "4.0",
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            InkWell(
+                                              onTap: () {},
+                                              child: Icon(
+                                                Icons.favorite_border,
+                                                size: 30,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        const Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                "Sản phẩm chất lượng, làn da được cải thiện một cách rõ ràng.",
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text("08:30",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey[500],
+                                                    fontSize: 12)),
+                                            Container(
+                                              width: 1,
+                                              height: 12,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5),
+                                              color: Colors.grey,
+                                            ),
+                                            Text("23/03/2023",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey[500],
+                                                    fontSize: 12))
+                                          ],
+                                        )
+                                      ]),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 15, top: 15),
+                                      decoration: const BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  width: 1,
+                                                  color: Color(0xFFEFEFEF)))),
+                                      child: Column(children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 36,
+                                                  height: 36,
+                                                  child: CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        "assets/images/avatar.png"),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text("Trần Như Quỳnh"),
+                                                    SizedBox(
+                                                      height: 4,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(
+                                                          "5.0",
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            InkWell(
+                                              onTap: () {},
+                                              child: Icon(
+                                                Icons.favorite,
+                                                size: 30,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        const Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text("12:40",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey[500],
+                                                    fontSize: 12)),
+                                            Container(
+                                              width: 1,
+                                              height: 12,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5),
+                                              color: Colors.grey,
+                                            ),
+                                            Text("03/04/2023",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey[500],
+                                                    fontSize: 12))
+                                          ],
+                                        )
+                                      ]),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 15, top: 15),
+                                      decoration: const BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  width: 1,
+                                                  color: Color(0xFFEFEFEF)))),
+                                      child: Column(children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 36,
+                                                  height: 36,
+                                                  child: CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        "assets/images/avatar.png"),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text("Trần Như Quỳnh"),
+                                                    SizedBox(
+                                                      height: 4,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(
+                                                          "5.0",
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            InkWell(
+                                              onTap: () {},
+                                              child: Icon(
+                                                Icons.favorite,
+                                                size: 30,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        const Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text("12:40",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey[500],
+                                                    fontSize: 12)),
+                                            Container(
+                                              width: 1,
+                                              height: 12,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5),
+                                              color: Colors.grey,
+                                            ),
+                                            Text("03/04/2023",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey[500],
+                                                    fontSize: 12))
+                                          ],
+                                        )
+                                      ]),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 15, top: 15),
+                                      decoration: const BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  width: 1,
+                                                  color: Color(0xFFEFEFEF)))),
+                                      child: Column(children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 36,
+                                                  height: 36,
+                                                  child: CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        "assets/images/avatar.png"),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text("Trần Như Quỳnh"),
+                                                    SizedBox(
+                                                      height: 4,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.orange,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(
+                                                          "5.0",
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            InkWell(
+                                              onTap: () {},
+                                              child: Icon(
+                                                Icons.favorite,
+                                                size: 30,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        const Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text("12:40",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey[500],
+                                                    fontSize: 12)),
+                                            Container(
+                                              width: 1,
+                                              height: 12,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5),
+                                              color: Colors.grey,
+                                            ),
+                                            Text("03/04/2023",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey[500],
+                                                    fontSize: 12))
+                                          ],
+                                        )
+                                      ]),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 10),
-                                child: Center(
-                                  child: TextButton(
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Theme.of(context)
-                                                      .colorScheme
-                                                      .primary),
-                                          padding: MaterialStateProperty.all(
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 12,
-                                                  horizontal: 25)),
-                                          shape: MaterialStateProperty.all(
-                                              const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.all(
-                                                      Radius.circular(30))))),
-                                      onPressed: () {},
-                                      child: const Text(
-                                        "Đánh giá",
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                ),
-                              )
                             ],
                           )
                         ]),
@@ -419,27 +928,68 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                     .primary
                                     .withOpacity(0.4))),
                         onPressed: () {
-                          showModalBottomSheet<void>(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              context: context,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(15.0),
+                          if (storage.getItem("existAccount") != null &&
+                              storageToken.getItem("token") != null) {
+                            showModalBottomSheet<void>(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                context: context,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(15.0),
+                                  ),
                                 ),
-                              ),
-                              isScrollControlled: true,
-                              builder: (BuildContext context) {
-                                return Container(
+                                isScrollControlled: true,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .8,
+                                      child: ModalDiaChi(
+                                        activeService: detail["ten_vt"],
+                                      ));
+                                });
+                          } else if (storage.getItem("existAccount") != null &&
+                              storageToken.getItem("token") == null) {
+                            showModalBottomSheet<void>(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(15)),
+                                ),
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (BuildContext context) {
+                                  return Container(
                                     padding: EdgeInsets.only(
                                         bottom: MediaQuery.of(context)
                                             .viewInsets
                                             .bottom),
-                                    height:
-                                        MediaQuery.of(context).size.height * .8,
-                                    child: ModalDiaChi(
-                                      activeService: detail["ten_vt"],
-                                    ));
-                              });
+                                    height: MediaQuery.of(context).size.height *
+                                        0.96,
+                                    child: const ModalPassExist(),
+                                  );
+                                });
+                          } else {
+                            showModalBottomSheet<void>(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.96,
+                                    child: const ModalPhone(),
+                                  );
+                                });
+                          }
                         },
                         child: Row(
                           children: [
@@ -638,12 +1188,12 @@ class ModalDiaChi extends StatefulWidget {
   State<ModalDiaChi> createState() => _ModalDiaChiState();
 }
 
-int active = -1;
+Map CN = {};
 
 class _ModalDiaChiState extends State<ModalDiaChi> {
-  void chooseDiaChi(int index) {
+  void chooseDiaChi(Map item) {
     setState(() {
-      active = index;
+      CN = item;
     });
   }
 
@@ -703,7 +1253,7 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                             height: 50,
                             child: TextButton(
                               onPressed: () {
-                                chooseDiaChi(index);
+                                chooseDiaChi(list[index]);
                                 // Navigator.pop(context);
                               },
                               style: ButtonStyle(
@@ -714,13 +1264,47 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    "${list[index]["ten_kho"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${list[index]["ten_kho"]}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      ),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                        child: TextButton(
+                                            style: ButtonStyle(
+                                                padding: MaterialStateProperty.all(
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 0)),
+                                                shape: MaterialStateProperty.all(
+                                                    const ContinuousRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    15)),
+                                                        side: BorderSide(
+                                                            width: 1,
+                                                            color:
+                                                                Colors.blue)))),
+                                            onPressed: () {},
+                                            child: const Text(
+                                              "Xem vị trí",
+                                              style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.blue),
+                                            )),
+                                      )
+                                    ],
                                   ),
-                                  if (active == index)
+                                  if (CN["ma_kho"] == list[index]["ma_kho"])
                                     const Icon(
                                       Icons.check,
                                       color: Colors.green,
@@ -742,56 +1326,91 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
               )
             ],
           ),
-          Container(
-            height: 50,
-            margin: const EdgeInsets.all(15.0),
-            child: TextButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)))),
-                  backgroundColor: MaterialStateProperty.all(
-                      Theme.of(context).colorScheme.primary),
-                  padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
-                      vertical: 12, horizontal: 20))),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BookingStep2(
-                              choose: active > 0 ? active : 0,
-                              serviceName: activeServie,
-                              maKho:
-                                  active > 0 ? chiNhanh[active]["ma_kho"] : "",
-                            )));
-              },
-              child: Row(
-                children: [
-                  Expanded(flex: 1, child: Container()),
-                  const Expanded(
-                    flex: 8,
-                    child: Center(
-                      child: Text(
-                        "Tiếp tục",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white),
-                      ),
+          CN.isNotEmpty
+              ? Container(
+                  height: 50,
+                  margin: const EdgeInsets.all(15.0),
+                  child: TextButton(
+                    style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                            const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)))),
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).colorScheme.primary),
+                        padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 20))),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookingStep2(
+                                  serviceName: activeServie, activeCN: CN)));
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(flex: 1, child: Container()),
+                        const Expanded(
+                          flex: 8,
+                          child: Center(
+                            child: Text(
+                              "Tiếp tục",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Image.asset(
+                            "assets/images/calendar-white.png",
+                            width: 20,
+                            height: 25,
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Image.asset(
-                      "assets/images/calendar-white.png",
-                      width: 20,
-                      height: 25,
-                      fit: BoxFit.contain,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          )
+                )
+              : Container(
+                  height: 50,
+                  margin: const EdgeInsets.all(15.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      color: Colors.grey[400]!),
+                  child: Row(
+                    children: [
+                      Expanded(flex: 1, child: Container()),
+                      const Expanded(
+                        flex: 8,
+                        child: Center(
+                          child: Text(
+                            "Tiếp tục",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Image.asset(
+                          "assets/images/calendar-white.png",
+                          width: 20,
+                          height: 25,
+                          fit: BoxFit.contain,
+                        ),
+                      )
+                    ],
+                  ),
+                )
         ],
       ),
     );

@@ -8,14 +8,10 @@ import 'package:ngoc_huong/screen/booking/confirm_booking.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class BookingStep2 extends StatefulWidget {
-  final int choose;
   final String serviceName;
-  final String maKho;
+  final Map activeCN;
   const BookingStep2(
-      {super.key,
-      required this.choose,
-      required this.serviceName,
-      required this.maKho});
+      {super.key, required this.serviceName, required this.activeCN});
 
   @override
   State<BookingStep2> createState() => _BookingStep2State();
@@ -43,37 +39,26 @@ String activeDate = DateFormat("dd/MM/yyyy").format(
     DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()));
 String activeDate2 = DateFormat("yyyy-MM-dd").format(
     DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()));
-String activeTime = "08:00";
+String activeTime = "";
 List timeList = [];
 
 class _BookingStep2State extends State<BookingStep2> {
   final LocalStorage storage = LocalStorage('auth');
+  LocalStorage storageToken = LocalStorage('token');
 
   @override
   void initState() {
     setState(() {
-      activeChiNhanhTuVan = widget.choose;
       dienGiai = "";
+      activeTime = "";
     });
-    callChiNhanhApi().then((value) => setState(() => chiNhanh = value));
-    callTimeBookingApi(widget.maKho, activeDate2)
-        .then((value) => setState(() => timeList = value));
-
     super.initState();
   }
 
-  void chooseChiNhanhTuVan(int index) {
-    setState(() {
-      activeChiNhanhTuVan = index;
-    });
-    Navigator.pop(context);
-  }
-
-  void chooseDichVuTuVan(int index) {
-    setState(() {
-      activeDichVuTuVan = index;
-    });
-    Navigator.pop(context);
+  @override
+  void dispose() {
+    activeTime = "";
+    super.dispose();
   }
 
   void chooseTime(String time) {
@@ -135,9 +120,6 @@ class _BookingStep2State extends State<BookingStep2> {
 
   @override
   Widget build(BuildContext context) {
-    String firstName = storage.getItem("firstname");
-    String lastName = storage.getItem("lastname");
-    String phone = storage.getItem("phone");
     String serviceName = widget.serviceName;
     String activeDay = DateFormat("dd").format(
         DateTime.parse(_singleDatePickerValueWithDefaultValue[0].toString()));
@@ -200,8 +182,13 @@ class _BookingStep2State extends State<BookingStep2> {
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w400),
                               ),
-                              timeList.isNotEmpty
-                                  ? Container(
+                              FutureBuilder(
+                                future: callTimeBookingApi(
+                                    widget.activeCN["ma_kho"],
+                                    "$activeYear-$activeMonth-$activeDay"),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Container(
                                       margin: const EdgeInsets.only(
                                           top: 10, bottom: 20),
                                       width: MediaQuery.of(context).size.width,
@@ -218,11 +205,16 @@ class _BookingStep2State extends State<BookingStep2> {
                                           alignment: WrapAlignment.start,
                                           spacing: 6,
                                           runSpacing: 10,
-                                          children: timeList.map((item) {
-                                            int index = timeList.indexOf(item);
+                                          children: snapshot.data!.map((item) {
+                                            print(item);
+                                            int index =
+                                                snapshot.data!.indexOf(item);
                                             return InkWell(
                                                 onTap: () {
-                                                  chooseTime(item["time"]);
+                                                  if (item["value"] == true) {
+                                                  } else {
+                                                    chooseTime(item["time"]);
+                                                  }
                                                 },
                                                 child: Stack(
                                                   clipBehavior: Clip.none,
@@ -234,7 +226,10 @@ class _BookingStep2State extends State<BookingStep2> {
                                                               .symmetric(
                                                           vertical: 6),
                                                       decoration: BoxDecoration(
-                                                          color: Colors.white,
+                                                          color: item["value"] ==
+                                                                  true
+                                                              ? Colors.grey[350]
+                                                              : Colors.white,
                                                           border: Border.all(
                                                               width: 1,
                                                               color: Theme.of(
@@ -244,13 +239,11 @@ class _BookingStep2State extends State<BookingStep2> {
                                                                   .withOpacity(
                                                                       activeTime == item["time"]
                                                                           ? 1
-                                                                          : 0.3)),
+                                                                          : 0.1)),
                                                           borderRadius:
-                                                              const BorderRadius
-                                                                      .all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          10))),
+                                                              const BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      10))),
                                                       width:
                                                           MediaQuery.of(context)
                                                                       .size
@@ -284,10 +277,14 @@ class _BookingStep2State extends State<BookingStep2> {
                                                   ],
                                                 ));
                                           }).toList()),
-                                    )
-                                  : const Center(
+                                    );
+                                  } else {
+                                    return Center(
                                       child: CircularProgressIndicator(),
-                                    )
+                                    );
+                                  }
+                                },
+                              )
                             ],
                           ),
                         ),
@@ -306,43 +303,59 @@ class _BookingStep2State extends State<BookingStep2> {
                                       fontSize: 14),
                                 ),
                               ),
-                              TextField(
-                                readOnly: true,
-                                controller: TextEditingController(
-                                    text: "$firstName $lastName"),
-                                textAlignVertical: TextAlignVertical.center,
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w300),
-                                decoration: InputDecoration(
-                                  filled: true, //<-- SEE HERE
-                                  fillColor: Colors.grey[200],
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary), //<-- SEE HERE
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.grey), //<-- SEE HERE
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 18),
-                                  hintStyle: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black.withOpacity(0.3),
-                                      fontWeight: FontWeight.w300),
-                                  hintText: 'Nhập tên',
-                                ),
-                              ),
+                              FutureBuilder(
+                                future: getProfile(storage.getItem("phone")),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return TextField(
+                                      readOnly: true,
+                                      controller: TextEditingController(
+                                          text:
+                                              "${snapshot.data![0]["ten_kh"]}"),
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w300),
+                                      decoration: InputDecoration(
+                                        filled: true, //<-- SEE HERE
+                                        fillColor: Colors.grey[200],
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10)),
+                                          borderSide: BorderSide(
+                                              width: 1,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary), //<-- SEE HERE
+                                        ),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                          borderSide: BorderSide(
+                                              width: 1,
+                                              color:
+                                                  Colors.grey), //<-- SEE HERE
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 18),
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            fontWeight: FontWeight.w300),
+                                        hintText: 'Nhập tên',
+                                      ),
+                                    );
+                                  } else {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
+                              )
                             ],
                           ),
                         ),
@@ -361,42 +374,59 @@ class _BookingStep2State extends State<BookingStep2> {
                                       fontSize: 14),
                                 ),
                               ),
-                              TextField(
-                                readOnly: true,
-                                controller: TextEditingController(text: phone),
-                                textAlignVertical: TextAlignVertical.center,
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w300),
-                                decoration: InputDecoration(
-                                  filled: true, //<-- SEE HERE
-                                  fillColor: Colors.grey[200],
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary), //<-- SEE HERE
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.grey), //<-- SEE HERE
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 18),
-                                  hintStyle: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black.withOpacity(0.3),
-                                      fontWeight: FontWeight.w300),
-                                  hintText: 'Nhập số điện thoại',
-                                ),
-                              ),
+                              FutureBuilder(
+                                future: getProfile(storage.getItem("phone")),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return TextField(
+                                      readOnly: true,
+                                      controller: TextEditingController(
+                                          text:
+                                              "${snapshot.data![0]["of_user"]}"),
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w300),
+                                      decoration: InputDecoration(
+                                        filled: true, //<-- SEE HERE
+                                        fillColor: Colors.grey[200],
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10)),
+                                          borderSide: BorderSide(
+                                              width: 1,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary), //<-- SEE HERE
+                                        ),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                          borderSide: BorderSide(
+                                              width: 1,
+                                              color:
+                                                  Colors.grey), //<-- SEE HERE
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 18),
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            fontWeight: FontWeight.w300),
+                                        hintText: 'Nhập số điện thoại',
+                                      ),
+                                    );
+                                  } else {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
+                              )
                             ],
                           ),
                         ),
@@ -415,75 +445,36 @@ class _BookingStep2State extends State<BookingStep2> {
                                       fontSize: 14),
                                 ),
                               ),
-                              InkWell(
-                                // onTap: () {
-                                //   showModalBottomSheet<void>(
-                                //       clipBehavior: Clip.antiAliasWithSaveLayer,
-                                //       context: context,
-                                //       shape: const RoundedRectangleBorder(
-                                //         borderRadius: BorderRadius.vertical(
-                                //           top: Radius.circular(15.0),
-                                //         ),
-                                //       ),
-                                //       isScrollControlled: true,
-                                //       builder: (BuildContext context) {
-                                //         return Container(
-                                //           padding: EdgeInsets.only(
-                                //               bottom: MediaQuery.of(context)
-                                //                   .viewInsets
-                                //                   .bottom),
-                                //           height: MediaQuery.of(context)
-                                //                   .size
-                                //                   .height *
-                                //               .8,
-                                //           child: ModalChiNhanhStep2(
-                                //             chooseChiNhanh: (index) =>
-                                //                 chooseChiNhanhTuVan(index),
-                                //             listChiNhanh: chiNhanh,
-                                //             active: activeChiNhanhTuVan,
-                                //           ),
-                                //         );
-                                //       });
-                                // },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 18),
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10)),
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey)),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      chiNhanh.isNotEmpty
-                                          ? Text(
-                                              activeChiNhanhTuVan < 0
-                                                  ? "Chọn chi nhánh"
-                                                  : "${chiNhanh[activeChiNhanhTuVan]["ten_kho"]}",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: activeChiNhanhTuVan < 0
-                                                      ? Colors.black
-                                                          .withOpacity(0.3)
-                                                      : Colors.black,
-                                                  fontWeight: FontWeight.w300),
-                                            )
-                                          : const Align(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                      Icon(
-                                        Icons.keyboard_arrow_down_outlined,
-                                        color: activeChiNhanhTuVan < 0
-                                            ? Colors.black.withOpacity(0.3)
-                                            : Colors.black,
-                                      )
-                                    ],
-                                  ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 18),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey)),
+                                child: FutureBuilder(
+                                  future: callChiNhanhApiByCN(
+                                      widget.activeCN["ma_kho"]),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Text(
+                                        "${snapshot.data![0]["ten_kho"]}",
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w300),
+                                      );
+                                    } else {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                  },
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -502,34 +493,24 @@ class _BookingStep2State extends State<BookingStep2> {
                                       fontSize: 14),
                                 ),
                               ),
-                              InkWell(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 18),
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10)),
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey)),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        serviceName,
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                      const Icon(
-                                          Icons.keyboard_arrow_down_outlined,
-                                          color: Colors.black)
-                                    ],
-                                  ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 18),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey)),
+                                child: Text(
+                                  serviceName,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w300),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -602,8 +583,8 @@ class _BookingStep2State extends State<BookingStep2> {
                         right: 15),
                     child: TextButton(
                         onPressed: () {
-                          if (activeChiNhanhTuVan < 0) {
-                            showAlertDialog(context, "Bạn chưa chọn chi nhánh");
+                          if (activeTime.isEmpty) {
+                            showAlertDialog(context, "Bạn chưa chọn giờ");
                           } else {
                             Navigator.push(
                                 context,
@@ -611,13 +592,10 @@ class _BookingStep2State extends State<BookingStep2> {
                                     builder: (context) => ConfirmBooking(
                                           serviceName: serviceName,
                                           chinhanhName:
-                                              chiNhanh[activeChiNhanhTuVan]
-                                                  ["ten_kho"],
-                                          maKho: chiNhanh[activeChiNhanhTuVan]
-                                              ["ma_kho"],
-                                          diaChiCuThe:
-                                              chiNhanh[activeChiNhanhTuVan]
-                                                  ["exfields"]["dia_chi"],
+                                              widget.activeCN["ten_kho"],
+                                          maKho: widget.activeCN["ma_kho"],
+                                          diaChiCuThe: widget
+                                              .activeCN["exfields"]["dia_chi"],
                                           time: activeTime,
                                           day: activeDay,
                                           month: activeMonth,
@@ -702,6 +680,7 @@ class _BookingStep2State extends State<BookingStep2> {
             value: _singleDatePickerValueWithDefaultValue,
             onValueChanged: (dates) => setState(() {
                   _singleDatePickerValueWithDefaultValue = dates;
+                  activeTime = "";
                 })));
   }
 }

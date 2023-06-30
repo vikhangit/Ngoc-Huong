@@ -1,6 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/firebase_options.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
+import 'package:ngoc_huong/screen/account/information/information.dart';
+import 'package:ngoc_huong/screen/account/setting/setting.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
@@ -16,7 +20,11 @@ import 'package:ngoc_huong/screen/services/tu_van.dart';
 import 'package:ngoc_huong/screen/services/uu_dai.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -61,6 +69,8 @@ class _MyAppState extends State<MyApp> {
         "tin_tuc": (context) => const TinTucScreen(),
         "hangthanhvien": (context) => const ThanhVienScreen(),
         "booking": (context) => const BookingServices(),
+        "setting": (context) => const SettingAccout(),
+        "informationAccount": (context) => const InfomationAccount()
       },
       theme: ThemeData(
           fontFamily: "LexendDeca",

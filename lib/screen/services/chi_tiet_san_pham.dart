@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
+import 'package:ngoc_huong/screen/login/modal_phone.dart';
+import 'package:ngoc_huong/screen/services/cart_success.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
-import 'package:star_rating/star_rating.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetail extends StatefulWidget {
   final Map details;
@@ -15,6 +19,7 @@ class ProductDetail extends StatefulWidget {
   State<ProductDetail> createState() => _ProductDetailState();
 }
 
+List cartItem = [];
 int choose = 0;
 int? _selectedIndex;
 int? _selectedIndex2;
@@ -24,11 +29,16 @@ double _rating = 0;
 
 class _ProductDetailState extends State<ProductDetail>
     with TickerProviderStateMixin {
+  LocalStorage storage = LocalStorage('auth');
+  LocalStorage storageToken = LocalStorage('token');
   TabController? tabController;
   TabController? tabController2;
   @override
   void initState() {
     super.initState();
+    setState(() {
+      quantity = 1;
+    });
     tabController = TabController(length: 2, vsync: this);
     tabController?.addListener(_getActiveTabIndex);
     tabController2 = TabController(
@@ -43,27 +53,163 @@ class _ProductDetailState extends State<ProductDetail>
     tabController2?.addListener(_getActiveTabIndex2);
   }
 
+  @override
+  void dispose() {
+    quantity = 1;
+    super.dispose();
+  }
+
   void _getActiveTabIndex() {
     _selectedIndex = tabController?.index;
+  }
+
+  _makingPhoneCall() async {
+    var url = Uri.parse("tel:9776765434");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   void _getActiveTabIndex2() {
     _selectedIndex2 = tabController2?.index;
   }
 
+  void showAlertDialog(BuildContext context, String err) {
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () => Navigator.pop(context, 'OK'),
+    );
+    AlertDialog alert = AlertDialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      content: Builder(
+        builder: (context) {
+          return SizedBox(
+            // height: 30,
+            width: MediaQuery.of(context).size.width,
+            child: Text(
+              style: const TextStyle(height: 1.6),
+              err,
+            ),
+          );
+        },
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Map productDetail = widget.details;
+    void addToCart() async {
+      if (quantity <= 0) {
+        showAlertDialog(context, "Số lượng phải lớn hơn 0");
+      } else {
+        Map data = {
+          "ma_vt": widget.details["ma_vt"],
+          "ma_dvt": widget.details["ma_dvt"],
+          "sl_xuat": quantity,
+          "gia_ban": widget.details["gia_ban_le"],
+          "gia_ban_le0": widget.details["gia_ban_le"],
+          "gia_ban_nt": widget.details["gia_ban_le"],
+        };
+        await postCart(data);
+      }
+    }
+
+    void updateCart(String id, int qty) async {
+      if (quantity <= 0) {
+        showAlertDialog(context, "Số lượng phải lớn hơn 0");
+      } else {
+        Map data = {"sl_xuat": qty};
+        await putCart(id, data);
+      }
+    }
+
+    void onLoadingAdd() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Đang xử lý"),
+              ],
+            ),
+          ));
+        },
+      );
+      Future.delayed(const Duration(seconds: 3), () {
+        addToCart();
+        Navigator.pop(context);
+        if (quantity > 0) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
+        } //pop dialog
+      });
+    }
+
+    void onLoadingUpdate(String id, int qty) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Đang xử lý"),
+              ],
+            ),
+          ));
+        },
+      );
+      Future.delayed(const Duration(seconds: 3), () {
+        updateCart(id, qty);
+        Navigator.pop(context);
+        if (quantity > 0) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
+        } //pop dialog
+      });
+    }
+
     return SizedBox(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: Row(
               children: [
                 Expanded(
-                    flex: 8,
+                    flex: 4,
                     child: SizedBox(
                       height: 20,
                       child: TextButton(
@@ -82,7 +228,7 @@ class _ProductDetailState extends State<ProductDetail>
                       ),
                     )),
                 const Expanded(
-                  flex: 84,
+                  flex: 86,
                   child: Center(
                     child: Text(
                       "Chi tiết sản phẩm",
@@ -283,7 +429,9 @@ class _ProductDetailState extends State<ProductDetail>
                                           Radius.circular(12)))),
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.white)),
-                          onPressed: () {},
+                          onPressed: () {
+                            _makingPhoneCall();
+                          },
                           child: Image.asset(
                             "assets/images/call-black.png",
                             width: 30,
@@ -292,49 +440,236 @@ class _ProductDetailState extends State<ProductDetail>
                           )),
                     )),
                 Expanded(flex: 2, child: Container()),
-                Expanded(
-                    flex: 75,
-                    child: TextButton(
-                        style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 20)),
-                            shape: MaterialStateProperty.all(
-                                const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(40)))),
-                            backgroundColor: MaterialStateProperty.all(
-                                Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.4))),
-                        onPressed: () {},
-                        child: Row(
-                          children: [
-                            Expanded(flex: 1, child: Container()),
-                            const Expanded(
-                              flex: 8,
-                              child: Center(
-                                child: Text(
-                                  "Mua ngay",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Image.asset(
-                                "assets/images/cart-black.png",
-                                width: 35,
-                                height: 30,
-                                fit: BoxFit.contain,
-                              ),
-                            )
-                          ],
-                        )))
+                FutureBuilder(
+                  future: callCartApiByName(productDetail["ma_vt"]),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Expanded(
+                          flex: 75,
+                          child: TextButton(
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      const EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 20)),
+                                  shape: MaterialStateProperty.all(
+                                      const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(40)))),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.4))),
+                              onPressed: () {
+                                if (storage.getItem("existAccount") != null &&
+                                    storageToken.getItem("token") != null) {
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0))),
+                                        content: Builder(
+                                          builder: (context) {
+                                            return SizedBox(
+                                                // height: 30,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.info,
+                                                      size: 70,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary,
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 15,
+                                                    ),
+                                                    const Text(
+                                                      "Thêm sản phẩm vào giỏ hàng",
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    const Text(
+                                                      "Bạn có muốn thêm sản phẩm vào giỏ hàng không?",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.w300),
+                                                    )
+                                                  ],
+                                                ));
+                                          },
+                                        ),
+                                        actionsPadding: const EdgeInsets.only(
+                                            top: 0,
+                                            left: 30,
+                                            right: 30,
+                                            bottom: 30),
+                                        actions: [
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: TextButton(
+                                              onPressed: () {
+                                                if (snapshot.data!
+                                                    .toList()
+                                                    .isNotEmpty) {
+                                                  onLoadingUpdate(
+                                                      snapshot.data![0]!["_id"],
+                                                      snapshot.data![0]![
+                                                              "sl_xuat"] +
+                                                          quantity);
+                                                } else {
+                                                  onLoadingAdd();
+                                                }
+                                                Navigator.pop(context);
+                                              },
+                                              style: ButtonStyle(
+                                                  padding:
+                                                      MaterialStateProperty.all(
+                                                          const EdgeInsets.symmetric(
+                                                              vertical: 15)),
+                                                  shape: MaterialStateProperty.all(
+                                                      const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      30)))),
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          Theme.of(context)
+                                                              .colorScheme
+                                                              .primary)),
+                                              child: const Text(
+                                                "Đồng ý",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            margin:
+                                                const EdgeInsets.only(top: 10),
+                                            child: TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              style: ButtonStyle(
+                                                padding:
+                                                    MaterialStateProperty.all(
+                                                        const EdgeInsets
+                                                                .symmetric(
+                                                            vertical: 15)),
+                                                shape: MaterialStateProperty.all(
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    30)),
+                                                        side: BorderSide(
+                                                            color: Colors.grey,
+                                                            width: 1))),
+                                              ),
+                                              child: const Text("Hủy bỏ"),
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else if (storage.getItem("existAccount") !=
+                                        null &&
+                                    storageToken.getItem("token") == null) {
+                                  showModalBottomSheet<void>(
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(15)),
+                                      ),
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          padding: EdgeInsets.only(
+                                              bottom: MediaQuery.of(context)
+                                                  .viewInsets
+                                                  .bottom),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.96,
+                                          child: const ModalPassExist(),
+                                        );
+                                      });
+                                } else {
+                                  showModalBottomSheet<void>(
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          padding: EdgeInsets.only(
+                                              bottom: MediaQuery.of(context)
+                                                  .viewInsets
+                                                  .bottom),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.96,
+                                          child: const ModalPhone(),
+                                        );
+                                      });
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  Expanded(flex: 1, child: Container()),
+                                  const Expanded(
+                                    flex: 8,
+                                    child: Center(
+                                      child: Text(
+                                        "Thêm vào giỏ hàng",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Image.asset(
+                                      "assets/images/cart-black.png",
+                                      width: 35,
+                                      height: 30,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  )
+                                ],
+                              )));
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                )
               ],
             ),
           )
@@ -574,32 +909,31 @@ class _ProductDetailState extends State<ProductDetail>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
+                                const Row(
                                   children: [
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 36,
                                       height: 36,
                                       child: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                          "https://s3-alpha-sig.figma.com/img/05ee/48aa/de7b6e9524212508334e50ea61c70030?Expires=1685923200&Signature=ao8Y5LFoFE~nLjPHgdUHlhowtDPdz92-yq5N5OVPwf3vhuoEKepX2AUuU8WvzmSYWHt7VS935gkLD9OtybrDHJu~dIcw9pKO8-2w2wK5bfTppajCBK6WLv8Byxi6ItQ~ygH9~Ao-vioBbO~rbFG61WnWQB9ICdQfvsFGInnJ65Yasu3ISdhueofoEfe0AwzLPinT9WlGVuDrQqXt2saUq~sEKJaEh~04TwHVe2h0k3xxzqmNalefsUOJfsF4wgRLjneuhw4ohxaTwSrZVrTqzgIebeuAaV1IHWjmWNIqQ8MQcs350QGwUTc9F1uz0yX4D2Jt379dXKQGLPjPY-~fjQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-                                        ),
+                                        backgroundImage: AssetImage(
+                                            "assets/images/avatar.png"),
                                       ),
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 8,
                                     ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text("Lê Mỹ Ngọc"),
-                                        const SizedBox(
+                                        Text("Lê Mỹ Ngọc"),
+                                        SizedBox(
                                           height: 4,
                                         ),
                                         Row(
                                           children: [
                                             Row(
-                                              children: const [
+                                              children: [
                                                 Icon(
                                                   Icons.star,
                                                   size: 20,
@@ -627,10 +961,10 @@ class _ProductDetailState extends State<ProductDetail>
                                                 ),
                                               ],
                                             ),
-                                            const SizedBox(
+                                            SizedBox(
                                               width: 5,
                                             ),
-                                            const Text(
+                                            Text(
                                               "4.0",
                                               style: TextStyle(
                                                   fontSize: 13,
@@ -710,9 +1044,8 @@ class _ProductDetailState extends State<ProductDetail>
                                       width: 36,
                                       height: 36,
                                       child: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                          "https://s3-alpha-sig.figma.com/img/d218/110b/54375111eb4647c0f179786ae58e442c?Expires=1685923200&Signature=b-WOUS2n7mWd72rx~qHmrPoczkeGuh1s6Qu6DDn8z2eG7PYDCNwlODJ7vTWJV9HfkGTapAH0abLUVoKb47NLTVag9c~~GyTBpNh2SEeutIYdogDzYL4y7Z-Zol~CNzNpR43W6OMhkEZObj9acXFk7yMrCGaldc6pyln~u37~oOa1oLAeemXhp8ZIicQa3LzyGet22qjx07LuVlJ1HFVuvBUb9nGaBI27ipUnJnJNoXG3VJfBulFOKdeGdS2DSjaxCKvEQ0MD50CcAGlCECY64rRLynVnWYW~z3CGqjtYrlBWDFiSAHo2TzwZvnepufo5bxl4t4cvZ6~gWys6YHuRCQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-                                        ),
+                                        backgroundImage: AssetImage(
+                                            "assets/images/avatar.png"),
                                       ),
                                     ),
                                     SizedBox(
@@ -839,9 +1172,8 @@ class _ProductDetailState extends State<ProductDetail>
                                       width: 36,
                                       height: 36,
                                       child: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                          "https://s3-alpha-sig.figma.com/img/d218/110b/54375111eb4647c0f179786ae58e442c?Expires=1685923200&Signature=b-WOUS2n7mWd72rx~qHmrPoczkeGuh1s6Qu6DDn8z2eG7PYDCNwlODJ7vTWJV9HfkGTapAH0abLUVoKb47NLTVag9c~~GyTBpNh2SEeutIYdogDzYL4y7Z-Zol~CNzNpR43W6OMhkEZObj9acXFk7yMrCGaldc6pyln~u37~oOa1oLAeemXhp8ZIicQa3LzyGet22qjx07LuVlJ1HFVuvBUb9nGaBI27ipUnJnJNoXG3VJfBulFOKdeGdS2DSjaxCKvEQ0MD50CcAGlCECY64rRLynVnWYW~z3CGqjtYrlBWDFiSAHo2TzwZvnepufo5bxl4t4cvZ6~gWys6YHuRCQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-                                        ),
+                                        backgroundImage: AssetImage(
+                                            "assets/images/avatar.png"),
                                       ),
                                     ),
                                     SizedBox(
@@ -968,9 +1300,8 @@ class _ProductDetailState extends State<ProductDetail>
                                       width: 36,
                                       height: 36,
                                       child: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                          "https://s3-alpha-sig.figma.com/img/d218/110b/54375111eb4647c0f179786ae58e442c?Expires=1685923200&Signature=b-WOUS2n7mWd72rx~qHmrPoczkeGuh1s6Qu6DDn8z2eG7PYDCNwlODJ7vTWJV9HfkGTapAH0abLUVoKb47NLTVag9c~~GyTBpNh2SEeutIYdogDzYL4y7Z-Zol~CNzNpR43W6OMhkEZObj9acXFk7yMrCGaldc6pyln~u37~oOa1oLAeemXhp8ZIicQa3LzyGet22qjx07LuVlJ1HFVuvBUb9nGaBI27ipUnJnJNoXG3VJfBulFOKdeGdS2DSjaxCKvEQ0MD50CcAGlCECY64rRLynVnWYW~z3CGqjtYrlBWDFiSAHo2TzwZvnepufo5bxl4t4cvZ6~gWys6YHuRCQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-                                        ),
+                                        backgroundImage: AssetImage(
+                                            "assets/images/avatar.png"),
                                       ),
                                     ),
                                     SizedBox(
@@ -1084,91 +1415,92 @@ class _ProductDetailState extends State<ProductDetail>
                       ],
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 20, bottom: 10),
-                    child: const Text(
-                      "Đánh giá",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      StarRating(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        length: starLength,
-                        rating: _rating,
-                        color: Colors.orange,
-                        between: 5,
-                        starSize: 20,
-                        onRaitingTap: (rating) {
-                          setState(() {
-                            _rating = rating;
-                          });
-                        },
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        _rating.toString(),
-                        style: TextStyle(fontWeight: FontWeight.w300),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  TextField(
-                    maxLines: 4,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400),
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
-                            width: 1,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary), //<-- SEE HERE
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
-                            width: 1, color: Colors.grey), //<-- SEE HERE
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 18),
-                      hintStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black.withOpacity(0.3),
-                          fontWeight: FontWeight.w400),
-                      hintText: 'Nhập đánh giá',
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    child: Center(
-                      child: TextButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  Theme.of(context).colorScheme.primary),
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 25)),
-                              shape: MaterialStateProperty.all(
-                                  const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(30))))),
-                          onPressed: () {},
-                          child: const Text(
-                            "Xác nhận",
-                            style: TextStyle(color: Colors.white),
-                          )),
-                    ),
-                  ),
+                  // Container(
+                  //   margin: const EdgeInsets.only(top: 20, bottom: 10),
+                  //   child: const Text(
+                  //     "Đánh giá",
+                  //     style: TextStyle(fontSize: 16),
+                  //   ),
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     StarRating(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       length: starLength,
+                  //       rating: _rating,
+                  //       color: Colors.orange,
+                  //       between: 5,
+                  //       starSize: 24,
+                  //       onRaitingTap: (rating) {
+                  //         setState(() {
+                  //           _rating = rating;
+                  //         });
+                  //       },
+                  //     ),
+                  //     const SizedBox(
+                  //       width: 8,
+                  //     ),
+                  //     Text(
+                  //       _rating.toString(),
+                  //       style: TextStyle(fontWeight: FontWeight.w300),
+                  //     )
+                  //   ],
+                  // ),
+                  // const SizedBox(
+                  //   height: 12,
+                  // ),
+                  // TextField(
+                  //   maxLines: 4,
+                  //   style: const TextStyle(
+                  //       fontSize: 14,
+                  //       color: Colors.black,
+                  //       fontWeight: FontWeight.w400),
+                  //   decoration: InputDecoration(
+                  //     focusedBorder: OutlineInputBorder(
+                  //       borderRadius:
+                  //           const BorderRadius.all(Radius.circular(10)),
+                  //       borderSide: BorderSide(
+                  //           width: 1,
+                  //           color: Theme.of(context)
+                  //               .colorScheme
+                  //               .primary), //<-- SEE HERE
+                  //     ),
+                  //     enabledBorder: const OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(10)),
+                  //       borderSide: BorderSide(
+                  //           width: 1, color: Colors.grey), //<-- SEE HERE
+                  //     ),
+                  //     contentPadding: const EdgeInsets.symmetric(
+                  //         horizontal: 15, vertical: 18),
+                  //     hintStyle: TextStyle(
+                  //         fontSize: 14,
+                  //         color: Colors.black.withOpacity(0.3),
+                  //         fontWeight: FontWeight.w400),
+                  //     hintText: 'Nhập đánh giá',
+                  //   ),
+                  // ),
+                  // Container(
+                  //   margin: const EdgeInsets.only(top: 12),
+                  //   child: Center(
+                  //     child: TextButton(
+                  //         style: ButtonStyle(
+                  //             backgroundColor: MaterialStateProperty.all(
+                  //                 Theme.of(context).colorScheme.primary),
+                  //             padding: MaterialStateProperty.all(
+                  //                 const EdgeInsets.symmetric(
+                  //                     vertical: 12, horizontal: 25)),
+                  //             shape: MaterialStateProperty.all(
+                  //                 const RoundedRectangleBorder(
+                  //                     borderRadius: BorderRadius.all(
+                  //                         Radius.circular(30))))),
+                  //         onPressed: () {},
+                  //         child: const Text(
+                  //           "Xác nhận",
+                  //           style: TextStyle(color: Colors.white),
+                  //         )),
+                  //   ),
+                  // ),
+
                   const SizedBox(
                     height: 10,
                   ),

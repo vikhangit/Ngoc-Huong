@@ -1,14 +1,19 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:localstorage/localstorage.dart';
 
 String apiUrl = "https://api.fostech.vn";
 String idApp = "646ac3388b2b2d2d01848092";
 String token = "access_token=1766b0baa43fd672a1730ac4a4ab3849";
+String groupId = "646ac33c8b2b2d2d0184882a";
+LocalStorage storage = LocalStorage('token');
 
 Future<List> callNewsApi(String id) async {
   List allNews = [];
   final dio = Dio();
   final response = await dio.get(
-      '$apiUrl/api/$idApp/news?limit=100&q={"status":true,"category":"$id"}&$token');
+      '$apiUrl/api/$idApp/news?limit=50&q={"status":true,"category":"$id"}&$token');
   for (var data in response.data) {
     allNews.add(data);
   }
@@ -61,11 +66,22 @@ Future<List> callServiceApi(String id) async {
   return allService;
 }
 
-Future<List> callServiceApiById(String id, String mavt) async {
+Future<List> callServiceApiById(String tenvt) async {
   List allService = [];
   final dio = Dio();
   final response = await dio.get(
-      '$apiUrl/api/$idApp/dmvt/$id?limit=50&q={"ma_nvt":"$mavt","is_service":true,"status":true}&$token');
+      '$apiUrl/api/$idApp/dmvt?limit=100&q={"ten_vt":"$tenvt","is_service":true,"status":true}&$token');
+  for (var data in response.data) {
+    allService.add(data);
+  }
+  return allService;
+}
+
+Future<List> callServiceApiByMVT(String mavt) async {
+  List allService = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/dmvt?limit=100&q={"ma_vt":"$mavt","is_service":true,"status":true}&$token');
   for (var data in response.data) {
     allService.add(data);
   }
@@ -83,14 +99,64 @@ Future<List> callProductApi(String id) async {
   return list;
 }
 
+Future<List> callProductApiByName(String tenvt) async {
+  List allService = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/dmvt?limit=100&q={"ten_vt":"$tenvt","is_service":false,"status":true}&$token');
+  for (var data in response.data) {
+    allService.add(data);
+  }
+  return allService;
+}
+
+Future<List> callProductApiByMAVT(String mavt) async {
+  List allService = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/dmvt?limit=100&q={"ma_vt":"$mavt","is_service":false,"status":true}&$token');
+  for (var data in response.data) {
+    allService.add(data);
+  }
+  return allService;
+}
+
 Future<List> callProvinceApi() async {
   List allProvince = [];
   final dio = Dio();
-  final response = await dio.get('https://provinces.open-api.vn/api/p');
-  for (var data in response.data) {
+  final response = await dio.get('https://vapi.vnappmob.com/api/province');
+  for (var data in response.data["results"]) {
     allProvince.add(data);
   }
   return allProvince;
+}
+
+Future<List> callDistrictApi(String provinceId) async {
+  List allProvince = [];
+  final dio = Dio();
+  final response = await dio
+      .get('https://vapi.vnappmob.com/api/province/district/$provinceId');
+  for (var data in response.data["results"]) {
+    allProvince.add(data);
+  }
+  return allProvince;
+}
+
+Future<List> callWardApi(String districtId) async {
+  List allProvince = [];
+  final dio = Dio();
+  final response =
+      await dio.get('https://vapi.vnappmob.com/api/province/ward/$districtId');
+  for (var data in response.data["results"]) {
+    allProvince.add(data);
+  }
+  return allProvince;
+}
+
+Future callProvinceByCode(String code) async {
+  final dio = Dio();
+  final response = await dio.get('https://provinces.open-api.vn/api/p/$code');
+  return response.data;
 }
 
 Future<List> searchProvinceApi(keyword) async {
@@ -123,11 +189,11 @@ Future postLienHeTuVan(Map list) async {
   // print(response);
 }
 
-Future<List> callBookingApi() async {
+Future<List> callBookingApi(String phone) async {
   List allNews = [];
   final dio = Dio();
-  final response = await dio
-      .get('$apiUrl/api/$idApp/tt_book?limit=50&q={"status":true}&$token');
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/tt_book?limit=100&q={"user_created":"$phone", "status":true}&access_token=${storage.getItem("token")}');
   for (var data in response.data) {
     allNews.add(data);
   }
@@ -135,8 +201,170 @@ Future<List> callBookingApi() async {
 }
 
 Future postBooking(Map list) async {
+  // access_token=${storage.getItem("token")}
   final dio = Dio();
-  final response =
-      await dio.post('$apiUrl/api/$idApp/tt_book?$token', data: list);
+  final response = await dio.post(
+      '$apiUrl/api/$idApp/tt_book?access_token=${storage.getItem("token")}',
+      data: list);
+  // print(response);
+}
+
+Future<List> callCartApi() async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/cart?limit=100&access_token=${storage.getItem("token")}');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
+Future<List> callCartApiById(String id) async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/cart/$id?limit=100&access_token=${storage.getItem("token")}');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
+Future<List> callCartApiByName(String tenVt) async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/cart?limit=100&q={"ma_vt":"$tenVt"}&access_token=${storage.getItem("token")}');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
+Future postCart(Map list) async {
+  final dio = Dio();
+  final response = await dio.post(
+      '$apiUrl/api/$idApp/cart?access_token=${storage.getItem("token")}',
+      data: list);
+  // print(response);
+}
+
+Future putCart(String id, Map list) async {
+  final dio = Dio();
+  final response = await dio.put(
+      '$apiUrl/api/$idApp/cart/$id?access_token=${storage.getItem("token")}',
+      data: list);
+  // print(response);
+}
+
+Future deleteCart(String id) async {
+  final dio = Dio();
+  final response = await dio.delete(
+      '$apiUrl/api/$idApp/cart/$id?access_token=${storage.getItem("token")}');
+  // print(response);
+}
+
+Future login(String username, String password) async {}
+
+Future signup(Map data) async {
+  final dio = Dio();
+  try {
+    final response =
+        await dio.post("https://api.fostech.vn/signup", data: data);
+    print(response);
+  } catch (e) {
+    print(e);
+  }
+  // storage.dispose();
+}
+
+Future getProfile(String phone) async {
+  final dio = Dio();
+  final response = await dio
+      .get("$apiUrl/api/$idApp/customer?q={'of_user':'$phone'}&$token");
+  return response.data;
+  // data = response;
+  // storage.dispose();
+}
+
+Future getAddress() async {
+  print(storage.getItem("token"));
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio.get(
+      "$apiUrl/api/$idApp/customer_address?q={'status': true}&access_token=${storage.getItem("token")}");
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+  // data = response;
+  // storage.dispose();
+}
+
+Future deleteAddress(String id) async {
+  final dio = Dio();
+  final response = await dio.delete(
+      "$apiUrl/api/$idApp/customer_address/$id?q={'status': true}&access_token=${storage.getItem("token")}");
+  print(response);
+  // data = response;
+  // storage.dispose();
+}
+
+Future postAddress(Map data) async {
+  final dio = Dio();
+  final response = await dio.post(
+      "$apiUrl/api/$idApp/customer_address?access_token=${storage.getItem("token")}",
+      data: data);
+  print(response);
+  // data = response;
+  // storage.dispose();
+}
+
+Future putAddress(String id, Map data) async {
+  final dio = Dio();
+  final response = await dio.put(
+      "$apiUrl/api/$idApp/customer_address/$id?access_token=${storage.getItem("token")}",
+      data: data);
+  print(response);
+  // data = response;
+  // storage.dispose();
+}
+
+Future updateProfile(String id, String phone, Map data) async {
+  final dio = Dio();
+  final response = await dio.put(
+      "$apiUrl/api/$idApp/customer/$id?q={'of_user':'$phone'}&$token",
+      data: data);
+  print(response);
+  // data = response;
+  // storage.dispose();
+}
+
+Future<List> callPBLApi(String makh) async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio
+      .get('$apiUrl/api/$idApp/pbl?q={"ma_kh": "$makh"}limit=100&$token');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
+Future<List> callPBLApiStatus(String makh, String trangThai) async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/pbl?q={"ma_kh": "$makh", "trang_thai": "$trangThai"}&limit=100&$token');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
+Future postPBL(Map list) async {
+  final dio = Dio();
+  final response = await dio.post('$apiUrl/api/$idApp/pbl?$token', data: list);
   // print(response);
 }

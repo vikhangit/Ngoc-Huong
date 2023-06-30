@@ -116,7 +116,7 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                               SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: const Text(
-                                  "Chúc mừng bạn đã đặt dịch vụ thành công!",
+                                  "Đặt hàng thành công!",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 18,
@@ -129,7 +129,7 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                               SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: const Text(
-                                  "Hãy đến với Ngọc Hường để có những trãi nghiệm tốt nhất",
+                                  "Chúc mừng bạn đã đặt hàng thành công. Hãy đến với Ngọc Hường để có những trãi nghiệm tốt nhất",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 14,

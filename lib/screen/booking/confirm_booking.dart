@@ -29,15 +29,20 @@ class ConfirmBooking extends StatefulWidget {
   State<ConfirmBooking> createState() => _ConfirmBookingState();
 }
 
+String ten_kh = "";
+
 class _ConfirmBookingState extends State<ConfirmBooking> {
-  final LocalStorage storage = LocalStorage('auth');
+  LocalStorage storage = LocalStorage('auth');
   @override
   void initState() {
+    getProfile(storage.getItem("phone"))
+        .then((value) => setState(() => ten_kh = value[0]["ma_kh"]));
     super.initState();
   }
 
-  void addBooking() async {
+  void addBooking() {
     Map data = {
+      "ma_kh": ten_kh,
       "ten_vt": widget.serviceName,
       "time_book": widget.time,
       "date_book": "${widget.year}-${widget.month}-${widget.day}",
@@ -48,14 +53,12 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
       "trang_thai": 1,
       "dien_giai": "Đang chờ",
     };
-    await postBooking(data);
+    print(data);
+    postBooking(data);
   }
 
   @override
   Widget build(BuildContext context) {
-    String firstName = storage.getItem("firstname");
-    String lastName = storage.getItem("lastname");
-    String phone = storage.getItem("phone");
     String serviceName = widget.serviceName;
     String chinhanhName = widget.chinhanhName;
     String diaChiCuThe = widget.diaChiCuThe;
@@ -76,7 +79,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                 SizedBox(
                   width: 20,
                 ),
-                Text("Loading"),
+                Text("Đang xử lý"),
               ],
             ),
           ));
@@ -178,12 +181,24 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                     const SizedBox(
                                       width: 8,
                                     ),
-                                    Text(
-                                      "$firstName $lastName",
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w300),
+                                    FutureBuilder(
+                                      future:
+                                          getProfile(storage.getItem("phone")),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return Text(
+                                            "${snapshot.data![0]["ten_kh"]}",
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w300),
+                                          );
+                                        } else {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        }
+                                      },
                                     )
                                   ]),
                                   const SizedBox(
@@ -199,12 +214,24 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                     const SizedBox(
                                       width: 8,
                                     ),
-                                    Text(
-                                      phone,
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w300),
+                                    FutureBuilder(
+                                      future:
+                                          getProfile(storage.getItem("phone")),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return Text(
+                                            "${snapshot.data![0]["of_user"]}",
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w300),
+                                          );
+                                        } else {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        }
+                                      },
                                     )
                                   ]),
                                 ],

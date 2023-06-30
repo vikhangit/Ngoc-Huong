@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/login/modal_otp.dart';
+import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
+import 'package:ngoc_huong/screen/services/tu_van.dart';
 
 class ModalPhone extends StatefulWidget {
   const ModalPhone({super.key});
@@ -9,20 +13,125 @@ class ModalPhone extends StatefulWidget {
   State<ModalPhone> createState() => _ModalPhoneState();
 }
 
-String phone = "";
+String phoneNo = '';
+String smsOTP = '';
+String verificationID = '';
+String errorMessage = '';
+printMessage(String msg) {
+  debugPrint(msg);
+}
 
 class _ModalPhoneState extends State<ModalPhone> {
   final LocalStorage storage = LocalStorage('auth');
-  @override
-  void initState() {
-    setState(() {
-      phone = "";
-    });
-    super.initState();
+  FirebaseAuth auth = FirebaseAuth.instance;
+  void showAlertDialog(BuildContext context, String err) {
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () => Navigator.pop(context, 'OK'),
+    );
+    AlertDialog alert = AlertDialog(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      content: Builder(
+        builder: (context) {
+          return SizedBox(
+            // height: 30,
+            width: MediaQuery.of(context).size.width,
+            child: Text(
+              style: const TextStyle(height: 1.6),
+              err,
+            ),
+          );
+        },
+      ),
+      actions: [
+        okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    sendOTP(String phoneNumber) async {
+      String phone = phoneNumber.replaceFirst(RegExp(r'0'), '+84');
+      await auth.verifyPhoneNumber(
+        phoneNumber: phone,
+        verificationCompleted: (PhoneAuthCredential credential) async {},
+        verificationFailed: (FirebaseAuthException e) {
+          if (e.code == 'invalid-phone-number') {
+            showAlertDialog(context, "Số điện thoại không hợp lệ");
+          } else {
+            // showAlertDialog(context, "$e");
+          }
+        },
+        codeSent: (String verificationId, int? resendToken) async {
+          setState(() {
+            verificationID = verificationId;
+          });
+        },
+        timeout: const Duration(seconds: 20),
+        codeAutoRetrievalTimeout: (String verificationId) {
+          setState(() {
+            verificationID = verificationId;
+          });
+        },
+      );
+    }
+
+    void onLoading() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Đang xử lý"),
+              ],
+            ),
+          ));
+        },
+      );
+      Future.delayed(const Duration(seconds: 3), () {
+        sendOTP(phoneNo);
+        Navigator.pop(context);
+        showModalBottomSheet<void>(
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(15.0),
+              ),
+            ),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return Container(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                height: MediaQuery.of(context).size.height * 0.88,
+                child: ModalOTP(phone: phoneNo, receivedID: verificationID),
+              );
+            });
+        //pop dialog
+      });
+    }
+
     return Container(
         color: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
@@ -37,14 +146,15 @@ class _ModalPhoneState extends State<ModalPhone> {
                   TextField(
                     keyboardType: TextInputType.number,
                     textAlignVertical: TextAlignVertical.center,
+                    // controller: phoneNumber,
                     style: const TextStyle(
                         color: Colors.black, fontWeight: FontWeight.w500),
                     onChanged: (value) {
                       setState(() {
-                        phone = value.toString();
+                        phoneNo = value.toString();
                       });
                     },
-                    maxLength: 10,
+                    // maxLength: 10,
                     autofocus: true,
                     decoration: InputDecoration(
                       counterText: "",
@@ -75,7 +185,7 @@ class _ModalPhoneState extends State<ModalPhone> {
                       hintText: 'Nhập số điện thoại...',
                     ),
                   ),
-                  if (phone.isNotEmpty && phone.length < 10)
+                  if (phoneNo.isNotEmpty && phoneNo.length < 10)
                     Container(
                       margin: const EdgeInsets.only(top: 5),
                       child: const Text(
@@ -88,58 +198,68 @@ class _ModalPhoneState extends State<ModalPhone> {
                     )
                 ],
               ),
-              phone.length == 10
-                  ? Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50.0))),
-                      child: TextButton(
-                          onPressed: () {
-                            storage.setItem("phone", phone);
-                            // storage.deleteItem("typeOTP");
-                            showModalBottomSheet<void>(
-                                backgroundColor: Colors.white,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(15.0),
-                                  ),
-                                ),
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.88,
-                                    child: ModalOTP(phone: phone),
-                                  );
-                                });
-                          },
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.all(0.0))),
+              Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 20),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, "home");
+                        showModalBottomSheet<void>(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (BuildContext context) {
+                              return Container(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom),
+                                height:
+                                    MediaQuery.of(context).size.height * 0.96,
+                                child: const ModalPassExist(),
+                              );
+                            });
+                      },
+                      child: const Text(
+                        "Bạn đã có tài khoản",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ),
+                  phoneNo.length == 10
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(50.0))),
+                          child: TextButton(
+                              onPressed: () {
+                                onLoading();
+                              },
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      const EdgeInsets.all(0.0))),
+                              child: const Text("Tiếp tục",
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white))),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          alignment: Alignment.center,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.3),
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(50.0))),
                           child: const Text("Tiếp tục",
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.white))),
-                    )
-                  : Container(
-                      width: MediaQuery.of(context).size.width,
-                      alignment: Alignment.center,
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.3),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50.0))),
-                      child: const Text("Tiếp tục",
-                          style: TextStyle(fontSize: 16, color: Colors.black)),
-                    )
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black)),
+                        )
+                ],
+              ),
             ]));
   }
 }

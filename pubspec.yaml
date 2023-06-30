@@ -41,11 +41,16 @@ dependencies:
   localstorage: ^4.0.1+2
   flutter_datetime_picker_bdaya: ^3.0.1
   flutter_html_v3: ^3.0.6
-  dio: ^5.1.2
+  dio: ^5.1.2+1
   calendar_date_picker2: ^0.5.2
   url_launcher: ^6.1.11
   provider: ^6.0.5
   star_rating: ^0.11.0
+  firebase_core: ^2.13.1
+  firebase_auth: ^4.6.2
+  elegant_notification: ^1.10.0
+  loop_page_view: ^1.2.5
+  timezone: ^0.9.2
 
 dev_dependencies:
   flutter_test:
@@ -93,9 +98,11 @@ flutter:
     - assets/images/call.png
     - assets/images/cart-black.png
     - assets/images/cart-red.png
+    - assets/images/cart-white.png
     - assets/images/call-solid-red.png
     - assets/images/location-solid-red.png
     - assets/images/location-solid-black.png
+    - assets/images/location-green.png
     - assets/images/time-solid-red.png
     - assets/images/time-solid-black.png
     - assets/images/note-solid-red.png
@@ -103,6 +110,10 @@ flutter:
     - assets/images/calendar-black.png
     - assets/images/call-black.png
     - assets/images/avatar.png
+    - assets/images/delete-black.png
+    - assets/images/delete-red.png
+    - assets/images/cod.png
+    - assets/images/chuyen-khoan.png
     - assets/images/Home/banner1.jpg
     - assets/images/Home/banner2.jpg
     - assets/images/Home/banner3.jpg
@@ -187,6 +198,19 @@ flutter:
     - assets/images/Services/ThanhVien/vang-big.png
     - assets/images/Services/ThanhVien/bachkim.png
     - assets/images/Services/ThanhVien/bachkim-big.png
+    - assets/images/account/thong-tin.png
+    - assets/images/account/giao-dich.png
+    - assets/images/account/dat-lich.png
+    - assets/images/account/dieu-khoan.png
+    - assets/images/account/file-white.png
+    - assets/images/account/gioi-thieu.png
+    - assets/images/account/dia-chi.png
+    - assets/images/account/cai-dat.png
+    - assets/images/account/ve-chung-toi.png
+    - assets/images/account/dang-xuat.png
+    - assets/images/account/mat-khau.png
+    - assets/images/account/van-chuyen.png
+    - assets/images/account/img.webp
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
