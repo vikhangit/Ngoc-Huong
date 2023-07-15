@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 String apiUrl = "https://api.fostech.vn";
 String idApp = "646ac3388b2b2d2d01848092";
@@ -9,11 +10,34 @@ String token = "access_token=1766b0baa43fd672a1730ac4a4ab3849";
 String groupId = "646ac33c8b2b2d2d0184882a";
 LocalStorage storage = LocalStorage('token');
 
+void makingPhoneCall(String phone) async {
+  var url = Uri(
+    scheme: 'tel',
+    path: phone,
+  );
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
 Future<List> callNewsApi(String id) async {
   List allNews = [];
   final dio = Dio();
   final response = await dio.get(
       '$apiUrl/api/$idApp/news?limit=50&q={"status":true,"category":"$id"}&$token');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
+Future<List> callNewsApiLimit(String id, String limit) async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/news?limit=$limit&q={"status":true,"category":"$id"}&$token');
   for (var data in response.data) {
     allNews.add(data);
   }
@@ -55,11 +79,33 @@ Future<List> callChiNhanhApiByCN(String maKho) async {
   return allBanner;
 }
 
+Future<List> callAllServiceApi() async {
+  List allService = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/dmvt?limit=100&q={"is_service":true,"status":true}&$token');
+  for (var data in response.data) {
+    allService.add(data);
+  }
+  return allService;
+}
+
 Future<List> callServiceApi(String id) async {
   List allService = [];
   final dio = Dio();
   final response = await dio.get(
       '$apiUrl/api/$idApp/dmvt?limit=100&q={"ma_nvt":"$id","is_service":true,"status":true}&$token');
+  for (var data in response.data) {
+    allService.add(data);
+  }
+  return allService;
+}
+
+Future<List> callServiceApiLimit(String id, String limit) async {
+  List allService = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/dmvt?limit=$limit&q={"ma_nvt":"$id","is_service":true,"status":true}&$token');
   for (var data in response.data) {
     allService.add(data);
   }
@@ -189,6 +235,17 @@ Future postLienHeTuVan(Map list) async {
   // print(response);
 }
 
+Future<List> callBookingApiByTenVt(String tenvt) async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio
+      .get('$apiUrl/api/$idApp/tt_book?limit=100&q={"ten_vt":"$tenvt"}&$token');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
 Future<List> callBookingApi(String phone) async {
   List allNews = [];
   final dio = Dio();
@@ -200,11 +257,53 @@ Future<List> callBookingApi(String phone) async {
   return allNews;
 }
 
+Future<List> callBookingApi1(String phone) async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/tt_book?limit=100&q={"user_created":"$phone", "status":true, "dien_giai": "Đang chờ"}&access_token=${storage.getItem("token")}');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
+Future<List> callBookingApi2(String phone) async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/tt_book?limit=100&q={"user_created":"$phone", "status":true, "dien_giai": "Đã xong"}&access_token=${storage.getItem("token")}');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
+Future<List> callBookingApi3(String phone) async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio.get(
+      '$apiUrl/api/$idApp/tt_book?limit=100&q={"user_created":"$phone", "status":true, "dien_giai": "Chờ trả"}&access_token=${storage.getItem("token")}');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
 Future postBooking(Map list) async {
   // access_token=${storage.getItem("token")}
   final dio = Dio();
   final response = await dio.post(
       '$apiUrl/api/$idApp/tt_book?access_token=${storage.getItem("token")}',
+      data: list);
+  // print(response);
+}
+
+Future putBooking(String id, Map list) async {
+  // access_token=${storage.getItem("token")}
+  final dio = Dio();
+  final response = await dio.put(
+      '$apiUrl/api/$idApp/tt_book/$id?access_token=${storage.getItem("token")}',
       data: list);
   // print(response);
 }
@@ -255,7 +354,7 @@ Future putCart(String id, Map list) async {
   final response = await dio.put(
       '$apiUrl/api/$idApp/cart/$id?access_token=${storage.getItem("token")}',
       data: list);
-  // print(response);
+  return response.data;
 }
 
 Future deleteCart(String id) async {
@@ -341,6 +440,13 @@ Future updateProfile(String id, String phone, Map data) async {
   // storage.dispose();
 }
 
+Future changePass(Map data) async {
+  final dio = Dio();
+  final response = await dio.post(
+      "$apiUrl/api/changepassword?access_token=${storage.getItem("token")}",
+      data: data);
+}
+
 Future<List> callPBLApi(String makh) async {
   List allNews = [];
   final dio = Dio();
@@ -367,4 +473,36 @@ Future postPBL(Map list) async {
   final dio = Dio();
   final response = await dio.post('$apiUrl/api/$idApp/pbl?$token', data: list);
   // print(response);
+}
+
+Future putPBL(String id, Map list) async {
+  final dio = Dio();
+  final response =
+      await dio.put('$apiUrl/api/$idApp/pbl/$id?$token', data: list);
+  // print(response);
+}
+
+Future<List> callNotificationsApi() async {
+  List allNews = [];
+  final dio = Dio();
+  final response = await dio
+      .get('$apiUrl/api/notification?access_token=${storage.getItem("token")}');
+  for (var data in response.data) {
+    allNews.add(data);
+  }
+  return allNews;
+}
+
+Future postNotifications(Map data) async {
+  final dio = Dio();
+  final response = await dio.post(
+      '$apiUrl/api/notification?access_token=${storage.getItem("token")}',
+      data: data);
+}
+
+Future readNotifications(String id, Map data) async {
+  final dio = Dio();
+  final response = await dio.put(
+      '$apiUrl/api/notification/$id?access_token=${storage.getItem("token")}',
+      data: data);
 }

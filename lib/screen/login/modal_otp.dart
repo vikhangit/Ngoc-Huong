@@ -436,11 +436,11 @@ class _ModalOTPState extends State<ModalOTP> {
                           val6.isNotEmpty
                       ? Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 60,
+                          height: 50,
                           decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.primary,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(50.0))),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(15))),
                           child: TextButton(
                               onPressed: () {
                                 // setState(() {
@@ -476,19 +476,19 @@ class _ModalOTPState extends State<ModalOTP> {
                                       const EdgeInsets.all(0.0))),
                               child: const Text("Tiếp tục",
                                   style: TextStyle(
-                                      fontSize: 16, color: Colors.white))),
+                                      fontSize: 14, color: Colors.white))),
                         )
                       : Container(
                           width: MediaQuery.of(context).size.width,
                           alignment: Alignment.center,
-                          height: 60,
+                          height: 50,
                           decoration: BoxDecoration(
                               color: Colors.grey.withOpacity(0.3),
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(50.0))),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(15))),
                           child: const Text("Tiếp tục",
                               style:
-                                  TextStyle(fontSize: 16, color: Colors.black)),
+                                  TextStyle(fontSize: 14, color: Colors.black)),
                         )
                 ],
               )

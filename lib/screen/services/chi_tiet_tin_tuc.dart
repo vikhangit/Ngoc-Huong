@@ -5,7 +5,8 @@ import 'package:ngoc_huong/utils/callapi.dart';
 
 class ChiTietTinTuc extends StatefulWidget {
   final Map detail;
-  const ChiTietTinTuc({super.key, required this.detail});
+  final String type;
+  const ChiTietTinTuc({super.key, required this.detail, required this.type});
 
   @override
   State<ChiTietTinTuc> createState() => _ChiTietTinTucState();
@@ -16,51 +17,57 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
   Widget build(BuildContext context) {
     Map uudaiDetail = widget.detail;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      // margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
+          Container(
+            height: 60,
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius:
+                    const BorderRadius.vertical(bottom: Radius.circular(30))),
+            child: Row(
+              children: [
+                Expanded(
                   flex: 8,
-                  child: SizedBox(
-                    height: 20,
-                    child: TextButton(
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 0, vertical: 0))),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Icon(
-                        Icons.west,
-                        size: 20,
-                        color: Colors.black,
-                      ),
+                  child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                            color: Colors.white, shape: BoxShape.circle),
+                        width: 36,
+                        height: 36,
+                        child: const Icon(
+                          Icons.west,
+                          size: 16,
+                          color: Colors.black,
+                        ),
+                      )),
+                ),
+                Expanded(
+                  flex: 84,
+                  child: Center(
+                    child: Text(
+                      "Chi tiết ${widget.type}",
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white),
                     ),
-                  )),
-              Expanded(
-                flex: 84,
-                child: Center(
-                  child: Text(
-                    "Chi tiết ${uudaiDetail["cate_name"].toLowerCase()}",
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 8,
-                child: Container(),
-              ),
-            ],
+                Expanded(
+                  flex: 8,
+                  child: Container(),
+                ),
+              ],
+            ),
           ),
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 20),
-            height: MediaQuery.of(context).size.height * 0.95 - 85,
-            child: Expanded(
-                child: ListView(children: [
+            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+            height: MediaQuery.of(context).size.height * 0.95 - 100,
+            child: ListView(children: [
               Container(
                 margin: const EdgeInsets.only(top: 10),
                 decoration: const BoxDecoration(
@@ -120,7 +127,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                   },
                 ),
               ),
-            ])),
+            ]),
           ),
         ],
       ),

@@ -92,31 +92,36 @@ class _TuVanScreenState extends State<TuVanScreen> {
             //   active: 0,
             // ),
             appBar: AppBar(
+              leadingWidth: 45,
               centerTitle: true,
-              bottomOpacity: 0.0,
-              elevation: 0.0,
-              backgroundColor: Colors.white,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.west,
-                  size: 24,
-                  color: Colors.black,
-                ),
-              ),
+              leading: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
               title: const Text("Tư vấn",
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black)),
+                      color: Colors.white)),
             ),
             drawer: const MyLeftMenu(),
             body: Column(
               // reverse: true,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                const SizedBox(
+                  height: 20,
+                ),
                 Form(
                   key: _formKey,
                   child: Expanded(
@@ -393,6 +398,7 @@ class _TuVanScreenState extends State<TuVanScreen> {
                 ),
                 Container(
                   margin: const EdgeInsets.all(15),
+                  height: 50,
                   child: TextButton(
                       onPressed: () {
                         onLoading();
@@ -401,12 +407,11 @@ class _TuVanScreenState extends State<TuVanScreen> {
                           shape: MaterialStateProperty.all(
                               const RoundedRectangleBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(30)))),
+                                      BorderRadius.all(Radius.circular(15)))),
                           backgroundColor: MaterialStateProperty.all(
                               Theme.of(context).colorScheme.primary),
                           padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  vertical: 18, horizontal: 20))),
+                              const EdgeInsets.symmetric(horizontal: 20))),
                       child: Row(
                         children: [
                           Expanded(flex: 1, child: Container()),
@@ -416,7 +421,7 @@ class _TuVanScreenState extends State<TuVanScreen> {
                               child: Text(
                                 "Tiếp tục",
                                 style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w400,
                                     color: Colors.white),
                               ),

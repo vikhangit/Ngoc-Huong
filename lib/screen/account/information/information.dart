@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
@@ -34,10 +36,11 @@ class _InfomationAccountState extends State<InfomationAccount> {
   TextEditingController birthdayController = TextEditingController();
 
   LocalStorage storage = LocalStorage("auth");
+  LocalStorage storageCN = LocalStorage("chi_nhanh");
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 1), () {
       getProfile(storage.getItem("phone")).then((value) => setState(() {
             id = value[0]["_id"];
             nameController = TextEditingController(text: value[0]["ten_kh"]);
@@ -216,7 +219,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
                   padding: MaterialStateProperty.all(
                       const EdgeInsets.symmetric(vertical: 15)),
                   shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)))),
+                      borderRadius: BorderRadius.all(Radius.circular(15)))),
                   backgroundColor: MaterialStateProperty.all(
                       Theme.of(context).colorScheme.primary)),
               child: const Text(
@@ -234,7 +237,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
                 padding: MaterialStateProperty.all(
                     const EdgeInsets.symmetric(vertical: 15)),
                 shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
                     side: BorderSide(color: Colors.grey, width: 1))),
               ),
               child: const Text("Hủy bỏ"),
@@ -270,52 +273,53 @@ class _InfomationAccountState extends State<InfomationAccount> {
             //   active: 3,
             // ),
             appBar: AppBar(
-              bottomOpacity: 0.0,
-              elevation: 0.0,
-              leadingWidth: 40,
-              backgroundColor: Colors.white,
+              leadingWidth: 45,
               centerTitle: true,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.west,
-                  size: 24,
-                  color: Colors.black,
-                ),
-              ),
+              leading: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
               title: const Text("Thông tin tài khoản",
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black)),
+                      color: Colors.white)),
               actions: [
                 InkWell(
                   onTap: () {
-                    showModalBottomSheet<void>(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        context: context,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20.0),
-                          ),
-                        ),
-                        builder: (BuildContext context) {
-                          return Container(
-                            padding: EdgeInsets.only(
-                                bottom:
-                                    MediaQuery.of(context).viewInsets.bottom),
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            child: modalChinhSach(context),
-                          );
-                        });
+                    // showModalBottomSheet<void>(
+                    //     clipBehavior: Clip.antiAliasWithSaveLayer,
+                    //     context: context,
+                    //     isScrollControlled: true,
+                    //     shape: const RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.vertical(
+                    //         top: Radius.circular(20.0),
+                    //       ),
+                    //     ),
+                    //     builder: (BuildContext context) {
+                    //       return Container(
+                    //         padding: EdgeInsets.only(
+                    //             bottom:
+                    //                 MediaQuery.of(context).viewInsets.bottom),
+                    //         height: MediaQuery.of(context).size.height * 0.6,
+                    //         child: modalChinhSach(context),
+                    //       );
+                    //     });
                   },
                   child: const Icon(
                     Icons.info_outline_rounded,
                     size: 24,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(
@@ -633,17 +637,17 @@ class _InfomationAccountState extends State<InfomationAccount> {
                               shape: MaterialStateProperty.all(
                                   const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
-                                          Radius.circular(30)))),
+                                          Radius.circular(15)))),
                               backgroundColor: MaterialStateProperty.all(
                                   Theme.of(context).colorScheme.primary),
                               padding: MaterialStateProperty.all(
                                   const EdgeInsets.symmetric(
-                                      vertical: 18, horizontal: 20))),
+                                      vertical: 14, horizontal: 20))),
                           child: const Center(
                             child: Text(
                               "Lưư thông tin",
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.white),
                             ),
@@ -658,14 +662,14 @@ class _InfomationAccountState extends State<InfomationAccount> {
 Widget modalChinhSach(BuildContext context) {
   String desc =
       "<p>Một số thông tin không thể thay đổi để đảm bảo chính sách khách hàng. Vui lòng liên hệ Tổng đài <a href='tel:1900123456'>1900123456</a> để được hổ trợ</p>";
-  void makingPhoneCall() async {
-    var url = Uri.parse("tel:1900123456");
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // void makingPhoneCall() async {
+  //   var url = Uri.parse("tel:1900123456");
+  //   if (await canLaunchUrl(url)) {
+  //     await launchUrl(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -686,9 +690,7 @@ Widget modalChinhSach(BuildContext context) {
                     fontWeight: FontWeight.w400),
               },
               onLinkTap: (url, context, attributes, element) {
-                if (url == "tel:1900123456") {
-                  makingPhoneCall();
-                }
+                if (url!.contains("tel:")) {}
               },
             ),
           ],

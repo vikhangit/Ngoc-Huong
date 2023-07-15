@@ -206,14 +206,38 @@ class _BookingStep2State extends State<BookingStep2> {
                                           spacing: 6,
                                           runSpacing: 10,
                                           children: snapshot.data!.map((item) {
-                                            print(item);
                                             int index =
                                                 snapshot.data!.indexOf(item);
+                                            DateTime now = DateTime.now();
+                                            DateTime dataBooking = DateTime.parse(
+                                                "${activeYear}-${activeMonth}-${activeDay}T${item["time"]}:00.534Z");
+
                                             return InkWell(
                                                 onTap: () {
                                                   if (item["value"] == true) {
                                                   } else {
-                                                    chooseTime(item["time"]);
+                                                    if (DateTime(
+                                                            dataBooking.year,
+                                                            dataBooking.month,
+                                                            dataBooking.day,
+                                                            dataBooking.hour,
+                                                            dataBooking.minute,
+                                                            dataBooking.second)
+                                                        .isAfter(DateTime(
+                                                                now.year,
+                                                                now.month,
+                                                                now.day,
+                                                                now.hour,
+                                                                now.minute,
+                                                                now.second)
+                                                            .add(const Duration(
+                                                                minutes:
+                                                                    30)))) {
+                                                      chooseTime(item["time"]);
+                                                    } else {
+                                                      showAlertDialog(context,
+                                                          "Bạn vui lòng đặt lịch trước 30 phút");
+                                                    }
                                                   }
                                                 },
                                                 child: Stack(
@@ -251,7 +275,7 @@ class _BookingStep2State extends State<BookingStep2> {
                                                                   5 -
                                                               15,
                                                       child: Text(
-                                                        "${item["time"]}",
+                                                        "${DateFormat("HH:mm").format(dataBooking)}",
                                                         style: const TextStyle(
                                                             fontWeight:
                                                                 FontWeight
@@ -607,12 +631,12 @@ class _BookingStep2State extends State<BookingStep2> {
                             shape: MaterialStateProperty.all(
                                 const RoundedRectangleBorder(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(30)))),
+                                        BorderRadius.all(Radius.circular(15)))),
                             backgroundColor: MaterialStateProperty.all(
                                 Theme.of(context).colorScheme.primary),
                             padding: MaterialStateProperty.all(
                                 const EdgeInsets.symmetric(
-                                    vertical: 18, horizontal: 20))),
+                                    vertical: 12, horizontal: 20))),
                         child: Row(
                           children: [
                             Expanded(flex: 1, child: Container()),
@@ -622,7 +646,7 @@ class _BookingStep2State extends State<BookingStep2> {
                                 child: Text(
                                   "Tiếp tục",
                                   style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.w400,
                                       color: Colors.white),
                                 ),

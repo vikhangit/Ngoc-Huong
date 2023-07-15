@@ -1,9 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/booking/booking_success.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:ngoc_huong/utils/notification_services.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 
 class ConfirmBooking extends StatefulWidget {
   final String serviceName;
@@ -30,14 +34,80 @@ class ConfirmBooking extends StatefulWidget {
 }
 
 String ten_kh = "";
+String tokenfirebase = "";
 
 class _ConfirmBookingState extends State<ConfirmBooking> {
+  NotificationService notificationService = NotificationService();
   LocalStorage storage = LocalStorage('auth');
+  LocalStorage storageTolen = LocalStorage('token');
   @override
   void initState() {
+    notificationService.requestNotificationPermission();
+    notificationService.setupFlutterNotifications();
+    notificationService.setupInteractMessage(context);
+    // notificationService.isTokenRefresh();
+    notificationService.getDeviceToken().then((value) {
+      print("Token: $value");
+      setState(() {
+        tokenfirebase = value;
+      });
+    });
+
     getProfile(storage.getItem("phone"))
         .then((value) => setState(() => ten_kh = value[0]["ma_kh"]));
     super.initState();
+  }
+
+  tz.TZDateTime _nextInstanceOfTenAM() {
+    tz.initializeTimeZones();
+    int hours = DateTime.parse(
+            "${widget.year}-${widget.month}-${widget.day}T${widget.time}:00.534Z")
+        .hour;
+    late tz.TZDateTime now =
+        tz.TZDateTime.now(tz.getLocation("Asia/Ho_Chi_Minh"));
+    tz.TZDateTime scheduledDate = tz.TZDateTime(
+      tz.getLocation("Asia/Ho_Chi_Minh"),
+      int.parse(widget.year),
+      int.parse(widget.month),
+      int.parse(widget.day),
+      hours - 1,
+      30,
+    );
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+
+    return scheduledDate;
+  }
+
+  void sendNotifications() {
+    notificationService.firebaseInit(context, _nextInstanceOfTenAM());
+    notificationService.getDeviceToken().then((value) async {
+      var data = {
+        "to": value.toString(),
+        "priority": "high",
+        "notification": {
+          "title": "Thông báo lịch hẹn",
+          "body":
+              "Hôm nay bạn có lịch hẹn ${widget.serviceName} lúc ${widget.time} tại Ngọc Hường",
+          "click_action": "TOP_STORY_ACTIVITY",
+        },
+        "data": {
+          "type": "booking",
+          "id": "1234",
+          "isScheduled": "true",
+          "scheduledTime": "2023-07-05 15:35:00"
+        }
+      };
+      final dio = Dio();
+      await dio.post('https://fcm.googleapis.com/fcm/send',
+          data: data,
+          options: Options(headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+            "Authorization":
+                "key=AAAAVSpdxKI:APA91bFafJEmRCNIB0GLv-vEnBeOIsF2nICn0SC3Gz27T9N3lfuojy0F25p_JmB8Zl03NalDj4DgSUY0JaVbD70WICm0cSb6L7HY0fcIDfU92KjT2JdgrM_AEbnOyLKAD293QmK1li-0"
+          }));
+    });
   }
 
   void addBooking() {
@@ -45,7 +115,8 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
       "ma_kh": ten_kh,
       "ten_vt": widget.serviceName,
       "time_book": widget.time,
-      "date_book": "${widget.year}-${widget.month}-${widget.day}",
+      "date_book":
+          "${widget.year}-${widget.month}-${widget.day}T${widget.time}:32.534Z",
       "ngay": int.parse(widget.day),
       "thang": int.parse(widget.month),
       "nam": int.parse(widget.year),
@@ -53,8 +124,9 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
       "trang_thai": 1,
       "dien_giai": "Đang chờ",
     };
-    print(data);
+
     postBooking(data);
+    sendNotifications();
   }
 
   @override
@@ -490,12 +562,12 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                             shape: MaterialStateProperty.all(
                                 const RoundedRectangleBorder(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(30)))),
+                                        BorderRadius.all(Radius.circular(15)))),
                             backgroundColor: MaterialStateProperty.all(
                                 Theme.of(context).colorScheme.primary),
                             padding: MaterialStateProperty.all(
                                 const EdgeInsets.symmetric(
-                                    vertical: 18, horizontal: 20))),
+                                    vertical: 12, horizontal: 20))),
                         child: Row(
                           children: [
                             Expanded(flex: 1, child: Container()),

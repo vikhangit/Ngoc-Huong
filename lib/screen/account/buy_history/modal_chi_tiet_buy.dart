@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:intl/intl.dart';
@@ -10,7 +11,9 @@ import 'package:ngoc_huong/utils/callapi.dart';
 class ModalChiTietBuy extends StatelessWidget {
   final Map product;
   final String type;
-  const ModalChiTietBuy({super.key, required this.product, required this.type});
+  final Function? save;
+  const ModalChiTietBuy(
+      {super.key, required this.product, required this.type, this.save});
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +31,134 @@ class ModalChiTietBuy extends StatelessWidget {
 
     LocalStorage storage = LocalStorage("auth");
     List list = product["details"].toList();
+
+    void cancleOrder() async {
+      Map data = {"trang_thai": "9"};
+      await putPBL(product["_id"], data).then((value) => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const BuyHistory(
+                    ac: 4,
+                  ))));
+      save!();
+    }
+
+    void onLoading() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Đang xử lý"),
+              ],
+            ),
+          ));
+        },
+      );
+      Future.delayed(const Duration(seconds: 3), () {
+        cancleOrder();
+        Navigator.pop(context);
+      });
+    }
+
+    void showInfoDialog() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            content: Builder(
+              builder: (context) {
+                return SizedBox(
+                    // height: 30,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.info,
+                          size: 70,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        const Text(
+                          "Hủy đơn hàng",
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w400),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const Text(
+                          "Bạn có chắc chắn hủy đơn hàng không?",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.w300),
+                        )
+                      ],
+                    ));
+              },
+            ),
+            actionsPadding:
+                const EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 30),
+            actions: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: TextButton(
+                  onPressed: () {
+                    onLoading();
+                    // Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.symmetric(vertical: 15)),
+                      shape: MaterialStateProperty.all(
+                          const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)))),
+                      backgroundColor: MaterialStateProperty.all(
+                          Theme.of(context).colorScheme.primary)),
+                  child: const Text(
+                    "Đồng ý",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.only(top: 10),
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(vertical: 15)),
+                    shape: MaterialStateProperty.all(
+                        const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            side: BorderSide(color: Colors.grey, width: 1))),
+                  ),
+                  child: const Text("Hủy bỏ"),
+                ),
+              )
+            ],
+          );
+        },
+      );
+    }
+
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
@@ -36,26 +167,42 @@ class ModalChiTietBuy extends StatelessWidget {
       //   active: 1,
       // ),
       appBar: AppBar(
-        // bottomOpacity: 0.0,
-        elevation: 0.0,
-        leadingWidth: 40,
-        backgroundColor: Colors.white,
+        leadingWidth: 45,
         centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.west,
-            size: 24,
-            color: Colors.black,
-          ),
-        ),
+        leading: InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BuyHistory(
+                            ac: type.isEmpty
+                                ? 0
+                                : type == "xác nhận"
+                                    ? 1
+                                    : type == "vận chuyển"
+                                        ? 2
+                                        : type == "hoàn thành"
+                                            ? 3
+                                            : type == "hủy đơn"
+                                                ? 4
+                                                : 0,
+                          )));
+            },
+            child: Container(
+              margin: const EdgeInsets.only(left: 15),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.white),
+              child: const Icon(
+                Icons.west,
+                size: 16,
+                color: Colors.black,
+              ),
+            )),
         title: const Text("Chi tiết đơn hàng",
             style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: Colors.black)),
+                color: Colors.white)),
       ),
       drawer: const MyLeftMenu(),
       body: Column(
@@ -67,6 +214,7 @@ class ModalChiTietBuy extends StatelessWidget {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.only(top: 15),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
                   color: Color(int.parse(hexColor)),
@@ -79,10 +227,10 @@ class ModalChiTietBuy extends StatelessWidget {
                           children: [
                             Text(
                               "Đơn hàng ${type.isNotEmpty ? "đã ${type.replaceAll("đơn", "")}" : "chờ xác nhận"}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
-                                  color: Color(int.parse(hexColor))),
+                                  color: Colors.white),
                             ),
                             const SizedBox(
                               height: 10,
@@ -209,7 +357,7 @@ class ModalChiTietBuy extends StatelessWidget {
                                         Expanded(
                                             child: Text(
                                           "Đơn hàng ${type == "hoàn thành" ? "đã giao thành công" : type == "xác nhận" ? "đã đến đơn vị vận chuyển" : type == "vận chuyển" ? "đang giao" : ""}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.w300,
                                               color: Colors.green),
                                         ))
@@ -511,53 +659,56 @@ class ModalChiTietBuy extends StatelessWidget {
                         );
                       }).toList()),
                       Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                              border: BorderDirectional(
-                                  top: BorderSide(
-                                      width: 1, color: Colors.grey[400]!),
-                                  bottom: BorderSide(
-                                      width: 1, color: Colors.grey[400]!))),
-                          child: Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        margin: const EdgeInsets.only(top: 15),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                            border: BorderDirectional(
+                                top: BorderSide(
+                                    width: 1, color: Colors.grey[400]!),
+                                bottom: BorderSide(
+                                    width: 1, color: Colors.grey[400]!))),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      "Thành tiền",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    ),
-                                    Text(
-                                      NumberFormat.currency(
-                                              locale: "vi_VI", symbol: "đ")
-                                          .format(product["t_tien"]),
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
+                                const Text(
+                                  "Thành tiền",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black),
                                 ),
                                 Text(
-                                  "Vui lòng thanh toán ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(product["t_tien"])} khi nhận hàng",
+                                  NumberFormat.currency(
+                                          locale: "vi_VI", symbol: "đ")
+                                      .format(product["t_tien"]),
                                   style: const TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 12,
-                                      color: Colors.black),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 )
                               ],
                             ),
-                          ))
+                            if (type != "hủy đơn")
+                              Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "Vui lòng thanh toán ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(product["t_tien"])} khi nhận hàng",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 12,
+                                        color: Colors.black),
+                                  )
+                                ],
+                              )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -710,6 +861,48 @@ class ModalChiTietBuy extends StatelessWidget {
               ],
             ),
           ),
+          if (type == "")
+            Container(
+              margin: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                  left: 15,
+                  right: 15),
+              child: TextButton(
+                  onPressed: () {
+                    showInfoDialog();
+                  },
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all(
+                          const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)))),
+                      backgroundColor: MaterialStateProperty.all(
+                          Theme.of(context).colorScheme.primary),
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 20))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Hủy đơn hàng",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white),
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Image.asset(
+                        "assets/images/cart-white.png",
+                        width: 24,
+                        height: 34,
+                        fit: BoxFit.contain,
+                      ),
+                    ],
+                  )),
+            )
         ],
       ),
     ));

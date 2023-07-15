@@ -42,8 +42,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
     if (index == 0) {
       Navigator.pushNamed(context, "home");
     } else {
-      if (storage.getItem("existAccount") != null &&
-          storage.getItem("phone") != null) {
+      if (storage.getItem("phone") != null) {
         switch (index) {
           case 1:
             {
@@ -67,8 +66,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
             }
           default:
         }
-      } else if (storage.getItem("existAccount") != null &&
-          storage.getItem("phone") == null) {
+      } else if (storage.getItem("phone") == null) {
         showModalBottomSheet<void>(
             clipBehavior: Clip.antiAliasWithSaveLayer,
             shape: const RoundedRectangleBorder(
@@ -82,19 +80,6 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                     bottom: MediaQuery.of(context).viewInsets.bottom),
                 height: MediaQuery.of(context).size.height * 0.96,
                 child: const ModalPassExist(),
-              );
-            });
-      } else {
-        showModalBottomSheet<void>(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            context: context,
-            isScrollControlled: true,
-            builder: (BuildContext context) {
-              return Container(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                height: MediaQuery.of(context).size.height * 0.96,
-                child: const ModalPhone(),
               );
             });
       }

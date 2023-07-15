@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class ThanhVienScreen extends StatefulWidget {
   const ThanhVienScreen({super.key});
@@ -9,91 +11,11 @@ class ThanhVienScreen extends StatefulWidget {
   State<ThanhVienScreen> createState() => _MyPhamScreenState();
 }
 
-List listAction = [
-  {
-    "img": "assets/images/Services/MyPham/Icon/lam-trang.png",
-    "title": "Làm trắng da",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/duong-am.png",
-    "title": "Dưỡng ẩm",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/nang-co.png",
-    "title": "Nâng cơ - Giảm nhăn",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/dinh-duong-da.png",
-    "title": "Dinh dưỡng da",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
-    "title": "Nuôi dưỡng phục hồi",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/lam-sach.png",
-    "title": "Làm sạch",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/da-mun.png",
-    "title": "Dành cho da mụn",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/danh-cho-mat.png",
-    "title": "Dành cho mắt",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
-    "title": "Dưỡng môi",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
-    "title": "Dưỡng môi",
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
-    "title": "Dưỡng môi",
-  },
-];
-
-int active = 0;
-
-List listDeXuat = [
-  {
-    "img": "assets/images/Services/MyPham/DeXuat/img1.png",
-    "title": "Tinh chất trắng da",
-    "price": "500.000"
-  },
-  {
-    "img": "assets/images/Services/MyPham/DeXuat/img2.png",
-    "title": "Serum đặc trị mụn",
-    "price": "500.000"
-  },
-  {
-    "img": "assets/images/Services/MyPham/DeXuat/img3.png",
-    "title": "Tinh chất trắng da",
-    "price": "500.000"
-  },
-  {
-    "img": "assets/images/Services/MyPham/DeXuat/img4.png",
-    "title": "Huyết thanh trị nám-trắng da (15ml)",
-    "price": "500.000"
-  },
-  {
-    "img": "assets/images/Services/MyPham/DeXuat/img5.png",
-    "title": "Tinh chất phục hồi và chống lão hóa (3x10ml)",
-    "price": "500.000"
-  },
-  {
-    "img": "assets/images/Services/MyPham/DeXuat/img6.png",
-    "title": "Kem trị nám SPF 20 (50ml)",
-    "price": "500.000"
-  },
-];
 int? _selectedIndex;
 
 class _MyPhamScreenState extends State<ThanhVienScreen>
     with TickerProviderStateMixin {
+  LocalStorage storageAuth = LocalStorage("auth");
   TabController? tabController;
 
   @override
@@ -106,12 +28,6 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
   void _getActiveTabIndex() {
     _selectedIndex = tabController?.index;
     debugPrint('CURRENT_PAGE $_selectedIndex');
-  }
-
-  void goToAction(int index) {
-    setState(() {
-      active = index;
-    });
   }
 
   Color checkColor(int index) {
@@ -190,32 +106,34 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
               active: 0,
             ),
             appBar: AppBar(
+              leadingWidth: 45,
               centerTitle: true,
-              bottomOpacity: 0.0,
-              elevation: 0.0,
-              backgroundColor: Colors.white,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.west,
-                  size: 24,
-                  color: Colors.black,
-                ),
-              ),
+              leading: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
               title: const Text("Hạng thành viên",
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black)),
+                      color: Colors.white)),
             ),
             drawer: const MyLeftMenu(),
             body: ListView(
               children: [
                 Container(
-                    margin:
-                        const EdgeInsets.only(left: 15, right: 15, bottom: 30),
+                    margin: const EdgeInsets.only(
+                        left: 15, right: 15, bottom: 30, top: 20),
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
@@ -233,11 +151,26 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                 // mainAxisAlignment:
                                 //     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    "TRẦN KHANG",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w300),
+                                  FutureBuilder(
+                                    future: getProfile(
+                                        storageAuth.getItem("phone")),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        Map profile = snapshot.data![0];
+                                        return Text(
+                                          profile["ten_kh"]
+                                              .toString()
+                                              .toUpperCase(),
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w300),
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
                                   ),
                                   const SizedBox(
                                     height: 5,
@@ -378,262 +311,256 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 2,
-                  child: Expanded(
-                    child: TabBarView(controller: tabController, children: [
-                      ListView(children: [
-                        Column(children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
+                  child: TabBarView(controller: tabController, children: [
+                    ListView(children: [
+                      Column(children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                              color: Colors.grey[300]),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text(
+                                "Tổng trị giá tiêu dùng",
+                                style: TextStyle(fontWeight: FontWeight.w300),
+                              ),
+                              Text(
+                                "> 10 triệu VND",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.blue),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                            children: List.generate(20, (index) {
+                          return Container(
                             decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                color: Colors.grey[300]),
+                                border: Border(
+                                    top: index != 0
+                                        ? const BorderSide(
+                                            width: 0.5, color: Colors.grey)
+                                        : BorderSide.none)),
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Text(
-                                  "Tổng trị giá tiêu dùng",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
+                              children: [
+                                Image.asset(
+                                  "assets/images/Home/Services/uu-dai.png",
+                                  width: 25,
+                                  height: 25,
+                                  fit: BoxFit.contain,
+                                ),
+                                const SizedBox(
+                                  width: 10,
                                 ),
                                 Text(
-                                  "> 10 triệu VND",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.blue),
+                                  "Ưu đãi $index",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300),
                                 )
                               ],
                             ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Column(
-                              children: List.generate(20, (index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      top: index != 0
-                                          ? const BorderSide(
-                                              width: 0.5, color: Colors.grey)
-                                          : BorderSide.none)),
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/images/Home/Services/uu-dai.png",
-                                    width: 25,
-                                    height: 25,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Ưu đãi $index",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
-                                  )
-                                ],
-                              ),
-                            );
-                          }))
-                        ])
-                      ]),
-                      ListView(children: [
-                        Column(children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                color: Colors.grey[300]),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Text(
-                                  "Tổng trị giá tiêu dùng",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
-                                Text(
-                                  "> 20 triệu VND",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.blue),
-                                )
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Column(
-                              children: List.generate(20, (index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      top: index != 0
-                                          ? const BorderSide(
-                                              width: 0.5, color: Colors.grey)
-                                          : BorderSide.none)),
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/images/Home/Services/uu-dai.png",
-                                    width: 25,
-                                    height: 25,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Ưu đãi $index",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
-                                  )
-                                ],
-                              ),
-                            );
-                          }))
-                        ])
-                      ]),
-                      ListView(children: [
-                        Column(children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                color: Colors.grey[300]),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Text(
-                                  "Tổng trị giá tiêu dùng",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
-                                Text(
-                                  "> 45 triệu VND",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.blue),
-                                )
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Column(
-                              children: List.generate(20, (index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      top: index != 0
-                                          ? const BorderSide(
-                                              width: 0.5, color: Colors.grey)
-                                          : BorderSide.none)),
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/images/Home/Services/uu-dai.png",
-                                    width: 25,
-                                    height: 25,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Ưu đãi $index",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
-                                  )
-                                ],
-                              ),
-                            );
-                          }))
-                        ])
-                      ]),
-                      ListView(children: [
-                        Column(children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                color: Colors.grey[300]),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Text(
-                                  "Tổng trị giá tiêu dùng",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
-                                Text(
-                                  "> 70 triệu VND",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.blue),
-                                )
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Column(
-                              children: List.generate(20, (index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      top: index != 0
-                                          ? const BorderSide(
-                                              width: 0.5, color: Colors.grey)
-                                          : BorderSide.none)),
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/images/Home/Services/uu-dai.png",
-                                    width: 25,
-                                    height: 25,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Ưu đãi $index",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300),
-                                  )
-                                ],
-                              ),
-                            );
-                          }))
-                        ])
-                      ]),
+                          );
+                        }))
+                      ])
                     ]),
-                  ),
+                    ListView(children: [
+                      Column(children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                              color: Colors.grey[300]),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text(
+                                "Tổng trị giá tiêu dùng",
+                                style: TextStyle(fontWeight: FontWeight.w300),
+                              ),
+                              Text(
+                                "> 20 triệu VND",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.blue),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                            children: List.generate(20, (index) {
+                          return Container(
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    top: index != 0
+                                        ? const BorderSide(
+                                            width: 0.5, color: Colors.grey)
+                                        : BorderSide.none)),
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/Home/Services/uu-dai.png",
+                                  width: 25,
+                                  height: 25,
+                                  fit: BoxFit.contain,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Ưu đãi $index",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300),
+                                )
+                              ],
+                            ),
+                          );
+                        }))
+                      ])
+                    ]),
+                    ListView(children: [
+                      Column(children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                              color: Colors.grey[300]),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text(
+                                "Tổng trị giá tiêu dùng",
+                                style: TextStyle(fontWeight: FontWeight.w300),
+                              ),
+                              Text(
+                                "> 45 triệu VND",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.blue),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                            children: List.generate(20, (index) {
+                          return Container(
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    top: index != 0
+                                        ? const BorderSide(
+                                            width: 0.5, color: Colors.grey)
+                                        : BorderSide.none)),
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/Home/Services/uu-dai.png",
+                                  width: 25,
+                                  height: 25,
+                                  fit: BoxFit.contain,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Ưu đãi $index",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300),
+                                )
+                              ],
+                            ),
+                          );
+                        }))
+                      ])
+                    ]),
+                    ListView(children: [
+                      Column(children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
+                              color: Colors.grey[300]),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text(
+                                "Tổng trị giá tiêu dùng",
+                                style: TextStyle(fontWeight: FontWeight.w300),
+                              ),
+                              Text(
+                                "> 70 triệu VND",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.blue),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Column(
+                            children: List.generate(20, (index) {
+                          return Container(
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    top: index != 0
+                                        ? const BorderSide(
+                                            width: 0.5, color: Colors.grey)
+                                        : BorderSide.none)),
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/Home/Services/uu-dai.png",
+                                  width: 25,
+                                  height: 25,
+                                  fit: BoxFit.contain,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Ưu đãi $index",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300),
+                                )
+                              ],
+                            ),
+                          );
+                        }))
+                      ])
+                    ]),
+                  ]),
                 ),
                 const SizedBox(
                   height: 15,

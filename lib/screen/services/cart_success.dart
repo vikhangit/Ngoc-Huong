@@ -61,9 +61,17 @@ class _AddCartSuccessState extends State<AddCartSuccess>
             appBar: AppBar(
                 bottomOpacity: 0.0,
                 elevation: 0.0,
-                leadingWidth: 0,
-                automaticallyImplyLeading: false,
                 backgroundColor: Colors.white,
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "mypham");
+                  },
+                  icon: const Icon(
+                    Icons.west,
+                    size: 24,
+                    color: Colors.black,
+                  ),
+                ),
                 centerTitle: true,
                 title: const Text("Thông báo",
                     style: TextStyle(
@@ -146,33 +154,33 @@ class _AddCartSuccessState extends State<AddCartSuccess>
                           ),
                         ),
                         Wrap(
-                          spacing: 15,
+                          runSpacing: 15,
                           children: [
                             InkWell(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
-                                  height: 55,
+                                  height: 50,
                                   decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                      border: Border.all(
+                                          width: 1, color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
-                                          Radius.circular(40))),
+                                          Radius.circular(15))),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       const Text("Xem giỏ hàng",
                                           style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.white)),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                          )),
                                       const SizedBox(
                                         width: 15,
                                       ),
                                       Image.asset(
-                                        "assets/images/cart-white.png",
+                                        "assets/images/cart-black.png",
                                         width: 24,
                                         height: 24,
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.contain,
                                       ),
                                     ],
                                   ),
@@ -180,25 +188,24 @@ class _AddCartSuccessState extends State<AddCartSuccess>
                                 onTap: () {
                                   Navigator.pushNamed(context, "cart");
                                 }),
-                            const SizedBox(
-                              height: 15,
-                            ),
                             InkWell(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
-                                  height: 55,
+                                  height: 50,
                                   decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(
-                                          Radius.circular(40)),
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey)),
+                                          Radius.circular(15)),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.2)),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         "Về trang chủ",
                                         style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w400,
                                             color: Theme.of(context)
                                                 .colorScheme
@@ -211,7 +218,7 @@ class _AddCartSuccessState extends State<AddCartSuccess>
                                         "assets/images/icon/home-red.png",
                                         width: 24,
                                         height: 24,
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.contain,
                                       ),
                                     ],
                                   ),

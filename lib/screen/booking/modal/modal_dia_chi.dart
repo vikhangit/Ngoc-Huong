@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ModalDiaChi extends StatefulWidget {
   final Function saveCN;
@@ -16,6 +17,18 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
     setState(() {
       activeCN = item;
     });
+  }
+
+  Future<void> launchInBrowser(String link) async {
+    Uri url = Uri.parse(link);
+
+    print("Link : " + link);
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $url');
+    }
   }
 
   @override
@@ -112,7 +125,10 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                                                             width: 1,
                                                             color:
                                                                 Colors.blue)))),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              launchInBrowser(
+                                                  "https://www.google.com/maps/search/${"Thẩm+Mỹ+Viện+Ngọc+Hường+${listChiNhanh[index]["ten_kho"] == "An Giang" || listChiNhanh[index]["ten_kho"] == "Bình Dương" ? listChiNhanh[index]["exfields"]["dia_chi"].toString().replaceAll(" ", "+") : listChiNhanh[index]["ten_kho"].toString().replaceAll(" ", "+")}"}/@${listChiNhanh[index]["location"]["latitude"]},${listChiNhanh[index]["location"]["longitude"]}");
+                                            },
                                             child: const Text(
                                               "Xem vị trí",
                                               style: TextStyle(

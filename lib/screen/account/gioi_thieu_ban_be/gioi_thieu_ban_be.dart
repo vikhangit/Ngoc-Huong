@@ -16,27 +16,27 @@ class _GioiThieuBanBeState extends State<GioiThieuBanBe> {
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            // bottomOpacity: 0.0,
-            primary: false,
-            elevation: 0.0,
-            leadingWidth: 40,
-            backgroundColor: Colors.white,
+            leadingWidth: 45,
             centerTitle: true,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.west,
-                size: 24,
-                color: Colors.black,
-              ),
-            ),
+            leading: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 15),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.white),
+                  child: const Icon(
+                    Icons.west,
+                    size: 16,
+                    color: Colors.black,
+                  ),
+                )),
             title: const Text("Giới thiệu bạn bè",
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black)),
+                    color: Colors.white)),
           ),
           drawer: const MyLeftMenu(),
           body: SizedBox(

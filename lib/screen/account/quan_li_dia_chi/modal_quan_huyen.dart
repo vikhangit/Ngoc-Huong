@@ -168,11 +168,11 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
               ? Container(
                   margin: const EdgeInsets.only(top: 20),
                   width: MediaQuery.of(context).size.width,
-                  height: 60,
+                  height: 50,
                   decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary,
                       borderRadius:
-                          const BorderRadius.all(Radius.circular(50.0))),
+                          const BorderRadius.all(Radius.circular(15))),
                   child: TextButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -182,16 +182,16 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
                           padding: MaterialStateProperty.all(
                               const EdgeInsets.all(0.0))),
                       child: const Text("Xác nhận",
-                          style: TextStyle(fontSize: 16, color: Colors.white))),
+                          style: TextStyle(fontSize: 14, color: Colors.white))),
                 )
               : Container(
                   width: MediaQuery.of(context).size.width,
                   alignment: Alignment.center,
-                  height: 60,
+                  height: 50,
                   decoration: BoxDecoration(
                       color: Colors.grey.withOpacity(0.3),
                       borderRadius:
-                          const BorderRadius.all(Radius.circular(50.0))),
+                          const BorderRadius.all(Radius.circular(15))),
                   child: const Text("Xác nhận",
                       style: TextStyle(fontSize: 16, color: Colors.black)),
                 )

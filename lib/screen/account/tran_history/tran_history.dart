@@ -31,86 +31,86 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            // bottomOpacity: 0.0,
-            primary: false,
-            elevation: 0.0,
-            leadingWidth: 40,
-            backgroundColor: Colors.white,
+            leadingWidth: 45,
             centerTitle: true,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.west,
-                size: 24,
-                color: Colors.black,
-              ),
-            ),
+            leading: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 15),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.white),
+                  child: const Icon(
+                    Icons.west,
+                    size: 16,
+                    color: Colors.black,
+                  ),
+                )),
             title: const Text("Lịch sử giao dịch",
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black)),
-            bottom: TabBar(
-              controller: tabController,
-              isScrollable: true,
-              labelColor: Theme.of(context).colorScheme.primary,
-              unselectedLabelColor: Colors.black,
-              indicatorColor: Theme.of(context).colorScheme.primary,
-              labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  fontFamily: "LexendDeca"),
-              onTap: (tabIndex) {
-                setState(() {
-                  _selectedIndex = tabIndex;
-                });
-              },
-              tabs: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 2 - 45,
-                  child: const Tab(
-                    text: "Tích điểm",
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 2 - 45,
-                  child: const Tab(
-                    text: "Dùng diểm",
-                  ),
-                )
-              ],
-            ),
+                    color: Colors.white)),
           ),
           drawer: const MyLeftMenu(),
           body: SizedBox(
-            child: Expanded(
-              child: TabBarView(
-                controller: tabController,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 40),
-                        child: Image.asset("assets/images/account/img.webp"),
-                      )
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 40),
-                        child: Image.asset("assets/images/account/img.webp"),
-                      )
-                    ],
-                  ),
-                ],
+              child: Column(
+            children: [
+              const SizedBox(
+                height: 10,
               ),
-            ),
-          )),
+              SizedBox(
+                height: 50,
+                child: TabBar(
+                  controller: tabController,
+                  isScrollable: true,
+                  labelColor: Theme.of(context).colorScheme.primary,
+                  unselectedLabelColor: Colors.black,
+                  indicatorColor: Theme.of(context).colorScheme.primary,
+                  labelStyle: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      fontFamily: "LexendDeca"),
+                  onTap: (tabIndex) {
+                    setState(() {
+                      _selectedIndex = tabIndex;
+                    });
+                  },
+                  tabs: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2 - 45,
+                      child: const Tab(
+                        text: "Tích điểm",
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2 - 45,
+                      child: const Tab(
+                        text: "Dùng diểm",
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height - 170,
+                child: TabBarView(
+                  controller: tabController,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 40),
+                      child: Image.asset("assets/images/account/img.webp"),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 40),
+                      child: Image.asset("assets/images/account/img.webp"),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ))),
     );
   }
 }

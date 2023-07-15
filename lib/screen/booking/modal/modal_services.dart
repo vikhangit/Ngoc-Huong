@@ -177,13 +177,13 @@ class _ModalServiceState extends State<ModalService> {
                                   showAlertDialog(context,
                                       "Vui lòng chọn dịch vụ muốn đặt");
                                 } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => BookingStep2(
-                                                serviceName: activeTitle,
-                                                activeCN: activeCN,
-                                              )));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => BookingStep2(
+                                  //               serviceName: activeTitle,
+                                  //               activeCN: activeCN,
+                                  //             )));
                                 }
                               },
                               child: Row(

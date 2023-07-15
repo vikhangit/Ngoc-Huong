@@ -484,12 +484,12 @@ class _ModalPassState extends State<ModalPass> {
                       check == true
                   ? Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 60,
+                      height: 50,
                       margin: const EdgeInsets.symmetric(vertical: 15),
                       decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primary,
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(50.0))),
+                              const BorderRadius.all(Radius.circular(15))),
                       child: TextButton(
                           onPressed: () {
                             saveUserInfo();
@@ -502,17 +502,17 @@ class _ModalPassState extends State<ModalPass> {
                                   ? "Tiếp tục"
                                   : "Hoàn thành",
                               style: const TextStyle(
-                                  fontSize: 16, color: Colors.white))),
+                                  fontSize: 14, color: Colors.white))),
                     )
                   : Container(
                       width: MediaQuery.of(context).size.width,
                       alignment: Alignment.center,
-                      height: 60,
+                      height: 50,
                       margin: const EdgeInsets.symmetric(vertical: 15),
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.3),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(50.0))),
+                              const BorderRadius.all(Radius.circular(15))),
                       child: Text(
                           storage.getItem("typeOTP") == null
                               ? "Tiếp tục"

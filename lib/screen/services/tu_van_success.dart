@@ -149,10 +149,10 @@ class _TuVanSuccessState extends State<TuVanSuccess>
                         InkWell(
                             child: Container(
                               width: MediaQuery.of(context).size.width,
-                              height: 55,
+                              height: 50,
                               decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.all(
-                                      Radius.circular(40)),
+                                      Radius.circular(15)),
                                   border:
                                       Border.all(width: 1, color: Colors.grey)),
                               child: Row(

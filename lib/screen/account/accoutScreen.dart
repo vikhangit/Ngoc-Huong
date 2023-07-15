@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
@@ -55,20 +57,14 @@ List menu = [
     "title": "Về Ngọc Hường",
   }
 ];
-_makingPhoneCall() async {
-  var url = Uri.parse("tel:9776765434");
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url);
-  } else {
-    throw 'Could not launch $url';
-  }
-}
 
 class _AccountScreenState extends State<AccountScreen> {
   LocalStorage storage = LocalStorage("auth");
   LocalStorage storageToken = LocalStorage("token");
+  LocalStorage storageCN = LocalStorage("chi_nhanh");
   @override
   Widget build(BuildContext context) {
+    Map chiNhanh = jsonDecode(storageCN.getItem("chi_nhanh"));
     void showAlertDialog(BuildContext context, String err) {
       Widget okButton = TextButton(
         child: const Text("OK"),
@@ -160,7 +156,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     Expanded(
                       child: InkWell(
                           onTap: () {
-                            _makingPhoneCall();
+                            makingPhoneCall(chiNhanh["exfields"]["dien_thoai"]);
                           },
                           child: Row(
                             children: [
@@ -373,12 +369,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       )),
                 ],
               ),
-              Expanded(
-                  child: Container(
+              Container(
                 margin: const EdgeInsets.only(top: 20),
                 height: 450,
                 child: ListView(
-                  shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   children: [
                     Container(
@@ -506,7 +500,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     )
                   ],
                 ),
-              ))
+              )
             ],
           )),
     );

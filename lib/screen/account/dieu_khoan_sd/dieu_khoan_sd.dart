@@ -50,101 +50,99 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            // bottomOpacity: 0.0,
-            primary: false,
-            elevation: 0.0,
-            leadingWidth: 40,
-            backgroundColor: Colors.white,
+            leadingWidth: 45,
             centerTitle: true,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.west,
-                size: 24,
-                color: Colors.black,
-              ),
-            ),
+            leading: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 15),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.white),
+                  child: const Icon(
+                    Icons.west,
+                    size: 16,
+                    color: Colors.black,
+                  ),
+                )),
             title: const Text("Điều khoản sử dụng",
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black)),
+                    color: Colors.white)),
           ),
           drawer: const MyLeftMenu(),
           body: SizedBox(
-            child: Expanded(
-              child: ListView(
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        showAlertDialog(context,
-                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
-                      },
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 20))),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Điều khoản sử dụng",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black),
-                          ),
-                          Icon(Icons.keyboard_arrow_right, color: Colors.black)
-                        ],
-                      )),
-                  TextButton(
-                      onPressed: () {
-                        showAlertDialog(context,
-                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
-                      },
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 20))),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Chính sách thành viên",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black),
-                          ),
-                          Icon(Icons.keyboard_arrow_right, color: Colors.black)
-                        ],
-                      )),
-                  TextButton(
-                      onPressed: () {
-                        showAlertDialog(context,
-                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
-                      },
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 20))),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Bảo mật thành viên",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.black),
-                          ),
-                          Icon(Icons.keyboard_arrow_right, color: Colors.black)
-                        ],
-                      ))
-                ],
-              ),
+            child: ListView(
+              children: [
+                TextButton(
+                    onPressed: () {
+                      showAlertDialog(context,
+                          "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                    },
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 20))),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Điều khoản sử dụng",
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.black),
+                        ),
+                        Icon(Icons.keyboard_arrow_right, color: Colors.black)
+                      ],
+                    )),
+                TextButton(
+                    onPressed: () {
+                      showAlertDialog(context,
+                          "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                    },
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 20))),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Chính sách thành viên",
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.black),
+                        ),
+                        Icon(Icons.keyboard_arrow_right, color: Colors.black)
+                      ],
+                    )),
+                TextButton(
+                    onPressed: () {
+                      showAlertDialog(context,
+                          "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                    },
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 20))),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Bảo mật thành viên",
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.black),
+                        ),
+                        Icon(Icons.keyboard_arrow_right, color: Colors.black)
+                      ],
+                    ))
+              ],
             ),
           )),
     );

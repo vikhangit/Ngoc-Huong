@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/sua_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/them_dia_chi.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
@@ -54,27 +55,27 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            // bottomOpacity: 0.0,
-            primary: false,
-            elevation: 0.0,
-            leadingWidth: 40,
-            backgroundColor: Colors.white,
+            leadingWidth: 45,
             centerTitle: true,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.west,
-                size: 24,
-                color: Colors.black,
-              ),
-            ),
+            leading: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 15),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.white),
+                  child: const Icon(
+                    Icons.west,
+                    size: 16,
+                    color: Colors.black,
+                  ),
+                )),
             title: const Text("Quản lý địa chỉ",
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black)),
+                    color: Colors.white)),
           ),
           drawer: const MyLeftMenu(),
           body: Container(
@@ -189,17 +190,17 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                         shape: MaterialStateProperty.all(
                             const RoundedRectangleBorder(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(30)))),
+                                    BorderRadius.all(Radius.circular(15)))),
                         backgroundColor: MaterialStateProperty.all(
                             Theme.of(context).colorScheme.primary),
                         padding: MaterialStateProperty.all(
                             const EdgeInsets.symmetric(
-                                vertical: 18, horizontal: 20))),
+                                vertical: 14, horizontal: 20))),
                     child: const Center(
                       child: Text(
                         "Thêm địa chỉ",
                         style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w400,
                             color: Colors.white),
                       ),

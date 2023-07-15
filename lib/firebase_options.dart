@@ -44,39 +44,39 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDFBZplNIfoFf2KH-lc06JuvyXtZ1VBYas',
-    appId: '1:83126216779:web:70f28678c25a6eac4245ce',
-    messagingSenderId: '83126216779',
-    projectId: 'fir-ngoc-huong',
-    authDomain: 'fir-ngoc-huong.firebaseapp.com',
-    storageBucket: 'fir-ngoc-huong.appspot.com',
+    apiKey: 'AIzaSyAre5i3WoWLpx28KHuC7gPRbjqmc9JC-uA',
+    appId: '1:365783008418:web:4840f2af7af329db04c3fb',
+    messagingSenderId: '365783008418',
+    projectId: 'ngoc-huong-86683',
+    authDomain: 'ngoc-huong-86683.firebaseapp.com',
+    storageBucket: 'ngoc-huong-86683.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDv5HTUKVom46q7a94O5IyvnC3q1yPUXCU',
-    appId: '1:83126216779:android:ed4e82fc11c99e3f4245ce',
-    messagingSenderId: '83126216779',
-    projectId: 'fir-ngoc-huong',
-    storageBucket: 'fir-ngoc-huong.appspot.com',
+    apiKey: 'AIzaSyAokQmpqBF5WuplEe_MWx_kIWo7rK2vE6Y',
+    appId: '1:365783008418:android:ce0fda1c85153d4904c3fb',
+    messagingSenderId: '365783008418',
+    projectId: 'ngoc-huong-86683',
+    storageBucket: 'ngoc-huong-86683.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCUPVxehojdwINSk16SAFtPEXu1lAmM1x8',
-    appId: '1:83126216779:ios:f8a4bab9269a2bc14245ce',
-    messagingSenderId: '83126216779',
-    projectId: 'fir-ngoc-huong',
-    storageBucket: 'fir-ngoc-huong.appspot.com',
-    iosClientId: '83126216779-p16vo0uuqhkmsl1elbf3e8a2d6qhs1lc.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAKTpH4TXjBseDqAnK3DsvVrvuHlTva7sM',
+    appId: '1:365783008418:ios:8c4ea8a11cc54ad004c3fb',
+    messagingSenderId: '365783008418',
+    projectId: 'ngoc-huong-86683',
+    storageBucket: 'ngoc-huong-86683.appspot.com',
+    iosClientId: '365783008418-s7ja1hgn8bufu88j2hibt5l2nopeuenj.apps.googleusercontent.com',
     iosBundleId: 'com.example.ngocHuong',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCUPVxehojdwINSk16SAFtPEXu1lAmM1x8',
-    appId: '1:83126216779:ios:f8a4bab9269a2bc14245ce',
-    messagingSenderId: '83126216779',
-    projectId: 'fir-ngoc-huong',
-    storageBucket: 'fir-ngoc-huong.appspot.com',
-    iosClientId: '83126216779-p16vo0uuqhkmsl1elbf3e8a2d6qhs1lc.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAKTpH4TXjBseDqAnK3DsvVrvuHlTva7sM',
+    appId: '1:365783008418:ios:8c4ea8a11cc54ad004c3fb',
+    messagingSenderId: '365783008418',
+    projectId: 'ngoc-huong-86683',
+    storageBucket: 'ngoc-huong-86683.appspot.com',
+    iosClientId: '365783008418-s7ja1hgn8bufu88j2hibt5l2nopeuenj.apps.googleusercontent.com',
     iosBundleId: 'com.example.ngocHuong',
   );
 }

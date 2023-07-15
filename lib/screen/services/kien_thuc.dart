@@ -13,13 +13,13 @@ class KienThucScreen extends StatefulWidget {
 }
 
 class _KienThucScreenState extends State<KienThucScreen> {
-  Future refreshData() async {
-    await Future.delayed(const Duration(seconds: 3));
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
+    Future refreshData() async {
+      await Future.delayed(const Duration(seconds: 3));
+      setState(() {});
+    }
+
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
@@ -28,25 +28,27 @@ class _KienThucScreenState extends State<KienThucScreen> {
               active: 0,
             ),
             appBar: AppBar(
+              leadingWidth: 45,
               centerTitle: true,
-              bottomOpacity: 0.0,
-              elevation: 0.0,
-              backgroundColor: Colors.white,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.west,
-                  size: 24,
-                  color: Colors.black,
-                ),
-              ),
+              leading: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
               title: const Text("Kiến thức làm đẹp",
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black)),
+                      color: Colors.white)),
             ),
             drawer: const MyLeftMenu(),
             body: RefreshIndicator(
@@ -85,6 +87,7 @@ class _KienThucScreenState extends State<KienThucScreen> {
                                                   0.95,
                                               child: ChiTietTinTuc(
                                                 detail: item,
+                                                type: "kiến thức",
                                               ));
                                         });
                                   },

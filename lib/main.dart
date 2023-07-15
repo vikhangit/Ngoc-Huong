@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/firebase_options.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
@@ -22,11 +24,25 @@ import 'package:ngoc_huong/screen/start/start_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  // to initialize the notificationservice.
   await Firebase.initializeApp(
+    name: "ngoc-huong-86683",
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
 }
+
+@pragma('vm:entry-point')
+// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+// // await setupFlutterNotifications();
+// // showNotification(message);
+//   print('${message.notification!.title}');
+//   print('${message.notification!.body}');
+//   print('${message.data}');
+// }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -40,6 +56,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     super.dispose();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values); // to re-show bars
   }
 
   @override
@@ -74,7 +92,14 @@ class _MyAppState extends State<MyApp> {
       },
       theme: ThemeData(
           fontFamily: "LexendDeca",
-          appBarTheme: const AppBarTheme(),
+          appBarTheme: const AppBarTheme(
+            toolbarHeight: 70,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(30),
+              ),
+            ),
+          ),
           pageTransitionsTheme: const PageTransitionsTheme(
             builders: {
               TargetPlatform.android: CupertinoPageTransitionsBuilder(),

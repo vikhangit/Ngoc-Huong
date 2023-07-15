@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/account/setting/custom_switch.dart';
-import 'package:ngoc_huong/screen/account/setting/modal_dia_diem.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:ngoc_huong/screen/account/setting/modal_change_pass.dart';
 
 class SettingAccout extends StatefulWidget {
   const SettingAccout({super.key});
@@ -83,10 +81,10 @@ class _SettingAccoutState extends State<SettingAccout> {
         },
       );
       Future.delayed(const Duration(seconds: 3), () {
-        storageAuth.deleteItem("phone");
-        storageToken.deleteItem("token");
         Navigator.pop(context);
         Navigator.pushNamed(context, "home");
+        storageAuth.deleteItem("phone");
+        storageToken.deleteItem("token");
       });
     }
 
@@ -98,26 +96,27 @@ class _SettingAccoutState extends State<SettingAccout> {
               active: 3,
             ),
             appBar: AppBar(
-              bottomOpacity: 0.0,
-              elevation: 0.0,
-              leadingWidth: 40,
-              backgroundColor: Colors.white,
+              leadingWidth: 45,
               centerTitle: true,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.west,
-                  size: 24,
-                  color: Colors.black,
-                ),
-              ),
+              leading: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
               title: const Text("Cài đặt",
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black)),
+                      color: Colors.white)),
             ),
             drawer: const MyLeftMenu(),
             body: Column(
@@ -127,8 +126,27 @@ class _SettingAccoutState extends State<SettingAccout> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          showAlertDialog(context,
-                              "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                          showModalBottomSheet<void>(
+                              backgroundColor: Colors.white,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(15.0),
+                                ),
+                              ),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.88,
+                                  child: ModalChangePass(),
+                                );
+                              });
                         },
                         style: ButtonStyle(
                             padding: MaterialStateProperty.all(
@@ -447,7 +465,7 @@ class _SettingAccoutState extends State<SettingAccout> {
                                           height: 5,
                                         ),
                                         const Text(
-                                          "Bạn có muốn đăng xuất tài khoản này không?",
+                                          "Bạn có muốn đăng xuất tài khoản không?",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize: 14,
@@ -471,7 +489,7 @@ class _SettingAccoutState extends State<SettingAccout> {
                                       shape: MaterialStateProperty.all(
                                           const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
-                                                  Radius.circular(30)))),
+                                                  Radius.circular(15)))),
                                       backgroundColor:
                                           MaterialStateProperty.all(
                                               Theme.of(context)
@@ -495,7 +513,7 @@ class _SettingAccoutState extends State<SettingAccout> {
                                     shape: MaterialStateProperty.all(
                                         const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
-                                                Radius.circular(30)),
+                                                Radius.circular(15)),
                                             side: BorderSide(
                                                 color: Colors.grey, width: 1))),
                                   ),

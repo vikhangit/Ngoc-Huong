@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/login/modal_otp.dart';
 import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
-import 'package:ngoc_huong/screen/services/tu_van.dart';
 
 class ModalPhone extends StatefulWidget {
   const ModalPhone({super.key});
@@ -230,11 +228,11 @@ class _ModalPhoneState extends State<ModalPhone> {
                   phoneNo.length == 10
                       ? Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 60,
+                          height: 50,
                           decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.primary,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(50.0))),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(15))),
                           child: TextButton(
                               onPressed: () {
                                 onLoading();
@@ -249,14 +247,14 @@ class _ModalPhoneState extends State<ModalPhone> {
                       : Container(
                           width: MediaQuery.of(context).size.width,
                           alignment: Alignment.center,
-                          height: 60,
+                          height: 50,
                           decoration: BoxDecoration(
                               color: Colors.grey.withOpacity(0.3),
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(50.0))),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(15))),
                           child: const Text("Tiếp tục",
                               style:
-                                  TextStyle(fontSize: 16, color: Colors.black)),
+                                  TextStyle(fontSize: 14, color: Colors.black)),
                         )
                 ],
               ),

@@ -155,8 +155,8 @@ class _SignUpSuccessState extends State<SignUpSuccess>
                                   width: MediaQuery.of(context).size.width,
                                   height: 50,
                                   decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                      border: Border.all(
+                                          width: 1, color: Colors.grey),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(15))),
                                   child: Row(
@@ -164,17 +164,17 @@ class _SignUpSuccessState extends State<SignUpSuccess>
                                     children: [
                                       const Text("Đăng nhập",
                                           style: TextStyle(
-                                              fontSize: 15,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.black)),
                                       const SizedBox(
-                                        width: 8,
+                                        width: 15,
                                       ),
                                       Image.asset(
                                         "assets/images/icon/profile-black.png",
                                         width: 24,
                                         height: 24,
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.contain,
                                       ),
                                     ],
                                   ),
@@ -208,22 +208,15 @@ class _SignUpSuccessState extends State<SignUpSuccess>
                                   width: MediaQuery.of(context).size.width,
                                   height: 50,
                                   decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.2),
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(15))),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Image.asset(
-                                        "assets/images/icon/home-red.png",
-                                        width: 20,
-                                        height: 20,
-                                        fit: BoxFit.fill,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
                                       Text(
                                         "Về trang chủ",
                                         style: TextStyle(
@@ -232,7 +225,16 @@ class _SignUpSuccessState extends State<SignUpSuccess>
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .primary),
-                                      )
+                                      ),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      Image.asset(
+                                        "assets/images/icon/home-red.png",
+                                        width: 24,
+                                        height: 24,
+                                        fit: BoxFit.fill,
+                                      ),
                                     ],
                                   ),
                                 ),

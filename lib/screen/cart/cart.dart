@@ -51,8 +51,25 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       // showAlertDialog(context, "Số lượng phải lớn hơn 0");
     } else {
       Map data = {"sl_xuat": qty};
-      await putCart(id, data);
-      setState(() {});
+      await putCart(id, data).then((value) {
+        if (listCheckout.isNotEmpty) {
+          int idx = listCheckout
+              .indexWhere((item) => item["ma_vt"] == value["ma_vt"]);
+          if (idx < 0) {
+            setState(() {});
+          } else {
+            setState(() {
+              listCheckout[idx] = value;
+            });
+          }
+        } else {
+          setState(() {});
+        }
+        // } else {
+        //   color = Colors.white;
+        // }
+        print(value);
+      });
     }
   }
 
@@ -310,27 +327,27 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
             active: 1,
           ),
           appBar: AppBar(
-            // bottomOpacity: 0.0,
-            primary: false,
-            elevation: 0.0,
-            leadingWidth: 40,
-            backgroundColor: Colors.white,
+            leadingWidth: 45,
             centerTitle: true,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.west,
-                size: 24,
-                color: Colors.black,
-              ),
-            ),
+            leading: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 15),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.white),
+                  child: const Icon(
+                    Icons.west,
+                    size: 16,
+                    color: Colors.black,
+                  ),
+                )),
             title: const Text("Giỏ hàng",
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black)),
+                    color: Colors.white)),
           ),
           drawer: const MyLeftMenu(),
           body: Container(
@@ -703,9 +720,28 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                         ));
                       } else {
                         return Container(
-                          margin: const EdgeInsets.only(top: 40),
-                          child: const Text("Chưa có sản phẩm trong giỏ hàng"),
-                        );
+                            margin: const EdgeInsets.only(top: 40),
+                            child: Column(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 40, bottom: 15),
+                                  child: Image.asset(
+                                      "assets/images/account/img.webp"),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child: const Text(
+                                    "Chưa có đơn hàng",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                )
+                              ],
+                            ));
                       }
                     } else {
                       return const Center(
@@ -776,12 +812,12 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                       style: ButtonStyle(
                                           padding: MaterialStateProperty.all(
                                               const EdgeInsets.symmetric(
-                                                  vertical: 15,
+                                                  vertical: 12,
                                                   horizontal: 20)),
                                           shape: MaterialStateProperty.all(
                                               const RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.all(
-                                                      Radius.circular(40)))),
+                                                      Radius.circular(15)))),
                                           backgroundColor:
                                               MaterialStateProperty.all(
                                                   Theme.of(context)
@@ -813,7 +849,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                 "Đặt hàng",
                                                 style: TextStyle(
                                                     color: Colors.black,
-                                                    fontSize: 16,
+                                                    fontSize: 15,
                                                     fontWeight:
                                                         FontWeight.w400),
                                               ),

@@ -123,25 +123,27 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
               active: 0,
             ),
             appBar: AppBar(
+              leadingWidth: 45,
               centerTitle: true,
-              bottomOpacity: 0.0,
-              elevation: 0.0,
-              backgroundColor: Colors.white,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.west,
-                  size: 24,
-                  color: Colors.black,
-                ),
-              ),
+              leading: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
               title: const Text("Mỹ Phẩm",
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black)),
+                      color: Colors.white)),
             ),
             drawer: const MyLeftMenu(),
             body: RefreshIndicator(
@@ -212,7 +214,7 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
                           }).toList(),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width * .7,
                         height: MediaQuery.of(context).size.height - 200,
                         child: ListView(
@@ -228,9 +230,11 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
                                     children: snapshot.data!.map((item) {
                                       int index = snapshot.data!.indexOf(item);
                                       return Stack(
+                                        clipBehavior: Clip.none,
                                         children: [
                                           Container(
                                             decoration: BoxDecoration(
+                                              color: Colors.white,
                                               boxShadow: [
                                                 BoxShadow(
                                                   color: Colors.grey
@@ -318,8 +322,7 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
                                                     margin: const EdgeInsets
                                                             .symmetric(
                                                         horizontal: 7),
-                                                    child: Flexible(
-                                                        child: Text(
+                                                    child: Text(
                                                       item["ten_vt"],
                                                       style: const TextStyle(
                                                           color: Colors.black,
@@ -329,7 +332,7 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       maxLines: 2,
-                                                    )),
+                                                    ),
                                                   ),
                                                   const SizedBox(
                                                     height: 3,

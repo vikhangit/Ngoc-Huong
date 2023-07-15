@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 
 class CheckoutSuccess extends StatefulWidget {
   const CheckoutSuccess({super.key});
@@ -69,8 +70,7 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height - 175,
+                        Expanded(
                           child: ListView(
                             children: [
                               const SizedBox(
@@ -140,8 +140,44 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                           ),
                         ),
                         Wrap(
-                          spacing: 15,
+                          runSpacing: 15,
                           children: [
+                            InkWell(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1, color: Colors.grey),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(15))),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text("Xem chi tiết",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400,
+                                          )),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      Image.asset(
+                                        "assets/images/cart-black.png",
+                                        width: 24,
+                                        height: 24,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const BuyHistory()));
+                                }),
                             InkWell(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
@@ -170,8 +206,8 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                                       ),
                                       Image.asset(
                                         "assets/images/icon/home-red.png",
-                                        width: 20,
-                                        height: 20,
+                                        width: 24,
+                                        height: 24,
                                         fit: BoxFit.fill,
                                       ),
                                     ],

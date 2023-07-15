@@ -561,85 +561,88 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                     ),
                   ),
                 ),
+                // Container(
+                //   margin:
+                //       const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                //   decoration: BoxDecoration(
+                //       borderRadius: const BorderRadius.all(Radius.circular(10)),
+                //       color: Colors.white,
+                //       boxShadow: [
+                //         BoxShadow(
+                //           color: Colors.grey.withOpacity(0.5),
+                //           spreadRadius: 1,
+                //           blurRadius: 8,
+                //           offset:
+                //               const Offset(4, 4), // changes position of shadow
+                //         ),
+                //       ]),
+                //   child: TextButton(
+                //     style: ButtonStyle(
+                //       padding: MaterialStateProperty.all(
+                //           const EdgeInsets.symmetric(
+                //               vertical: 20, horizontal: 8)),
+                //       backgroundColor: MaterialStateProperty.all(
+                //           diem == 0 ? Colors.grey[400] : Colors.white),
+                //       shape: MaterialStateProperty.all(
+                //           const RoundedRectangleBorder(
+                //               borderRadius:
+                //                   BorderRadius.all(Radius.circular(10)))),
+                //     ),
+                //     onPressed: () {
+                //       if (diem == 0) {
+                //       } else {
+                //         showAlertDialog(context,
+                //             "Xin lỗi quý khách. Quý khách chưa có điểm để sử dụng");
+                //       }
+                //     },
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         Row(
+                //           children: [
+                //             Image.asset(
+                //               "assets/images/point.png",
+                //               width: 28,
+                //               height: 28,
+                //             ),
+                //             const SizedBox(
+                //               width: 10,
+                //             ),
+                //             Text(
+                //               "Ngọc Hường - điểm",
+                //               style: TextStyle(
+                //                   fontWeight: FontWeight.w400,
+                //                   color: diem == 0
+                //                       ? Theme.of(context).colorScheme.primary
+                //                       : Colors.black),
+                //             ),
+                //             const SizedBox(
+                //               width: 5,
+                //             ),
+                //             Text("($diem điểm)",
+                //                 style: TextStyle(
+                //                     fontWeight: FontWeight.w300,
+                //                     color: diem == 0
+                //                         ? Theme.of(context)
+                //                             .colorScheme
+                //                             .primary
+                //                             .withOpacity(0.7)
+                //                         : Colors.black45)),
+                //           ],
+                //         ),
+                //         Icon(Icons.keyboard_arrow_right_outlined,
+                //             color: diem == 0
+                //                 ? Theme.of(context)
+                //                     .colorScheme
+                //                     .primary
+                //                     .withOpacity(0.7)
+                //                 : Colors.black45)
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 8,
-                          offset:
-                              const Offset(4, 4), // changes position of shadow
-                        ),
-                      ]),
-                  child: TextButton(
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(
-                          const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 8)),
-                      backgroundColor: MaterialStateProperty.all(
-                          diem == 0 ? Colors.grey[400] : Colors.white),
-                      shape: MaterialStateProperty.all(
-                          const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)))),
-                    ),
-                    onPressed: () {
-                      if (diem == 0) {
-                      } else {
-                        showAlertDialog(context,
-                            "Xin lỗi quý khách. Quý khách chưa có điểm để sử dụng");
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset(
-                              "assets/images/point.png",
-                              width: 28,
-                              height: 28,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              "Ngọc Hường - điểm",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  color: diem == 0
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Colors.black),
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text("($diem điểm)",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    color: diem == 0
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withOpacity(0.7)
-                                        : Colors.black45)),
-                          ],
-                        ),
-                        Icon(Icons.keyboard_arrow_right_outlined,
-                            color: diem == 0
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.7)
-                                : Colors.black45)
-                      ],
-                    ),
-                  ),
+                  height: 20,
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -774,193 +777,222 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           Map profile = snapshot.data![0];
-                          return TextButton(
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                          vertical: 15, horizontal: 20)),
-                                  shape: MaterialStateProperty.all(
-                                      const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(40)))),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withOpacity(0.4))),
-                              onPressed: () {
-                                if (activePayment.isNotEmpty) {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(10.0))),
-                                        content: Builder(
-                                          builder: (context) {
-                                            return SizedBox(
-                                                // height: 30,
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.info,
-                                                      size: 70,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary,
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 15,
-                                                    ),
-                                                    const Text(
-                                                      "Đặt hàng",
-                                                      style: TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    const Text(
-                                                      "Bạn có chắc chắn tiến hàng đặt hàng không?",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight:
-                                                              FontWeight.w300),
-                                                    )
-                                                  ],
-                                                ));
-                                          },
-                                        ),
-                                        actionsPadding: const EdgeInsets.only(
-                                            top: 0,
-                                            left: 30,
-                                            right: 30,
-                                            bottom: 30),
-                                        actions: [
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                onLoading(listProductPayment,
-                                                    profile["ma_kh"]);
-                                              },
-                                              style: ButtonStyle(
-                                                  padding:
-                                                      MaterialStateProperty.all(
-                                                          const EdgeInsets.symmetric(
-                                                              vertical: 15)),
-                                                  shape: MaterialStateProperty.all(
-                                                      const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius.circular(
-                                                                      30)))),
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .primary)),
-                                              child: const Text(
-                                                "Đồng ý",
-                                                style: TextStyle(
-                                                    color: Colors.white),
+                          return FutureBuilder(
+                            future: getAddress(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                List address = snapshot.data!.toList();
+                                return TextButton(
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            const EdgeInsets.symmetric(
+                                                vertical: 12, horizontal: 20)),
+                                        shape: MaterialStateProperty.all(
+                                            const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(15)))),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                    .withOpacity(0.4))),
+                                    onPressed: () {
+                                      if (address.isEmpty) {
+                                        showAlertDialog(context,
+                                            "Bạn chưa thêm địa chỉ giao hàng");
+                                      } else if (activePayment.isNotEmpty) {
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10.0))),
+                                              content: Builder(
+                                                builder: (context) {
+                                                  return SizedBox(
+                                                      // height: 30,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.info,
+                                                            size: 70,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primary,
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 15,
+                                                          ),
+                                                          const Text(
+                                                            "Đặt hàng",
+                                                            style: TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          const Text(
+                                                            "Bạn có chắc chắn tiến hàng đặt hàng không?",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                                fontSize: 13,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300),
+                                                          )
+                                                        ],
+                                                      ));
+                                                },
                                               ),
+                                              actionsPadding:
+                                                  const EdgeInsets.only(
+                                                      top: 0,
+                                                      left: 30,
+                                                      right: 30,
+                                                      bottom: 30),
+                                              actions: [
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  child: TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      onLoading(
+                                                          listProductPayment,
+                                                          profile["ma_kh"]);
+                                                    },
+                                                    style: ButtonStyle(
+                                                        padding:
+                                                            MaterialStateProperty.all(
+                                                                const EdgeInsets.symmetric(
+                                                                    vertical:
+                                                                        15)),
+                                                        shape: MaterialStateProperty.all(
+                                                            const RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius.all(
+                                                                        Radius.circular(
+                                                                            15)))),
+                                                        backgroundColor:
+                                                            MaterialStateProperty.all(
+                                                                Theme.of(context)
+                                                                    .colorScheme
+                                                                    .primary)),
+                                                    child: const Text(
+                                                      "Đồng ý",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  margin: const EdgeInsets.only(
+                                                      top: 10),
+                                                  child: TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    style: ButtonStyle(
+                                                      padding: MaterialStateProperty
+                                                          .all(const EdgeInsets
+                                                                  .symmetric(
+                                                              vertical: 15)),
+                                                      shape: MaterialStateProperty.all(
+                                                          const RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .all(Radius
+                                                                          .circular(
+                                                                              15)),
+                                                              side: BorderSide(
+                                                                  color: Colors
+                                                                      .grey,
+                                                                  width: 1))),
+                                                    ),
+                                                    child: const Text("Hủy bỏ"),
+                                                  ),
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        showModalBottomSheet<void>(
+                                            backgroundColor: Colors.white,
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
+                                            context: context,
+                                            isScrollControlled: true,
+                                            builder: (BuildContext context) {
+                                              return Container(
+                                                  padding: EdgeInsets.only(
+                                                      bottom:
+                                                          MediaQuery.of(context)
+                                                              .viewInsets
+                                                              .bottom),
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.6,
+                                                  child: ModalPayment(
+                                                    savePayment: savePayment,
+                                                  ));
+                                            });
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Expanded(flex: 1, child: Container()),
+                                        const Expanded(
+                                          flex: 8,
+                                          child: Center(
+                                            child: Text(
+                                              "Đặt hàng",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w400),
                                             ),
                                           ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            margin:
-                                                const EdgeInsets.only(top: 10),
-                                            child: TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              style: ButtonStyle(
-                                                padding:
-                                                    MaterialStateProperty.all(
-                                                        const EdgeInsets
-                                                                .symmetric(
-                                                            vertical: 15)),
-                                                shape: MaterialStateProperty.all(
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    30)),
-                                                        side: BorderSide(
-                                                            color: Colors.grey,
-                                                            width: 1))),
-                                              ),
-                                              child: const Text("Hủy bỏ"),
-                                            ),
-                                          )
-                                        ],
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  showModalBottomSheet<void>(
-                                      backgroundColor: Colors.white,
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (BuildContext context) {
-                                        return Container(
-                                            padding: EdgeInsets.only(
-                                                bottom: MediaQuery.of(context)
-                                                    .viewInsets
-                                                    .bottom),
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.6,
-                                            child: ModalPayment(
-                                              savePayment: savePayment,
-                                            ));
-                                      });
-                                }
-                              },
-                              child: Row(
-                                children: [
-                                  Expanded(flex: 1, child: Container()),
-                                  const Expanded(
-                                    flex: 8,
-                                    child: Center(
-                                      child: Text(
-                                        "Đặt hàng",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Image.asset(
-                                      "assets/images/calendar-black.png",
-                                      width: 40,
-                                      height: 30,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  )
-                                ],
-                              ));
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Image.asset(
+                                            "assets/images/calendar-black.png",
+                                            width: 40,
+                                            height: 30,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        )
+                                      ],
+                                    ));
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
+                          );
                         } else {
                           return const Center(
                             child: CircularProgressIndicator(),

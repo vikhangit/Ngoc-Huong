@@ -30,25 +30,27 @@ class _UuDaiScreenState extends State<UuDaiScreen> {
               active: 0,
             ),
             appBar: AppBar(
+              leadingWidth: 45,
               centerTitle: true,
-              bottomOpacity: 0.0,
-              elevation: 0.0,
-              backgroundColor: Colors.white,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.west,
-                  size: 24,
-                  color: Colors.black,
-                ),
-              ),
+              leading: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
               title: const Text("Ưu đãi",
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black)),
+                      color: Colors.white)),
             ),
             drawer: const MyLeftMenu(),
             body: RefreshIndicator(
@@ -86,6 +88,7 @@ class _UuDaiScreenState extends State<UuDaiScreen> {
                                                   0.95,
                                               child: ChiTietTinTuc(
                                                 detail: item,
+                                                type: "ưu đãi",
                                               ));
                                         });
                                   },
