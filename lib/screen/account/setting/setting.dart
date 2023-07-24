@@ -1,9 +1,11 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/account/setting/custom_switch.dart';
 import 'package:ngoc_huong/screen/account/setting/modal_change_pass.dart';
+import 'package:ngoc_huong/utils/callapi.dart';
 
 class SettingAccout extends StatefulWidget {
   const SettingAccout({super.key});
@@ -80,11 +82,10 @@ class _SettingAccoutState extends State<SettingAccout> {
           ));
         },
       );
-      Future.delayed(const Duration(seconds: 3), () {
+      Future.delayed(const Duration(seconds: 3), () async {
         Navigator.pop(context);
         Navigator.pushNamed(context, "home");
         storageAuth.deleteItem("phone");
-        storageToken.deleteItem("token");
       });
     }
 
@@ -92,9 +93,9 @@ class _SettingAccoutState extends State<SettingAccout> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(
-              active: 3,
-            ),
+            // bottomNavigationBar: const MyBottomMenu(
+            //   active: 3,
+            // ),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
@@ -251,8 +252,7 @@ class _SettingAccoutState extends State<SettingAccout> {
                         )),
                     TextButton(
                         onPressed: () {
-                          showAlertDialog(context,
-                              "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                          AppSettings.openNotificationSettings();
                         },
                         style: ButtonStyle(
                             padding: MaterialStateProperty.all(

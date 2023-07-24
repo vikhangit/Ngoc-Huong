@@ -5,6 +5,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
 import 'package:ngoc_huong/screen/checkout/checkout_success.dart';
+import 'package:ngoc_huong/screen/checkout/products/modalChooseAddress.dart';
 import 'package:ngoc_huong/screen/checkout/products/modal_payment.dart';
 import 'package:ngoc_huong/screen/checkout/products/modal_voucher.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_san_pham.dart';
@@ -23,6 +24,15 @@ int diem = 0;
 
 class _CheckOutScreenState extends State<CheckOutCart> {
   LocalStorage storage = LocalStorage("auth");
+  @override
+  void initState() {
+    getAddress().then(
+        (value) => setState(() => activeIndex = value.indexWhere((element) {
+              return element["exfields"]["is_default"] == true;
+            })));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     List listProductPayment = widget.listCart;
@@ -61,6 +71,10 @@ class _CheckOutScreenState extends State<CheckOutCart> {
     }
 
     void savePayment() {
+      setState(() {});
+    }
+
+    void saveAddress() {
       setState(() {});
     }
 
@@ -174,7 +188,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                 ),
                 Container(
                     margin: const EdgeInsets.only(
-                        left: 15, right: 15, top: 20, bottom: 25),
+                        left: 15, right: 15, top: 20, bottom: 0),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 15, vertical: 20),
                     decoration: BoxDecoration(
@@ -262,59 +276,81 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                             ))
                           ],
                         ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(vertical: 15),
-                          width: MediaQuery.of(context).size.width,
-                          height: 1,
-                          color: Colors.grey,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Expanded(
-                                flex: 30,
-                                child: Text(
-                                  "Địa chỉ",
+                      ],
+                    )),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChooseAddressShipping(
+                                  saveAddress: saveAddress,
+                                )));
+                  },
+                  child: Container(
+                      margin: const EdgeInsets.only(
+                          left: 15, right: 15, top: 10, bottom: 25),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(14)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 8,
+                            offset: const Offset(
+                                4, 4), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 9,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Địa chỉ nhận hàng",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: Colors.black),
-                                )),
-                            Expanded(
-                                flex: 70,
-                                child: FutureBuilder(
+                                ),
+                                FutureBuilder(
                                   future: getAddress(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       List list = snapshot.data!.toList();
                                       if (list.isNotEmpty) {
-                                        return Text(
-                                          "${list[0]["address"]}, ${list[0]["ward"]}, ${list[0]["district"]}, ${list[0]["city"]}",
-                                          textAlign: TextAlign.right,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black),
-                                        );
-                                      } else {
-                                        return InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        QuanLiDiaChi()));
-                                          },
-                                          child: const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                "Thêm địa chỉ",
-                                                style: TextStyle(
-                                                    color: Colors.blue),
+                                        return activeIndex > -1
+                                            ? Text(
+                                                "${list[activeIndex]["address"]}, ${list[activeIndex]["ward"]}, ${list[activeIndex]["district"]}, ${list[activeIndex]["city"]}",
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black),
                                               )
-                                            ],
-                                          ),
-                                        );
+                                            : Column(
+                                                children: list.map((e) {
+                                                  if (e["exfields"]
+                                                          ["is_default"] ==
+                                                      true) {
+                                                    return Text(
+                                                      "${e["address"]}, ${e["ward"]}, ${e["district"]}, ${e["city"]}",
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Colors.black),
+                                                    );
+                                                  } else {
+                                                    return Container();
+                                                  }
+                                                }).toList(),
+                                              );
+                                      } else {
+                                        return Container();
                                       }
                                     } else {
                                       return const Center(
@@ -322,11 +358,18 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                       );
                                     }
                                   },
-                                ))
-                          ],
-                        )
-                      ],
-                    )),
+                                )
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Icon(Icons.keyboard_arrow_right),
+                          )
+                        ],
+                      )),
+                ),
+
                 Column(
                     children: listProductPayment.map((item) {
                   int index = listProductPayment.indexOf(item);

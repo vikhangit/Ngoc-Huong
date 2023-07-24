@@ -58,6 +58,10 @@ class _ModalPhoneState extends State<ModalPhone> {
 
   @override
   Widget build(BuildContext context) {
+    void save() {
+      setState(() {});
+    }
+
     sendOTP(String phoneNumber) async {
       String phone = phoneNumber.replaceFirst(RegExp(r'0'), '+84');
       await auth.verifyPhoneNumber(
@@ -200,7 +204,7 @@ class _ModalPhoneState extends State<ModalPhone> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(top: 10, bottom: 20),
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         Navigator.pushNamed(context, "home");
                         showModalBottomSheet<void>(
@@ -215,7 +219,7 @@ class _ModalPhoneState extends State<ModalPhone> {
                                         .bottom),
                                 height:
                                     MediaQuery.of(context).size.height * 0.96,
-                                child: const ModalPassExist(),
+                                child: ModalPassExist(save: save),
                               );
                             });
                       },
@@ -235,6 +239,7 @@ class _ModalPhoneState extends State<ModalPhone> {
                                   const BorderRadius.all(Radius.circular(15))),
                           child: TextButton(
                               onPressed: () {
+                                FocusManager.instance.primaryFocus?.unfocus();
                                 onLoading();
                               },
                               style: ButtonStyle(
@@ -265,7 +270,7 @@ class _ModalPhoneState extends State<ModalPhone> {
 Widget header(BuildContext context) {
   return Row(
     children: [
-      InkWell(
+      GestureDetector(
         onTap: () {
           Navigator.pop(context);
         },

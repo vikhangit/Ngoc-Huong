@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
@@ -53,6 +54,10 @@ class _ChiTietScreenState extends State<ChiTietScreen>
     _selectedIndex2 = tabController2?.index;
   }
 
+  void save() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Map detail = widget.detail;
@@ -72,7 +77,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
               children: [
                 Expanded(
                   flex: 8,
-                  child: InkWell(
+                  child: GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
                         decoration: const BoxDecoration(
@@ -265,7 +270,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                           children: List.generate(5, (index) {
                             return Container(
                               margin: const EdgeInsets.only(top: 20),
-                              child: InkWell(
+                              child: GestureDetector(
                                 child: Row(
                                   children: [
                                     Text(
@@ -372,7 +377,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                               )
                                             ],
                                           ),
-                                          InkWell(
+                                          GestureDetector(
                                             onTap: () {},
                                             child: Icon(
                                               Icons.favorite_border,
@@ -512,7 +517,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                               )
                                             ],
                                           ),
-                                          InkWell(
+                                          GestureDetector(
                                             onTap: () {},
                                             child: Icon(
                                               Icons.favorite,
@@ -651,7 +656,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                               )
                                             ],
                                           ),
-                                          InkWell(
+                                          GestureDetector(
                                             onTap: () {},
                                             child: Icon(
                                               Icons.favorite,
@@ -790,7 +795,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                               )
                                             ],
                                           ),
-                                          InkWell(
+                                          GestureDetector(
                                             onTap: () {},
                                             child: Icon(
                                               Icons.favorite,
@@ -912,31 +917,14 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                   .primary
                                   .withOpacity(0.4))),
                       onPressed: () {
-                        if (storage.getItem("existAccount") != null &&
-                            storageToken.getItem("token") != null) {
-                          // showModalBottomSheet<void>(
-                          //     clipBehavior: Clip.antiAliasWithSaveLayer,
-                          //     context: context,
-                          //     shape: const RoundedRectangleBorder(
-                          //       borderRadius: BorderRadius.vertical(
-                          //         top: Radius.circular(15.0),
-                          //       ),
-                          //     ),
-                          //     isScrollControlled: true,
-                          //     builder: (BuildContext context) {
-                          //       return Container(
-                          //           padding: EdgeInsets.only(
-                          //               bottom: MediaQuery.of(context)
-                          //                   .viewInsets
-                          //                   .bottom),
-                          //           height:
-                          //               MediaQuery.of(context).size.height * .8,
-                          //           child: ModalDiaChiBooking(
-                          //             activeService: detail["ten_vt"],
-                          //           ));
-                          //     });
-                        } else if (storage.getItem("existAccount") != null &&
-                            storageToken.getItem("token") == null) {
+                        if (storage.getItem("phone") != null) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BookingServices(
+                                        dichvudachon: detail,
+                                      )));
+                        } else {
                           showModalBottomSheet<void>(
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               shape: const RoundedRectangleBorder(
@@ -953,27 +941,10 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                           .bottom),
                                   height:
                                       MediaQuery.of(context).size.height * 0.96,
-                                  child: const ModalPassExist(),
+                                  child: ModalPassExist(save: save),
                                 );
                               });
                         }
-                        // else {
-                        //   showModalBottomSheet<void>(
-                        //       clipBehavior: Clip.antiAliasWithSaveLayer,
-                        //       context: context,
-                        //       isScrollControlled: true,
-                        //       builder: (BuildContext context) {
-                        //         return Container(
-                        //           padding: EdgeInsets.only(
-                        //               bottom: MediaQuery.of(context)
-                        //                   .viewInsets
-                        //                   .bottom),
-                        //           height:
-                        //               MediaQuery.of(context).size.height * 0.96,
-                        //           child: const ModalPhone(),
-                        //         );
-                        //       });
-                        // }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

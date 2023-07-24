@@ -108,24 +108,25 @@ class _MyPhamScreenState extends State<MyPhamScreen> {
     });
   }
 
-  Future refreshData() async {
-    await Future.delayed(const Duration(seconds: 3));
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
+    Future refreshData() async {
+      await Future.delayed(const Duration(seconds: 3));
+      setState(() {});
+    }
+
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(
+            bottomNavigationBar:  MyBottomMenu(
               active: 0,
+              save: () => setState(() {})
             ),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
-              leading: InkWell(
+              leading: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },

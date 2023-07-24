@@ -33,7 +33,7 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
-            leading: InkWell(
+            leading: GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },

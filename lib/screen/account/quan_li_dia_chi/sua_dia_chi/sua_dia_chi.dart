@@ -10,7 +10,13 @@ import 'package:ngoc_huong/utils/callapi.dart';
 
 class SuaDiaChi extends StatefulWidget {
   final Map details;
-  const SuaDiaChi({super.key, required this.details});
+  final List listAddress;
+  final Function saveAddress;
+  const SuaDiaChi(
+      {super.key,
+      required this.details,
+      required this.listAddress,
+      required this.saveAddress});
 
   @override
   State<SuaDiaChi> createState() => _QuanLiDiaChiState();
@@ -64,10 +70,20 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
       "district": districtController.text,
       "exfields": {"type_address": typeAdress, "is_default": isDefault}
     };
-    print(data);
-    await putAddress(widget.details["_id"], data).then((value) =>
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const QuanLiDiaChi())));
+    if (isDefault == true) {
+      if (widget.listAddress.isNotEmpty) {
+        for (var i = 0; i < widget.listAddress.length; i++) {
+          putAddress(widget.listAddress[i]["_id"], {
+            "exfields": {"is_default": false}
+          });
+        }
+      }
+    }
+    await putAddress(widget.details["_id"], data).then((value) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      Navigator.pop(context);
+      widget.saveAddress();
+    });
   }
 
   void saveAddress() {
@@ -120,7 +136,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
-            leading: InkWell(
+            leading: GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -424,8 +440,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
                               readOnly: true,
                               controller: districtController,
                               onTap: () {
-                                if (activeCity.isNotEmpty &&
-                                    provinceId.isNotEmpty) {
+                                if (activeCity.isNotEmpty) {
                                   showModalBottomSheet<void>(
                                       backgroundColor: Colors.white,
                                       shape: const RoundedRectangleBorder(
@@ -448,6 +463,8 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
                                                 0.88,
                                             child: ModalQuanHuyen(
                                               saveAddress: saveAddress,
+                                              district:
+                                                  widget.details["district"],
                                             ));
                                       });
                                 }
@@ -489,9 +506,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
                               controller: wardController,
                               onTap: () {
                                 if (activeCity.isNotEmpty &&
-                                    provinceId.isNotEmpty &&
-                                    activeDistrict.isNotEmpty &&
-                                    districtId.isNotEmpty) {
+                                    activeDistrict.isNotEmpty) {
                                   showModalBottomSheet<void>(
                                       backgroundColor: Colors.white,
                                       shape: const RoundedRectangleBorder(
@@ -514,6 +529,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
                                                 0.88,
                                             child: ModalPhuongXa(
                                               saveAddress: saveAddress,
+                                              ward: widget.details["ward"],
                                             ));
                                       });
                                 }

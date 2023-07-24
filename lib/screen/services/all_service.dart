@@ -49,15 +49,13 @@ class _AllServiceScreenState extends State<AllServiceScreen>
         child: Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      bottomNavigationBar: const MyBottomMenu(
-        active: 0,
-      ),
+      bottomNavigationBar: MyBottomMenu(active: 0, save: refreshData),
       appBar: AppBar(
         primary: false,
         elevation: 0.0,
         leadingWidth: 45,
         centerTitle: true,
-        leading: InkWell(
+        leading: GestureDetector(
             onTap: () {
               Navigator.pop(context);
             },
@@ -212,7 +210,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.map((item) {
                                   int index = snapshot.data!.indexOf(item);
-                                  return InkWell(
+                                  return GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet<void>(
                                           backgroundColor: Colors.white,
@@ -307,7 +305,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.map((item) {
                                   int index = snapshot.data!.indexOf(item);
-                                  return InkWell(
+                                  return GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet<void>(
                                           backgroundColor: Colors.white,
@@ -402,7 +400,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.map((item) {
                                   int index = snapshot.data!.indexOf(item);
-                                  return InkWell(
+                                  return GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet<void>(
                                           backgroundColor: Colors.white,
@@ -497,7 +495,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.map((item) {
                                   int index = snapshot.data!.indexOf(item);
-                                  return InkWell(
+                                  return GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet<void>(
                                           backgroundColor: Colors.white,
@@ -690,10 +688,10 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: [
-                                                InkWell(
+                                                GestureDetector(
                                                   onTap: () {
                                                     if (storage.getItem(
-                                                                "existAccount") !=
+                                                                "phone") !=
                                                             null &&
                                                         storageToken.getItem(
                                                                 "token") !=
@@ -736,10 +734,10 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                 ));
                                                           });
                                                     } else if (storage.getItem(
-                                                                "existAccount") !=
+                                                                "phone") ==
                                                             null &&
                                                         storageToken.getItem(
-                                                                "token") ==
+                                                                "token") !=
                                                             null) {
                                                       showModalBottomSheet<
                                                               void>(
@@ -865,7 +863,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
-                                                InkWell(
+                                                GestureDetector(
                                                   onTap: () {
                                                     makingPhoneCall(
                                                         chiNhanh["exfields"]
@@ -1094,7 +1092,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
                                                 children: [
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
                                                       showModalBottomSheet<
                                                               void>(
@@ -1201,7 +1199,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
                                                       makingPhoneCall(
                                                           chiNhanh["exfields"]
@@ -1423,7 +1421,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
                                                 children: [
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
                                                       showModalBottomSheet<
                                                               void>(
@@ -1530,7 +1528,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
                                                       makingPhoneCall(
                                                           chiNhanh["exfields"]
@@ -1752,7 +1750,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
                                                 children: [
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
                                                       showModalBottomSheet<
                                                               void>(
@@ -1859,7 +1857,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
                                                       makingPhoneCall(
                                                           chiNhanh["exfields"]

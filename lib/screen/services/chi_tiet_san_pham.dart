@@ -61,6 +61,10 @@ class _ProductDetailState extends State<ProductDetail>
     super.dispose();
   }
 
+  void save() {
+    setState(() {});
+  }
+
   void _getActiveTabIndex() {
     _selectedIndex = tabController?.index;
   }
@@ -203,7 +207,7 @@ class _ProductDetailState extends State<ProductDetail>
               children: [
                 Expanded(
                   flex: 8,
-                  child: InkWell(
+                  child: GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
                         decoration: const BoxDecoration(
@@ -328,7 +332,7 @@ class _ProductDetailState extends State<ProductDetail>
                       ),
                       Row(
                         children: [
-                          InkWell(
+                          GestureDetector(
                             onTap: () {
                               setState(() {
                                 quantity--;
@@ -357,7 +361,7 @@ class _ProductDetailState extends State<ProductDetail>
                                   const TextStyle(fontWeight: FontWeight.w300),
                             ),
                           ),
-                          InkWell(
+                          GestureDetector(
                             onTap: () {
                               setState(() {
                                 quantity++;
@@ -450,8 +454,7 @@ class _ProductDetailState extends State<ProductDetail>
                                   .primary
                                   .withOpacity(0.4))),
                       onPressed: () {
-                        if (storage.getItem("existAccount") != null &&
-                            storageToken.getItem("token") != null) {
+                        if (storage.getItem("phone") != null) {
                           showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -576,8 +579,7 @@ class _ProductDetailState extends State<ProductDetail>
                               );
                             },
                           );
-                        } else if (storage.getItem("existAccount") != null &&
-                            storageToken.getItem("token") == null) {
+                        } else {
                           showModalBottomSheet<void>(
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               shape: const RoundedRectangleBorder(
@@ -594,23 +596,7 @@ class _ProductDetailState extends State<ProductDetail>
                                           .bottom),
                                   height:
                                       MediaQuery.of(context).size.height * 0.96,
-                                  child: const ModalPassExist(),
-                                );
-                              });
-                        } else {
-                          showModalBottomSheet<void>(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (BuildContext context) {
-                                return Container(
-                                  padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.96,
-                                  child: const ModalPhone(),
+                                  child: ModalPassExist(save: save),
                                 );
                               });
                         }
@@ -938,7 +924,7 @@ class _ProductDetailState extends State<ProductDetail>
                                   )
                                 ],
                               ),
-                              InkWell(
+                              GestureDetector(
                                 onTap: () {},
                                 child: Icon(
                                   Icons.favorite_border,
@@ -1065,7 +1051,7 @@ class _ProductDetailState extends State<ProductDetail>
                                   )
                                 ],
                               ),
-                              InkWell(
+                              GestureDetector(
                                 onTap: () {},
                                 child: Icon(
                                   Icons.favorite,
@@ -1191,7 +1177,7 @@ class _ProductDetailState extends State<ProductDetail>
                                   )
                                 ],
                               ),
-                              InkWell(
+                              GestureDetector(
                                 onTap: () {},
                                 child: Icon(
                                   Icons.favorite,
@@ -1317,7 +1303,7 @@ class _ProductDetailState extends State<ProductDetail>
                                   )
                                 ],
                               ),
-                              InkWell(
+                              GestureDetector(
                                 onTap: () {},
                                 child: Icon(
                                   Icons.favorite,

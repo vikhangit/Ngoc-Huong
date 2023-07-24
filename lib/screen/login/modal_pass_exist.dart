@@ -7,7 +7,8 @@ import 'package:ngoc_huong/screen/login/modal_phone.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalPassExist extends StatefulWidget {
-  const ModalPassExist({super.key});
+  final Function? save;
+  const ModalPassExist({super.key, this.save});
 
   @override
   State<ModalPassExist> createState() => _ModalPassExistState();
@@ -19,8 +20,8 @@ bool showPass = false;
 bool err = false;
 
 class _ModalPassExistState extends State<ModalPassExist> {
-  final LocalStorage storageAuth = LocalStorage('auth');
-  final LocalStorage storageToken = LocalStorage('token');
+  LocalStorage storageAuth = LocalStorage('auth');
+  LocalStorage storageToken = LocalStorage('token');
   void showAlertDialog(BuildContext context, String err) {
     Widget okButton = TextButton(
       child: const Text("OK"),
@@ -55,6 +56,17 @@ class _ModalPassExistState extends State<ModalPassExist> {
   }
 
   @override
+  void initState() {
+    setState(() {
+      username = "";
+      password = "";
+      showPass = false;
+      err = false;
+    });
+    super.initState();
+  }
+
+  @override
   void dispose() {
     username = "";
     password = "";
@@ -66,6 +78,7 @@ class _ModalPassExistState extends State<ModalPassExist> {
   @override
   Widget build(BuildContext context) {
     void loginAccount() async {
+      storageToken.clear();
       final dio = Dio();
       String basicAuth =
           'Basic ' + base64.encode(utf8.encode('$username:$password'));
@@ -74,13 +87,14 @@ class _ModalPassExistState extends State<ModalPassExist> {
             "$apiUrl/auth/local?group_id=$groupId&id_app=$idApp",
             options:
                 Options(headers: <String, String>{'authorization': basicAuth}));
-        print(response);
-        await storageToken.setItem("token", response.data["token"].toString());
-        await storageAuth.setItem("phone", username);
-        await storageAuth.setItem("existAccount", "true");
-        storageToken.dispose();
-        storageAuth.dispose();
+        storageToken.setItem("token", response.data["token"].toString());
+        storageAuth.setItem("phone", username);
+        // storageToken.dispose();
+        // storageAuth.dispose();
         Navigator.pop(context);
+        if (widget.save != null) {
+          widget.save!();
+        }
       } on DioException catch (e) {
         showAlertDialog(context, "${e.response!.data["message"]}");
       }
@@ -131,6 +145,7 @@ class _ModalPassExistState extends State<ModalPassExist> {
                     ),
                     TextField(
                       // keyboardType: TextInputType.number,
+                      autofocus: true,
                       textAlignVertical: TextAlignVertical.center,
                       style: const TextStyle(
                           fontSize: 20,
@@ -241,7 +256,7 @@ class _ModalPassExistState extends State<ModalPassExist> {
                       ),
                     Container(
                       margin: const EdgeInsets.only(top: 20, bottom: 20),
-                      child: InkWell(
+                      child: GestureDetector(
                         onTap: () {
                           showAlertDialog(context,
                               "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
@@ -259,7 +274,7 @@ class _ModalPassExistState extends State<ModalPassExist> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(top: 10, bottom: 20),
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         storage.deleteItem("typeOTP");
                         showModalBottomSheet<void>(
@@ -294,12 +309,13 @@ class _ModalPassExistState extends State<ModalPassExist> {
                                   const BorderRadius.all(Radius.circular(15))),
                           child: TextButton(
                               onPressed: () {
+                                FocusManager.instance.primaryFocus?.unfocus();
                                 onLoading();
                               },
                               style: ButtonStyle(
                                   padding: MaterialStateProperty.all(
                                       const EdgeInsets.all(0.0))),
-                              child: const Text("Tiếp tục",
+                              child: const Text("Đăng nhập",
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.white))),
                         )
@@ -311,7 +327,7 @@ class _ModalPassExistState extends State<ModalPassExist> {
                               color: Colors.grey.withOpacity(0.3),
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(15))),
-                          child: const Text("Tiếp tục",
+                          child: const Text("Đăng nhập",
                               style:
                                   TextStyle(fontSize: 14, color: Colors.black)),
                         )

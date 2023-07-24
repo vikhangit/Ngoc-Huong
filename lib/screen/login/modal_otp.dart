@@ -138,6 +138,7 @@ class _ModalOTPState extends State<ModalOTP> {
       Future.delayed(const Duration(seconds: 3), () {
         Navigator.pop(context);
         verifyOTPCode();
+
         showModalBottomSheet<void>(
             backgroundColor: Colors.white,
             shape: const RoundedRectangleBorder(
@@ -406,7 +407,7 @@ class _ModalOTPState extends State<ModalOTP> {
               Column(
                 children: [
                   seconds == 0
-                      ? InkWell(
+                      ? GestureDetector(
                           onTap: () {
                             onLoadingSendOTP();
                           },
@@ -468,7 +469,7 @@ class _ModalOTPState extends State<ModalOTP> {
                                 //         child: const ModalPass(),
                                 //       );
                                 //     });
-
+                                FocusManager.instance.primaryFocus?.unfocus();
                                 onLoadingVefiOTP();
                               },
                               style: ButtonStyle(
@@ -499,7 +500,7 @@ class _ModalOTPState extends State<ModalOTP> {
 Widget header(BuildContext context) {
   return Container(
     alignment: Alignment.centerRight,
-    child: InkWell(
+    child: GestureDetector(
       onTap: () {
         Navigator.pop(context);
       },

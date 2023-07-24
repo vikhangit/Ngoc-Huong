@@ -74,7 +74,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
-            leading: InkWell(
+            leading: GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -1218,7 +1218,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                                               ],
                                                             ),
                                                           ),
-                                                          InkWell(
+                                                          GestureDetector(
                                                             onTap: () {},
                                                             child: Container(
                                                               padding:

@@ -1,15 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:draggable_home/draggable_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/home/loginButton.dart';
+import 'package:ngoc_huong/screen/home/profile.dart';
 import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_tin_tuc.dart';
@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
     notificationService.requestNotificationPermission();
     notificationService.setupFlutterNotifications();
     notificationService.setupInteractMessage(context);
@@ -120,16 +121,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     setState(() {});
   }
 
+  void save() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
+    print("Tookene: ${storageToken.getItem("token")}");
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: true,
-        bottomNavigationBar: const MyBottomMenu(
+        bottomNavigationBar: MyBottomMenu(
           active: 0,
+          save: save,
         ),
         // appBar: AppBar(),
         drawer: const MyLeftMenu(),
@@ -185,9 +192,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   storageAuth.getItem("phone") == null
-                                      ? InkWell(
+                                      ? GestureDetector(
                                           onTap: () {
-                                            storage.deleteItem("typeOTP");
                                             showModalBottomSheet<void>(
                                                 clipBehavior:
                                                     Clip.antiAliasWithSaveLayer,
@@ -213,8 +219,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                                 .size
                                                                 .height *
                                                             0.96,
-                                                    child:
-                                                        const ModalPassExist(),
+                                                    child: ModalPassExist(
+                                                      save: save,
+                                                    ),
                                                   );
                                                 });
                                           },
@@ -242,22 +249,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                           ),
                                         )
                                       : FutureBuilder(
-                                          future: getProfile(
-                                              storageAuth.getItem("phone")),
+                                          future: callProfile(),
                                           builder: (context, snapshot) {
                                             if (snapshot.hasData) {
+                                              Map profile = snapshot.data!;
                                               return Row(
                                                 children: [
-                                                  const SizedBox(
+                                                  SizedBox(
                                                     width: 40,
                                                     height: 40,
                                                     child: CircleAvatar(
                                                       backgroundColor:
-                                                          Color(0xff00A3FF),
-                                                      backgroundImage:
-                                                          AssetImage(
-                                                        "assets/images/avatar.png",
-                                                      ),
+                                                          const Color(
+                                                              0xff00A3FF),
+                                                      backgroundImage: NetworkImage(
+                                                          "$apiUrl${profile["picture"]}?access_token=${storageToken.getItem("token")}}"),
                                                       radius: 35.0,
                                                     ),
                                                   ),
@@ -278,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                                     .w400),
                                                       ),
                                                       Text(
-                                                        "${snapshot.data![0]["ten_kh"]}",
+                                                        "${profile["name"]}",
                                                         style: const TextStyle(
                                                             fontSize: 14,
                                                             fontWeight:
@@ -296,34 +302,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                               );
                                             }
                                           },
-                                        ),
-                                  // Row(
-                                  //     children:
-                                  //         List.generate(list.length, (index) {
-                                  //   return Container(
-                                  //     margin: EdgeInsets.only(
-                                  //         left: index == 0 ? 0 : 8),
-                                  //     height: 5,
-                                  //     width: 30,
-                                  //     child: TextButton(
-                                  //       style: ButtonStyle(
-                                  //           backgroundColor:
-                                  //               MaterialStateProperty.all(
-                                  //                   Colors.white),
-                                  //           padding: MaterialStateProperty.all(
-                                  //               const EdgeInsets.symmetric(
-                                  //                   vertical: 2,
-                                  //                   horizontal: 5))),
-                                  //       onPressed: () {
-                                  //         controller.animateToPage(index,
-                                  //             duration: const Duration(
-                                  //                 milliseconds: 400),
-                                  //             curve: Curves.easeIn);
-                                  //       },
-                                  //       child: Container(),
-                                  //     ),
-                                  //   );
-                                  // }))
+                                        )
                                 ],
                               ),
                             )),
@@ -415,79 +394,6 @@ ListView listView(BuildContext context,
             Container(
               height: 30,
             ),
-            // FutureBuilder(
-            //   future: callAllServiceApi(),
-            //   builder: (context, snapshot) {
-            //     if (snapshot.hasData) {
-            //       List services = snapshot.data!.toList();
-            //       return SizedBox(
-            //         height: 180,
-            //         child: ListView(
-            //             physics: const BouncingScrollPhysics(),
-            //             scrollDirection: Axis.horizontal,
-            //             children: services.map((item) {
-            //               int index = services.indexOf(item);
-            //               return FutureBuilder(
-            //                 future: callBookingApiByTenVt(item["ten_vt"]),
-            //                 builder: (context, snapshot) {
-            //                   if (snapshot.hasData) {
-            //                     List list = [];
-            //                     if (snapshot.data!.length > 2) {
-            //                       list.add(item);
-            //                       return Row(
-            //                         children: list.map((e) {
-            //                           return Container(
-            //                             margin: EdgeInsets.only(
-            //                                 left: index != 0 ? 20 : 0),
-            //                             width:
-            //                                 MediaQuery.of(context).size.width /
-            //                                         2 -
-            //                                     60,
-            //                             child: Column(
-            //                               crossAxisAlignment:
-            //                                   CrossAxisAlignment.start,
-            //                               children: [
-            //                                 ClipRRect(
-            //                                   borderRadius:
-            //                                       BorderRadius.circular(6),
-            //                                   child: Image.network(
-            //                                     "$apiUrl${item["picture"]}?$token",
-            //                                     fit: BoxFit.cover,
-            //                                     width: MediaQuery.of(context)
-            //                                         .size
-            //                                         .width,
-            //                                     height: 120,
-            //                                   ),
-            //                                 ),
-            //                                 const SizedBox(
-            //                                   height: 5,
-            //                                 ),
-            //                                 Text(
-            //                                   "${item["ten_vt"]}",
-            //                                   textAlign: TextAlign.center,
-            //                                 )
-            //                               ],
-            //                             ),
-            //                           );
-            //                         }).toList(),
-            //                       );
-            //                     } else {
-            //                       return Container();
-            //                     }
-            //                   } else {
-            //                     return Container();
-            //                   }
-            //                 },
-            //               );
-            //             }).toList()),
-            //       );
-            //     } else {
-            //       return const Center(
-            //         child: CircularProgressIndicator(),
-            //       );
-            //     }
-            //   },
-            // )
             SizedBox(
               height: 245,
               child: ListView(
@@ -500,7 +406,7 @@ ListView listView(BuildContext context,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           List list = snapshot.data!.toList();
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () => showModalBottomSheet<void>(
                                 backgroundColor: Colors.white,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -567,7 +473,7 @@ ListView listView(BuildContext context,
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Chỉ với ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
+                                        "Chỉ từ ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontSize: 12,
@@ -580,7 +486,32 @@ ListView listView(BuildContext context,
                                         width:
                                             MediaQuery.of(context).size.width,
                                         child: TextButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showModalBottomSheet<void>(
+                                                  backgroundColor: Colors.white,
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                        padding: EdgeInsets.only(
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.95,
+                                                        child: ChiTietScreen(
+                                                          detail: list[0],
+                                                        ));
+                                                  });
+                                            },
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(
@@ -609,7 +540,7 @@ ListView listView(BuildContext context,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           List list = snapshot.data!.toList();
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () => showModalBottomSheet<void>(
                                 backgroundColor: Colors.white,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -675,7 +606,7 @@ ListView listView(BuildContext context,
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Chỉ với ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
+                                        "Chỉ từ ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontSize: 12,
@@ -688,7 +619,32 @@ ListView listView(BuildContext context,
                                         width:
                                             MediaQuery.of(context).size.width,
                                         child: TextButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showModalBottomSheet<void>(
+                                                  backgroundColor: Colors.white,
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                        padding: EdgeInsets.only(
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.95,
+                                                        child: ChiTietScreen(
+                                                          detail: list[0],
+                                                        ));
+                                                  });
+                                            },
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(
@@ -717,7 +673,7 @@ ListView listView(BuildContext context,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           List list = snapshot.data!.toList();
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () => showModalBottomSheet<void>(
                                 backgroundColor: Colors.white,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -783,7 +739,7 @@ ListView listView(BuildContext context,
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Chỉ với ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
+                                        "Chỉ từ ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontSize: 12,
@@ -796,7 +752,32 @@ ListView listView(BuildContext context,
                                         width:
                                             MediaQuery.of(context).size.width,
                                         child: TextButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showModalBottomSheet<void>(
+                                                  backgroundColor: Colors.white,
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                        padding: EdgeInsets.only(
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.95,
+                                                        child: ChiTietScreen(
+                                                          detail: list[0],
+                                                        ));
+                                                  });
+                                            },
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(
@@ -825,7 +806,7 @@ ListView listView(BuildContext context,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           List list = snapshot.data!.toList();
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () => showModalBottomSheet<void>(
                                 backgroundColor: Colors.white,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -891,7 +872,7 @@ ListView listView(BuildContext context,
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Chỉ với ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
+                                        "Chỉ từ ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontSize: 12,
@@ -904,7 +885,32 @@ ListView listView(BuildContext context,
                                         width:
                                             MediaQuery.of(context).size.width,
                                         child: TextButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showModalBottomSheet<void>(
+                                                  backgroundColor: Colors.white,
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                        padding: EdgeInsets.only(
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.95,
+                                                        child: ChiTietScreen(
+                                                          detail: list[0],
+                                                        ));
+                                                  });
+                                            },
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(
@@ -933,7 +939,7 @@ ListView listView(BuildContext context,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           List list = snapshot.data!.toList();
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () => showModalBottomSheet<void>(
                                 backgroundColor: Colors.white,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -999,7 +1005,7 @@ ListView listView(BuildContext context,
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Chỉ với ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
+                                        "Chỉ từ ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[0]["gia_ban_le"])}",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontSize: 12,
@@ -1012,7 +1018,32 @@ ListView listView(BuildContext context,
                                         width:
                                             MediaQuery.of(context).size.width,
                                         child: TextButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showModalBottomSheet<void>(
+                                                  backgroundColor: Colors.white,
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                        padding: EdgeInsets.only(
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.95,
+                                                        child: ChiTietScreen(
+                                                          detail: list[0],
+                                                        ));
+                                                  });
+                                            },
                                             style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(
@@ -1055,7 +1086,7 @@ ListView listView(BuildContext context,
                     color: Color(0xFF555555),
                   ),
                 ),
-                InkWell(
+                GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, "uudai");
                   },
@@ -1084,7 +1115,7 @@ ListView listView(BuildContext context,
                         scrollDirection: Axis.horizontal,
                         children: snapshot.data!.map((item) {
                           int index = snapshot.data!.indexOf(item);
-                          return InkWell(
+                          return GestureDetector(
                             onTap: () => showModalBottomSheet<void>(
                                 backgroundColor: Colors.white,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -1145,7 +1176,7 @@ ListView listView(BuildContext context,
                     color: Color(0xFF555555),
                   ),
                 ),
-                InkWell(
+                GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, "tin_tuc");
                   },

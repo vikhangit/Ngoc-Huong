@@ -30,8 +30,6 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
 
   Future<void> launchInBrowser(String link) async {
     Uri url = Uri.parse(link);
-
-    print("Link : " + link);
     if (!await launchUrl(
       url,
       mode: LaunchMode.externalApplication,
@@ -54,16 +52,12 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
   void initState() {
     controller = TextEditingController(text: valueSearch);
     Future.delayed(const Duration(seconds: 3), () {});
-    print(storage.getItem("chi_nhanh"));
     super.initState();
   }
 
   @override
   void dispose() {
     controller.dispose();
-    // Future.delayed(const Duration(seconds: 3), () {
-    //   Navigator.pop(context);
-    // });
     super.dispose();
   }
 
@@ -87,7 +81,6 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
           ? Container()
           : Container(
               margin: const EdgeInsets.only(top: 20),
-              // width: MediaQuery.of(context).size.width,
               height: 50,
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
@@ -264,7 +257,7 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
                                                 const SizedBox(
                                                   height: 8,
                                                 ),
-                                                InkWell(
+                                                GestureDetector(
                                                   onTap: () {
                                                     makingPhoneCall(
                                                         item["exfields"]
@@ -308,7 +301,7 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    InkWell(
+                                                    GestureDetector(
                                                         onTap: () {
                                                           launchInBrowser(
                                                               "https://www.google.com/maps/search/${"Thẩm+Mỹ+Viện+Ngọc+Hường+${item["ten_kho"] == "An Giang" || item["ten_kho"] == "Bình Dương" ? item["exfields"]["dia_chi"].toString().replaceAll(" ", "+") : item["ten_kho"].toString().replaceAll(" ", "+")}"}/@${item["location"]["latitude"]},${item["location"]["longitude"]}");

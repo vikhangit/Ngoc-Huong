@@ -51,17 +51,28 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
             //   active: 5,
             // ),
             appBar: AppBar(
-                bottomOpacity: 0.0,
-                elevation: 0.0,
-                leadingWidth: 0,
-                automaticallyImplyLeading: false,
-                backgroundColor: Colors.white,
-                centerTitle: true,
-                title: const Text("Thông báo",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black))),
+              leadingWidth: 45,
+              centerTitle: true,
+              leading: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
+              title: const Text("Thông báo",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white)),
+            ),
             drawer: const MyLeftMenu(),
             body: Container(
                 padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
@@ -142,7 +153,7 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                         Wrap(
                           runSpacing: 15,
                           children: [
-                            InkWell(
+                            GestureDetector(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 50,
@@ -178,7 +189,7 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                                           builder: (context) =>
                                               const BuyHistory()));
                                 }),
-                            InkWell(
+                            GestureDetector(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 50,

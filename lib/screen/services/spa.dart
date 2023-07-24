@@ -5,6 +5,9 @@ import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/booking/booking.dart';
+import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
+import 'package:ngoc_huong/screen/login/modal_phone.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/services/modal_dia_chi_booking.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
@@ -30,6 +33,10 @@ class _SpaScreenState extends State<SpaScreen> {
     setState(() {});
   }
 
+  void save() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Map chiNhanh = jsonDecode(storageCN.getItem("chi_nhanh"));
@@ -37,13 +44,14 @@ class _SpaScreenState extends State<SpaScreen> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(
+            bottomNavigationBar: MyBottomMenu(
               active: 0,
+              save: () => setState(() {}),
             ),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
-              leading: InkWell(
+              leading: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
@@ -210,28 +218,40 @@ class _SpaScreenState extends State<SpaScreen> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
                                                 children: [
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
-                                                      showModalBottomSheet<
-                                                              void>(
-                                                          clipBehavior: Clip
-                                                              .antiAliasWithSaveLayer,
-                                                          context: context,
-                                                          shape:
-                                                              const RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .vertical(
-                                                              top: Radius
-                                                                  .circular(
-                                                                      15.0),
+                                                      if (storage.getItem(
+                                                              "phone") !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        BookingServices(
+                                                                          dichvudachon:
+                                                                              item,
+                                                                        )));
+                                                      } else {
+                                                        showModalBottomSheet<
+                                                                void>(
+                                                            clipBehavior: Clip
+                                                                .antiAliasWithSaveLayer,
+                                                            shape:
+                                                                const RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.vertical(
+                                                                      top: Radius
+                                                                          .circular(
+                                                                              15)),
                                                             ),
-                                                          ),
-                                                          isScrollControlled:
-                                                              true,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return Container(
+                                                            context: context,
+                                                            isScrollControlled:
+                                                                true,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return Container(
                                                                 padding: EdgeInsets.only(
                                                                     bottom: MediaQuery.of(
                                                                             context)
@@ -241,14 +261,14 @@ class _SpaScreenState extends State<SpaScreen> {
                                                                             context)
                                                                         .size
                                                                         .height *
-                                                                    .8,
+                                                                    0.96,
                                                                 child:
-                                                                    ModalDiaChiBooking(
-                                                                  activeService:
-                                                                      item[
-                                                                          "ten_vt"],
-                                                                ));
-                                                          });
+                                                                    ModalPassExist(
+                                                                        save:
+                                                                            save),
+                                                              );
+                                                            });
+                                                      }
                                                     },
                                                     child: Container(
                                                       padding:
@@ -317,7 +337,7 @@ class _SpaScreenState extends State<SpaScreen> {
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
                                                       makingPhoneCall(
                                                           chiNhanh["exfields"]
@@ -539,28 +559,40 @@ class _SpaScreenState extends State<SpaScreen> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
                                                 children: [
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
-                                                      showModalBottomSheet<
-                                                              void>(
-                                                          clipBehavior: Clip
-                                                              .antiAliasWithSaveLayer,
-                                                          context: context,
-                                                          shape:
-                                                              const RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .vertical(
-                                                              top: Radius
-                                                                  .circular(
-                                                                      15.0),
+                                                      if (storage.getItem(
+                                                              "phone") !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        BookingServices(
+                                                                          dichvudachon:
+                                                                              item,
+                                                                        )));
+                                                      } else {
+                                                        showModalBottomSheet<
+                                                                void>(
+                                                            clipBehavior: Clip
+                                                                .antiAliasWithSaveLayer,
+                                                            shape:
+                                                                const RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.vertical(
+                                                                      top: Radius
+                                                                          .circular(
+                                                                              15)),
                                                             ),
-                                                          ),
-                                                          isScrollControlled:
-                                                              true,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return Container(
+                                                            context: context,
+                                                            isScrollControlled:
+                                                                true,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return Container(
                                                                 padding: EdgeInsets.only(
                                                                     bottom: MediaQuery.of(
                                                                             context)
@@ -570,14 +602,14 @@ class _SpaScreenState extends State<SpaScreen> {
                                                                             context)
                                                                         .size
                                                                         .height *
-                                                                    .8,
+                                                                    0.96,
                                                                 child:
-                                                                    ModalDiaChiBooking(
-                                                                  activeService:
-                                                                      item[
-                                                                          "ten_vt"],
-                                                                ));
-                                                          });
+                                                                    ModalPassExist(
+                                                                        save:
+                                                                            save),
+                                                              );
+                                                            });
+                                                      }
                                                     },
                                                     child: Container(
                                                       padding:
@@ -646,7 +678,7 @@ class _SpaScreenState extends State<SpaScreen> {
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
                                                       makingPhoneCall(
                                                           chiNhanh["exfields"]
@@ -868,28 +900,40 @@ class _SpaScreenState extends State<SpaScreen> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
                                                 children: [
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
-                                                      showModalBottomSheet<
-                                                              void>(
-                                                          clipBehavior: Clip
-                                                              .antiAliasWithSaveLayer,
-                                                          context: context,
-                                                          shape:
-                                                              const RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .vertical(
-                                                              top: Radius
-                                                                  .circular(
-                                                                      15.0),
+                                                      if (storage.getItem(
+                                                              "phone") !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        BookingServices(
+                                                                          dichvudachon:
+                                                                              item,
+                                                                        )));
+                                                      } else {
+                                                        showModalBottomSheet<
+                                                                void>(
+                                                            clipBehavior: Clip
+                                                                .antiAliasWithSaveLayer,
+                                                            shape:
+                                                                const RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.vertical(
+                                                                      top: Radius
+                                                                          .circular(
+                                                                              15)),
                                                             ),
-                                                          ),
-                                                          isScrollControlled:
-                                                              true,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return Container(
+                                                            context: context,
+                                                            isScrollControlled:
+                                                                true,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return Container(
                                                                 padding: EdgeInsets.only(
                                                                     bottom: MediaQuery.of(
                                                                             context)
@@ -899,14 +943,14 @@ class _SpaScreenState extends State<SpaScreen> {
                                                                             context)
                                                                         .size
                                                                         .height *
-                                                                    .8,
+                                                                    0.96,
                                                                 child:
-                                                                    ModalDiaChiBooking(
-                                                                  activeService:
-                                                                      item[
-                                                                          "ten_vt"],
-                                                                ));
-                                                          });
+                                                                    ModalPassExist(
+                                                                        save:
+                                                                            save),
+                                                              );
+                                                            });
+                                                      }
                                                     },
                                                     child: Container(
                                                       padding:
@@ -975,7 +1019,7 @@ class _SpaScreenState extends State<SpaScreen> {
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  InkWell(
+                                                  GestureDetector(
                                                     onTap: () {
                                                       makingPhoneCall(
                                                           chiNhanh["exfields"]

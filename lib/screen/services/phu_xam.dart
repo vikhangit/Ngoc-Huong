@@ -33,13 +33,12 @@ class _PhunXamScreenState extends State<PhunXamScreen> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(
-              active: 0,
-            ),
+            bottomNavigationBar:
+                MyBottomMenu(active: 0, save: () => setState(() {})),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
-              leading: InkWell(
+              leading: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
@@ -92,7 +91,7 @@ class _PhunXamScreenState extends State<PhunXamScreen> {
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.map((item) {
                                   int index = snapshot.data!.indexOf(item);
-                                  return InkWell(
+                                  return GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet<void>(
                                           backgroundColor: Colors.white,
@@ -187,7 +186,7 @@ class _PhunXamScreenState extends State<PhunXamScreen> {
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.map((item) {
                                   int index = snapshot.data!.indexOf(item);
-                                  return InkWell(
+                                  return GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet<void>(
                                           backgroundColor: Colors.white,
@@ -282,7 +281,7 @@ class _PhunXamScreenState extends State<PhunXamScreen> {
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.map((item) {
                                   int index = snapshot.data!.indexOf(item);
-                                  return InkWell(
+                                  return GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet<void>(
                                           backgroundColor: Colors.white,
@@ -377,7 +376,7 @@ class _PhunXamScreenState extends State<PhunXamScreen> {
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.map((item) {
                                   int index = snapshot.data!.indexOf(item);
-                                  return InkWell(
+                                  return GestureDetector(
                                     onTap: () {
                                       showModalBottomSheet<void>(
                                           backgroundColor: Colors.white,

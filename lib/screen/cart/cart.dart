@@ -323,13 +323,12 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          bottomNavigationBar: const MyBottomMenu(
-            active: 1,
-          ),
+          bottomNavigationBar:
+              MyBottomMenu(active: 1, save: () => setState(() {})),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
-            leading: InkWell(
+            leading: GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -410,7 +409,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                   borderRadius:
                                                       const BorderRadius.all(
                                                           Radius.circular(8))),
-                                              child: InkWell(
+                                              child: GestureDetector(
                                                   onTap: () {
                                                     setState(() {
                                                       if (listCheckout
@@ -578,7 +577,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                 ),
                                                                 Row(
                                                                   children: [
-                                                                    InkWell(
+                                                                    GestureDetector(
                                                                       onTap:
                                                                           () {
                                                                         onLoading(
@@ -623,7 +622,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                                 FontWeight.w300),
                                                                       ),
                                                                     ),
-                                                                    InkWell(
+                                                                    GestureDetector(
                                                                       onTap:
                                                                           () {
                                                                         onLoading(
@@ -664,39 +663,38 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                   const EdgeInsets
                                                                           .only(
                                                                       top: 6),
-                                                              child: InkWell(
-                                                                  onTap: () {
-                                                                    showInfoDialog(
-                                                                        context,
-                                                                        list[index]
-                                                                            [
-                                                                            "_id"]);
-                                                                  },
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Image
-                                                                          .asset(
-                                                                        "assets/images/delete-red.png",
-                                                                        width:
-                                                                            16,
-                                                                        height:
-                                                                            16,
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            5,
-                                                                      ),
-                                                                      Text(
-                                                                        "Xóa",
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                13,
-                                                                            fontWeight:
-                                                                                FontWeight.w300,
-                                                                            color: Theme.of(context).colorScheme.primary),
-                                                                      )
-                                                                    ],
-                                                                  )),
+                                                              child:
+                                                                  GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        showInfoDialog(
+                                                                            context,
+                                                                            list[index]["_id"]);
+                                                                      },
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Image
+                                                                              .asset(
+                                                                            "assets/images/delete-red.png",
+                                                                            width:
+                                                                                16,
+                                                                            height:
+                                                                                16,
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            width:
+                                                                                5,
+                                                                          ),
+                                                                          Text(
+                                                                            "Xóa",
+                                                                            style: TextStyle(
+                                                                                fontSize: 13,
+                                                                                fontWeight: FontWeight.w300,
+                                                                                color: Theme.of(context).colorScheme.primary),
+                                                                          )
+                                                                        ],
+                                                                      )),
                                                             )
                                                           ],
                                                         ),

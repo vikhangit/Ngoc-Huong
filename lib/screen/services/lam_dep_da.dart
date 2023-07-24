@@ -5,6 +5,7 @@ import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
 import 'package:ngoc_huong/screen/login/modal_phone.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
@@ -32,6 +33,10 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
     setState(() {});
   }
 
+  void save() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Map chiNhanh = jsonDecode(storageCN.getItem("chi_nhanh"));
@@ -39,13 +44,12 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(
-              active: 0,
-            ),
+            bottomNavigationBar:
+                MyBottomMenu(active: 0, save: () => setState(() {})),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
-              leading: InkWell(
+              leading: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
@@ -190,57 +194,20 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: [
-                                                InkWell(
+                                                GestureDetector(
                                                   onTap: () {
-                                                    if (storage.getItem(
-                                                                "existAccount") !=
-                                                            null &&
-                                                        storageToken.getItem(
-                                                                "token") !=
-                                                            null) {
-                                                      showModalBottomSheet<
-                                                              void>(
-                                                          clipBehavior: Clip
-                                                              .antiAliasWithSaveLayer,
-                                                          context: context,
-                                                          shape:
-                                                              const RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .vertical(
-                                                              top: Radius
-                                                                  .circular(
-                                                                      15.0),
-                                                            ),
-                                                          ),
-                                                          isScrollControlled:
-                                                              true,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return Container(
-                                                                padding: EdgeInsets.only(
-                                                                    bottom: MediaQuery.of(
-                                                                            context)
-                                                                        .viewInsets
-                                                                        .bottom),
-                                                                height: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .height *
-                                                                    .8,
-                                                                child:
-                                                                    ModalDiaChiBooking(
-                                                                  activeService:
-                                                                      item[
-                                                                          "ten_vt"],
-                                                                ));
-                                                          });
-                                                    } else if (storage.getItem(
-                                                                "existAccount") !=
-                                                            null &&
-                                                        storageToken.getItem(
-                                                                "token") ==
-                                                            null) {
+                                                    if (storage
+                                                            .getItem("phone") !=
+                                                        null) {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  BookingServices(
+                                                                    dichvudachon:
+                                                                        item,
+                                                                  )));
+                                                    } else {
                                                       showModalBottomSheet<
                                                               void>(
                                                           clipBehavior: Clip
@@ -270,32 +237,9 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
                                                                       .height *
                                                                   0.96,
                                                               child:
-                                                                  const ModalPassExist(),
-                                                            );
-                                                          });
-                                                    } else {
-                                                      showModalBottomSheet<
-                                                              void>(
-                                                          clipBehavior: Clip
-                                                              .antiAliasWithSaveLayer,
-                                                          context: context,
-                                                          isScrollControlled:
-                                                              true,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return Container(
-                                                              padding: EdgeInsets.only(
-                                                                  bottom: MediaQuery.of(
-                                                                          context)
-                                                                      .viewInsets
-                                                                      .bottom),
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height *
-                                                                  0.96,
-                                                              child:
-                                                                  const ModalPhone(),
+                                                                  ModalPassExist(
+                                                                      save:
+                                                                          save),
                                                             );
                                                           });
                                                     }
@@ -365,7 +309,7 @@ class _LamDepDaScreenState extends State<LamDepDaScreen> {
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
-                                                InkWell(
+                                                GestureDetector(
                                                   onTap: () {
                                                     makingPhoneCall(
                                                         chiNhanh["exfields"]

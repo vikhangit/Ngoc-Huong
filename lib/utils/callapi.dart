@@ -199,12 +199,6 @@ Future<List> callWardApi(String districtId) async {
   return allProvince;
 }
 
-Future callProvinceByCode(String code) async {
-  final dio = Dio();
-  final response = await dio.get('https://provinces.open-api.vn/api/p/$code');
-  return response.data;
-}
-
 Future<List> searchProvinceApi(keyword) async {
   List allProvince = [];
   final dio = Dio();
@@ -378,6 +372,15 @@ Future signup(Map data) async {
   // storage.dispose();
 }
 
+Future callProfile() async {
+  final dio = Dio();
+  final response = await dio
+      .get("$apiUrl/api/profile?access_token=${storage.getItem("token")}");
+  return response.data;
+  // data = response;
+  // storage.dispose();
+}
+
 Future getProfile(String phone) async {
   final dio = Dio();
   final response = await dio
@@ -434,6 +437,16 @@ Future updateProfile(String id, String phone, Map data) async {
   final dio = Dio();
   final response = await dio.put(
       "$apiUrl/api/$idApp/customer/$id?q={'of_user':'$phone'}&$token",
+      data: data);
+  print(response);
+  // data = response;
+  // storage.dispose();
+}
+
+Future callUpdateProfile(Map data) async {
+  final dio = Dio();
+  final response = await dio.post(
+      "$apiUrl/api/updateprofile?access_token=${storage.getItem("token")}",
       data: data);
   print(response);
   // data = response;

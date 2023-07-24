@@ -146,7 +146,7 @@ class _TuVanSuccessState extends State<TuVanSuccess>
                             ],
                           ),
                         ),
-                        InkWell(
+                        GestureDetector(
                             child: Container(
                               width: MediaQuery.of(context).size.width,
                               height: 50,

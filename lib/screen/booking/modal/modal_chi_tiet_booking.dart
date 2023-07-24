@@ -161,7 +161,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
             children: [
               Expanded(
                 flex: 8,
-                child: InkWell(
+                child: GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
                       decoration: const BoxDecoration(

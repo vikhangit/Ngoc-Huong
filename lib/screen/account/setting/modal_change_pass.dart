@@ -85,21 +85,22 @@ class _ModalChangePassState extends State<ModalChangePass> {
             .then((value) {
           Navigator.pushNamed(context, "home");
           storageAuth.deleteItem("phone");
-          storageToken.deleteItem("token");
+          setState(() {
+            ElegantNotification.success(
+              width: MediaQuery.of(context).size.width,
+              height: 50,
+              notificationPosition: NotificationPosition.topCenter,
+              toastDuration: const Duration(milliseconds: 2000),
+              animation: AnimationType.fromTop,
+              // title: const Text('Cập nhật'),
+              description: const Text(
+                'Đổi mật khẩu thành công',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+              ),
+              onDismiss: () {},
+            ).show(context);
+          });
         });
-        ElegantNotification.success(
-          width: MediaQuery.of(context).size.width,
-          height: 50,
-          notificationPosition: NotificationPosition.topCenter,
-          toastDuration: const Duration(milliseconds: 2000),
-          animation: AnimationType.fromTop,
-          // title: const Text('Cập nhật'),
-          description: const Text(
-            'Đổi mật khẩu thành công',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-          ),
-          onDismiss: () {},
-        ).show(context);
       } on DioException catch (e) {
         Navigator.pop(context);
         showAlertDialog(context, "${e.response!.data["error"]}");

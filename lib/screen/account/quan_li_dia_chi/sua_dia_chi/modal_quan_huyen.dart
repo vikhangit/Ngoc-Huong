@@ -7,7 +7,9 @@ import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalQuanHuyen extends StatefulWidget {
   final Function saveAddress;
-  const ModalQuanHuyen({super.key, required this.saveAddress});
+  final String district;
+  const ModalQuanHuyen(
+      {super.key, required this.saveAddress, required this.district});
 
   @override
   State<ModalQuanHuyen> createState() => _ModalDiaDiemState();
@@ -24,9 +26,13 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
   @override
   void initState() {
     controller = TextEditingController(text: valueSearch);
-    // setState(() {
-    //   provinceId = storage.getItem("city_code");
-    // });
+    callDistrictApi(provinceId).then((value) =>
+        setState(() => districtId = value[value.indexWhere((element) {
+              return element["district_name"] == widget.district;
+            })]["district_id"]));
+    setState(() {
+      activeDistrict = widget.district;
+    });
     super.initState();
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ngoc_huong/screen/booking/booking_step2.dart';
+import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalDiaChiBooking extends StatefulWidget {
@@ -168,8 +168,7 @@ class _ModalDiaChiBookingState extends State<ModalDiaChiBooking> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => BookingStep2(
-                                  serviceName: activeServie, activeCN: CN)));
+                              builder: (context) => BookingServices()));
                     },
                     child: Row(
                       children: [

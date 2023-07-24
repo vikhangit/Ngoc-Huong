@@ -52,6 +52,10 @@ class _SignUpSuccessState extends State<SignUpSuccess>
 
   @override
   Widget build(BuildContext context) {
+    void save() {
+      setState(() {});
+    }
+
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
@@ -150,7 +154,7 @@ class _SignUpSuccessState extends State<SignUpSuccess>
                           spacing: 15,
                           runSpacing: 15,
                           children: [
-                            InkWell(
+                            GestureDetector(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 50,
@@ -199,11 +203,13 @@ class _SignUpSuccessState extends State<SignUpSuccess>
                                                   .size
                                                   .height *
                                               0.9,
-                                          child: const ModalPassExist(),
+                                          child: ModalPassExist(
+                                            save: save,
+                                          ),
                                         );
                                       });
                                 }),
-                            InkWell(
+                            GestureDetector(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 50,

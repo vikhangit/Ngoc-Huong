@@ -31,7 +31,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
               children: [
                 Expanded(
                   flex: 8,
-                  child: InkWell(
+                  child: GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
                         decoration: const BoxDecoration(
@@ -65,11 +65,10 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             height: MediaQuery.of(context).size.height * 0.95 - 100,
             child: ListView(children: [
               Container(
-                margin: const EdgeInsets.only(top: 10),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(
@@ -101,6 +100,10 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                     child: Text(
                       "${uudaiDetail["title"]}",
                       textAlign: TextAlign.left,
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black),
                     ),
                   )
                 ],
@@ -115,15 +118,21 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style:
-                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
               ),
               SizedBox(
                 child: Html(
                   data: uudaiDetail["content"],
                   style: {
+                    "*": Style(
+                      fontSize: FontSize(15),
+                    ),
+                    "*:not(strong)": Style(
+                      fontWeight: FontWeight.w300,
+                    ),
                     "*:not(img)": Style(
-                        lineHeight: LineHeight(1.5),
-                        margin: Margins.only(left: 0))
+                        lineHeight: const LineHeight(1.5),
+                        margin: Margins.only(left: 0, top: 10, bottom: 10))
                   },
                 ),
               ),

@@ -16,13 +16,21 @@ class QuanLiDiaChi extends StatefulWidget {
 class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
   LocalStorage storage = LocalStorage('token');
 
+  Future refreshData() async {
+    await Future.delayed(const Duration(seconds: 3));
+    setState(() {});
+  }
+
+  void save() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     void deleteAddressByID(String id) async {
       await deleteAddress(id).then((value) => setState(() {}));
     }
 
-    print(storage.getItem("token"));
     void onLoading(String id) {
       showDialog(
         context: context,
@@ -57,9 +65,12 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
-            leading: InkWell(
+            leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AccountScreen()));
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -90,80 +101,88 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                     if (snapshot.hasData) {
                       List list = snapshot.data!.toList();
                       if (list.isNotEmpty) {
-                        return ListView(
-                            children: list.map((item) {
-                          int index = list.indexOf(item);
-                          return Container(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              margin: EdgeInsets.only(top: index == 0 ? 0 : 10),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          width: 1, color: Colors.grey[300]!))),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SuaDiaChi(
-                                                          details: item,
-                                                        )));
-                                          },
-                                          child: const Text(
-                                            "Sửa",
-                                            style:
-                                                TextStyle(color: Colors.blue),
-                                          )),
-                                      TextButton(
-                                          onPressed: () {
-                                            onLoading(item["_id"]);
-                                          },
-                                          child: const Text(
-                                            "Xóa",
-                                            style: TextStyle(color: Colors.red),
-                                          ))
-                                    ],
-                                  ),
-                                  Text(
-                                    "${item["address"]}, ${item["ward"]}, ${item["district"]}, ${item["city"]}",
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  item["exfields"]["is_default"] == true
-                                      ? Row(
-                                          children: [
-                                            Image.asset(
-                                              "assets/images/location-green.png",
-                                              width: 24,
-                                              height: 24,
-                                            ),
-                                            const SizedBox(
-                                              width: 4,
-                                            ),
-                                            const Text(
-                                              "Địa chỉ mặc định",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w300,
-                                                  color: Color(0xFF1CC473)),
-                                            )
-                                          ],
-                                        )
-                                      : Container()
-                                ],
-                              ));
-                        }).toList());
+                        return RefreshIndicator(
+                          onRefresh: () => refreshData(),
+                          child: ListView(
+                              children: list.map((item) {
+                            int index = list.indexOf(item);
+                            return Container(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                margin:
+                                    EdgeInsets.only(top: index == 0 ? 0 : 10),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            width: 1,
+                                            color: Colors.grey[300]!))),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SuaDiaChi(
+                                                            details: item,
+                                                            listAddress: list,
+                                                            saveAddress: save,
+                                                          )));
+                                            },
+                                            child: const Text(
+                                              "Sửa",
+                                              style:
+                                                  TextStyle(color: Colors.blue),
+                                            )),
+                                        TextButton(
+                                            onPressed: () {
+                                              onLoading(item["_id"]);
+                                            },
+                                            child: const Text(
+                                              "Xóa",
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            ))
+                                      ],
+                                    ),
+                                    Text(
+                                      "${item["address"]}, ${item["ward"]}, ${item["district"]}, ${item["city"]}",
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    item["exfields"]["is_default"] == true
+                                        ? Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/location-green.png",
+                                                width: 24,
+                                                height: 24,
+                                              ),
+                                              const SizedBox(
+                                                width: 4,
+                                              ),
+                                              const Text(
+                                                "Địa chỉ mặc định",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w300,
+                                                    color: Color(0xFF1CC473)),
+                                              )
+                                            ],
+                                          )
+                                        : Container()
+                                  ],
+                                ));
+                          }).toList()),
+                        );
                       } else {
                         return Container(
                           margin: const EdgeInsets.only(top: 40, bottom: 15),
@@ -177,35 +196,49 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                     }
                   },
                 )),
-                Container(
-                  margin: const EdgeInsets.all(15),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ThemDiaChi()));
-                    },
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                            const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)))),
-                        backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).colorScheme.primary),
-                        padding: MaterialStateProperty.all(
-                            const EdgeInsets.symmetric(
-                                vertical: 14, horizontal: 20))),
-                    child: const Center(
-                      child: Text(
-                        "Thêm địa chỉ",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
+                FutureBuilder(
+                  future: getAddress(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 15),
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ThemDiaChi(
+                                          listAddress: snapshot.data!.toList(),
+                                          save: save,
+                                        )));
+                          },
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15)))),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Theme.of(context).colorScheme.primary),
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                      vertical: 14, horizontal: 20))),
+                          child: const Center(
+                            child: Text(
+                              "Thêm địa chỉ",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
                 )
               ],
             ),

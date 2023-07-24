@@ -9,7 +9,7 @@ Widget gender(BuildContext context, Function(String value) changeGender) {
         children: genderList.map(
           (element) {
             return Expanded(
-                child: InkWell(
+                child: GestureDetector(
               onTap: () {
                 changeGender(element);
               },

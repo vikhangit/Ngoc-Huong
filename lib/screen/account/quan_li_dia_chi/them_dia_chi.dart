@@ -9,7 +9,9 @@ import 'package:ngoc_huong/screen/account/setting/custom_switch.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ThemDiaChi extends StatefulWidget {
-  const ThemDiaChi({super.key});
+  final List listAddress;
+  final Function save;
+  const ThemDiaChi({super.key, required this.listAddress, required this.save});
 
   @override
   State<ThemDiaChi> createState() => _QuanLiDiaChiState();
@@ -26,6 +28,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
   TextEditingController wardController = TextEditingController();
   LocalStorage storage = LocalStorage("auth");
   LocalStorage storageToken = LocalStorage('token');
+
   @override
   void initState() {
     super.initState();
@@ -39,12 +42,12 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
     cityController.dispose();
     districtController.dispose();
     wardController.dispose();
-
     address = "";
     super.dispose();
   }
 
   void addAddress() async {
+    List listID = [];
     Map data = {
       "address": address,
       "city": activeCity,
@@ -52,9 +55,22 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
       "district": activeDistrict,
       "exfields": {"type_address": typeAdress, "is_default": isDefault}
     };
+    print(data);
+    if (isDefault == true) {
+      if (widget.listAddress.isNotEmpty) {
+        for (var i = 0; i < widget.listAddress.length; i++) {
+          putAddress(widget.listAddress[i]["_id"], {
+            "exfields": {"is_default": false}
+          });
+        }
+      }
+    }
     await postAddress(data).then((value) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
+      FocusManager.instance.primaryFocus?.unfocus();
+      Navigator.pop(context);
+
+      widget.save();
+
       setState(() {
         activeCity = "";
         provinceId = "";
@@ -116,7 +132,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
-            leading: InkWell(
+            leading: GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -609,6 +625,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
                   margin: const EdgeInsets.all(15),
                   child: TextButton(
                     onPressed: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       onLoading();
                     },
                     style: ButtonStyle(

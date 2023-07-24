@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
 import 'package:ngoc_huong/screen/login/modal_phone.dart';
 
 class MyBottomMenu extends StatefulWidget {
   final int active;
-  const MyBottomMenu({super.key, required this.active});
+  final Function save;
+  const MyBottomMenu({super.key, required this.active, required this.save});
 
   @override
   State<MyBottomMenu> createState() => _MyBottomMenuState();
@@ -38,6 +40,14 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
   LocalStorage storage = LocalStorage('auth');
   LocalStorage storageToken = LocalStorage('token');
   String a = "";
+  void save() {
+    if (widget.save != null) {
+      widget.save!();
+    } else {
+      setState(() {});
+    }
+  }
+
   void onItemTapped(int index) {
     if (index == 0) {
       Navigator.pushNamed(context, "home");
@@ -79,7 +89,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),
                 height: MediaQuery.of(context).size.height * 0.96,
-                child: const ModalPassExist(),
+                child: ModalPassExist(save: save),
               );
             });
       }
@@ -129,7 +139,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                   margin: EdgeInsets.only(
                       left: index == 2 ? 15 : 0, right: index == 1 ? 15 : 0),
                   alignment: Alignment.center,
-                  child: InkWell(
+                  child: GestureDetector(
                       // style: ButtonStyle(
                       //     padding: MaterialStateProperty.all(
                       //         const EdgeInsets.symmetric(

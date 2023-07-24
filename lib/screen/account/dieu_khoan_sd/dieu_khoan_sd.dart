@@ -52,7 +52,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
-            leading: InkWell(
+            leading: GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },

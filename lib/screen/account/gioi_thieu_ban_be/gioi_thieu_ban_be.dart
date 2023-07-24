@@ -18,7 +18,7 @@ class _GioiThieuBanBeState extends State<GioiThieuBanBe> {
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
-            leading: InkWell(
+            leading: GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },

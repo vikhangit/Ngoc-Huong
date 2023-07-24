@@ -40,13 +40,12 @@ class _TinTucScreenState extends State<TinTucScreen> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(
-              active: 0,
-            ),
+            bottomNavigationBar:
+                MyBottomMenu(active: 0, save: () => setState(() {})),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
-              leading: InkWell(
+              leading: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
@@ -77,7 +76,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                       alignment: WrapAlignment.spaceBetween,
                       spacing: 15,
                       children: tinTucList.map((item) {
-                        return InkWell(
+                        return GestureDetector(
                           onTap: () {
                             showModalBottomSheet<void>(
                                 backgroundColor: Colors.white,

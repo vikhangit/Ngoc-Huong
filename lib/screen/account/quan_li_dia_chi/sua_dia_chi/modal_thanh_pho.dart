@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_phuong_xa.dart';
-import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_quan_huyen.dart';
+import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_phuong_xa.dart';
+import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_quan_huyen.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/sua_dia_chi.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
@@ -25,10 +25,13 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
   @override
   void initState() {
     controller = TextEditingController(text: valueSearch);
-    // setState(() {
-    //   provinceId = storage.getItem("city_code");
-    // });
-
+    callProvinceApi().then((value) =>
+        setState(() => provinceId = value[value.indexWhere((element) {
+              return element["province_name"] == widget.city;
+            })]["province_id"]));
+    setState(() {
+      activeCity = widget.city;
+    });
     super.initState();
   }
 
@@ -43,11 +46,11 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
 
   void changeAddress(String id, String name) {
     setState(() {
-      provinceId = id;
-      activeCity = name;
       cityController = TextEditingController(text: name);
       districtController = TextEditingController(text: "");
       wardController = TextEditingController(text: "");
+      provinceId = id;
+      activeCity = name;
       districtId = "";
       wardId = "";
       activeDistrict = "";
@@ -57,6 +60,7 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
 
   @override
   Widget build(BuildContext context) {
+    print(provinceId);
     return Container(
       padding: const EdgeInsets.all(15.0),
       child: Column(
@@ -150,11 +154,12 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
                                         fontSize: 16,
                                         color: Colors.black),
                                   ),
-                                  if (provinceId == item["province_id"])
-                                    const Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                    )
+                                  if (provinceId.isNotEmpty)
+                                    if (provinceId == item["province_id"])
+                                      const Icon(
+                                        Icons.check,
+                                        color: Colors.green,
+                                      )
                                 ],
                               ),
                             ),

@@ -36,6 +36,7 @@ class _TuVanScreenState extends State<TuVanScreen> {
       "dia_chi": address,
       "ghi_chu": note
     };
+    FocusManager.instance.primaryFocus?.unfocus();
     await postLienHeTuVan(data);
   }
 
@@ -94,7 +95,7 @@ class _TuVanScreenState extends State<TuVanScreen> {
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
-              leading: InkWell(
+              leading: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_quan_huyen.dart';
-import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_thanh_pho.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/sua_dia_chi.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalPhuongXa extends StatefulWidget {
   final Function saveAddress;
-  const ModalPhuongXa({super.key, required this.saveAddress});
+  final String ward;
+  const ModalPhuongXa(
+      {super.key, required this.saveAddress, required this.ward});
 
   @override
   State<ModalPhuongXa> createState() => _ModalDiaDiemState();
@@ -24,9 +25,13 @@ class _ModalDiaDiemState extends State<ModalPhuongXa> {
   @override
   void initState() {
     controller = TextEditingController(text: valueSearch);
-    // setState(() {
-    //   provinceId = storage.getItem("city_code");
-    // });
+    callWardApi(districtId).then(
+        (value) => setState(() => wardId = value[value.indexWhere((element) {
+              return element["ward_name"] == widget.ward;
+            })]["ward_id"]));
+    setState(() {
+      activeWard = widget.ward;
+    });
     super.initState();
   }
 

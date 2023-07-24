@@ -10,7 +10,6 @@ import 'package:ngoc_huong/utils/callapi.dart';
 import 'package:ngoc_huong/utils/validate.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class InfomationAccount extends StatefulWidget {
   const InfomationAccount({super.key});
@@ -123,21 +122,29 @@ class _InfomationAccountState extends State<InfomationAccount> {
         "dien_thoai": phoneController.text,
         "sdt_lien_he": phoneController.text
       };
+      Map data2 = {
+        "name": nameController.text.isNotEmpty ? nameController.text : "",
+        "phone": emailController.text.isNotEmpty ? emailController.text : "",
+      };
       await updateProfile(id, storage.getItem("phone"), data).then((value) {
+        callUpdateProfile(data2);
+        FocusManager.instance.primaryFocus?.unfocus();
         Navigator.pushNamed(context, "account");
-        ElegantNotification.success(
-          width: MediaQuery.of(context).size.width,
-          height: 50,
-          notificationPosition: NotificationPosition.topCenter,
-          toastDuration: const Duration(milliseconds: 2000),
-          animation: AnimationType.fromTop,
-          // title: const Text('Cập nhật'),
-          description: const Text(
-            'Cập nhập thông tin thành công',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-          ),
-          onDismiss: () {},
-        ).show(context);
+        setState(() {
+          ElegantNotification.success(
+            width: MediaQuery.of(context).size.width,
+            height: 50,
+            notificationPosition: NotificationPosition.topCenter,
+            toastDuration: const Duration(milliseconds: 2000),
+            animation: AnimationType.fromTop,
+            // title: const Text('Cập nhật'),
+            description: const Text(
+              'Cập nhập thông tin thành công',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+            ),
+            onDismiss: () {},
+          ).show(context);
+        });
       });
     }
 
@@ -275,7 +282,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
-              leading: InkWell(
+              leading: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
@@ -295,7 +302,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
               actions: [
-                InkWell(
+                GestureDetector(
                   onTap: () {
                     // showModalBottomSheet<void>(
                     //     clipBehavior: Clip.antiAliasWithSaveLayer,

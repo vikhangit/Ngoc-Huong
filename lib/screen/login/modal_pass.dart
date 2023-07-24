@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:elegant_notification/elegant_notification.dart';
+import 'package:elegant_notification/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/login/signup_success.dart';
@@ -82,9 +84,23 @@ class _ModalPassState extends State<ModalPass> {
         final response = await dio
             .post("https://api.fostech.vn/signup", data: data)
             .then((value) {
-          storage.setItem("existAccount", "true");
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const SignUpSuccess()));
+          setState(() {
+            Navigator.pop(context);
+            Navigator.pushNamed(context, "home");
+            ElegantNotification.success(
+              width: MediaQuery.of(context).size.width,
+              height: 50,
+              notificationPosition: NotificationPosition.topCenter,
+              toastDuration: const Duration(milliseconds: 2000),
+              animation: AnimationType.fromTop,
+              // title: const Text('Cập nhật'),
+              description: const Text(
+                'Đăng ký tài khoản thành công',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+              ),
+              onDismiss: () {},
+            ).show(context);
+          });
         });
       } on DioException catch (e) {
         showAlertDialog(context, "${e.response!.data["error"]}");
@@ -160,6 +176,7 @@ class _ModalPassState extends State<ModalPass> {
                                       fontSize: 16,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w400),
+                                  autofocus: true,
                                   onChanged: (value) {
                                     fName = value;
                                   },
@@ -427,7 +444,7 @@ class _ModalPassState extends State<ModalPass> {
                                     color: check ? Colors.green : Colors.black),
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(8))),
-                            child: InkWell(
+                            child: GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     check = !check;
@@ -462,7 +479,7 @@ class _ModalPassState extends State<ModalPass> {
                                   const SizedBox(
                                     width: 3,
                                   ),
-                                  InkWell(
+                                  GestureDetector(
                                     onTap: () {},
                                     child: const Text("Điều khoản và sử dụng",
                                         style: TextStyle(
@@ -492,6 +509,7 @@ class _ModalPassState extends State<ModalPass> {
                               const BorderRadius.all(Radius.circular(15))),
                       child: TextButton(
                           onPressed: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
                             saveUserInfo();
                           },
                           style: ButtonStyle(
@@ -499,7 +517,7 @@ class _ModalPassState extends State<ModalPass> {
                                   const EdgeInsets.all(0.0))),
                           child: Text(
                               storage.getItem("typeOTP") == null
-                                  ? "Tiếp tục"
+                                  ? "Xác nhận"
                                   : "Hoàn thành",
                               style: const TextStyle(
                                   fontSize: 14, color: Colors.white))),

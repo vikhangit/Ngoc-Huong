@@ -169,7 +169,7 @@ class ModalChiTietBuy extends StatelessWidget {
       appBar: AppBar(
         leadingWidth: 45,
         centerTitle: true,
-        leading: InkWell(
+        leading: GestureDetector(
             onTap: () {
               Navigator.push(
                   context,
@@ -380,7 +380,7 @@ class ModalChiTietBuy extends StatelessWidget {
                               const SizedBox(
                                 width: 5,
                               ),
-                              const Text("Địa chỉ nhận hàng",
+                              const Text("Thông tin khách hàng",
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -483,72 +483,72 @@ class ModalChiTietBuy extends StatelessWidget {
                                   ))
                                 ],
                               ),
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                width: MediaQuery.of(context).size.width,
-                                height: 1,
-                                color: Colors.grey,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Expanded(
-                                      flex: 30,
-                                      child: Text(
-                                        "Địa chỉ",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black),
-                                      )),
-                                  Expanded(
-                                      flex: 70,
-                                      child: FutureBuilder(
-                                        future: getAddress(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            List list = snapshot.data!.toList();
-                                            if (list.isNotEmpty) {
-                                              return Text(
-                                                "${list[0]["address"]}, ${list[0]["ward"]}, ${list[0]["district"]}, ${list[0]["city"]}",
-                                                textAlign: TextAlign.right,
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black),
-                                              );
-                                            } else {
-                                              return InkWell(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              QuanLiDiaChi()));
-                                                },
-                                                child: const Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Text(
-                                                      "Thêm địa chỉ",
-                                                      style: TextStyle(
-                                                          color: Colors.blue),
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                            }
-                                          } else {
-                                            return const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          }
-                                        },
-                                      ))
-                                ],
-                              )
+                              // Container(
+                              //   margin:
+                              //       const EdgeInsets.symmetric(vertical: 15),
+                              //   width: MediaQuery.of(context).size.width,
+                              //   height: 1,
+                              //   color: Colors.grey,
+                              // ),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceBetween,
+                              //   children: [
+                              //     const Expanded(
+                              //         flex: 30,
+                              //         child: Text(
+                              //           "Địa chỉ",
+                              //           style: TextStyle(
+                              //               fontWeight: FontWeight.w400,
+                              //               color: Colors.black),
+                              //         )),
+                              //     Expanded(
+                              //         flex: 70,
+                              //         child: FutureBuilder(
+                              //           future: getAddress(),
+                              //           builder: (context, snapshot) {
+                              //             if (snapshot.hasData) {
+                              //               List list = snapshot.data!.toList();
+                              //               if (list.isNotEmpty) {
+                              //                 return Text(
+                              //                   "${list[0]["address"]}, ${list[0]["ward"]}, ${list[0]["district"]}, ${list[0]["city"]}",
+                              //                   textAlign: TextAlign.right,
+                              //                   style: const TextStyle(
+                              //                       fontWeight: FontWeight.w400,
+                              //                       color: Colors.black),
+                              //                 );
+                              //               } else {
+                              //                 return GestureDetector(
+                              //                   onTap: () {
+                              //                     Navigator.push(
+                              //                         context,
+                              //                         MaterialPageRoute(
+                              //                             builder: (context) =>
+                              //                                 QuanLiDiaChi()));
+                              //                   },
+                              //                   child: const Row(
+                              //                     mainAxisAlignment:
+                              //                         MainAxisAlignment.end,
+                              //                     children: [
+                              //                       Text(
+                              //                         "Thêm địa chỉ",
+                              //                         style: TextStyle(
+                              //                             color: Colors.blue),
+                              //                       )
+                              //                     ],
+                              //                   ),
+                              //                 );
+                              //               }
+                              //             } else {
+                              //               return const Center(
+                              //                 child:
+                              //                     CircularProgressIndicator(),
+                              //               );
+                              //             }
+                              //           },
+                              //         ))
+                              //   ],
+                              // )
                             ],
                           )),
                     ],

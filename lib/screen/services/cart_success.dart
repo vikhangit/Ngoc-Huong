@@ -59,25 +59,28 @@ class _AddCartSuccessState extends State<AddCartSuccess>
             //   active: 5,
             // ),
             appBar: AppBar(
-                bottomOpacity: 0.0,
-                elevation: 0.0,
-                backgroundColor: Colors.white,
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "mypham");
+              leadingWidth: 45,
+              centerTitle: true,
+              leading: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
                   },
-                  icon: const Icon(
-                    Icons.west,
-                    size: 24,
-                    color: Colors.black,
-                  ),
-                ),
-                centerTitle: true,
-                title: const Text("Thông báo",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black))),
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
+              title: const Text("Thông báo",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white)),
+            ),
             drawer: const MyLeftMenu(),
             body: Container(
                 padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
@@ -156,7 +159,7 @@ class _AddCartSuccessState extends State<AddCartSuccess>
                         Wrap(
                           runSpacing: 15,
                           children: [
-                            InkWell(
+                            GestureDetector(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 50,
@@ -188,7 +191,7 @@ class _AddCartSuccessState extends State<AddCartSuccess>
                                 onTap: () {
                                   Navigator.pushNamed(context, "cart");
                                 }),
-                            InkWell(
+                            GestureDetector(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 50,
