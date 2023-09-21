@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/checkout/checkout_success.dart';
 
 class CheckOutStep2 extends StatefulWidget {
@@ -41,7 +40,6 @@ class _CheckOutStep2State extends State<CheckOutStep2> {
                 fontWeight: FontWeight.w500,
                 color: Colors.black)),
       ),
-      drawer: const MyLeftMenu(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,9 +75,9 @@ class _CheckOutStep2State extends State<CheckOutStep2> {
                     ),
                     child: Column(
                       children: [
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children: [
                             Expanded(
                               child: Text(
                                 "Tên khách hàng",
@@ -105,9 +103,9 @@ class _CheckOutStep2State extends State<CheckOutStep2> {
                           height: 1,
                           color: Colors.grey,
                         ),
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children: [
                             Expanded(
                                 child: Text(
                               "Số điện thoại",
@@ -132,9 +130,9 @@ class _CheckOutStep2State extends State<CheckOutStep2> {
                           height: 1,
                           color: Colors.grey,
                         ),
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children: [
                             Expanded(
                                 flex: 30,
                                 child: Text(
@@ -160,9 +158,9 @@ class _CheckOutStep2State extends State<CheckOutStep2> {
                           height: 1,
                           color: Colors.grey,
                         ),
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children: [
                             Expanded(
                                 child: Text(
                               "Voucher",
@@ -187,9 +185,9 @@ class _CheckOutStep2State extends State<CheckOutStep2> {
                           height: 1,
                           color: Colors.grey,
                         ),
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children: [
                             Expanded(
                                 flex: 70,
                                 child: Text(

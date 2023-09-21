@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/screen/home/home.dart';
-import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
-import 'package:ngoc_huong/screen/login/modal_phone.dart';
+import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
+import 'package:ngoc_huong/screen/booking/booking.dart';
+import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 
 class MyBottomMenu extends StatefulWidget {
   final int active;
-  final Function save;
-  const MyBottomMenu({super.key, required this.active, required this.save});
+  const MyBottomMenu({super.key, required this.active});
 
   @override
   State<MyBottomMenu> createState() => _MyBottomMenuState();
@@ -20,14 +19,14 @@ List bottomList = [
     "title": "Trang chủ"
   },
   {
-    "icon": "assets/images/cart-black.png",
-    "icon_active": "assets/images/cart-red.png",
-    "title": "Giỏ hàng"
+    "icon": "assets/images/calendar-black.png",
+    "icon_active": "assets/images/calendar-solid-red.png",
+    "title": "Lịch hẹn"
   },
   {
-    "icon": "assets/images/icon/notifications-black.png",
-    "icon_active": "assets/images/icon/notifications-red.png",
-    "title": "Thông báo"
+    "icon": "assets/images/gift-black.png",
+    "icon_active": "assets/images/gift-solid-red.png",
+    "title": "Ưu đãi"
   },
   {
     "icon": "assets/images/icon/profile-black.png",
@@ -37,31 +36,25 @@ List bottomList = [
 ];
 
 class _MyBottomMenuState extends State<MyBottomMenu> {
-  LocalStorage storage = LocalStorage('auth');
-  LocalStorage storageToken = LocalStorage('token');
+  final LocalStorage storageCustomer = LocalStorage('customer_token');
   String a = "";
-  void save() {
-    if (widget.save != null) {
-      widget.save!();
-    } else {
-      setState(() {});
-    }
-  }
 
   void onItemTapped(int index) {
     if (index == 0) {
       Navigator.pushNamed(context, "home");
     } else {
-      if (storage.getItem("phone") != null) {
+      if (storageCustomer.getItem("customer_token") != null) {
         switch (index) {
           case 1:
             {
-              Navigator.pushNamed(context, "cart");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BookingHistory()));
               break;
             }
           case 2:
             {
-              Navigator.pushNamed(context, "notifications");
               break;
             }
           case 3:
@@ -71,27 +64,14 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
             }
           case 4:
             {
-              Navigator.pushNamed(context, "booking");
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const BookingServices()));
               break;
             }
           default:
         }
-      } else if (storage.getItem("phone") == null) {
-        showModalBottomSheet<void>(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-            ),
-            context: context,
-            isScrollControlled: true,
-            builder: (BuildContext context) {
-              return Container(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                height: MediaQuery.of(context).size.height * 0.96,
-                child: ModalPassExist(save: save),
-              );
-            });
+      } else if (storageCustomer.getItem("customer_Token") == null) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: ((context) => const LoginScreen())));
       }
     }
   }

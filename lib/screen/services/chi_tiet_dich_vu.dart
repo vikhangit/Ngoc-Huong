@@ -1,12 +1,11 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
-import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
+import 'package:ngoc_huong/utils/makeCallPhone.dart';
 
 class ChiTietScreen extends StatefulWidget {
   final Map detail;
@@ -17,41 +16,23 @@ class ChiTietScreen extends StatefulWidget {
 }
 
 int? _selectedIndex;
-int? _selectedIndex2;
 
 int starLength = 5;
 double _rating = 0;
 
 class _ChiTietScreenState extends State<ChiTietScreen>
     with TickerProviderStateMixin {
-  LocalStorage storage = LocalStorage('auth');
-  LocalStorage storageToken = LocalStorage('token');
-  LocalStorage storageCN = LocalStorage("chi_nhanh");
+  final LocalStorage storageCustomerToken = LocalStorage('customer_token');
   TabController? tabController;
-  TabController? tabController2;
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 3, vsync: this);
-    tabController2 = TabController(
-        length: widget.detail["picture4"] != null
-            ? 4
-            : widget.detail["picture3"] != null
-                ? 3
-                : widget.detail["picture2"] != null
-                    ? 2
-                    : 1,
-        vsync: this);
+    tabController = TabController(length: 2, vsync: this);
     tabController?.addListener(_getActiveTabIndex);
-    tabController2?.addListener(_getActiveTabIndex2);
   }
 
   void _getActiveTabIndex() {
     _selectedIndex = tabController?.index;
-  }
-
-  void _getActiveTabIndex2() {
-    _selectedIndex2 = tabController2?.index;
   }
 
   void save() {
@@ -61,7 +42,6 @@ class _ChiTietScreenState extends State<ChiTietScreen>
   @override
   Widget build(BuildContext context) {
     Map detail = widget.detail;
-    Map chiNhanh = jsonDecode(storageCN.getItem("chi_nhanh"));
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,7 +102,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                     child: Image.network(
-                      "$apiUrl${detail["picture"]}?$token",
+                      "${detail["Image_Name"]}",
                       height: 210,
                       width: MediaQuery.of(context).size.width * 0.8,
                       fit: BoxFit.cover,
@@ -138,62 +118,39 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                           height: 20,
                         ),
                         Text(
-                          detail["ten_vt"],
+                          detail["Name"],
                           style: const TextStyle(fontSize: 17),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                  NumberFormat.currency(
-                                          locale: "vi_VI", symbol: "")
-                                      .format(
-                                    detail["gia_ban_le"],
-                                  ),
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                                ),
-                                Text(
-                                  "đ",
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontSize: 15,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                )
-                              ],
+                            Text(
+                              NumberFormat.currency(
+                                  locale: "vi_VI", symbol: "")
+                                  .format(
+                                detail["PriceOutbound"],
+                              ),
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary),
                             ),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.star,
-                                  size: 20,
-                                  color: Colors.orange,
-                                ),
-                                Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 5),
-                                  child: const Text("4.8"),
-                                ),
-                                const Text(
-                                  "(130 đánh giá)",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                )
-                              ],
+                            Text(
+                              "đ",
+                              style: TextStyle(
+                                color:
+                                Theme.of(context).colorScheme.primary,
+                                fontSize: 15,
+                                decoration: TextDecoration.underline,
+                              ),
                             )
                           ],
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 15,
                         ),
                         const Text(
                           "Thông tin dịch vụ",
@@ -232,12 +189,17 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
                                 fontFamily: "LexendDeca"),
-                            tabs: const [
-                              Tab(
-                                text: "Chi tiết",
+                            tabs: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 2,
+                                child: const Tab(
+                                  text: "Chi tiết",
+                                ),
                               ),
-                              Tab(text: "Bảo hành"),
-                              Tab(text: "Đánh giá/Nhận xét"),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 2,
+                                child:Tab(text: "Đánh giá/Nhận xét"),
+                              )
                             ]),
                       ),
                     ),
@@ -248,7 +210,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                         ListView(
                           children: [
                             Html(
-                              data: detail["mieu_ta"],
+                              data: detail["Description"] ?? "",
                               style: {
                                 "*": Style(margin: Margins.only(left: 0)),
                                 "p": Style(
@@ -260,30 +222,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                             const SizedBox(
                               height: 20,
                             ),
-                            pictureProduct(context, detail),
-                            const SizedBox(
-                              height: 20,
-                            ),
                           ],
-                        ),
-                        ListView(
-                          children: List.generate(5, (index) {
-                            return Container(
-                              margin: const EdgeInsets.only(top: 20),
-                              child: GestureDetector(
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Bảo hành $index",
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w300),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
                         ),
                         ListView(
                           children: [
@@ -876,7 +815,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                             const EdgeInsets.symmetric(horizontal: 20)),
                       ),
                       onPressed: () {
-                        makingPhoneCall(chiNhanh["exfields"]["dien_thoai"]);
+                        makingPhoneCall();
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -917,33 +856,19 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                   .primary
                                   .withOpacity(0.4))),
                       onPressed: () {
-                        if (storage.getItem("phone") != null) {
+                        if (storageCustomerToken.getItem("customer_token") ==
+                            null) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()));
+                        } else {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => BookingServices(
                                         dichvudachon: detail,
                                       )));
-                        } else {
-                          showModalBottomSheet<void>(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(15)),
-                              ),
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (BuildContext context) {
-                                return Container(
-                                  padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.96,
-                                  child: ModalPassExist(save: save),
-                                );
-                              });
                         }
                       },
                       child: Row(
@@ -971,155 +896,6 @@ class _ChiTietScreenState extends State<ChiTietScreen>
           )
         ],
       ),
-    );
-  }
-
-  Widget pictureProduct(BuildContext context, Map productDetail) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 150,
-          width: MediaQuery.of(context).size.width - 30,
-          child: TabBarView(controller: tabController2, children: [
-            Container(
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                    // color: checkColor,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                  child: Image.network(
-                    "$apiUrl${productDetail["picture"]}?$token",
-                    width: 220,
-                    height: 150,
-                    fit: BoxFit.cover,
-                  ),
-                )),
-            if (productDetail["picture2"] != null)
-              Container(
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                      // color: checkColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                    child: Image.network(
-                      "$apiUrl${productDetail["picture2"]}?$token",
-                      width: 220,
-                      height: 150,
-                      fit: BoxFit.cover,
-                    ),
-                  )),
-            if (productDetail["picture3"] != null)
-              Container(
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                      // color: checkColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                    child: Image.network(
-                      "$apiUrl${productDetail["picture3"]}?$token",
-                      width: 220,
-                      height: 150,
-                      fit: BoxFit.cover,
-                    ),
-                  )),
-            if (productDetail["picture4"] != null)
-              Container(
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                      // color: checkColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                    child: Image.network(
-                      "$apiUrl${productDetail["picture4"]}?$token",
-                      width: 220,
-                      height: 150,
-                      fit: BoxFit.cover,
-                    ),
-                  )),
-          ]),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        SizedBox(
-          height: 70,
-          child: TabBar(
-              controller: tabController2,
-              // padding: EdgeInsets.zero,
-              // indicatorPadding: EdgeInsets.zero,
-              onTap: (tabIndex) {
-                setState(() {
-                  _selectedIndex2 = tabIndex;
-                });
-              },
-              labelColor: Theme.of(context).colorScheme.primary,
-              isScrollable: true,
-              unselectedLabelColor: Colors.black,
-              indicatorColor: Colors.transparent,
-              indicator: BoxDecoration(
-                  border: Border.all(
-                      width: 1, color: Theme.of(context).colorScheme.primary),
-                  borderRadius: const BorderRadius.all(Radius.circular(10))),
-              labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  fontFamily: "LexendDeca"),
-              tabs: [
-                if (productDetail["picture"] != null)
-                  SizedBox(
-                    width: 40,
-                    child: Tab(
-                      child: Image.network(
-                        "$apiUrl${productDetail["picture"]}?$token",
-                        width: 50,
-                        height: 60,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                if (productDetail["picture2"] != null)
-                  SizedBox(
-                    width: 40,
-                    child: Tab(
-                      child: Image.network(
-                        "$apiUrl${productDetail["picture2"]}?$token",
-                        width: 50,
-                        height: 60,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                if (productDetail["picture3"] != null)
-                  SizedBox(
-                    width: 40,
-                    child: Tab(
-                      child: Image.network(
-                        "$apiUrl${productDetail["picture3"]}?$token",
-                        width: 50,
-                        height: 60,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                if (productDetail["picture4"] != null)
-                  SizedBox(
-                    width: 40,
-                    child: Tab(
-                      child: Image.network(
-                        "$apiUrl${productDetail["picture4"]}?$token",
-                        width: 50,
-                        height: 60,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-              ]),
-        ),
-      ],
     );
   }
 }

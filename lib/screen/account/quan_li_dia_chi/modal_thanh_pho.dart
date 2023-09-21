@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/screen/account/information/information.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_phuong_xa.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_quan_huyen.dart';
 import 'package:ngoc_huong/utils/callapi.dart';

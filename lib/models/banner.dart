@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
-import 'package:ngoc_huong/constants/variable.dart';
 
 List<Banner> bannerFormJson(String str) =>
     List<Banner>.from(json.decode(str).map((x) => Banner.fromJson(x)));

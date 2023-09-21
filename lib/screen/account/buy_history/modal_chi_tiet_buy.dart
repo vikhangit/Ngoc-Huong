@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:intl/intl.dart';
-import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
-import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalChiTietBuy extends StatelessWidget {
   final Map product;
@@ -17,11 +16,6 @@ class ModalChiTietBuy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime timea = DateTime.parse(product["date_updated"]);
-    var hexColor = product["color"].replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "0xFF" + hexColor;
-    }
     DateTime getPSTTime(DateTime now) {
       tz.initializeTimeZones();
       final pacificTimeZone = tz.getLocation('Asia/Ho_Chi_Minh');
@@ -29,143 +23,20 @@ class ModalChiTietBuy extends StatelessWidget {
       return tz.TZDateTime.from(now, pacificTimeZone);
     }
 
-    LocalStorage storage = LocalStorage("auth");
-    List list = product["details"].toList();
-
-    void cancleOrder() async {
-      Map data = {"trang_thai": "9"};
-      await putPBL(product["_id"], data).then((value) => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const BuyHistory(
-                    ac: 4,
-                  ))));
-      save!();
-    }
-
-    void onLoading() {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Dialog(
-              child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(
-                  width: 20,
-                ),
-                Text("Đang xử lý"),
-              ],
-            ),
-          ));
-        },
-      );
-      Future.delayed(const Duration(seconds: 3), () {
-        cancleOrder();
-        Navigator.pop(context);
-      });
-    }
-
-    void showInfoDialog() {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            content: Builder(
-              builder: (context) {
-                return SizedBox(
-                    // height: 30,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.info,
-                          size: 70,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        const Text(
-                          "Hủy đơn hàng",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w400),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        const Text(
-                          "Bạn có chắc chắn hủy đơn hàng không?",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.w300),
-                        )
-                      ],
-                    ));
-              },
-            ),
-            actionsPadding:
-                const EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 30),
-            actions: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: TextButton(
-                  onPressed: () {
-                    onLoading();
-                    // Navigator.pop(context);
-                  },
-                  style: ButtonStyle(
-                      padding: MaterialStateProperty.all(
-                          const EdgeInsets.symmetric(vertical: 15)),
-                      shape: MaterialStateProperty.all(
-                          const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)))),
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).colorScheme.primary)),
-                  child: const Text(
-                    "Đồng ý",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                margin: const EdgeInsets.only(top: 10),
-                child: TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(vertical: 15)),
-                    shape: MaterialStateProperty.all(
-                        const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            side: BorderSide(color: Colors.grey, width: 1))),
-                  ),
-                  child: const Text("Hủy bỏ"),
-                ),
-              )
-            ],
-          );
-        },
-      );
+    final ProfileModel profileModel = ProfileModel();
+    List list = product["DetailList"].toList();
+    num totalBooking() {
+      num total = 0;
+      for (var i = 0; i < list.length; i++) {
+        total += list[i]["Amount"];
+      }
+      return total;
     }
 
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      // bottomNavigationBar: const MyBottomMenu(
-      //   active: 1,
-      // ),
       appBar: AppBar(
         leadingWidth: 45,
         centerTitle: true,
@@ -204,7 +75,6 @@ class ModalChiTietBuy extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 color: Colors.white)),
       ),
-      drawer: const MyLeftMenu(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,7 +87,8 @@ class ModalChiTietBuy extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 15),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-                  color: Color(int.parse(hexColor)),
+                  color:
+                      type == "thanh toán" ? Colors.green : Colors.amber[800],
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -422,20 +293,33 @@ class ModalChiTietBuy extends StatelessWidget {
                                   ),
                                   Expanded(
                                     child: FutureBuilder(
-                                      future:
-                                          getProfile(storage.getItem("phone")),
+                                      future: profileModel.getProfile(),
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData) {
                                           return Text(
-                                            snapshot.data![0]["ten_kh"],
+                                            snapshot.data!["CustomerName"],
                                             textAlign: TextAlign.right,
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 color: Colors.black),
                                           );
                                         } else {
-                                          return const Center(
-                                            child: CircularProgressIndicator(),
+                                          return const Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              SizedBox(
+                                                width: 40,
+                                                height: 40,
+                                                child: LoadingIndicator(
+                                                  colors: kDefaultRainbowColors,
+                                                  indicatorType: Indicator
+                                                      .lineSpinFadeLoader,
+                                                  strokeWidth: 1,
+                                                  // pathBackgroundColor: Colors.black45,
+                                                ),
+                                              ),
+                                            ],
                                           );
                                         }
                                       },
@@ -462,93 +346,71 @@ class ModalChiTietBuy extends StatelessWidget {
                                         color: Colors.black),
                                   )),
                                   Expanded(
-                                      child: FutureBuilder(
-                                    future:
-                                        getProfile(storage.getItem("phone")),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Text(
-                                          snapshot.data![0]["of_user"],
-                                          textAlign: TextAlign.right,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black),
-                                        );
-                                      } else {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
-                                    },
-                                  ))
+                                    child: FutureBuilder(
+                                      future: profileModel.getProfile(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return Text(
+                                            snapshot.data!["Phone"],
+                                            textAlign: TextAlign.right,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                          );
+                                        } else {
+                                          return const Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              SizedBox(
+                                                width: 40,
+                                                height: 40,
+                                                child: LoadingIndicator(
+                                                  colors: kDefaultRainbowColors,
+                                                  indicatorType: Indicator
+                                                      .lineSpinFadeLoader,
+                                                  strokeWidth: 1,
+                                                  // pathBackgroundColor: Colors.black45,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  )
                                 ],
                               ),
-                              // Container(
-                              //   margin:
-                              //       const EdgeInsets.symmetric(vertical: 15),
-                              //   width: MediaQuery.of(context).size.width,
-                              //   height: 1,
-                              //   color: Colors.grey,
-                              // ),
-                              // Row(
-                              //   mainAxisAlignment:
-                              //       MainAxisAlignment.spaceBetween,
-                              //   children: [
-                              //     const Expanded(
-                              //         flex: 30,
-                              //         child: Text(
-                              //           "Địa chỉ",
-                              //           style: TextStyle(
-                              //               fontWeight: FontWeight.w400,
-                              //               color: Colors.black),
-                              //         )),
-                              //     Expanded(
-                              //         flex: 70,
-                              //         child: FutureBuilder(
-                              //           future: getAddress(),
-                              //           builder: (context, snapshot) {
-                              //             if (snapshot.hasData) {
-                              //               List list = snapshot.data!.toList();
-                              //               if (list.isNotEmpty) {
-                              //                 return Text(
-                              //                   "${list[0]["address"]}, ${list[0]["ward"]}, ${list[0]["district"]}, ${list[0]["city"]}",
-                              //                   textAlign: TextAlign.right,
-                              //                   style: const TextStyle(
-                              //                       fontWeight: FontWeight.w400,
-                              //                       color: Colors.black),
-                              //                 );
-                              //               } else {
-                              //                 return GestureDetector(
-                              //                   onTap: () {
-                              //                     Navigator.push(
-                              //                         context,
-                              //                         MaterialPageRoute(
-                              //                             builder: (context) =>
-                              //                                 QuanLiDiaChi()));
-                              //                   },
-                              //                   child: const Row(
-                              //                     mainAxisAlignment:
-                              //                         MainAxisAlignment.end,
-                              //                     children: [
-                              //                       Text(
-                              //                         "Thêm địa chỉ",
-                              //                         style: TextStyle(
-                              //                             color: Colors.blue),
-                              //                       )
-                              //                     ],
-                              //                   ),
-                              //                 );
-                              //               }
-                              //             } else {
-                              //               return const Center(
-                              //                 child:
-                              //                     CircularProgressIndicator(),
-                              //               );
-                              //             }
-                              //           },
-                              //         ))
-                              //   ],
-                              // )
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                width: MediaQuery.of(context).size.width,
+                                height: 1,
+                                color: Colors.grey,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Expanded(
+                                      flex: 30,
+                                      child: Text(
+                                        "Địa chỉ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      )),
+                                  Expanded(
+                                      flex: 70,
+                                      child: Text(
+                                        "${product["Address"] ?? ""}",
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      ))
+                                ],
+                              )
                             ],
                           )),
                     ],
@@ -591,7 +453,7 @@ class ModalChiTietBuy extends StatelessWidget {
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(10)),
                                 child: Image.network(
-                                  "$apiUrl${item["picture"]}?$token",
+                                  "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                   // width: 110,
                                   height: 60,
                                   fit: BoxFit.cover,
@@ -609,7 +471,7 @@ class ModalChiTietBuy extends StatelessWidget {
                                   Wrap(
                                     children: [
                                       Text(
-                                        "${item["ten_vt"]}",
+                                        "${item["Product"]["Name"]}",
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: const TextStyle(
@@ -620,7 +482,7 @@ class ModalChiTietBuy extends StatelessWidget {
                                       ),
                                       Row(
                                         children: [
-                                          Text("${item["sl_xuat"]}",
+                                          Text("${item["Quantity"] ?? 1}",
                                               style: TextStyle(
                                                   color: Theme.of(context)
                                                       .colorScheme
@@ -641,7 +503,7 @@ class ModalChiTietBuy extends StatelessWidget {
                                                     locale: "vi_VI",
                                                     symbol: "đ")
                                                 .format(
-                                              item["gia_ban_le_goc"],
+                                              item["Product"]["PriceOutbound"],
                                             ),
                                             style: TextStyle(
                                                 color: Theme.of(context)
@@ -683,7 +545,7 @@ class ModalChiTietBuy extends StatelessWidget {
                                 Text(
                                   NumberFormat.currency(
                                           locale: "vi_VI", symbol: "đ")
-                                      .format(product["t_tien"]),
+                                      .format(totalBooking()),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
@@ -698,7 +560,7 @@ class ModalChiTietBuy extends StatelessWidget {
                                     height: 10,
                                   ),
                                   Text(
-                                    "Vui lòng thanh toán ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(product["t_tien"])} khi nhận hàng",
+                                    "Vui lòng thanh toán ${NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(totalBooking())} khi nhận hàng",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w300,
                                         fontSize: 12,
@@ -743,20 +605,21 @@ class ModalChiTietBuy extends StatelessWidget {
                             const SizedBox(
                               width: 10,
                             ),
-                            const Column(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   "Phương thức thanh toán",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: Colors.black),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
-                                Text("Thanh toán khi nhận hàng",
-                                    style: TextStyle(
+                                Text(
+                                    "${product["PaymentMethod"] ?? "Thanh toán khi nhận hàng"} ",
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.w300,
                                         color: Colors.black45)),
                               ],
@@ -769,20 +632,35 @@ class ModalChiTietBuy extends StatelessWidget {
                     ),
                   ),
                 Container(
-                    margin: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                    child: const Row(
+                    margin: const EdgeInsets.only(left: 15, right: 15, top: 20),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(14)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 8,
+                          offset:
+                              const Offset(4, 4), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Mã đơn hàng",
+                        const Text("Mã đơn hàng",
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black)),
-                        // Text("$madonhang",
-                        //     style: TextStyle(
-                        //         fontSize: 16,
-                        //         fontWeight: FontWeight.w500,
-                        //         color: Colors.black))
+                        Text("${product["Code"]}",
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black))
                       ],
                     )),
                 Container(
@@ -816,7 +694,8 @@ class ModalChiTietBuy extends StatelessWidget {
                                   color: Colors.black),
                             )),
                             Text(
-                              "${DateFormat("dd-MM-yyyy HH:mm").format(DateTime(product["nam"], product["thang"], product["ngay"], product["gio"]))}",
+                              DateFormat("dd-MM-yyyy HH:mm").format(getPSTTime(
+                                  DateTime.parse(list[0]["CreatedDate"]))),
                               textAlign: TextAlign.right,
                               style: const TextStyle(
                                   fontWeight: FontWeight.w400,
@@ -840,13 +719,15 @@ class ModalChiTietBuy extends StatelessWidget {
                                 children: [
                                   Expanded(
                                       child: Text(
-                                    "Thời gian ${type}",
+                                    "Thời gian $type",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w400,
                                         color: Colors.black),
                                   )),
                                   Text(
-                                    "${DateFormat("dd-MM-yyyy HH:mm").format(getPSTTime(timea))}",
+                                    DateFormat("dd-MM-yyyy HH:mm").format(
+                                        getPSTTime(DateTime.parse(
+                                            list[0]["ModifiedDate"]))),
                                     textAlign: TextAlign.right,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w400,
@@ -868,9 +749,7 @@ class ModalChiTietBuy extends StatelessWidget {
                   left: 15,
                   right: 15),
               child: TextButton(
-                  onPressed: () {
-                    showInfoDialog();
-                  },
+                  onPressed: () {},
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(
                           const RoundedRectangleBorder(

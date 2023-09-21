@@ -1,15 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
-import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
+import 'package:ngoc_huong/models/cartModel.dart';
+import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/checkout/checkout_success.dart';
-import 'package:ngoc_huong/screen/checkout/products/modalChooseAddress.dart';
 import 'package:ngoc_huong/screen/checkout/products/modal_payment.dart';
 import 'package:ngoc_huong/screen/checkout/products/modal_voucher.dart';
-import 'package:ngoc_huong/screen/services/chi_tiet_san_pham.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 
 class CheckOutCart extends StatefulWidget {
   final num total;
@@ -23,122 +26,53 @@ class CheckOutCart extends StatefulWidget {
 int diem = 0;
 
 class _CheckOutScreenState extends State<CheckOutCart> {
-  LocalStorage storage = LocalStorage("auth");
+
+  final ProfileModel profileModel = ProfileModel();
+  final CartModel cartModel = CartModel();
+  final CustomModal customModal = CustomModal();
+  final LocalStorage storageBranch = LocalStorage('branch');
   @override
   void initState() {
-    getAddress().then(
-        (value) => setState(() => activeIndex = value.indexWhere((element) {
-              return element["exfields"]["is_default"] == true;
-            })));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     List listProductPayment = widget.listCart;
-    void showAlertDialog(BuildContext context, String err) {
-      Widget okButton = TextButton(
-        child: const Text("OK"),
-        onPressed: () => Navigator.pop(context, 'OK'),
-      );
-      AlertDialog alert = AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        content: Builder(
-          builder: (context) {
-            return SizedBox(
-              // height: 30,
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                style: const TextStyle(height: 1.6),
-                err,
-              ),
-            );
-          },
-        ),
-        actions: [
-          okButton,
-        ],
-      );
-      // show the dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-
     void savePayment() {
       setState(() {});
     }
-
-    void saveAddress() {
-      setState(() {});
-    }
-
-    void checkPay(List list, String maKh) async {
-      List detail = [];
-      List listId = [];
-      for (var i = 0; i < list.length; i++) {
-        detail.add({
-          "ton00": 0,
-          "ma_vt": list[i]["ma_vt"],
-          "tien_hang_nt": list[i]["tien_hang_nt"],
-          "tien_hang": list[i]["tien_hang"],
-          "sl_xuat": list[i]["sl_xuat"],
-          "sl_order": 1,
-          "tien_ck_nt": list[i]["tien_ck_nt"],
-          "tien_ck": list[i]["tien_ck"],
-          "tien_nt": list[i]["tien_nt"],
-          "tien": list[i]["tien"],
-          "ma_dvt": list[i]["ma_dvt"],
+    print(listProductPayment);
+    void setCheckOutCart(){
+      List details = [];
+      for (var i = 0; i < listProductPayment.length; i++){
+        details.add({
+          "Amount": listProductPayment[i]["PriceOutbound"] * listProductPayment[i]["quantity"],
+          "Price": listProductPayment[i]["PriceOutbound"],
+          "Quantity": listProductPayment[i]["quantity"],
+          "ProductId": listProductPayment[i]["Id"],
+          "Status": "Chờ xác nhận"
         });
-        listId.add(list[i]["_id"]);
-      }
-      Map data = {
-        "ma_ct": "pbl",
-        "trang_thai": 0,
-        "ma_kh": maKh,
-        "ma_kho": "",
-        "details": detail
+        cartModel.deleteProductToCart(listProductPayment[i]);
       };
-
-      await postPBL(data).then((value) {
-        for (var i = 0; i < listId.length; i++) {
-          deleteCart(listId[i]);
-        }
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CheckoutSuccess()));
-      });
-    }
-
-    void onLoading(List list, String maKh) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Dialog(
-              child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(
-                  width: 20,
-                ),
-                Text("Đang xử lý"),
-              ],
-            ),
-          ));
-        },
-      );
-      Future.delayed(const Duration(seconds: 3), () {
-        checkPay(list, maKh);
-        Navigator.pop(context);
-      });
+        Map data = {
+        "BranchName" : jsonDecode(storageBranch.getItem("branch"))["Name"],
+        "DetailList":
+        [...details
+        ]
+      };
+      customModal.showAlertDialog(context, "error", "Đặt Hàng",
+          "Bạn có chắc chắn đăt hàng không?", () {
+            Navigator.pop(context);
+            EasyLoading.show(status: "Vui lòng chờ...");
+            Future.delayed(const Duration(seconds: 2), () {
+              cartModel.setOrder(data).then((value) {
+                print(value);
+                EasyLoading.dismiss();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutSuccess()));
+              });
+            });
+          }, () => Navigator.pop(context));
     }
 
     return SafeArea(
@@ -170,7 +104,6 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                 fontWeight: FontWeight.w500,
                 color: Colors.black)),
       ),
-      drawer: const MyLeftMenu(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,19 +152,37 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                             ),
                             Expanded(
                               child: FutureBuilder(
-                                future: getProfile(storage.getItem("phone")),
+                                future: profileModel.getProfile(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     return Text(
-                                      snapshot.data![0]["ten_kh"],
+                                      snapshot.data!["CustomerName"],
                                       textAlign: TextAlign.right,
                                       style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           color: Colors.black),
                                     );
                                   } else {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
+                                    return const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 40,
+                                          height: 40,
+                                          child: LoadingIndicator(
+                                            colors: kDefaultRainbowColors,
+                                            indicatorType:
+                                                Indicator.lineSpinFadeLoader,
+                                            strokeWidth: 1,
+                                            // pathBackgroundColor: Colors.black45,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text("Đang lấy dữ liệu")
+                                      ],
                                     );
                                   }
                                 },
@@ -257,11 +208,11 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                             )),
                             Expanded(
                                 child: FutureBuilder(
-                              future: getProfile(storage.getItem("phone")),
+                              future: profileModel.getProfile(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return Text(
-                                    snapshot.data![0]["of_user"],
+                                    snapshot.data!["Phone"],
                                     textAlign: TextAlign.right,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w400,
@@ -276,99 +227,138 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                             ))
                           ],
                         ),
-                      ],
-                    )),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChooseAddressShipping(
-                                  saveAddress: saveAddress,
-                                )));
-                  },
-                  child: Container(
-                      margin: const EdgeInsets.only(
-                          left: 15, right: 15, top: 10, bottom: 25),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(14)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                            offset: const Offset(
-                                4, 4), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 9,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Địa chỉ nhận hàng",
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 15),
+                          width: MediaQuery.of(context).size.width,
+                          height: 1,
+                          color: Colors.grey,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Expanded(
+                                flex: 4,
+                                child: Text(
+                                  "Địa chỉ",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       color: Colors.black),
-                                ),
-                                FutureBuilder(
-                                  future: getAddress(),
+                                )),
+                            Expanded(
+                                flex: 6,
+                                child: FutureBuilder(
+                                  future: profileModel.getProfile(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      List list = snapshot.data!.toList();
-                                      if (list.isNotEmpty) {
-                                        return activeIndex > -1
-                                            ? Text(
-                                                "${list[activeIndex]["address"]}, ${list[activeIndex]["ward"]}, ${list[activeIndex]["district"]}, ${list[activeIndex]["city"]}",
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black),
-                                              )
-                                            : Column(
-                                                children: list.map((e) {
-                                                  if (e["exfields"]
-                                                          ["is_default"] ==
-                                                      true) {
-                                                    return Text(
-                                                      "${e["address"]}, ${e["ward"]}, ${e["district"]}, ${e["city"]}",
-                                                      style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: Colors.black),
-                                                    );
-                                                  } else {
-                                                    return Container();
-                                                  }
-                                                }).toList(),
-                                              );
-                                      } else {
-                                        return Container();
-                                      }
+                                      return Text(
+                                        snapshot.data!["Address"],
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      );
                                     } else {
                                       return const Center(
                                         child: CircularProgressIndicator(),
                                       );
                                     }
                                   },
-                                )
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Icon(Icons.keyboard_arrow_right),
-                          )
-                        ],
-                      )),
-                ),
+                                ))
+                          ],
+                        ),
+                      ],
+                    )),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) => ChooseAddressShipping(
+                //                   saveAddress: saveAddress,
+                //                 )));
+                //   },
+                //   child: Container(
+                //       margin: const EdgeInsets.only(
+                //           left: 15, right: 15, top: 10, bottom: 25),
+                //       padding: const EdgeInsets.symmetric(
+                //           horizontal: 15, vertical: 20),
+                //       decoration: BoxDecoration(
+                //         color: Colors.white,
+                //         borderRadius:
+                //             const BorderRadius.all(Radius.circular(14)),
+                //         boxShadow: [
+                //           BoxShadow(
+                //             color: Colors.grey.withOpacity(0.5),
+                //             spreadRadius: 1,
+                //             blurRadius: 8,
+                //             offset: const Offset(
+                //                 4, 4), // changes position of shadow
+                //           ),
+                //         ],
+                //       ),
+                //       child: Row(
+                //         children: [
+                //           Expanded(
+                //             flex: 9,
+                //             child: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               children: [
+                //                 const Text(
+                //                   "Địa chỉ nhận hàng",
+                //                   style: TextStyle(
+                //                       fontWeight: FontWeight.w400,
+                //                       color: Colors.black),
+                //                 ),
+                //                 FutureBuilder(
+                //                   future: getAddress(),
+                //                   builder: (context, snapshot) {
+                //                     if (snapshot.hasData) {
+                //                       List list = snapshot.data!.toList();
+                //                       if (list.isNotEmpty) {
+                //                         return activeIndex > -1
+                //                             ? Text(
+                //                                 "${list[activeIndex]["address"]}, ${list[activeIndex]["ward"]}, ${list[activeIndex]["district"]}, ${list[activeIndex]["city"]}",
+                //                                 style: const TextStyle(
+                //                                     fontWeight: FontWeight.w400,
+                //                                     color: Colors.black),
+                //                               )
+                //                             : Column(
+                //                                 children: list.map((e) {
+                //                                   if (e["exfields"]
+                //                                           ["is_default"] ==
+                //                                       true) {
+                //                                     return Text(
+                //                                       "${e["address"]}, ${e["ward"]}, ${e["district"]}, ${e["city"]}",
+                //                                       style: const TextStyle(
+                //                                           fontWeight:
+                //                                               FontWeight.w400,
+                //                                           color: Colors.black),
+                //                                     );
+                //                                   } else {
+                //                                     return Container();
+                //                                   }
+                //                                 }).toList(),
+                //                               );
+                //                       } else {
+                //                         return Container();
+                //                       }
+                //                     } else {
+                //                       return const Center(
+                //                         child: CircularProgressIndicator(),
+                //                       );
+                //                     }
+                //                   },
+                //                 )
+                //               ],
+                //             ),
+                //           ),
+                //           Expanded(
+                //             flex: 1,
+                //             child: Icon(Icons.keyboard_arrow_right),
+                //           )
+                //         ],
+                //       )),
+                // ),
 
                 Column(
                     children: listProductPayment.map((item) {
@@ -377,11 +367,13 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                       margin: EdgeInsets.only(
                           left: 15,
                           right: 15,
-                          top: index != 0 ? 20 : 30,
+                          top: index != 0 ? 10 : 20,
                           bottom:
                               index == listProductPayment.length - 1 ? 20 : 0),
                       decoration: BoxDecoration(
                         color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -392,12 +384,16 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                           ),
                         ],
                       ),
-                      height: 156,
-                      child: FutureBuilder(
-                        future: callProductApiByName(item["ten_vt"]),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return TextButton(
+                      height: 160,
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(left: 5),
+                            width: MediaQuery.of(context).size.width - 70,
+                            child: TextButton(
                               onPressed: () {
                                 showModalBottomSheet<void>(
                                     backgroundColor: Colors.white,
@@ -414,7 +410,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                             MediaQuery.of(context).size.height *
                                                 0.95,
                                         child: ProductDetail(
-                                          details: snapshot.data![0],
+                                          details: item,
                                         ),
                                       );
                                     });
@@ -430,100 +426,126 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(10)))),
                               ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                              child: Column(
                                 children: [
-                                  ClipRRect(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(10)),
-                                      child: Container(
-                                        // color: checkColor(index),
-                                        child: Image.network(
-                                          "$apiUrl${item["picture"]}?$token",
-                                          width: 90,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                      child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  Row(
                                     children: [
-                                      Wrap(
+                                      ClipRRect(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10)),
+                                          child: Image.network(
+                                            "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                            width: 90,
+                                            height: 90,
+                                            fit: BoxFit.cover,
+                                          )),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                          child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            snapshot.data![0]!["ten_vt"],
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                                color: Colors.black),
-                                          ),
-                                          Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 8, bottom: 12),
-                                              child: Html(
-                                                  style: {
-                                                    "*": Style(
-                                                        margin: Margins.only(
-                                                            top: 0, left: 0),
-                                                        maxLines: 2,
-                                                        fontSize: FontSize(14),
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        textOverflow:
-                                                            TextOverflow
-                                                                .ellipsis),
-                                                  },
-                                                  data: snapshot
-                                                      .data![0]!["mieu_ta"])),
-                                          Row(
+                                          Wrap(
                                             children: [
                                               Text(
-                                                "${item["sl_xuat"]}",
+                                                item["Name"],
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black),
                                               ),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
-                                              const Text("x"),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
-                                              Text(
-                                                NumberFormat.currency(
-                                                        locale: "vi_VI",
-                                                        symbol: "đ")
-                                                    .format(snapshot.data![0]![
-                                                        "gia_ban_le"]),
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      NumberFormat.currency(
+                                                              locale: "vi_VI",
+                                                              symbol: "đ")
+                                                          .format(item[
+                                                              "PriceOutbound"]),
+                                                      style: TextStyle(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ],
-                                      ),
+                                      ))
                                     ],
-                                  ))
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 10),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    decoration: BoxDecoration(
+                                        border: BorderDirectional(
+                                            top: BorderSide(
+                                                width: 1,
+                                                color: Colors.grey[400]!),
+                                            bottom: BorderSide(
+                                                width: 1,
+                                                color: Colors.grey[400]!))),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${item["quantity"]} sản phẩm",
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300,
+                                              color: Colors.black),
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Text(
+                                              "Thành tiền:",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300,
+                                                  color: Colors.black),
+                                            ),
+                                            const SizedBox(
+                                              width: 3,
+                                            ),
+                                            Text(
+                                              NumberFormat.currency(
+                                                      locale: "vi_VI",
+                                                      symbol: "đ")
+                                                  .format(
+                                                      item["PriceOutbound"] *
+                                                          item["quantity"]),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
-                            );
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
+                            ),
+                          ),
+                        ],
                       ));
                 }).toList()),
-                const SizedBox(
-                  height: 30,
-                ),
+
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 15),
                   decoration: BoxDecoration(
@@ -815,234 +837,70 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                 ),
                 Container(
                     margin: const EdgeInsets.only(bottom: 30, top: 20),
-                    child: FutureBuilder(
-                      future: getProfile(storage.getItem("phone")),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          Map profile = snapshot.data![0];
-                          return FutureBuilder(
-                            future: getAddress(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                List address = snapshot.data!.toList();
-                                return TextButton(
-                                    style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.symmetric(
-                                                vertical: 12, horizontal: 20)),
-                                        shape: MaterialStateProperty.all(
-                                            const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)))),
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Theme.of(context)
-                                                    .colorScheme
-                                                    .primary
-                                                    .withOpacity(0.4))),
-                                    onPressed: () {
-                                      if (address.isEmpty) {
-                                        showAlertDialog(context,
-                                            "Bạn chưa thêm địa chỉ giao hàng");
-                                      } else if (activePayment.isNotEmpty) {
-                                        showDialog(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10.0))),
-                                              content: Builder(
-                                                builder: (context) {
-                                                  return SizedBox(
-                                                      // height: 30,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          Icon(
-                                                            Icons.info,
-                                                            size: 70,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .primary,
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 15,
-                                                          ),
-                                                          const Text(
-                                                            "Đặt hàng",
-                                                            style: TextStyle(
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          const Text(
-                                                            "Bạn có chắc chắn tiến hàng đặt hàng không?",
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w300),
-                                                          )
-                                                        ],
-                                                      ));
-                                                },
-                                              ),
-                                              actionsPadding:
-                                                  const EdgeInsets.only(
-                                                      top: 0,
-                                                      left: 30,
-                                                      right: 30,
-                                                      bottom: 30),
-                                              actions: [
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  child: TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      onLoading(
-                                                          listProductPayment,
-                                                          profile["ma_kh"]);
-                                                    },
-                                                    style: ButtonStyle(
-                                                        padding:
-                                                            MaterialStateProperty.all(
-                                                                const EdgeInsets.symmetric(
-                                                                    vertical:
-                                                                        15)),
-                                                        shape: MaterialStateProperty.all(
-                                                            const RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.all(
-                                                                        Radius.circular(
-                                                                            15)))),
-                                                        backgroundColor:
-                                                            MaterialStateProperty.all(
-                                                                Theme.of(context)
-                                                                    .colorScheme
-                                                                    .primary)),
-                                                    child: const Text(
-                                                      "Đồng ý",
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  margin: const EdgeInsets.only(
-                                                      top: 10),
-                                                  child: TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                    style: ButtonStyle(
-                                                      padding: MaterialStateProperty
-                                                          .all(const EdgeInsets
-                                                                  .symmetric(
-                                                              vertical: 15)),
-                                                      shape: MaterialStateProperty.all(
-                                                          const RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .all(Radius
-                                                                          .circular(
-                                                                              15)),
-                                                              side: BorderSide(
-                                                                  color: Colors
-                                                                      .grey,
-                                                                  width: 1))),
-                                                    ),
-                                                    child: const Text("Hủy bỏ"),
-                                                  ),
-                                                )
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      } else {
-                                        showModalBottomSheet<void>(
-                                            backgroundColor: Colors.white,
-                                            clipBehavior:
-                                                Clip.antiAliasWithSaveLayer,
-                                            context: context,
-                                            isScrollControlled: true,
-                                            builder: (BuildContext context) {
-                                              return Container(
-                                                  padding: EdgeInsets.only(
-                                                      bottom:
-                                                          MediaQuery.of(context)
-                                                              .viewInsets
-                                                              .bottom),
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.6,
-                                                  child: ModalPayment(
-                                                    savePayment: savePayment,
-                                                  ));
-                                            });
-                                      }
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Expanded(flex: 1, child: Container()),
-                                        const Expanded(
-                                          flex: 8,
-                                          child: Center(
-                                            child: Text(
-                                              "Đặt hàng",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Image.asset(
-                                            "assets/images/calendar-black.png",
-                                            width: 40,
-                                            height: 30,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        )
-                                      ],
-                                    ));
-                              } else {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                            },
-                          );
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ))
+                    child: TextButton(
+                        style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 20)),
+                            shape: MaterialStateProperty.all(
+                                const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)))),
+                            backgroundColor: MaterialStateProperty.all(
+                                Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.4))),
+                        onPressed: () {
+                          if (activePayment.isNotEmpty) {
+                            setCheckOutCart();
+                          } else {
+                            showModalBottomSheet<void>(
+                                backgroundColor: Colors.white,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.6,
+                                      child: ModalPayment(
+                                        savePayment: savePayment,
+                                      ));
+                                });
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Expanded(flex: 1, child: Container()),
+                            const Expanded(
+                              flex: 8,
+                              child: Center(
+                                child: Text(
+                                  "Đặt hàng",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Image.asset(
+                                "assets/images/calendar-black.png",
+                                width: 40,
+                                height: 30,
+                                fit: BoxFit.contain,
+                              ),
+                            )
+                          ],
+                        )))
               ],
             ),
           )

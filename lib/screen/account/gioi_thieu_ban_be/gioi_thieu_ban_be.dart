@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
 
 class GioiThieuBanBe extends StatefulWidget {
   const GioiThieuBanBe({super.key});
@@ -38,7 +37,6 @@ class _GioiThieuBanBeState extends State<GioiThieuBanBe> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          drawer: const MyLeftMenu(),
           body: SizedBox(
             child: Expanded(
               child: Column(

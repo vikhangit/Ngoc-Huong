@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:ngoc_huong/models/branchsModel.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -15,12 +17,13 @@ class ChooseBrandScreen extends StatefulWidget {
   State<ChooseBrandScreen> createState() => _ChooseBrandScreenState();
 }
 
-String valueSearch = "";
-Map activeCN = {};
+Map activeBranch = {};
 
 class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
-  LocalStorage storage = LocalStorage('chi_nhanh');
+  final LocalStorage storageBranch = LocalStorage('branch');
+  final LocalStorage localStorageCustomerToken = LocalStorage("customer_token");
   late TextEditingController controller;
+  final BranchsModel model = BranchsModel();
   DateTime getPSTTime(DateTime now) {
     tz.initializeTimeZones();
     final pacificTimeZone = tz.getLocation('Asia/Ho_Chi_Minh');
@@ -38,19 +41,18 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
     }
   }
 
-  Map checkStatusBrand(String timeClose) {
-    DateTime now = DateTime.now();
-    DateTime checkTime = getPSTTime(DateTime.parse(timeClose));
-    if (checkTime.isAfter(now)) {
-      return {"text": "Close", "color": Theme.of(context).colorScheme.primary};
-    } else {
-      return {"text": "Open", "color": const Color(0xFF1CC473)};
-    }
-  }
+  // Map checkStatusBrand(String timeClose) {
+  //   DateTime now = DateTime.now();
+  //   DateTime checkTime = getPSTTime(DateTime.parse(timeClose));
+  //   if (checkTime.isAfter(now)) {
+  //     return {"text": "Close", "color": Theme.of(context).colorScheme.primary};
+  //   } else {
+  //     return {"text": "Open", "color": const Color(0xFF1CC473)};
+  //   }
+  // }
 
   @override
   void initState() {
-    controller = TextEditingController(text: valueSearch);
     Future.delayed(const Duration(seconds: 3), () {});
     super.initState();
   }
@@ -70,6 +72,7 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
         elevation: 0.0,
         leadingWidth: 45,
         centerTitle: true,
+        toolbarHeight: 55,
         automaticallyImplyLeading: false,
         title: const Text("Chọn chi nhánh",
             style: TextStyle(
@@ -77,7 +80,7 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
                 fontWeight: FontWeight.w500,
                 color: Colors.white)),
       ),
-      floatingActionButton: activeCN.isEmpty
+      floatingActionButton: activeBranch.isEmpty
           ? Container()
           : Container(
               margin: const EdgeInsets.only(top: 20),
@@ -87,7 +90,7 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
                   borderRadius: const BorderRadius.all(Radius.circular(15))),
               child: TextButton(
                   onPressed: () {
-                    storage.setItem("chi_nhanh", jsonEncode(activeCN));
+                    storageBranch.setItem("branch", jsonEncode(activeBranch));
                     Navigator.pushNamed(context, "home");
                   },
                   style: ButtonStyle(
@@ -111,53 +114,8 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
               ),
             ),
-            // Container(
-            //   margin: const EdgeInsets.only(top: 15, bottom: 20),
-            //   child: TextField(
-            //     textAlignVertical: TextAlignVertical.center,
-            //     autofocus: false,
-            //     style: const TextStyle(
-            //         fontSize: 15,
-            //         color: Colors.black,
-            //         fontWeight: FontWeight.w500),
-            //     onChanged: (value) {
-            //       setState(() {
-            //         valueSearch = value;
-            //       });
-            //     },
-            //     controller: controller,
-            //     decoration: InputDecoration(
-            //       prefixIcon: const Icon(
-            //         Icons.search_outlined,
-            //         size: 30,
-            //         color: Colors.black,
-            //       ),
-            //       focusedBorder: OutlineInputBorder(
-            //         borderRadius: const BorderRadius.all(Radius.circular(10)),
-            //         borderSide: BorderSide(
-            //             width: 1,
-            //             color: Theme.of(context)
-            //                 .colorScheme
-            //                 .primary), //<-- SEE HERE
-            //       ),
-            //       enabledBorder: const OutlineInputBorder(
-            //         borderRadius: BorderRadius.all(Radius.circular(10)),
-            //         borderSide:
-            //             BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
-            //       ),
-            //       contentPadding:
-            //           const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-            //       hintStyle: const TextStyle(
-            //           fontSize: 15,
-            //           color: Colors.black,
-            //           fontWeight: FontWeight.w300),
-            //       hintText: 'Nhập để tìm kiếm',
-            //     ),
-            //   ),
-            // ),
-
             FutureBuilder(
-              future: callChiNhanhApi(),
+              future: model.getBranchs(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Expanded(
@@ -167,198 +125,211 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
                         physics: const ClampingScrollPhysics(),
                         children: snapshot.data!.map((item) {
                           int index = snapshot.data!.indexOf(item);
-                          if (item["ten_kho"]
-                              .toString()
-                              .toLowerCase()
-                              .contains(valueSearch.toLowerCase())) {
-                            return Container(
-                                decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                margin: EdgeInsets.only(
-                                    // left: 10,
-                                    // right: 10,
-                                    top: index == 0 ? 0 : 25),
-                                // height: 50,
-                                child: Stack(
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          activeCN = item;
-                                        });
-                                      },
-                                      style: ButtonStyle(
-                                          padding: MaterialStateProperty.all(
-                                              const EdgeInsets.only(
-                                                  top: 0,
-                                                  left: 0,
-                                                  right: 0,
-                                                  bottom: 10))),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(10)),
-                                            child: Image.network(
-                                                "https://image-us.eva.vn/upload/3-2022/images/2022-09-09/picture-9-1662696857-151-width1600height1068.jpg"),
-                                          ),
-                                          const SizedBox(
-                                            height: 15,
-                                          ),
-                                          Container(
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "${item["ten_kho"]}",
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 16,
-                                                      color: Colors.black),
-                                                ),
-                                                const SizedBox(
-                                                  height: 6,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 6,
-                                                      child: Image.asset(
-                                                        "assets/images/account/dia-chi.png",
-                                                        width: 25,
-                                                        height: 25,
-                                                      ),
+                          return Container(
+                              decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              margin: EdgeInsets.only(
+                                  // left: 10,
+                                  // right: 10,
+                                  top: index == 0 ? 0 : 25),
+                              // height: 50,
+                              child: Stack(
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        activeBranch = item;
+                                      });
+                                    },
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            const EdgeInsets.only(
+                                                top: 0,
+                                                left: 0,
+                                                right: 0,
+                                                bottom: 10))),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10)),
+                                          child: Image.network(
+                                              "https://image-us.eva.vn/upload/3-2022/images/2022-09-09/picture-9-1662696857-151-width1600height1068.jpg"),
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "${item["Name"]}",
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 16,
+                                                    color: Colors.black),
+                                              ),
+                                              const SizedBox(
+                                                height: 6,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 6,
+                                                    child: Image.asset(
+                                                      "assets/images/account/dia-chi.png",
+                                                      width: 25,
+                                                      height: 25,
                                                     ),
-                                                    Expanded(
-                                                        flex: 2,
-                                                        child: Container()),
-                                                    Expanded(
-                                                      flex: 90,
-                                                      child: Text(
-                                                        "${item["exfields"]["dia_chi"]}",
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                            fontSize: 14,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 8,
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    makingPhoneCall(
-                                                        item["exfields"]
-                                                            ["dien_thoai"]);
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 6,
-                                                        child: Image.asset(
-                                                          "assets/images/call-black.png",
-                                                          width: 20,
-                                                          height: 20,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                          flex: 2,
-                                                          child: Container()),
-                                                      Expanded(
-                                                        flex: 90,
-                                                        child: Text(
-                                                          "Hotline: ${item["exfields"]["dien_thoai"]}",
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w300,
-                                                                  fontSize: 14,
-                                                                  color: Colors
-                                                                      .black),
-                                                        ),
-                                                      )
-                                                    ],
                                                   ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 8,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    GestureDetector(
-                                                        onTap: () {
-                                                          launchInBrowser(
-                                                              "https://www.google.com/maps/search/${"Thẩm+Mỹ+Viện+Ngọc+Hường+${item["ten_kho"] == "An Giang" || item["ten_kho"] == "Bình Dương" ? item["exfields"]["dia_chi"].toString().replaceAll(" ", "+") : item["ten_kho"].toString().replaceAll(" ", "+")}"}/@${item["location"]["latitude"]},${item["location"]["longitude"]}");
-                                                        },
-                                                        child: const Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .subdirectory_arrow_right,
-                                                              color: Color(
-                                                                  0xFF1CC473),
-                                                              size: 24,
-                                                            ),
-                                                            SizedBox(
-                                                              width: 3,
-                                                            ),
-                                                            Text(
-                                                              "Xem vị trí",
-                                                              style: TextStyle(
-                                                                  fontSize: 14,
-                                                                  color: Color(
-                                                                      0xFF1CC473)),
-                                                            ),
-                                                          ],
-                                                        )),
-                                                    Container(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 10,
-                                                          vertical: 5),
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                      .all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          5)),
-                                                          color: checkStatusBrand(
-                                                                  "${item["time_close"]}")[
-                                                              "color"]),
-                                                      child: Text(
-                                                          "${checkStatusBrand("${item["time_close"]}")["text"]}",
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 15,
-                                                            color: Colors.white,
-                                                          )),
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                                  Expanded(
+                                                      flex: 2,
+                                                      child: Container()),
+                                                  Expanded(
+                                                    flex: 90,
+                                                    child: Text(
+                                                      "${item["Address"]}",
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                          fontSize: 14,
+                                                          color: Colors.black),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 8,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 6,
+                                                    child: Image.asset(
+                                                      "assets/images/call-black.png",
+                                                      width: 20,
+                                                      height: 20,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                      flex: 2,
+                                                      child: Container()),
+                                                  Expanded(
+                                                    flex: 90,
+                                                    child: Text(
+                                                      "Hotline: ${item["Hotline"]}",
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                          FontWeight.w300,
+                                                          fontSize: 14,
+                                                          color:
+                                                          Colors.black),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 12,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 6,
+                                                    child: Image.asset(
+                                                      "assets/images/TimeCircleBlack.png",
+                                                      width: 20,
+                                                      height: 20,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                      flex: 2,
+                                                      child: Container()),
+                                                  Expanded(
+                                                    flex: 90,
+                                                    child: Text(
+                                                      "${item["TimeOut"]} - ${item["TimeClose"]}",
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                          FontWeight.w300,
+                                                          fontSize: 14,
+                                                          color:
+                                                          Colors.black),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 8,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  GestureDetector(
+                                                      onTap: () {
+                                                        launchInBrowser(item[
+                                                            "LinkGoogleMap"]);
+                                                      },
+                                                      child: const Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .subdirectory_arrow_right,
+                                                            color: Color(
+                                                                0xFF1CC473),
+                                                            size: 24,
+                                                          ),
+                                                          SizedBox(
+                                                            width: 3,
+                                                          ),
+                                                          Text(
+                                                            "Xem vị trí",
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Color(
+                                                                    0xFF1CC473)),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                  // Container(
+                                                  //   padding: const EdgeInsets
+                                                  //           .symmetric(
+                                                  //       horizontal: 10,
+                                                  //       vertical: 5),
+                                                  //   decoration: BoxDecoration(
+                                                  //       borderRadius:
+                                                  //           const BorderRadius
+                                                  //                   .all(
+                                                  //               Radius.circular(
+                                                  //                   5)),
+                                                  //       color: checkStatusBrand(
+                                                  //               "${item["time_close"]}")[
+                                                  //           "color"]),
+                                                  //   child: Text(
+                                                  //       "${checkStatusBrand("${item["time_close"]}")["text"]}",
+                                                  //       style: const TextStyle(
+                                                  //         fontSize: 15,
+                                                  //         color: Colors.white,
+                                                  //       )),
+                                                  // )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                    if (activeCN["ma_kho"] == item["ma_kho"])
+                                  ),
+                                  if (activeBranch.isNotEmpty)
+                                    if (activeBranch["Code"] == item["Code"])
                                       Positioned.fill(
                                           child: Container(
                                         decoration: BoxDecoration(
@@ -374,16 +345,29 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
                                           ),
                                         ),
                                       ))
-                                  ],
-                                ));
-                          } else {
-                            return Container();
-                          }
+                                ],
+                              ));
                         }).toList()),
                   );
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: LoadingIndicator(
+                          colors: kDefaultRainbowColors,
+                          indicatorType: Indicator.lineSpinFadeLoader,
+                          strokeWidth: 1,
+                          // pathBackgroundColor: Colors.black45,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Đang lấy dữ liệu")
+                    ],
                   );
                 }
               },

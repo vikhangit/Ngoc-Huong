@@ -35,7 +35,7 @@ class NotificationService {
         AuthorizationStatus.provisional) {
       print('User granted provisional permission');
     } else {
-      AppSettings.openNotificationSettings();
+      AppSettings.openAppSettings(type: AppSettingsType.notification);
       print('User declined or has not accepted permission');
     }
   }

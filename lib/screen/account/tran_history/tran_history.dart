@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ngoc_huong/menu/bottom_menu.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
 
 class TranHistory extends StatefulWidget {
   const TranHistory({super.key});
@@ -53,7 +51,6 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          drawer: const MyLeftMenu(),
           body: SizedBox(
               child: Column(
             children: [

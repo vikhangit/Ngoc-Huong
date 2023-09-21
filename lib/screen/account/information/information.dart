@@ -1,13 +1,21 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
-import 'package:ngoc_huong/utils/validate.dart';
+import 'package:ngoc_huong/models/profileModel.dart';
+import 'package:ngoc_huong/screen/account/accoutScreen.dart';
+import 'package:ngoc_huong/screen/account/information/child/button_confirm.dart';
+import 'package:ngoc_huong/screen/account/information/child/field_address.dart';
+import 'package:ngoc_huong/screen/account/information/child/field_birthDay.dart';
+import 'package:ngoc_huong/screen/account/information/child/field_email.dart';
+import 'package:ngoc_huong/screen/account/information/child/field_gender.dart';
+import 'package:ngoc_huong/screen/account/information/child/field_name.dart';
+import 'package:ngoc_huong/screen/account/information/child/field_phone.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 
@@ -18,58 +26,51 @@ class InfomationAccount extends StatefulWidget {
   State<InfomationAccount> createState() => _InfomationAccountState();
 }
 
-int ngay = 0;
-int thang = 0;
-int nam = 0;
-List<String> items = ['Chọn giới tính', 'Nam', 'Nữ'];
-String gender = items[0];
-bool isLoading = true;
-String id = "";
+String name = "";
+DateTime? birthDay;
+String email = "";
+String address = "";
+
+List genderList = [
+  {
+    "title": "Nam",
+    "icon": "assets/images/nam-black.png",
+    "iconActive": "assets/images/nam-white.png"
+  },
+  {
+    "title": "Nữ",
+    "icon": "assets/images/nu-black.png",
+    "iconActive": "assets/images/nu-white.png"
+  }
+];
+int genderValue = 0;
+bool loading = true;
 
 class _InfomationAccountState extends State<InfomationAccount> {
-  final _formKey = GlobalKey<FormState>();
+  final LocalStorage localStorageCustomerToken = LocalStorage("customer_token");
+  final ProfileModel profileModel = ProfileModel();
+  final CustomModal customModal = CustomModal();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-  TextEditingController genderController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController birthdayController = TextEditingController();
-
-  LocalStorage storage = LocalStorage("auth");
-  LocalStorage storageCN = LocalStorage("chi_nhanh");
+  TextEditingController addressController = TextEditingController();
   @override
   void initState() {
+    // storage.deleteItem("userInfo");
     super.initState();
-    Future.delayed(const Duration(seconds: 1), () {
-      getProfile(storage.getItem("phone")).then((value) => setState(() {
-            id = value[0]["_id"];
-            nameController = TextEditingController(text: value[0]["ten_kh"]);
-            phoneController = TextEditingController(text: value[0]["of_user"]);
-            emailController =
-                TextEditingController(text: value[0]["email"] ?? "");
-            gender = value[0]["gioi_tinh"] != null
-                ? items.indexOf(value[0]["gioi_tinh"]) > 0
-                    ? items[items.indexOf(value[0]["gioi_tinh"])]
-                    : items[0]
-                : items[0];
-            birthdayController = TextEditingController(
-                text: value[0]["ngay_sinh"] != null
-                    ? DateFormat("dd/MM/yyyy").format(
-                        DateTime.parse(value[0]["ngay_sinh"].toString()))
-                    : "");
-            ngay = int.parse(DateFormat("dd").format(DateTime.parse(
-                value[0]["ngay_sinh"] == null
-                    ? DateTime.now().toString()
-                    : value[0]["ngay_sinh"].toString())));
-            thang = int.parse(DateFormat("MM").format(DateTime.parse(
-                value[0]["ngay_sinh"] == null
-                    ? DateTime.now().toString()
-                    : value[0]["ngay_sinh"].toString())));
-            nam = int.parse(DateFormat("yyyy").format(DateTime.parse(
-                value[0]["ngay_sinh"] == null
-                    ? DateTime.now().toString()
-                    : value[0]["ngay_sinh"].toString())));
-            isLoading = false;
-          }));
+    profileModel.getProfile().then((value) => setState(() {
+          nameController = TextEditingController(text: value["CustomerName"]);
+          phoneController = TextEditingController(text: value["Phone"]);
+          birthDay = DateTime.parse(value["Birthday"]);
+          emailController = TextEditingController(text: value["Email"]);
+          addressController = TextEditingController(text: value["Address"]);
+          genderValue = value["Gender"] == true ? 1 : 0;
+        }));
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        loading = false;
+      });
     });
   }
 
@@ -77,592 +78,198 @@ class _InfomationAccountState extends State<InfomationAccount> {
   void dispose() {
     nameController.dispose();
     phoneController.dispose();
-    genderController.dispose();
     emailController.dispose();
-    birthdayController.dispose();
-    isLoading = true;
+    addressController.dispose();
+    loading = true;
     super.dispose();
+  }
+
+  void changeGender(int index) {
+    setState(() {
+      genderValue = index;
+    });
+  }
+
+  void changeName(String value) {
+    setState(() {
+      name = value;
+    });
+  }
+
+  void selectBirthDay(BuildContext context) async {
+    DateTime now = DateTime.now();
+    DatePickerBdaya.showDatePicker(context,
+        showTitleActions: true,
+        minTime: DateTime(1900, 3, 5),
+        maxTime: DateTime(2008, now.month, now.day),
+        theme: const DatePickerThemeBdaya(
+          itemStyle: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w400, fontSize: 16),
+          doneStyle: TextStyle(fontSize: 14),
+        ), onChanged: (date) {
+      debugPrint('change $date in time zone ${date.timeZoneOffset.inHours}');
+    }, onConfirm: (date) {
+      setState(() {
+        birthDay = date;
+      });
+    }, currentTime: DateTime.now(), locale: LocaleType.vi);
+  }
+
+  void changeEmail(String value) {
+    setState(() {
+      email = value;
+    });
+  }
+
+  void changeAddress(String value) {
+    setState(() {
+      address = value;
+    });
+  }
+
+  void saveUserInfo() async {
+    final isValid = _formKey.currentState!.validate();
+    FocusManager.instance.primaryFocus!.unfocus();
+    Map data = {
+      "CustomerName": name.isEmpty ? emailController.text : name,
+      "Birthday": DateFormat("yyyy-MM-dd").format(birthDay ?? DateTime.now()),
+      "Gender": genderValue,
+      "Address": address.isEmpty ? addressController.text : address,
+      "Email": email.isEmpty ? emailController.text : email,
+      "Phone": phoneController.text,
+    };
+    if (!isValid) {
+      return;
+    } else {
+      customModal.showAlertDialog(context, "error", "Lưu thông tin",
+          "Bạn có chắc chắn lưu lưu thông tin?", () {
+        Navigator.pop(context);
+        EasyLoading.show(status: "Vui lòng chờ...");
+        Future.delayed(const Duration(seconds: 2), () {
+          profileModel.setProfile(data).then((value) {
+            EasyLoading.dismiss();
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AccountScreen()));
+            setState(() {
+              ElegantNotification.success(
+                width: MediaQuery.of(context).size.width,
+                height: 50,
+                notificationPosition: NotificationPosition.topCenter,
+                toastDuration: const Duration(milliseconds: 2000),
+                animation: AnimationType.fromTop,
+                // title: const Text('Cập nhật'),
+                description: const Text(
+                  'Cập nhập thông tin thành công',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                ),
+                onDismiss: () {},
+              ).show(context);
+            });
+          });
+        });
+      }, () => Navigator.pop(context));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    void selectBirthDay(BuildContext context) async {
-      DatePickerBdaya.showDatePicker(context,
-          showTitleActions: true,
-          minTime: DateTime(1900, 3, 5),
-          maxTime: DateTime(3000, 12, 31),
-          theme: const DatePickerThemeBdaya(
-            itemStyle: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w400, fontSize: 16),
-            doneStyle: TextStyle(fontSize: 14),
-          ), onChanged: (date) {
-        debugPrint('change $date in time zone ${date.timeZoneOffset.inHours}');
-      }, onConfirm: (date) {
-        setState(() {
-          birthdayController = TextEditingController(
-              text: DateFormat("dd/MM/yyyy").format(date));
-          nam = int.parse(
-              DateFormat("yyyy").format(DateTime.parse(date.toString())));
-          thang = int.parse(
-              DateFormat("MM").format(DateTime.parse(date.toString())));
-          ngay = int.parse(
-              DateFormat("dd").format(DateTime.parse(date.toString())));
-        });
-      }, currentTime: DateTime(nam, thang, ngay), locale: LocaleType.vi);
-    }
-
-    void changeProfile() async {
-      Map data = {
-        "ngay_sinh": birthdayController.text.isNotEmpty
-            ? "${nam.toString()}-${thang < 10 ? "0$thang" : thang}-${ngay < 10 ? "0$ngay" : ngay}T07:00:32.534Z"
-            : "",
-        "gioi_tinh": items.indexOf(gender) > 0 ? gender : "",
-        "email": emailController.text.isNotEmpty ? emailController.text : "",
-        "ten_kh": nameController.text.isNotEmpty ? nameController.text : "",
-        "dien_thoai": phoneController.text,
-        "sdt_lien_he": phoneController.text
-      };
-      Map data2 = {
-        "name": nameController.text.isNotEmpty ? nameController.text : "",
-        "phone": emailController.text.isNotEmpty ? emailController.text : "",
-      };
-      await updateProfile(id, storage.getItem("phone"), data).then((value) {
-        callUpdateProfile(data2);
-        FocusManager.instance.primaryFocus?.unfocus();
-        Navigator.pushNamed(context, "account");
-        setState(() {
-          ElegantNotification.success(
-            width: MediaQuery.of(context).size.width,
-            height: 50,
-            notificationPosition: NotificationPosition.topCenter,
-            toastDuration: const Duration(milliseconds: 2000),
-            animation: AnimationType.fromTop,
-            // title: const Text('Cập nhật'),
-            description: const Text(
-              'Cập nhập thông tin thành công',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-            ),
-            onDismiss: () {},
-          ).show(context);
-        });
-      });
-    }
-
-    void onLoading() {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Dialog(
-              child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(
-                  width: 20,
-                ),
-                Text("Loading"),
-              ],
-            ),
-          ));
-        },
-      );
-      Future.delayed(const Duration(seconds: 3), () {
-        changeProfile();
-        setState(() {
-          isLoading = true;
-        });
-        Navigator.pop(context);
-      });
-    }
-
-    void showInfoDialog(BuildContext context) {
-      AlertDialog alert = AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        content: Builder(
-          builder: (context) {
-            return SizedBox(
-                // height: 30,
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.info,
-                      size: 70,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    const Text(
-                      "Lưu lại thông tin",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    const Text(
-                      "Bạn có muốn lưu lại thông tin khônng?",
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-                    )
-                  ],
-                ));
-          },
-        ),
-        actionsPadding:
-            const EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 30),
-        actions: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: TextButton(
-              onPressed: () => onLoading(),
-              style: ButtonStyle(
-                  padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(vertical: 15)),
-                  shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)))),
-                  backgroundColor: MaterialStateProperty.all(
-                      Theme.of(context).colorScheme.primary)),
-              child: const Text(
-                "Đồng ý",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.only(top: 10),
-            child: TextButton(
-              onPressed: () => Navigator.pop(context),
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(
-                    const EdgeInsets.symmetric(vertical: 15)),
-                shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    side: BorderSide(color: Colors.grey, width: 1))),
-              ),
-              child: const Text("Hủy bỏ"),
-            ),
-          )
-        ],
-      );
-      // show the dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-
-    var border = OutlineInputBorder(
-      borderRadius: const BorderRadius.all(Radius.circular(10)),
-      borderSide: BorderSide(
-          width: 1,
-          color: Theme.of(context).colorScheme.primary), //<-- SEE HERE
-    );
-    var border2 = const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(width: 1, color: Colors.grey));
-    print(birthdayController.text);
-    return SafeArea(
-        child: Scaffold(
-            backgroundColor: Colors.white,
-            resizeToAvoidBottomInset: true,
-            // bottomNavigationBar: const MyBottomMenu(
-            //   active: 3,
-            // ),
-            appBar: AppBar(
-              leadingWidth: 45,
-              centerTitle: true,
-              leading: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 15),
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.white),
-                    child: const Icon(
-                      Icons.west,
-                      size: 16,
-                      color: Colors.black,
-                    ),
-                  )),
-              title: const Text("Thông tin tài khoản",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white)),
-              actions: [
-                GestureDetector(
-                  onTap: () {
-                    // showModalBottomSheet<void>(
-                    //     clipBehavior: Clip.antiAliasWithSaveLayer,
-                    //     context: context,
-                    //     isScrollControlled: true,
-                    //     shape: const RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.vertical(
-                    //         top: Radius.circular(20.0),
-                    //       ),
-                    //     ),
-                    //     builder: (BuildContext context) {
-                    //       return Container(
-                    //         padding: EdgeInsets.only(
-                    //             bottom:
-                    //                 MediaQuery.of(context).viewInsets.bottom),
-                    //         height: MediaQuery.of(context).size.height * 0.6,
-                    //         child: modalChinhSach(context),
-                    //       );
-                    //     });
-                  },
-                  child: const Icon(
-                    Icons.info_outline_rounded,
-                    size: 24,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(
-                  width: 12,
-                )
-              ],
-            ),
-            drawer: const MyLeftMenu(),
-            body: isLoading == true
-                ? const Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("Loading"),
-                      ],
-                    ),
-                  )
-                : Column(
-                    // reverse: true,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: ListView(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 7),
-                                    child: const Text(
-                                      "Họ Tên",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14),
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    textAlignVertical: TextAlignVertical.center,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Vui lòng nhập tên';
-                                      }
-                                      return null;
-                                    },
-                                    style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500),
-                                    controller: nameController,
-                                    decoration: InputDecoration(
-                                      focusedBorder: border,
-                                      errorBorder: border,
-                                      focusedErrorBorder: border,
-                                      enabledBorder: border2,
-                                      contentPadding: const EdgeInsets.only(
-                                          left: 5,
-                                          right: 15,
-                                          top: 18,
-                                          bottom: 18),
-                                      prefix: const Padding(
-                                          padding: EdgeInsets.only(left: 15.0)),
-                                      hintStyle: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black.withOpacity(0.3),
-                                          fontWeight: FontWeight.w400),
-                                      hintText: 'Nhập tên',
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 7),
-                                    child: const Text(
-                                      "Số điện thoại",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14),
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    textAlignVertical: TextAlignVertical.center,
-                                    readOnly: true,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Vui lòng số điện thoại';
-                                      } else if (!value.isValidPhone) {
-                                        return 'Số điện thoại không đúng định dạng';
-                                      }
-                                      return null;
-                                    },
-                                    style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500),
-                                    controller: phoneController,
-                                    decoration: InputDecoration(
-                                      focusedBorder: border,
-                                      errorBorder: border,
-                                      focusedErrorBorder: border,
-                                      enabledBorder: border2,
-                                      filled: true,
-                                      fillColor: Colors.grey[300],
-                                      contentPadding: const EdgeInsets.only(
-                                          left: 5,
-                                          right: 15,
-                                          top: 18,
-                                          bottom: 18),
-                                      prefix: const Padding(
-                                          padding: EdgeInsets.only(left: 15.0)),
-                                      hintStyle: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black.withOpacity(0.3),
-                                          fontWeight: FontWeight.w400),
-                                      hintText: 'Nhập số điện thoại',
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 7),
-                                    child: const Text(
-                                      "Giới tính",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14),
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    textAlignVertical: TextAlignVertical.center,
-                                    style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500),
-                                    decoration: InputDecoration(
-                                      focusedBorder: border,
-                                      errorBorder: border,
-                                      focusedErrorBorder: border,
-                                      enabledBorder: border2,
-                                      suffixIcon: DropdownButtonFormField(
-                                        value: gender,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500),
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            gender = newValue!;
-                                          });
-                                        },
-                                        decoration: const InputDecoration(
-                                            enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.white)),
-                                            focusedBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.white))),
-                                        items: items
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 7),
-                                    child: const Text(
-                                      "Email",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14),
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    textAlignVertical: TextAlignVertical.center,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Vui lòng nhập email';
-                                      } else if (!value.isValidEmail) {
-                                        return 'Email không đúng định dàng';
-                                      }
-                                      return null;
-                                    },
-                                    controller: emailController,
-                                    style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500),
-                                    decoration: InputDecoration(
-                                      focusedBorder: border,
-                                      errorBorder: border,
-                                      focusedErrorBorder: border,
-                                      enabledBorder: border2,
-                                      contentPadding: const EdgeInsets.only(
-                                          left: 5,
-                                          right: 15,
-                                          top: 18,
-                                          bottom: 18),
-                                      prefix: const Padding(
-                                          padding: EdgeInsets.only(left: 15.0)),
-                                      hintStyle: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black.withOpacity(0.3),
-                                          fontWeight: FontWeight.w400),
-                                      hintText: 'Nhập email',
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 7),
-                                    child: const Text(
-                                      "Ngày sinh",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14),
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    textAlignVertical: TextAlignVertical.center,
-                                    controller: birthdayController,
-                                    readOnly: true,
-                                    onTap: () => selectBirthDay(context),
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500),
-                                    decoration: InputDecoration(
-                                      suffixIcon: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8),
-                                        child: Image.asset(
-                                          "assets/images/calendar-black.png",
-                                          width: 20,
-                                          height: 20,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(10)),
-                                        borderSide: BorderSide(
-                                            width: 1,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary), //<-- SEE HERE
-                                      ),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                        borderSide: BorderSide(
-                                            width: 1,
-                                            color: Colors.grey), //<-- SEE HERE
-                                      ),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 18),
-                                      hintStyle: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.black.withOpacity(0.3),
-                                          fontWeight: FontWeight.w400),
-                                      hintText: 'Nhập ngày sinh',
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(15),
-                        child: TextButton(
-                          onPressed: () {
-                            showInfoDialog(context);
+    return Form(
+        key: _formKey,
+        child: Builder(
+            builder: (context) => SafeArea(
+                  child: Scaffold(
+                    backgroundColor: Colors.white,
+                    resizeToAvoidBottomInset: true,
+                    appBar: AppBar(
+                      leadingWidth: 45,
+                      centerTitle: true,
+                      leading: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
                           },
-                          style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                  const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15)))),
-                              backgroundColor: MaterialStateProperty.all(
-                                  Theme.of(context).colorScheme.primary),
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.symmetric(
-                                      vertical: 14, horizontal: 20))),
-                          child: const Center(
-                            child: Text(
-                              "Lưư thông tin",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white),
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 15),
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.white),
+                            child: const Icon(
+                              Icons.west,
+                              size: 16,
+                              color: Colors.black,
+                            ),
+                          )),
+                      title: const Text("Thông tin tài khoản",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white)),
+                    ),
+                    body: !loading
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ListView(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  children: [
+                                    const SizedBox(
+                                      height: 30,
+                                    ),
+                                    fieldName(
+                                        context,
+                                        (name) => changeName(name),
+                                        nameController),
+                                    fieldPhone(
+                                        context,
+                                        (name) => changeName(name),
+                                        phoneController),
+                                    gender(
+                                        context,
+                                        (index) => changeGender(index),
+                                        genderValue,
+                                        genderList),
+                                    fieldBirthDay(
+                                        context,
+                                        (context) => selectBirthDay(context),
+                                        birthDay),
+                                    fieldEmail(
+                                        context,
+                                        (value) => changeEmail(value),
+                                        emailController),
+                                    fieldAddress(
+                                        context,
+                                        (value) => changeAddress(value),
+                                        addressController)
+                                  ],
+                                ),
+                              ),
+                              buttonConfirm(context, saveUserInfo)
+                            ],
+                          )
+                        : const Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: LoadingIndicator(
+                                    colors: kDefaultRainbowColors,
+                                    indicatorType: Indicator.lineSpinFadeLoader,
+                                    strokeWidth: 1,
+                                    // pathBackgroundColor: Colors.black45,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text("Đang lấy dữ liệu")
+                              ],
                             ),
                           ),
-                        ),
-                      )
-                    ],
-                  )));
+                  ),
+                )));
   }
 }
 

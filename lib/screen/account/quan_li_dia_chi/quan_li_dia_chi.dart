@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/sua_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/them_dia_chi.dart';
@@ -88,7 +87,6 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          drawer: const MyLeftMenu(),
           body: Container(
             margin: const EdgeInsets.symmetric(horizontal: 15),
             child: Column(

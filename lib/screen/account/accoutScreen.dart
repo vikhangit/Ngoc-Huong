@@ -1,20 +1,20 @@
 import 'dart:convert';
-
-import 'package:dio/dio.dart';
+import 'dart:io';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:localstorage/localstorage.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/account/dieu_khoan_sd/dieu_khoan_sd.dart';
 import 'package:ngoc_huong/screen/account/gioi_thieu_ban_be/gioi_thieu_ban_be.dart';
-import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/tran_history/tran_history.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:open_file/open_file.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -63,112 +63,46 @@ List menu = [
 ];
 
 class _AccountScreenState extends State<AccountScreen> {
-  LocalStorage storage = LocalStorage("auth");
-  LocalStorage storageToken = LocalStorage("token");
-  LocalStorage storageCN = LocalStorage("chi_nhanh");
-
+  final ProfileModel profileModel = ProfileModel();
   void _openFile(PlatformFile file) {
     print(file.path);
     OpenFile.open(file.path);
   }
 
-  void showLoadingDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-            child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-          child: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(
-                width: 20,
-              ),
-              Text("Loading"),
-            ],
-          ),
-        ));
-      },
-    );
-  }
-
   void _pickFile() async {
-    final dio = Dio();
     final result = await FilePicker.platform.pickFiles();
     if (result == null) return;
-    final file = result.files.first;
-    var formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(file.path!, filename: file.name)
-    });
-    showLoadingDialog();
-    Future.delayed(const Duration(seconds: 3), () async {
-      final response = await dio.post(
-          "$apiUrl/api/uploadfile?access_token=${storageToken.getItem("token")}&json=1&folder=avatars",
-          data: formData);
-      callUpdateProfile({"picture": response.data["fileUrl"]})
-          .then((value) => setState(() {
-                ElegantNotification.success(
-                  width: MediaQuery.of(context).size.width,
-                  height: 50,
-                  notificationPosition: NotificationPosition.topCenter,
-                  toastDuration: const Duration(milliseconds: 2000),
-                  animation: AnimationType.fromTop,
-                  // title: const Text('Cập nhật'),
-                  description: const Text(
-                    'Đã nhập thành công',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-                  ),
-                  onDismiss: () {},
-                ).show(context);
-                Navigator.pop(context);
-              }));
+    // final file = result.files.first;
+    File file = File(result.files.first.path!);
+    List<int> fileInByte = file.readAsBytesSync();
+    String fileInBase64 = "data:image/jpeg;base64,${base64Encode(fileInByte)}";
+    EasyLoading.show(status: "Vui lòng chờ...");
+    Future.delayed(const Duration(seconds: 2), () {
+      profileModel.setProfileIamge(fileInBase64).then((value) {
+        EasyLoading.dismiss();
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const AccountScreen()));
+        setState(() {
+          ElegantNotification.success(
+            width: MediaQuery.of(context).size.width,
+            height: 50,
+            notificationPosition: NotificationPosition.topCenter,
+            toastDuration: const Duration(milliseconds: 2000),
+            animation: AnimationType.fromTop,
+            // title: const Text('Cập nhật'),
+            description: const Text(
+              'Cập nhập ảnh đại diện thành công',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+            ),
+            onDismiss: () {},
+          ).show(context);
+        });
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Map chiNhanh = jsonDecode(storageCN.getItem("chi_nhanh"));
-    void showAlertDialog(BuildContext context, String err) {
-      Widget okButton = TextButton(
-        child: const Text("OK"),
-        onPressed: () => Navigator.pop(context, 'OK'),
-      );
-      AlertDialog alert = AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        content: Builder(
-          builder: (context) {
-            return SizedBox(
-              // height: 30,
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                style: const TextStyle(height: 1.6),
-                err,
-              ),
-            );
-          },
-        ),
-        actions: [
-          okButton,
-        ],
-      );
-      // show the dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-
-    void save() {
-      setState(() {});
-    }
-
     void goAction(int index) {
       print(index);
       switch (index) {
@@ -196,8 +130,8 @@ class _AccountScreenState extends State<AccountScreen> {
               MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
           break;
         case 6:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
         case 7:
           Navigator.pushNamed(context, "setting");
@@ -210,11 +144,9 @@ class _AccountScreenState extends State<AccountScreen> {
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          bottomNavigationBar: MyBottomMenu(
+          bottomNavigationBar: const MyBottomMenu(
             active: 3,
-            save: save,
           ),
-          drawer: const MyLeftMenu(),
           body: ListView(
             padding: const EdgeInsets.symmetric(vertical: 25),
             children: [
@@ -227,7 +159,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     Expanded(
                       child: GestureDetector(
                           onTap: () {
-                            makingPhoneCall(chiNhanh["exfields"]["dien_thoai"]);
+                            makingPhoneCall();
                           },
                           child: Row(
                             children: [
@@ -248,10 +180,9 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                     Expanded(
                         child: FutureBuilder(
-                            future: callProfile(),
+                            future: profileModel.getProfile(),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
+                              if (snapshot.hasData) {
                                 return Center(
                                     child: Stack(children: [
                                   GestureDetector(
@@ -270,7 +201,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                             decoration: BoxDecoration(
                                                 image: DecorationImage(
                                                     image: NetworkImage(
-                                                        "$apiUrl${snapshot.data!["picture"]}?access_token=${storageToken.getItem("token")}}"),
+                                                        "${snapshot.data["CustomerImage"]}"),
                                                     fit: BoxFit.cover)),
                                           ),
                                         ),
@@ -283,7 +214,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                         backgroundColor:
                                             const Color(0xff00A3FF),
                                         backgroundImage: NetworkImage(
-                                            "$apiUrl${snapshot.data!["picture"]}?access_token=${storageToken.getItem("token")}}"),
+                                            "${snapshot.data["CustomerImage"]}"),
                                         radius: 35.0,
                                       ),
                                     ),
@@ -309,8 +240,25 @@ class _AccountScreenState extends State<AccountScreen> {
                                   )
                                 ]));
                               } else {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
+                                return const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Đang lấy dữ liệu")
+                                  ],
                                 );
                               }
                             })),
@@ -355,23 +303,39 @@ class _AccountScreenState extends State<AccountScreen> {
                 height: 20,
               ),
               FutureBuilder(
-                future: callProfile(),
+                future: profileModel.getProfile(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     Map profile = snapshot.data!;
                     return Column(
                       children: [
-                        Text(profile["name"].toString(),
+                        Text(profile["CustomerName"].toString(),
                             style: const TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.w400)),
-                        Text(profile["email"].toString(),
+                        Text(profile["Phone"].toString(),
                             style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w300))
                       ],
                     );
                   } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: LoadingIndicator(
+                            colors: kDefaultRainbowColors,
+                            indicatorType: Indicator.lineSpinFadeLoader,
+                            strokeWidth: 1,
+                            // pathBackgroundColor: Colors.black45,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text("Đang lấy dữ liệu")
+                      ],
                     );
                   }
                 },
@@ -434,8 +398,8 @@ class _AccountScreenState extends State<AccountScreen> {
                       flex: 47,
                       child: GestureDetector(
                         onTap: () {
-                          showAlertDialog(context,
-                              "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                          // showAlertDialog(context,
+                          //     "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
                         },
                         child: Container(
                           margin: const EdgeInsets.only(right: 15),
@@ -488,66 +452,6 @@ class _AccountScreenState extends State<AccountScreen> {
                 child: ListView(
                   physics: const BouncingScrollPhysics(),
                   children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 15),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 20),
-                      decoration: const BoxDecoration(
-                          color: Colors.black87,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.linked_camera,
-                                color: Colors.amber[200],
-                              ),
-                              const SizedBox(
-                                width: 6,
-                              ),
-                              Text(
-                                "G-BUSINESS",
-                                style: TextStyle(color: Colors.amber[200]),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                  child: Text(
-                                "Tài khoản tiếp khách dành cho doanh nghiệp",
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.amber[200]),
-                              )),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                decoration: BoxDecoration(
-                                    color: Colors.amber[200],
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(20))),
-                                child: GestureDetector(
-                                  onTap: () {},
-                                  child: const Text(
-                                    "Chi tiết",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w400),
-                                  ),
-                                ),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
                     Column(
                       children: menu.map((element) {
                         int index = menu.indexOf(element);

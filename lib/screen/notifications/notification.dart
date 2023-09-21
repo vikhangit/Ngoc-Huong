@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -36,8 +35,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         child: Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      bottomNavigationBar: MyBottomMenu(active: 2, save: () => setState(() {})),
-      drawer: const MyLeftMenu(),
+      bottomNavigationBar: const MyBottomMenu(active: 2),
       appBar: AppBar(
         leadingWidth: 45,
         centerTitle: true,

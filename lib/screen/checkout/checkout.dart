@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
-import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_chi_tiet_booking.dart';
-import 'package:ngoc_huong/screen/checkout/checkout_step2.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class CheckOutScreen extends StatefulWidget {
@@ -83,7 +80,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 fontWeight: FontWeight.w500,
                 color: Colors.black)),
       ),
-      drawer: const MyLeftMenu(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,

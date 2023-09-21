@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
-import 'package:ngoc_huong/screen/services/chi_tiet_tin_tuc.dart';
+import 'package:ngoc_huong/screen/news/chi_tiet_tin_tuc.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class KienThucScreen extends StatefulWidget {
@@ -24,8 +24,7 @@ class _KienThucScreenState extends State<KienThucScreen> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar:
-                MyBottomMenu(active: 0, save: () => setState(() {})),
+            bottomNavigationBar: const MyBottomMenu(active: 0),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,

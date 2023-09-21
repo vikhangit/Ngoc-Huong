@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 
 class CheckoutSuccess extends StatefulWidget {
@@ -73,7 +72,6 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
             ),
-            drawer: const MyLeftMenu(),
             body: Container(
                 padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
                 child: SizedBox(

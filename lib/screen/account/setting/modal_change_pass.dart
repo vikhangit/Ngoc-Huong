@@ -3,8 +3,6 @@ import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/screen/login/modal_pass_exist.dart';
-import 'package:ngoc_huong/screen/login/modal_phone.dart';
 
 class ModalChangePass extends StatefulWidget {
   const ModalChangePass({super.key});

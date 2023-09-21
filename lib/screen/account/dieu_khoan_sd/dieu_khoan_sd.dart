@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ngoc_huong/menu/leftmenu.dart';
 
 class DieuKhoanSudung extends StatefulWidget {
   const DieuKhoanSudung({super.key});
@@ -72,7 +71,6 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          drawer: const MyLeftMenu(),
           body: SizedBox(
             child: ListView(
               children: [

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ngoc_huong/screen/booking/modal/modal_dia_chi.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalService extends StatefulWidget {
