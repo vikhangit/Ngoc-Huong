@@ -11,64 +11,18 @@ import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
-import 'package:ngoc_huong/utils/CustomTheme/custom_floating_button.dart';
 
 class Cosmetic extends StatefulWidget {
-  const Cosmetic({super.key});
+  final List listTab;
+  const Cosmetic({super.key, required this.listTab});
 
   @override
   State<Cosmetic> createState() => _CosmeticState();
 }
-List listAction = [
-  {
-    "img": "assets/images/Services/MyPham/Icon/lam-trang.png",
-    "title": "Làm trắng",
-    "category": "64784ee4706fa019e673a722"
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/duong-am.png",
-    "title": "Dưỡng ẩm",
-    "category": "64784ea8706fa019e673a709"
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/dinh-duong-da.png",
-    "title": "Dinh dưỡng da",
-    "category": "64785397706fa019e673aede"
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/nang-co.png",
-    "title": "Nâng cơ - Giảm nhăn",
-    "category": "647853c8706fa019e673af18"
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/danh-cho-mat.png",
-    "title": "Dành cho mắt",
-    "category": "647853da706fa019e673af54"
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
-    "title": "Nuôi dưỡng và phục hồi",
-    "category": "647853ec706fa019e673af6a"
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/da-mun.png",
-    "title": "Dành cho da mụn",
-    "category": "64785427706fa019e673afa6"
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
-    "title": "Dưỡng môi",
-    "category": "64785434706fa019e673b008"
-  },
-  {
-    "img": "assets/images/Services/MyPham/Icon/lam-sach.png",
-    "title": "Làm sạch",
-    "category": "647854b2706fa019e673b0d9"
-  },
-];
+List listAction = [];
 
 String showIndex = "";
-String idProduct = listAction[0]["category"];
+String activeCode = listAction[0]["code"];
 
 class _CosmeticState extends State<Cosmetic> {
   final ProductModel productModel = ProductModel();
@@ -82,9 +36,71 @@ class _CosmeticState extends State<Cosmetic> {
     super.initState();
     setState(() {
       showIndex = "";
+      listAction.clear();
+    });
+    setState(() {
+      widget.listTab.map((e){
+        if(e["GroupCode"] != "GDC"){
+          if(e["GroupCode"].toString().contains("làm trắng")){
+            listAction.add({
+              "img": "assets/images/Services/MyPham/Icon/lam-trang.png",
+              "title": "Làm trắng",
+              "code": e["GroupCode"]
+            });
+          }else if(e["GroupCode"].toString().contains("dinh dưỡng cho da")){
+            listAction.add({
+              "img": "assets/images/Services/MyPham/Icon/dinh-duong-da.png",
+              "title": "Dinh dưỡng cho da",
+              "code": e["GroupCode"]
+            });
+          }else if(e["GroupCode"].toString().contains("nâng cơ")){
+            listAction.add({
+              "img": "assets/images/Services/MyPham/Icon/nang-co.png",
+              "title": "Nâng cơ - Giảm nhăn",
+              "code": e["GroupCode"]
+            });
+          }else if(e["GroupCode"].toString().contains("dành cho mắt")){
+            listAction.add({
+              "img": "assets/images/Services/MyPham/Icon/danh-cho-mat.png",
+              "title": "Dành cho mắt",
+              "code": e["GroupCode"]
+            });
+          }else if(e["GroupCode"].toString().contains("nuôi dưỡng và phục hồi da")){
+            listAction.add({
+              "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
+              "title": "Nuôi dưỡng và phục hồi",
+              "code": e["GroupCode"]
+            });
+          }else if(e["GroupCode"].toString().contains("dành cho da mụn")){
+            listAction.add({
+              "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
+              "title": "Nuôi dưỡng và phục hồi",
+              "code": e["GroupCode"]
+            });
+          }else if(e["GroupCode"].toString().contains("dành cho da mụn")){
+            listAction.add({
+              "img": "assets/images/Services/MyPham/Icon/da-mun.png",
+              "title": "Dành cho da mụn",
+              "code": e["GroupCode"]
+            });
+          }else if(e["GroupCode"].toString().contains("dành cho dưỡng môi")){
+            listAction.add({
+              "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
+              "title": "Dưỡng môi",
+              "code": e["GroupCode"]
+            });
+          }else if(e["GroupCode"].toString().contains("dành cho dưỡng môi")){
+            listAction.add({
+              "img": "assets/images/Services/MyPham/Icon/lam-sach.png",
+              "title": "Làm sạch",
+              "code": e["GroupCode"]
+            });
+          }
+        }
+      }).toList();
+      activeCode = listAction[0]["code"];
     });
   }
-
   @override
   void dispose() {
     super.dispose();
@@ -92,61 +108,57 @@ class _CosmeticState extends State<Cosmetic> {
   }
 
   void addToCart(Map item) async {
-    customModal.showAlertDialog(context, "error", "Giỏ hàng",
-        "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-      Navigator.pop(context);
-      EasyLoading.show(status: "Vui lòng chờ...");
-      Future.delayed(const Duration(seconds: 2), () {
-        cartModel.addProductToCart({"quantity": 1, ...item}).then((value) {
-          EasyLoading.dismiss();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-        });
-      });
-    }, () => Navigator.pop(context));
-
-    //
-    // Map data = {
-    //   "DetailList": [{
-    //     "Amount": item["CusomterPrice"] * 1,
-    //     "DCMember":0,
-    //     "DCMemberAmount":0,
-    //     "Description":null,
-    //     "Prince": item["CusomterPrice"],
-    //     // "PrinceTest": 19000000,
-    //     "ProductCode":item["Code"],
-    //     "ProductId": item["Id"],
-    //     "ProductType":"product",
-    //     "Quantity":1,
-    //     "QuantitySaleReturn":null,
-    //     "Status":null,
-    //     "StatusTherapy":null,
-    //     "Unit":null
-    //   }]
-    // };
     // customModal.showAlertDialog(context, "error", "Giỏ hàng",
     //     "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-    //       Navigator.pop(context);
-    //       EasyLoading.show(status: "Vui lòng chờ...");
-    //       Future.delayed(const Duration(seconds: 2), () {
-    //         cartModel.addToCart(data).then((value) {
-    //           print(value);
-    //           EasyLoading.dismiss();
-    //           // Navigator.push(context,
-    //           //     MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-    //         });
-    //       });
-    //     }, () => Navigator.pop(context));
+    //   Navigator.pop(context);
+    //   EasyLoading.show(status: "Vui lòng chờ...");
+    //   Future.delayed(const Duration(seconds: 2), () {
+    //     cartModel.addProductToCart({"quantity": 1, ...item}).then((value) {
+    //       EasyLoading.dismiss();
+    //       Navigator.push(context,
+    //           MaterialPageRoute(builder: (context) => const AddCartSuccess()));
+    //     });
+    //   });
+    // }, () => Navigator.pop(context));
+
+
+    Map data = {
+      "DetailList": [{
+        "Amount": item["PriceOutbound"] * 1,
+        "Price": item["PriceOutbound"],
+        "ProductCode":item["Code"],
+        "ProductId": item["Id"],
+        "Quantity":1,
+      }]
+    };
+    customModal.showAlertDialog(context, "error", "Giỏ hàng",
+        "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
+          Navigator.pop(context);
+          EasyLoading.show(status: "Vui lòng chờ...");
+          Future.delayed(const Duration(seconds: 2), () {
+            cartModel.addToCart(data).then((value) {
+              print(value);
+              EasyLoading.dismiss();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AddCartSuccess()));
+            });
+          });
+        }, () => Navigator.pop(context));
   }
 
+  void goToAction(String code){
+    setState(() {
+      activeCode = code;
+    });
+  }
   @override
   Widget build(BuildContext context) {
+    print(listAction);
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
             bottomNavigationBar: const MyBottomMenu(active: 0),
-            floatingActionButton: const CustomFloatingButton(),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -187,7 +199,7 @@ class _CosmeticState extends State<Cosmetic> {
                           return Container(
                             decoration: BoxDecoration(
                                 border: Border(
-                                    left: idProduct == item["category"]
+                                    left: activeCode == item["code"]
                                         ? const BorderSide(
                                         width: 3, color: Colors.red)
                                         : BorderSide.none)),
@@ -199,7 +211,7 @@ class _CosmeticState extends State<Cosmetic> {
                                       const EdgeInsets.symmetric(
                                           vertical: 18, horizontal: 10)),
                                   backgroundColor: MaterialStateProperty.all(
-                                      idProduct == item["category"]
+                                      activeCode == item["code"]
                                           ? Colors.red[100]
                                           : Colors.blue[100]),
                                   shape: MaterialStateProperty.all(
@@ -207,7 +219,7 @@ class _CosmeticState extends State<Cosmetic> {
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(0))))),
                               onPressed: () {
-                                // goToAction(item["category"]);
+                                goToAction(item["code"]);
                               },
                               child: Column(
                                 crossAxisAlignment:
@@ -245,7 +257,7 @@ class _CosmeticState extends State<Cosmetic> {
                         // crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           FutureBuilder(
-                            future: productModel.getProductByGroup("GDC"),
+                            future: productModel.getProductByGroup(activeCode),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 List list = snapshot.data!.toList();

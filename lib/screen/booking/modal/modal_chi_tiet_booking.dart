@@ -107,8 +107,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                          child: Image.network(
                            "${detailProduct["Image_Name"]}",
                            height: 210,
-                           width: MediaQuery.of(context).size.width * 0.8,
-                           fit: BoxFit.cover,
+                           width: MediaQuery.of(context).size.width,
                          ),
                        ),
                      ),
@@ -139,24 +138,24 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                        fontSize: 16,
                                        color: Theme.of(context).colorScheme.primary),
                                  ),
-                                 Row(
-                                   children: [
-                                     const Icon(
-                                       Icons.star,
-                                       size: 20,
-                                       color: Colors.orange,
-                                     ),
-                                     Container(
-                                       margin:
-                                       const EdgeInsets.symmetric(horizontal: 5),
-                                       child: const Text("4.8"),
-                                     ),
-                                     const Text(
-                                       "(130 đánh giá)",
-                                       style: TextStyle(fontWeight: FontWeight.w300),
-                                     )
-                                   ],
-                                 )
+                                 // Row(
+                                 //   children: [
+                                 //     const Icon(
+                                 //       Icons.star,
+                                 //       size: 20,
+                                 //       color: Colors.orange,
+                                 //     ),
+                                 //     Container(
+                                 //       margin:
+                                 //       const EdgeInsets.symmetric(horizontal: 5),
+                                 //       child: const Text("4.8"),
+                                 //     ),
+                                 //     const Text(
+                                 //       "(130 đánh giá)",
+                                 //       style: TextStyle(fontWeight: FontWeight.w300),
+                                 //     )
+                                 //   ],
+                                 // )
                                ],
                              ),
                              const SizedBox(
@@ -234,7 +233,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                              const SizedBox(
                                                width: 5,
                                              ),
-                                             Text("${databook.hour} giờ ${databook.minute} phút",
+                                             Text("${databook.hour}:${databook.minute}",
                                                style: const TextStyle(
                                                    color: Colors.black,
                                                    fontWeight: FontWeight.w300),
@@ -345,24 +344,24 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                           fontSize: 16,
                                           color: Theme.of(context).colorScheme.primary),
                                     ),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.star,
-                                          size: 20,
-                                          color: Colors.orange,
-                                        ),
-                                        Container(
-                                          margin:
-                                          const EdgeInsets.symmetric(horizontal: 5),
-                                          child: const Text("4.8"),
-                                        ),
-                                        const Text(
-                                          "(130 đánh giá)",
-                                          style: TextStyle(fontWeight: FontWeight.w300),
-                                        )
-                                      ],
-                                    )
+                                    // Row(
+                                    //   children: [
+                                    //     const Icon(
+                                    //       Icons.star,
+                                    //       size: 20,
+                                    //       color: Colors.orange,
+                                    //     ),
+                                    //     Container(
+                                    //       margin:
+                                    //       const EdgeInsets.symmetric(horizontal: 5),
+                                    //       child: const Text("4.8"),
+                                    //     ),
+                                    //     const Text(
+                                    //       "(130 đánh giá)",
+                                    //       style: TextStyle(fontWeight: FontWeight.w300),
+                                    //     )
+                                    //   ],
+                                    // )
                                   ],
                                 ),
                                 const SizedBox(
@@ -440,7 +439,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                                     const SizedBox(
                                                       width: 5,
                                                     ),
-                                                    Text("${databook.hour} giờ ${databook.minute} phút",
+                                                    Text("${DateFormat("HH:mm").format(databook)}",
                                                       style: const TextStyle(
                                                           color: Colors.black,
                                                           fontWeight: FontWeight.w300),

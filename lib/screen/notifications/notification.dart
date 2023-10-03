@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/models/bookingModel.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -11,7 +15,7 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  LocalStorage storageToken = LocalStorage("token");
+  final BookingModel bookingModel = BookingModel();
   Future refreshData() async {
     await Future.delayed(const Duration(seconds: 3));
     setState(() {});
@@ -55,7 +59,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             )),
         actions: [
           FutureBuilder(
-              future: callNotificationsApi(),
+              future: bookingModel.getNotifications(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return IconButton(
@@ -63,7 +67,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           padding: MaterialStateProperty.all(
                               const EdgeInsets.symmetric(horizontal: 5))),
                       onPressed: () {
-                        readAll(snapshot.data!.toList());
+                        // readAll(snapshot.data!.toList());
                       },
                       icon: const Icon(
                         Icons.done_all,
@@ -71,8 +75,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         color: Colors.white,
                       ));
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return const SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: LoadingIndicator(
+                      colors: <Color>[
+                        Colors.white,
+                        Colors.white,
+                        Colors.white,
+                        Colors.white,
+                        Colors.white,
+                        Colors.white,
+                        Colors.white
+                      ],
+                      indicatorType: Indicator.lineSpinFadeLoader,
+                      strokeWidth: 1,
+                      // pathBackgroundColor: Colors.black45,
+                    ),
                   );
                 }
               }),
@@ -86,7 +105,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       body: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: FutureBuilder(
-            future: callNotificationsApi(),
+            future: bookingModel.getNotifications(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List listNotify = snapshot.data!.toList();
@@ -94,14 +113,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   return ListView.builder(
                     itemCount: listNotify.length,
                     itemBuilder: (context, index) {
-                      if (listNotify[index]["exfields"]["id_app"] == idApp) {
+                      if(listNotify[index]["ListService"] != null){
                         return Container(
                           margin: const EdgeInsets.only(
                               top: 10, left: 15, right: 15),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
+                            const BorderRadius.all(Radius.circular(8)),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.5),
@@ -118,12 +137,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     const EdgeInsets.symmetric(
                                         vertical: 15, horizontal: 5))),
                             onPressed: () {
-                              readNotify(listNotify[index]["_id"]);
+                              // readNotify(listNotify[index]["_id"]);
                             },
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Image.asset(listNotify[index]["status"] == false
+                                Image.asset(listNotify[index]["IsDeleted"] == null || !listNotify[index]["IsDeleted"]
                                     ? "assets/images/Notifications/bell2.png"
                                     : "assets/images/Notifications/bell1.png"),
                                 const SizedBox(
@@ -136,32 +155,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           110,
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "${listNotify[index]["title"]}",
+                                            "${listNotify[index]["ListService"]}",
                                             style: TextStyle(
-                                                color: listNotify[index]
-                                                            ["status"] ==
-                                                        false
+                                                color: listNotify[index]["IsDeleted"] == null || !listNotify[index]["IsDeleted"]
                                                     ? Colors.black
                                                     : Colors.black38,
                                                 fontWeight: FontWeight.w500),
                                           ),
-                                          Text(
-                                            "${listNotify[index]["exfields"]["content"]}",
+                                          Text("Bạn có lịch hẹn ${listNotify[index]["ListService"].toString().toLowerCase()} vào lúc ${DateFormat("HH:mm").format(DateTime.parse(listNotify[index]["StartDate"]))} ngày ${DateFormat("dd/MM/yyyy").format(DateTime.parse(listNotify[index]["StartDate"]))}",
                                             style: TextStyle(
-                                                color: listNotify[index]
-                                                            ["status"] ==
-                                                        false
+                                                color: listNotify[index]["IsDeleted"] == null || !listNotify[index]["IsDeleted"]
                                                     ? Colors.black
                                                     : Colors.black38,
-                                                fontWeight: FontWeight.w500),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    if (listNotify[index]["status"] == false)
+                                    if (listNotify[index]["IsDeleted"] == null || !listNotify[index]["IsDeleted"])
                                       Container(
                                         width: 10,
                                         height: 10,
@@ -176,7 +191,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             ),
                           ),
                         );
-                      } else {
+                      }else{
                         return Container();
                       }
                     },
@@ -212,8 +227,24 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   );
                 }
               } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: LoadingIndicator(
+                        colors: kDefaultRainbowColors,
+                        indicatorType: Indicator.lineSpinFadeLoader,
+                        strokeWidth: 1,
+                        // pathBackgroundColor: Colors.black45,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Đang lấy dữ liệu")
+                  ],
                 );
               }
             },

@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/screen/checkout/products/checkout_cart.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
@@ -48,25 +50,33 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     setState(() {});
   }
 
-  void updateCart(String id, int qty) async {
+  void updateCart(Map item, int qty) async {
     if (quantity <= 0) {
       // showAlertDialog(context, "Số lượng phải lớn hơn 0");
     } else {
-      Map data = {"sl_xuat": qty};
-      await putCart(id, data).then((value) {
-        if (listCheckout.isNotEmpty) {
-          int idx = listCheckout
-              .indexWhere((item) => item["ma_vt"] == value["ma_vt"]);
-          if (idx < 0) {
-            setState(() {});
-          } else {
-            setState(() {
-              listCheckout[idx] = value;
-            });
+      Map data = {
+        "Id": 1,
+        "DetailList": [
+          {
+            "Id": item["Id"],
+            "Quantity": quantity
           }
-        } else {
-          setState(() {});
-        }
+        ]
+      };
+      cartModel.updateProductInCart(data).then((value) {
+        // if (listCheckout.isNotEmpty) {
+        //   int idx = listCheckout
+        //       .indexWhere((item) => item["Id"] == value["Id"]);
+        //   if (idx < 0) {
+        //     setState(() {});
+        //   } else {
+        //     setState(() {
+        //       listCheckout[idx] = value;
+        //     });
+        //   }
+        // } else {
+        //   setState(() {});
+        // }
         // } else {
         //   color = Colors.white;
         // }
@@ -82,16 +92,11 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    List cartList = localStorageCustomerCart.getItem("customer_cart") == null
-        ? []
-        : jsonDecode(localStorageCustomerCart.getItem("customer_cart"));
-
     num totalCat() {
       num total = 0;
       if (listCheckout.isNotEmpty) {
         for (var i = 0; i < listCheckout.length; i++) {
-          total +=
-              listCheckout[i]["PriceOutbound"] * listCheckout[i]["quantity"];
+          total += listCheckout[i]["Amount"];
         }
       } else {
         total = 0;
@@ -102,7 +107,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     Color checkColor(Map it) {
       Color color = Colors.white;
       if (listCheckout.isNotEmpty) {
-        int idx = listCheckout.indexWhere((item) => item["Code"] == it["Code"]);
+        int idx = listCheckout.indexWhere(
+            (item) => item["Id"] == it["Id"]);
         if (idx < 0) {
           color = Colors.white;
         } else {
@@ -117,7 +123,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     Color checkColorBorder(Map it) {
       Color color = Colors.grey;
       if (listCheckout.isNotEmpty) {
-        int idx = listCheckout.indexWhere((item) => item["Code"] == it["Code"]);
+        int idx = listCheckout.indexWhere(
+            (item) => item["Id"] == it["Id"]);
         if (idx < 0) {
           color = Colors.grey;
         } else {
@@ -131,7 +138,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
     checkIcon(Map it) {
       if (listCheckout.isNotEmpty) {
-        int idx = listCheckout.indexWhere((item) => item["Code"] == it["Code"]);
+        int idx = listCheckout.indexWhere(
+            (item) => item["Id"] == it["Id"]);
         if (idx < 0) {
           return null;
         } else {
@@ -146,6 +154,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       }
     }
 
+    // void updateQuantity(Map item){
+    //   const
+    // }
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.white,
@@ -175,394 +186,415 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                     color: Colors.white)),
           ),
           body: SizedBox(
-            child: cartList.isNotEmpty
-                ? Column(
+              child: FutureBuilder(
+            future: cartModel.getProductCartList(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+               List allCart =  snapshot.data!.toList();
+
+                if (allCart.isNotEmpty) {
+                  print(allCart);
+                  return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                          child: RefreshIndicator(
-                        onRefresh: refreshData,
-                        child: ListView.builder(
-                          itemCount: cartList.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                                margin: EdgeInsets.only(
-                                    left: 15,
-                                    right: 15,
-                                    top: index != 0 ? 20 : 30,
-                                    bottom:
-                                        index == cartList.length - 1 ? 20 : 0),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 1,
-                                      blurRadius: 8,
-                                      offset: const Offset(
-                                          4, 4), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                height: 115,
-                                child: Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      width: 24,
-                                      height: 24,
-                                      decoration: BoxDecoration(
-                                          color: checkColor(cartList[index]),
-                                          border: Border.all(
-                                              width: 1,
-                                              color: checkColorBorder(
-                                                  cartList[index])),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(8))),
-                                      child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              if (listCheckout.isNotEmpty) {
-                                                int idx = listCheckout
-                                                    .indexWhere((item) =>
-                                                        item["Code"] ==
-                                                        cartList[index]
-                                                            ["Code"]);
-                                                if (idx < 0) {
-                                                  listCheckout
-                                                      .add(cartList[index]);
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height - 355,
+                          child: ListView(
+                            children: allCart.map((ele) {
+                              int index = allCart.toList().indexOf(ele);
+                              return Container(
+                                  margin: EdgeInsets.only(
+                                      left: 15,
+                                      right: 15,
+                                      top: index != 0 ? 20 : 30,
+                                      bottom:
+                                          index == allCart.length - 1 ? 20 : 0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 1,
+                                        blurRadius: 8,
+                                        offset: const Offset(
+                                            4, 4), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  height: 115,
+                                  child: Row(
+                                    children: [
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: 24,
+                                        height: 24,
+                                        decoration: BoxDecoration(
+                                            color: checkColor(
+                                                allCart[index]),
+                                            border: Border.all(
+                                                width: 1,
+                                                color: checkColorBorder(
+                                                    allCart[index])),
+                                            borderRadius:
+                                            const BorderRadius.all(
+                                                Radius.circular(8))),
+                                        child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                if (listCheckout
+                                                    .isNotEmpty) {
+                                                  int idx = listCheckout
+                                                      .indexWhere((item) =>
+                                                  item[
+                                                  "Id"] ==
+                                                      ele["Id"]);
+                                                  if (idx < 0) {
+                                                    listCheckout
+                                                        .add(ele);
+                                                  } else {
+                                                    listCheckout
+                                                        .removeAt(idx);
+                                                  }
                                                 } else {
-                                                  listCheckout.removeAt(idx);
+                                                  listCheckout
+                                                      .add(ele);
                                                 }
-                                              } else {
-                                                listCheckout
-                                                    .add(cartList[index]);
-                                              }
-                                            });
-                                          },
-                                          child: checkIcon(cartList[index])),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 5),
-                                      width: MediaQuery.of(context).size.width -
-                                          70,
-                                      child: TextButton(
-                                        onPressed: () {
-                                          showModalBottomSheet<void>(
-                                              backgroundColor: Colors.white,
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              context: context,
-                                              isScrollControlled: true,
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                  padding: EdgeInsets.only(
-                                                      bottom:
-                                                          MediaQuery.of(context)
-                                                              .viewInsets
-                                                              .bottom),
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.95,
-                                                  child: ProductDetail(
-                                                    details: cartList[index],
-                                                  ),
-                                                );
                                               });
-                                        },
-                                        style: ButtonStyle(
-                                          padding: MaterialStateProperty.all(
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 12, horizontal: 8)),
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Colors.white),
-                                          shape: MaterialStateProperty.all(
-                                              const RoundedRectangleBorder(
+                                            },
+                                            child: checkIcon(
+                                                allCart[index])),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        margin: const EdgeInsets.only(
+                                            left: 5),
+                                        width: MediaQuery.of(context)
+                                            .size
+                                            .width -
+                                            70,
+                                        child: TextButton(
+                                          onPressed: () {
+                                            // showModalBottomSheet<void>(
+                                            //     backgroundColor:
+                                            //     Colors.white,
+                                            //     clipBehavior: Clip
+                                            //         .antiAliasWithSaveLayer,
+                                            //     context: context,
+                                            //     isScrollControlled: true,
+                                            //     builder: (BuildContext
+                                            //     context) {
+                                            //       return Container(
+                                            //         padding: EdgeInsets.only(
+                                            //             bottom: MediaQuery
+                                            //                 .of(context)
+                                            //                 .viewInsets
+                                            //                 .bottom),
+                                            //         height: MediaQuery.of(
+                                            //             context)
+                                            //             .size
+                                            //             .height *
+                                            //             0.95,
+                                            //         child: ProductDetail(
+                                            //           details: ele["Product"],
+                                            //         ),
+                                            //       );
+                                            //     });
+                                          },
+                                          style: ButtonStyle(
+                                            padding:
+                                            MaterialStateProperty.all(
+                                                const EdgeInsets
+                                                    .symmetric(
+                                                    vertical: 12,
+                                                    horizontal: 8)),
+                                            backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.white),
+                                            shape: MaterialStateProperty.all(
+                                                const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius
+                                                            .circular(
+                                                            10)))),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              ClipRRect(
                                                   borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              10)))),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(10)),
-                                                child: Image.network(
-                                                  "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                                  width: 90,
-                                                  height: 110,
-                                                  fit: BoxFit.cover,
-                                                )),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Wrap(
-                                                  children: [
-                                                    Text(
-                                                      cartList[index]["Name"],
-                                                      style: const TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: Colors.black),
-                                                    ),
-                                                    Container(
-                                                      margin: const EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 4),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text(
-                                                            NumberFormat.currency(
-                                                                    locale:
-                                                                        "vi_VI",
-                                                                    symbol: "đ")
-                                                                .format(cartList[
-                                                                        index][
-                                                                    "PriceOutbound"]),
-                                                            style: TextStyle(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary),
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  EasyLoading.show(
-                                                                      status:
-                                                                          "Đang xử lý...");
-                                                                  Future.delayed(
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                      () {
-                                                                    cartModel
-                                                                        .updateProductToCartDe(cartList[
-                                                                            index])
-                                                                        .then(
-                                                                            (value) {
-                                                                      if (listCheckout
-                                                                          .isNotEmpty) {
-                                                                        int idx = listCheckout.indexWhere((item) =>
-                                                                            item["Code"] ==
-                                                                            cartList[index]["Code"]);
-                                                                        if (idx <
-                                                                            0) {
-                                                                          setState(
-                                                                              () {});
-                                                                        } else {
-                                                                          setState(
-                                                                              () {
-                                                                            listCheckout[idx]["quantity"]--;
-                                                                          });
-                                                                        }
-                                                                      } else {
-                                                                        setState(
-                                                                            () {});
-                                                                      }
-                                                                      EasyLoading
-                                                                          .dismiss();
-                                                                    });
-                                                                  });
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  width: 25,
-                                                                  height: 25,
-                                                                  decoration: BoxDecoration(
-                                                                      border: Border.all(
-                                                                          width:
-                                                                              1,
-                                                                          color: Colors
-                                                                              .orange),
-                                                                      shape: BoxShape
-                                                                          .circle),
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  child:
-                                                                      const Icon(
-                                                                    Icons
-                                                                        .remove,
-                                                                    size: 16,
-                                                                    color: Colors
-                                                                        .orange,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                margin: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        10),
-                                                                child: Text(
-                                                                  "${cartList[index]["quantity"]}",
-                                                                  style: const TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w300),
-                                                                ),
-                                                              ),
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  EasyLoading.show(
-                                                                      status:
-                                                                          "Đang xử lý...");
-                                                                  Future.delayed(
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                      () {
-                                                                    cartModel
-                                                                        .updateProductToCartIn(cartList[
-                                                                            index])
-                                                                        .then(
-                                                                            (value) {
-                                                                      if (listCheckout
-                                                                          .isNotEmpty) {
-                                                                        int idx = listCheckout.indexWhere((item) =>
-                                                                            item["Code"] ==
-                                                                            cartList[index]["Code"]);
-                                                                        if (idx <
-                                                                            0) {
-                                                                          setState(
-                                                                              () {});
-                                                                        } else {
-                                                                          setState(
-                                                                              () {
-                                                                            listCheckout[idx]["quantity"]++;
-                                                                          });
-                                                                        }
-                                                                      } else {
-                                                                        setState(
-                                                                            () {});
-                                                                      }
-                                                                      EasyLoading
-                                                                          .dismiss();
-                                                                    });
-                                                                  });
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  width: 25,
-                                                                  height: 25,
-                                                                  decoration: BoxDecoration(
-                                                                      border: Border.all(
-                                                                          width:
-                                                                              1,
-                                                                          color: Colors
-                                                                              .orange),
-                                                                      shape: BoxShape
-                                                                          .circle),
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  child:
-                                                                      const Icon(
-                                                                    Icons.add,
-                                                                    size: 16,
-                                                                    color: Colors
-                                                                        .orange,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          )
-                                                        ],
+                                                  const BorderRadius
+                                                      .all(
+                                                      Radius.circular(
+                                                          10)),
+                                                  child: Image.network(
+                                                    "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                                    width: 90,
+                                                    height: 110,
+                                                    fit: BoxFit.cover,
+                                                  )),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        "${ele["ProductName"]}",
+                                                        style:
+                                                        const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .w400,
+                                                            color: Colors
+                                                                .black),
                                                       ),
-                                                    ),
-                                                    Container(
-                                                      child: GestureDetector(
-                                                          onTap: () {
-                                                            customModal.showAlertDialog(
-                                                                context,
-                                                                "error",
-                                                                "Xóa sản phẩm",
-                                                                "Bạn có chắc chắn xóa sản phẩm này?",
-                                                                () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                              EasyLoading.show(
-                                                                  status:
-                                                                      "Đang xử lý...");
-                                                              Future.delayed(
-                                                                  const Duration(
-                                                                      seconds:
-                                                                          1),
-                                                                  () {
-                                                                cartModel
-                                                                    .deleteProductToCart(
-                                                                        cartList[
-                                                                            index])
-                                                                    .then(
-                                                                        (value) {
-                                                                  setState(() {
-                                                                    EasyLoading
-                                                                        .dismiss();
-                                                                  });
-                                                                });
-                                                              });
+                                                      Container(
+                                                        margin:
+                                                        const EdgeInsets
+                                                            .symmetric(
+                                                            vertical: 4),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                        NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(ele["Price"]),
+                                                              style: TextStyle(
+                                                                  color: Theme.of(
+                                                                      context)
+                                                                      .colorScheme
+                                                                      .primary),
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    // EasyLoading.show(
+                                                                    //     status:
+                                                                    //     "Đang xử lý...");
+                                                                    // Future.delayed(
+                                                                    //     const Duration(
+                                                                    //         seconds:
+                                                                    //         1),
+                                                                    //         () {
+                                                                    //       cartModel
+                                                                    //           .updateProductToCartDe(cartList[
+                                                                    //       index])
+                                                                    //           .then(
+                                                                    //               (value) {
+                                                                    //             if (listCheckout
+                                                                    //                 .isNotEmpty) {
+                                                                    //               int idx = listCheckout.indexWhere((item) =>
+                                                                    //               item["Code"] ==
+                                                                    //                   cartList[index]["Code"]);
+                                                                    //               if (idx <
+                                                                    //                   0) {
+                                                                    //                 setState(
+                                                                    //                         () {});
+                                                                    //               } else {
+                                                                    //                 setState(
+                                                                    //                         () {
+                                                                    //                       listCheckout[idx]["quantity"]--;
+                                                                    //                     });
+                                                                    //               }
+                                                                    //             } else {
+                                                                    //               setState(
+                                                                    //                       () {});
+                                                                    //             }
+                                                                    //             EasyLoading
+                                                                    //                 .dismiss();
+                                                                    //           });
+                                                                    //     });
+                                                                  },
+                                                                  child:
+                                                                  Container(
+                                                                    width: 25,
+                                                                    height:
+                                                                    25,
+                                                                    decoration: BoxDecoration(
+                                                                        border: Border.all(
+                                                                            width: 1,
+                                                                            color: Colors.orange),
+                                                                        shape: BoxShape.circle),
+                                                                    alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                    child:
+                                                                    const Icon(
+                                                                      Icons
+                                                                          .remove,
+                                                                      size:
+                                                                      16,
+                                                                      color: Colors
+                                                                          .orange,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                  margin: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                      10),
+                                                                  child: Text(
+                                                                    "${ele["Quantity"]}",
+                                                                    style: const TextStyle(
+                                                                        fontWeight:
+                                                                        FontWeight.w300),
+                                                                  ),
+                                                                ),
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    // EasyLoading.show(
+                                                                    //     status:
+                                                                    //     "Đang xử lý...");
+                                                                    // Future.delayed(
+                                                                    //     const Duration(
+                                                                    //         seconds:
+                                                                    //         1),
+                                                                    //         () {
+                                                                    //       cartModel
+                                                                    //           .updateProductInCart({
+                                                                    //         "Id": 1,
+                                                                    //         "DetailList": [
+                                                                    //           {
+                                                                    //             "Id": ele["Id"],
+                                                                    //             "Quantity": ele["Quantity"]++
+                                                                    //           }
+                                                                    //         ]
+                                                                    //       })
+                                                                    //           .then(
+                                                                    //               (value) {
+                                                                    //             if (listCheckout
+                                                                    //                 .isNotEmpty) {
+                                                                    //               int idx = listCheckout.indexWhere((item) =>
+                                                                    //               item["Id"] ==
+                                                                    //                   ele["Id"]);
+                                                                    //               if (idx <
+                                                                    //                   0) {
+                                                                    //                 setState(
+                                                                    //                         () {});
+                                                                    //               } else {
+                                                                    //                 setState(
+                                                                    //                         () {
+                                                                    //                       listCheckout[idx]["quantity"]++;
+                                                                    //                     });
+                                                                    //               }
+                                                                    //             } else {
+                                                                    //               setState(
+                                                                    //                       () {});
+                                                                    //             }
+                                                                    //             EasyLoading
+                                                                    //                 .dismiss();
+                                                                    //           });
+                                                                    //     });
+                                                                  },
+                                                                  child:
+                                                                  Container(
+                                                                    width: 25,
+                                                                    height:
+                                                                    25,
+                                                                    decoration: BoxDecoration(
+                                                                        border: Border.all(
+                                                                            width: 1,
+                                                                            color: Colors.orange),
+                                                                        shape: BoxShape.circle),
+                                                                    alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                    child:
+                                                                    const Icon(
+                                                                      Icons
+                                                                          .add,
+                                                                      size:
+                                                                      16,
+                                                                      color: Colors
+                                                                          .orange,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        child:
+                                                        GestureDetector(
+                                                            onTap: () {
+                                                              // customModal.showAlertDialog(
+                                                              //     context,
+                                                              //     "error",
+                                                              //     "Xóa sản phẩm",
+                                                              //     "Bạn có chắc chắn xóa sản phẩm này?",
+                                                              //         () {
+                                                              //       Navigator.pop(
+                                                              //           context);
+                                                              //       EasyLoading.show(
+                                                              //           status:
+                                                              //           "Đang xử lý...");
+                                                              //       Future.delayed(
+                                                              //           const Duration(
+                                                              //               seconds:
+                                                              //               1),
+                                                              //               () {
+                                                              //             cartModel
+                                                              //                 .deleteProductToCart(
+                                                              //                 cartList[
+                                                              //                 index])
+                                                              //                 .then(
+                                                              //                     (value) {
+                                                              //                   setState(() {
+                                                              //                     EasyLoading
+                                                              //                         .dismiss();
+                                                              //                   });
+                                                              //                 });
+                                                              //           });
+                                                              //     },
+                                                              //         () => Navigator
+                                                              //         .pop(
+                                                              //         context));
                                                             },
-                                                                () => Navigator
-                                                                    .pop(
-                                                                        context));
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Image.asset(
-                                                                "assets/images/delete-red.png",
-                                                                width: 16,
-                                                                height: 16,
-                                                              ),
-                                                              const SizedBox(
-                                                                width: 5,
-                                                              ),
-                                                              Text(
-                                                                "Xóa",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        13,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w300,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary),
-                                                              )
-                                                            ],
-                                                          )),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            ))
-                                          ],
+                                                            child: Row(
+                                                              children: [
+                                                                Image
+                                                                    .asset(
+                                                                  "assets/images/delete-red.png",
+                                                                  width:
+                                                                  16,
+                                                                  height:
+                                                                  16,
+                                                                ),
+                                                                const SizedBox(
+                                                                  width:
+                                                                  5,
+                                                                ),
+                                                                Text(
+                                                                  "Xóa",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                      13,
+                                                                      fontWeight:
+                                                                      FontWeight.w300,
+                                                                      color: Theme.of(context).colorScheme.primary),
+                                                                )
+                                                              ],
+                                                            )),
+                                                      )
+                                                    ],
+                                                  ))
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ));
-                          },
-                        ),
-                      )),
+                                    ],
+                                  ));
+                            }).toList(),
+                          )),
                       Container(
                         decoration: BoxDecoration(
                             border: Border(
@@ -640,7 +672,13 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                       total: totalCat(),
                                                     )));
                                       } else {
-                                        customModal.showAlertDialog(context, "error", "Đặt Hàng", "Bạn chưa chọn sản phẩm đặt hàng", () => Navigator.pop(context), () => Navigator.pop(context));
+                                        customModal.showAlertDialog(
+                                            context,
+                                            "error",
+                                            "Đặt Hàng",
+                                            "Bạn chưa chọn sản phẩm đặt hàng",
+                                            () => Navigator.pop(context),
+                                            () => Navigator.pop(context));
                                       }
                                     },
                                     child: Row(
@@ -673,27 +711,54 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                         ),
                       )
                     ],
-                  )
-                : Container(
-                    margin: const EdgeInsets.only(top: 40),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 40, bottom: 15),
-                          child: Image.asset("assets/images/account/img.webp"),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20),
-                          child: const Text(
-                            "Chưa có sản phẩm trong giỏ hàng",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w300),
+                  );
+                } else {
+                  return Container(
+                      margin: const EdgeInsets.only(top: 40),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 40, bottom: 15),
+                            child:
+                                Image.asset("assets/images/account/img.webp"),
                           ),
-                        )
-                      ],
-                    )),
-          )),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            child: const Text(
+                              "Chưa có sản phẩm trong giỏ hàng",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w300),
+                            ),
+                          )
+                        ],
+                      ));
+                }
+              } else {
+                return const Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: LoadingIndicator(
+                          colors: kDefaultRainbowColors,
+                          indicatorType: Indicator.lineSpinFadeLoader,
+                          strokeWidth: 1,
+                          // pathBackgroundColor: Colors.black45,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Đang lấy dữ liệu")
+                    ],
+                  ),
+                );
+              }
+            },
+          ))),
     );
   }
 }

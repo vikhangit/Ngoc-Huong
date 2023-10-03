@@ -72,4 +72,25 @@ class BookingModel {
       print(e);
     }
   }
+
+  Future<List> getNotifications() async {
+    List result = [];
+    try {
+      Response response =
+      await client.dio.get('${client.apiUrl}/Home/getNotification',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"];
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
 }

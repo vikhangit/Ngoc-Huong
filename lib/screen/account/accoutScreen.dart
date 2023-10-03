@@ -381,7 +381,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               const Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Đồng",
+                                  Text("Bạc",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500)),
                                   Text("Nâng hạng",

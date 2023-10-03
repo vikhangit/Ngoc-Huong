@@ -175,7 +175,7 @@ class _ModalVoucherState extends State<ModalVoucher> {
               height: 50,
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
-                  borderRadius: const BorderRadius.all(Radius.circular(50.0))),
+                  borderRadius: const BorderRadius.all(Radius.circular(15.0))),
               child: TextButton(
                   onPressed: () {
                     Navigator.pop(context);

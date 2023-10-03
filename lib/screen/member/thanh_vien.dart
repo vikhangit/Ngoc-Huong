@@ -138,7 +138,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        bronze(context),
+                        silver(context),
                         Positioned(
                             top: 0,
                             left: 0,

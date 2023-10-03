@@ -395,7 +395,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                         } else {
                           return const Center(
                               child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
                                 width: 40,
@@ -407,6 +407,10 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                   // pathBackgroundColor: Colors.black45,
                                 ),
                               ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("Đang lấy dữ liệu")
                             ],
                           ));
                         }
@@ -417,7 +421,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data!.isNotEmpty) {
-                            List list = snapshot.data!;
+                            List list = snapshot.data!.toList();
                             return RefreshIndicator(
                               onRefresh: refreshData,
                               child: ListView.builder(

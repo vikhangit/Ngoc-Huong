@@ -252,8 +252,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                                       0.95,
                                                   child: ModalChiTietBooking(
                                                     details: item,
-                                                    details2:
-                                                        snapshot.data![0]!,
+                                                    // details2:
+                                                    //     snapshot.data![0]!,
                                                   ));
                                             });
                                       },

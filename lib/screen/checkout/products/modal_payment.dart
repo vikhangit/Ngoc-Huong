@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 
 class ModalPayment extends StatefulWidget {
   final Function() savePayment;
@@ -20,6 +21,7 @@ List paymentMethod = [
 ];
 
 class _ModalVoucherState extends State<ModalPayment> {
+  final CustomModal customModal = CustomModal();
   @override
   void initState() {
     setState(() {
@@ -30,39 +32,6 @@ class _ModalVoucherState extends State<ModalPayment> {
 
   @override
   Widget build(BuildContext context) {
-    void showAlertDialog(BuildContext context, String err) {
-      Widget okButton = TextButton(
-        child: const Text("OK"),
-        onPressed: () => Navigator.pop(context, 'OK'),
-      );
-      AlertDialog alert = AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        content: Builder(
-          builder: (context) {
-            return SizedBox(
-              // height: 30,
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                style: const TextStyle(height: 1.6),
-                err,
-              ),
-            );
-          },
-        ),
-        actions: [
-          okButton,
-        ],
-      );
-      // show the dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
 
     return Container(
         margin: const EdgeInsets.only(top: 15),
@@ -111,8 +80,7 @@ class _ModalVoucherState extends State<ModalPayment> {
                           onPressed: () {
                             if (item["title"] == "Thẻ Tín dụng/Ghi nợ" ||
                                 item["title"] == "Chuyển đến thẻ ngân hàng") {
-                              showAlertDialog(context,
-                                  "Xin lỗi quý khách chúng tôi đang nâng cấp tính nâng thanh toán này. Hiện tại chỉ có thể thanh toán khi nhận hàng. Xin lỗi vì sự bất tiện này");
+                              customModal.showAlertDialog(context, "error", "Thanh Toán", "Xin lỗi quý khách chúng tôi đang nâng cấp tính nâng thanh toán này.", () => Navigator.pop(context), () => Navigator.pop(context));
                             } else {
                               setState(() {
                                 activePayment = item["title"];
@@ -159,7 +127,7 @@ class _ModalVoucherState extends State<ModalPayment> {
               height: 50,
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
-                  borderRadius: const BorderRadius.all(Radius.circular(50.0))),
+                  borderRadius: const BorderRadius.all(Radius.circular(15.0))),
               child: TextButton(
                   onPressed: () {
                     widget.savePayment();

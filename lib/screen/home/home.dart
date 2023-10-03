@@ -20,6 +20,7 @@ import 'package:ngoc_huong/screen/cosmetic/special_cosmetic.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/member/thanh_vien.dart';
 import 'package:ngoc_huong/screen/news/tin_tuc.dart';
+import 'package:ngoc_huong/screen/notifications/notification.dart';
 import 'package:ngoc_huong/screen/services/all_service.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
@@ -27,7 +28,6 @@ import 'package:ngoc_huong/screen/news/chi_tiet_tin_tuc.dart';
 import 'package:ngoc_huong/screen/services/special_service.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
-import 'package:ngoc_huong/utils/CustomTheme/custom_floating_button.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:ngoc_huong/utils/notification_services.dart';
@@ -46,14 +46,14 @@ List listBanner = [
 ];
 
 List toolServices = [
-  {"icon": "assets/images/calendar-solid-red.png", "title": "Đặt lịch"},
-  {"icon": "assets/images/product-solid-red.png", "title": "Mỹ phẩm"},
-  {"icon": "assets/images/logo.png", "title": "Dịch vụ"},
-  {"icon": "assets/images/vi-solid-red.png", "title": "Ví"},
-  {"icon": "assets/images/diem-solid-red.png", "title": "Điểm"},
-  {"icon": "assets/images/gift-solid-red.png", "title": "Ưu đãi"},
-  {"icon": "assets/images/history-solid-red.png", "title": "Lịch sử làm đẹp"},
-  {"icon": "assets/images/call-solid-red.png", "title": "Tư vấn"},
+  {"icon": "assets/images/Home/Icon/calendar.png", "title": "Đặt lịch"},
+  {"icon": "assets/images/Home/Icon/my-pham.png", "title": "Mỹ phẩm"},
+  {"icon": "assets/images/Home/Icon/dich-vu.png", "title": "Dịch vụ"},
+  {"icon": "assets/images/Home/Icon/vi.png", "title": "Điểm"},
+  {"icon": "assets/images/Home/Icon/membership.png", "title": "Hạng thành viên"},
+  {"icon": "assets/images/Home/Icon/uu-dai.png", "title": "Ưu đãi"},
+  {"icon": "assets/images/Home/Icon/history.png", "title": "Lịch sử làm đẹp"},
+  {"icon": "assets/images/Home/Icon/call.png", "title": "Tư vấn"},
 ];
 bool showAppBar = false;
 int current = 0;
@@ -67,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final CustomModal customModal = CustomModal();
   final LocalStorage storageCustomerToken = LocalStorage('customer_token');
   final LocalStorage storageBranch = LocalStorage('branch');
+  final ProductModel productModel = ProductModel();
 
   @override
   void initState() {
@@ -95,8 +96,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void goToService(BuildContext context, int index) {
     if (index == 1) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const Cosmetic()));
+      productModel.getGroupProduct().then((value) => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Cosmetic(
+        listTab: value,
+      ))));
     } else if (index == 2) {
       servicesModel.getGroupServiceByBranch().then((value) => Navigator.push(
           context,
@@ -169,7 +172,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         bottomNavigationBar: const MyBottomMenu(
           active: 0,
         ),
-        floatingActionButton: const CustomFloatingButton(),
         appBar: storageCustomerToken.getItem("customer_token") != null
             ? AppBar(
                 automaticallyImplyLeading: false,
@@ -263,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 actions: [
                   Container(
-                    margin: const EdgeInsets.only(right: 10),
+                    margin: const EdgeInsets.only(right: 15),
                     child: GestureDetector(
                       onTap: () => Navigator.push(
                           context,
@@ -276,6 +278,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Container(
                     margin: const EdgeInsets.only(right: 15),
                     child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationScreen()));
+                      },
                       child: Image.asset(
                         "assets/images/notification-solid-empty.png",
                         width: 28,
@@ -388,7 +393,7 @@ Widget listView(BuildContext context,
                         margin: const EdgeInsets.only(bottom: 10),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: mainColor.withOpacity(0.1),
+                            color: Colors.white,
                             border: Border.all(width: 1, color: mainColor)),
                         width: 60,
                         height: 60,
@@ -465,6 +470,7 @@ Widget listView(BuildContext context,
                           scrollDirection: Axis.horizontal,
                           children: list.sublist(0, 3).map((item) {
                             int index = list.indexOf(item);
+                            print(list[index]["Image_Name"]);
                             return GestureDetector(
                               onTap: () => showModalBottomSheet<void>(
                                   backgroundColor: Colors.white,
@@ -509,7 +515,7 @@ Widget listView(BuildContext context,
                                           CrossAxisAlignment.start,
                                       children: [
                                         Image.network(
-                                          "${item["Image_Name"]}",
+                                          "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
                                           fit: BoxFit.cover,
                                           width:
                                               MediaQuery.of(context).size.width,
@@ -696,8 +702,8 @@ Widget listView(BuildContext context,
                                           CrossAxisAlignment.start,
                                       children: [
                                         Image.network(
-                                          // "${item["Image_Name"]}",
-                                          "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                          "${item["Image_Name"]}",
+                                          // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                           fit: BoxFit.cover,
                                           width:
                                               MediaQuery.of(context).size.width,
@@ -922,7 +928,7 @@ Widget listView(BuildContext context,
                             Container(
                               margin: const EdgeInsets.only(bottom: 40),
                               child: const Text(
-                                "Xin lỗi! Hiện tại Ngọc Hường chưa bài viết về kiến thức làm đẹp",
+                                "Xin lỗi! Hiện tại Ngọc Hường chưa có ưu đãi và khuyến mãi",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.w400),

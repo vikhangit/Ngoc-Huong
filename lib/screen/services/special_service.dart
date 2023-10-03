@@ -8,7 +8,6 @@ import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
-import 'package:ngoc_huong/utils/CustomTheme/custom_floating_button.dart';
 
 class SpecialServiceScreen extends StatefulWidget {
   const SpecialServiceScreen({super.key});
@@ -50,7 +49,6 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
             bottomNavigationBar: const MyBottomMenu(active: 0),
-            floatingActionButton: const CustomFloatingButton(),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,

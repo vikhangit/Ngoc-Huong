@@ -106,6 +106,7 @@ flutter:
     - assets/images/voucher.png
     - assets/images/uu-dai-black.png
     - assets/images/uu-dai-red.png
+    - assets/images/telesales.png
     - assets/images/gift-black.png
     - assets/images/gift-solid-red.png
     - assets/images/vi-solid-red.png
@@ -138,6 +139,7 @@ flutter:
     - assets/images/info-red.png
     - assets/images/calendar-black.png
     - assets/images/call-black.png
+    - assets/images/call-solid-white.png
     - assets/images/avatar.png
     - assets/images/delete-black.png
     - assets/images/delete-red.png
@@ -146,7 +148,11 @@ flutter:
     - assets/images/product-solid-red.png
     - assets/images/chuyen-khoan.png
     - assets/images/messenger.png
+    - assets/images/messenger-white.png
+    - assets/images/messenger-red.png
     - assets/images/zalo-icon.png
+    - assets/images/zalo1.png
+    - assets/images/x.png
     - assets/images/facebook.png
     - assets/images/chat-icon.png
     - assets/images/cancel.png
@@ -168,6 +174,14 @@ flutter:
     - assets/images/Home/Disscount/img4.jpg
     - assets/images/Home/News/news1.jpg
     - assets/images/Home/News/news2.jpg
+    - assets/images/Home/Icon/my-pham.png
+    - assets/images/Home/Icon/dich-vu.png
+    - assets/images/Home/Icon/vi.png
+    - assets/images/Home/Icon/calendar.png
+    - assets/images/Home/Icon/membership.png
+    - assets/images/Home/Icon/uu-dai.png
+    - assets/images/Home/Icon/history.png
+    - assets/images/Home/Icon/call.png
     - assets/images/Notifications/noti1.png
     - assets/images/Notifications/noti2.png
     - assets/images/Notifications/bell1.png

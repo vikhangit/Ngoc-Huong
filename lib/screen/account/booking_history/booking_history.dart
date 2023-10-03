@@ -129,7 +129,7 @@ class _BookingHistoryState extends State<BookingHistory>
                         future: bookingModel.getBookingList(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            List list = snapshot.data!;
+                            List list = snapshot.data!.reversed.toList();
                             if (snapshot.data!.isNotEmpty) {
                               return RefreshIndicator(
                                 onRefresh: refreshData,
@@ -137,7 +137,6 @@ class _BookingHistoryState extends State<BookingHistory>
                                   itemCount: list.length,
                                   itemBuilder: (context, index) {
                                     DateTime databook = DateTime.parse(list[index]["StartDate"]);
-
                                     return list[index]["serviceList"].isEmpty ? Container() : Container(
                                       margin: EdgeInsets.only(
                                           left: 15,
@@ -356,8 +355,24 @@ class _BookingHistoryState extends State<BookingHistory>
                               );
                             }
                           } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
+                            return const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: LoadingIndicator(
+                                    colors: kDefaultRainbowColors,
+                                    indicatorType: Indicator.lineSpinFadeLoader,
+                                    strokeWidth: 1,
+                                    // pathBackgroundColor: Colors.black45,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text("Đang lấy dữ liệu")
+                              ],
                             );
                           }
                         },

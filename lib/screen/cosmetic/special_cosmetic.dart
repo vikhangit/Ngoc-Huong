@@ -11,7 +11,6 @@ import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
-import 'package:ngoc_huong/utils/CustomTheme/custom_floating_button.dart';
 
 class SpecialCosmeticScreen extends StatefulWidget {
   const SpecialCosmeticScreen({super.key});
@@ -44,18 +43,29 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
   }
 
   void addToCart(Map item) async {
+    Map data = {
+      "DetailList": [{
+        "Amount": item["PriceOutbound"] * 1,
+        "Price": item["PriceOutbound"],
+        "PrinceTest": item["PriceOutbound"] * 1,
+        "ProductCode":item["Code"],
+        "ProductId": item["Id"],
+        "Quantity":1,
+      }]
+    };
     customModal.showAlertDialog(context, "error", "Giỏ hàng",
         "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-      Navigator.pop(context);
-      EasyLoading.show(status: "Vui lòng chờ...");
-      Future.delayed(const Duration(seconds: 2), () {
-        cartModel.addProductToCart({"quantity": 1, ...item}).then((value) {
-          EasyLoading.dismiss();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-        });
-      });
-    }, () => Navigator.pop(context));
+          Navigator.pop(context);
+          EasyLoading.show(status: "Vui lòng chờ...");
+          Future.delayed(const Duration(seconds: 2), () {
+            cartModel.addToCart(data).then((value) {
+              print(value);
+              EasyLoading.dismiss();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AddCartSuccess()));
+            });
+          });
+        }, () => Navigator.pop(context));
   }
 
   @override
@@ -65,7 +75,6 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
             bottomNavigationBar: const MyBottomMenu(active: 0),
-            floatingActionButton: const CustomFloatingButton(),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -139,8 +148,8 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Image.network(
-                                                    // "${item["Image_Name"]}"
-                                                    "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                                    "${item["Image_Name"]}",
+                                                    // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                                     fit: BoxFit.cover,
                                                     width:
                                                         MediaQuery.of(context)

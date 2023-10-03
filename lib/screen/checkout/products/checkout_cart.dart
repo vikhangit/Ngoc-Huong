@@ -47,10 +47,10 @@ class _CheckOutScreenState extends State<CheckOutCart> {
       List details = [];
       for (var i = 0; i < listProductPayment.length; i++){
         details.add({
-          "Amount": listProductPayment[i]["PriceOutbound"] * listProductPayment[i]["quantity"],
-          "Price": listProductPayment[i]["PriceOutbound"],
-          "Quantity": listProductPayment[i]["quantity"],
-          "ProductId": listProductPayment[i]["Id"],
+          "Amount": listProductPayment[i]["Amount"],
+          "Price": listProductPayment[i]["Amount"] / listProductPayment[i]["Quantity"],
+          "Quantity": listProductPayment[i]["Quantity"],
+          "ProductId": listProductPayment[i]["ProductId"],
           "Status": "Chờ xác nhận"
         });
         cartModel.deleteProductToCart(listProductPayment[i]);
@@ -395,25 +395,25 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                             width: MediaQuery.of(context).size.width - 70,
                             child: TextButton(
                               onPressed: () {
-                                showModalBottomSheet<void>(
-                                    backgroundColor: Colors.white,
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (BuildContext context) {
-                                      return Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.95,
-                                        child: ProductDetail(
-                                          details: item,
-                                        ),
-                                      );
-                                    });
+                                // showModalBottomSheet<void>(
+                                //     backgroundColor: Colors.white,
+                                //     clipBehavior: Clip.antiAliasWithSaveLayer,
+                                //     context: context,
+                                //     isScrollControlled: true,
+                                //     builder: (BuildContext context) {
+                                //       return Container(
+                                //         padding: EdgeInsets.only(
+                                //             bottom: MediaQuery.of(context)
+                                //                 .viewInsets
+                                //                 .bottom),
+                                //         height:
+                                //             MediaQuery.of(context).size.height *
+                                //                 0.95,
+                                //         child: ProductDetail(
+                                //           details: item,
+                                //         ),
+                                //       );
+                                //     });
                               },
                               style: ButtonStyle(
                                 padding: MaterialStateProperty.all(
@@ -450,7 +450,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                           Wrap(
                                             children: [
                                               Text(
-                                                item["Name"],
+                                                item["ProductName"],
                                                 style: const TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.w400,
@@ -470,7 +470,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                               locale: "vi_VI",
                                                               symbol: "đ")
                                                           .format(item[
-                                                              "PriceOutbound"]),
+                                                              "Amount"] / item["Quantity"]),
                                                       style: TextStyle(
                                                           color:
                                                               Theme.of(context)
@@ -503,7 +503,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "${item["quantity"]} sản phẩm",
+                                          "${item["Quantity"]} sản phẩm",
                                           style: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w300,
@@ -526,8 +526,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                       locale: "vi_VI",
                                                       symbol: "đ")
                                                   .format(
-                                                      item["PriceOutbound"] *
-                                                          item["quantity"]),
+                                                      item["Amount"]),
                                               style: const TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w400,

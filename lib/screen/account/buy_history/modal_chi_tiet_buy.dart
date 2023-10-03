@@ -402,12 +402,37 @@ class ModalChiTietBuy extends StatelessWidget {
                                       )),
                                   Expanded(
                                       flex: 70,
-                                      child: Text(
-                                        "${product["Address"] ?? ""}",
-                                        textAlign: TextAlign.right,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black),
+                                      child: FutureBuilder(
+                                        future: profileModel.getProfile(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Text(
+                                              snapshot.data!["Address"],
+                                              textAlign: TextAlign.right,
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black),
+                                            );
+                                          } else {
+                                            return const Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                              children: [
+                                                SizedBox(
+                                                  width: 40,
+                                                  height: 40,
+                                                  child: LoadingIndicator(
+                                                    colors: kDefaultRainbowColors,
+                                                    indicatorType: Indicator
+                                                        .lineSpinFadeLoader,
+                                                    strokeWidth: 1,
+                                                    // pathBackgroundColor: Colors.black45,
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          }
+                                        },
                                       ))
                                 ],
                               )

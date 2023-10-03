@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
@@ -28,6 +27,7 @@ int? _selectedIndex2;
 int quantity = 1;
 int starLength = 5;
 double _rating = 0;
+int activeTab = 1;
 
 class _ProductDetailState extends State<ProductDetail>
     with TickerProviderStateMixin {
@@ -64,6 +64,12 @@ class _ProductDetailState extends State<ProductDetail>
     _selectedIndex = tabController?.index;
   }
 
+  void goToTab(int index) {
+    setState(() {
+      activeTab = index;
+    });
+  }
+
   void _getActiveTabIndex2() {
     _selectedIndex2 = tabController2?.index;
   }
@@ -73,13 +79,25 @@ class _ProductDetailState extends State<ProductDetail>
     print("Quantity: ${quantity}");
     Map productDetail = widget.details;
     void addToCart() async {
+      Map data = {
+        "DetailList": [
+          {
+            "Amount": productDetail["PriceOutbound"] * quantity,
+            "Price": productDetail["PriceOutbound"],
+            "PrinceTest": productDetail["PriceOutbound"] * 1,
+            "ProductCode": productDetail["Code"],
+            "ProductId": productDetail["Id"],
+            "Quantity": quantity,
+          }
+        ]
+      };
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
           "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
         Navigator.pop(context);
         EasyLoading.show(status: "Vui lòng chờ...");
         Future.delayed(const Duration(seconds: 2), () {
-          cartModel.addProductToCart(
-              {...productDetail, "quantity": quantity}).then((value) {
+          cartModel.addToCart(data).then((value) {
+            print(value);
             EasyLoading.dismiss();
             Navigator.push(
                 context,
@@ -152,11 +170,10 @@ class _ProductDetailState extends State<ProductDetail>
                       // color: checkColor,
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: Image.network(
-                    "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-
-                    // height: 263,
-                    // width: 255,
-                    fit: BoxFit.contain,
+                    "${productDetail["Image_Name"]}",
+                    // height: 150,
+                    // width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -256,7 +273,8 @@ class _ProductDetailState extends State<ProductDetail>
                   ),
                   // infomation()
                 ]),
-                infomation(productDetail["Description"] ?? ""),
+                infomation(productDetail["Description"] ?? "",
+                    (index) => goToTab(index), activeTab),
               ],
             ),
           ),
@@ -519,46 +537,61 @@ class _ProductDetailState extends State<ProductDetail>
   //   );
   // }
 
-  Widget infomation(String mieuTa) {
+  Widget infomation(String mieuTa, Function(int index) goToTab, int activeTab) {
     return Column(
       children: [
         SizedBox(
-          child: TabBar(
-              controller: tabController,
-              // padding: EdgeInsets.zero,
-              // indicatorPadding: EdgeInsets.zero,
-              onTap: (tabIndex) {
-                setState(() {
-                  _selectedIndex = tabIndex;
-                });
-              },
-              labelColor: Theme.of(context).colorScheme.primary,
-              isScrollable: true,
-              unselectedLabelColor: Colors.black,
-              indicatorColor: Theme.of(context).colorScheme.primary,
-              labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  fontFamily: "LexendDeca"),
-              tabs: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 2 - 30,
-                  child: const Tab(
-                    text: "Chi tiết sản phẩm",
-                  ),
+          child: Row(
+            children: [
+              Expanded(
+                  child: Container(
+                height: 60,
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: activeTab == 1
+                            ? BorderSide(
+                                width: 2,
+                                color: Theme.of(context).colorScheme.primary)
+                            : BorderSide.none)),
+                child: TextButton(
+                  style: ButtonStyle(
+                      padding:
+                          MaterialStateProperty.all(const EdgeInsets.all(0))),
+                  onPressed: () => goToTab(1),
+                  child: Text("Chi tiết sản phẩm", style: TextStyle(
+                    color: activeTab == 1 ? Theme.of(context).colorScheme.primary : Colors.black
+                  ),),
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 2 - 30,
-                  child: const Tab(text: "Đánh giá sản phẩm"),
-                )
-              ]),
+              )),
+              Expanded(
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: activeTab == 2
+                                ? BorderSide(
+                                width: 2,
+                                color: Theme.of(context).colorScheme.primary)
+                                : BorderSide.none)),
+                child: TextButton(
+                  style: ButtonStyle(
+                      padding:
+                          MaterialStateProperty.all(const EdgeInsets.all(0))),
+                  onPressed: () => goToTab(2),
+                  child: Text("Đánh giả sản phẩm", style: TextStyle(
+                      color: activeTab == 2 ? Theme.of(context).colorScheme.primary : Colors.black
+                  )),
+                ),
+              ))
+            ],
+          ),
+        ),
+       const SizedBox(
+          height: 20,
         ),
         SizedBox(
-          height: 250,
-          child: TabBarView(controller: tabController, children: [
-            ListView(
-              children: [
-                Html(
+          child: activeTab == 1
+              ? Html(
                   data: mieuTa,
                   style: {
                     "p": Style(
@@ -566,100 +599,32 @@ class _ProductDetailState extends State<ProductDetail>
                         fontSize: FontSize(15),
                         fontWeight: FontWeight.w300)
                   },
-                ),
-              ],
-            ),
-            ListView(
-              children: [
-                SizedBox(
+                )
+              : SizedBox(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
+                    children: List.generate(5, (index){
+                      return Container(
                         padding: const EdgeInsets.only(bottom: 15, top: 15),
                         decoration: const BoxDecoration(
                             border: Border(
                                 bottom: BorderSide(
                                     width: 1, color: Color(0xFFEFEFEF)))),
                         child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          const Row(
                             children: [
-                              const Row(
-                                children: [
-                                  SizedBox(
-                                    width: 36,
-                                    height: 36,
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          "assets/images/avatar.png"),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Lê Mỹ Ngọc"),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.grey,
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            "4.0",
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w300),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Icon(
-                                  Icons.favorite_border,
-                                  size: 30,
-                                  color: Theme.of(context).colorScheme.primary,
+                              SizedBox(
+                                width: 36,
+                                height: 36,
+                                child: CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                      "assets/images/avatar.png"),
                                 ),
-                              )
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text("Lê Mỹ Ngọc"),
                             ],
                           ),
                           const SizedBox(
@@ -690,7 +655,7 @@ class _ProductDetailState extends State<ProductDetail>
                                 width: 1,
                                 height: 12,
                                 margin:
-                                    const EdgeInsets.symmetric(horizontal: 5),
+                                const EdgeInsets.symmetric(horizontal: 5),
                                 color: Colors.grey,
                               ),
                               Text("23/03/2023",
@@ -701,394 +666,10 @@ class _ProductDetailState extends State<ProductDetail>
                             ],
                           )
                         ]),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 15, top: 15),
-                        decoration: const BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 1, color: Color(0xFFEFEFEF)))),
-                        child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Row(
-                                children: [
-                                  SizedBox(
-                                    width: 36,
-                                    height: 36,
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          "assets/images/avatar.png"),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Trần Như Quỳnh"),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            "5.0",
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w300),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Icon(
-                                  Icons.favorite,
-                                  size: 30,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Text("12:40",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey[500],
-                                      fontSize: 12)),
-                              Container(
-                                width: 1,
-                                height: 12,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                color: Colors.grey,
-                              ),
-                              Text("03/04/2023",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey[500],
-                                      fontSize: 12))
-                            ],
-                          )
-                        ]),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 15, top: 15),
-                        decoration: const BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 1, color: Color(0xFFEFEFEF)))),
-                        child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Row(
-                                children: [
-                                  SizedBox(
-                                    width: 36,
-                                    height: 36,
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          "assets/images/avatar.png"),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Trần Như Quỳnh"),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            "5.0",
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w300),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Icon(
-                                  Icons.favorite,
-                                  size: 30,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Text("12:40",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey[500],
-                                      fontSize: 12)),
-                              Container(
-                                width: 1,
-                                height: 12,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                color: Colors.grey,
-                              ),
-                              Text("03/04/2023",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey[500],
-                                      fontSize: 12))
-                            ],
-                          )
-                        ]),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 15, top: 15),
-                        decoration: const BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 1, color: Color(0xFFEFEFEF)))),
-                        child: Column(children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Row(
-                                children: [
-                                  SizedBox(
-                                    width: 36,
-                                    height: 36,
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          "assets/images/avatar.png"),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Trần Như Quỳnh"),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 20,
-                                                color: Colors.orange,
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            "5.0",
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w300),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Icon(
-                                  Icons.favorite,
-                                  size: 30,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "Chất lượng tốt, giá cả hợp lý. Phù hợp với da khô, sẽ tiếp tục ủng hộ vào lần sau.",
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Text("12:40",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey[500],
-                                      fontSize: 12)),
-                              Container(
-                                width: 1,
-                                height: 12,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                color: Colors.grey,
-                              ),
-                              Text("03/04/2023",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey[500],
-                                      fontSize: 12))
-                            ],
-                          )
-                        ]),
-                      )
-                    ],
+                      );
+                    })
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-              ],
-            )
-          ]),
         ),
       ],
     );

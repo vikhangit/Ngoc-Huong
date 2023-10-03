@@ -49,6 +49,25 @@ class CartModel {
     return result;
   }
 
+  Future getDetailCart(int cartId) async {
+    try {
+      Response response =
+      await client.dio.get('${client.apiUrl}//ShoppingCart/getDetailAddToCart?ShoppingCartId=$cartId',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
+      if (response.statusCode == 200) {
+        return response.data["Data"];
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future addToCart(Map data) async {
     try {
       Response response =
@@ -61,7 +80,28 @@ class CartModel {
           data: data);
       if (response.statusCode == 200) {
         print(response);
-        return response.data;
+        return response.data["Data"];
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future updateProductInCart(Map data) async {
+    try {
+      Response response =
+      await client.dio.put('${client.apiUrl}/ShoppingCart/putShoppingCart',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }),
+          data: data);
+      if (response.statusCode == 200) {
+        print(response);
+        return response.data["Data"];
       } else {
         return;
       }
@@ -86,6 +126,28 @@ class CartModel {
         products.indexWhere((element) => element["Code"] == product["Code"]);
     products[index]["quantity"] = products[index]["quantity"] - 1;
     localStorageCustomerCart.setItem("customer_cart", jsonEncode(products));
+  }
+
+  Future updateProductToCart(Map product) async {
+
+    try {
+      Response response =
+      await client.dio.post('${client.apiUrl}/ShoppingCart/putShoppingCart',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }),
+          data: product);
+      if (response.statusCode == 200) {
+        print(response);
+        return response.data;
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future deleteProductToCart(Map product) async {

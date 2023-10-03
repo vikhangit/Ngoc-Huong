@@ -3,6 +3,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 
 class MyBottomMenu extends StatefulWidget {
   final int active;
@@ -37,6 +38,7 @@ List bottomList = [
 
 class _MyBottomMenuState extends State<MyBottomMenu> {
   final LocalStorage storageCustomer = LocalStorage('customer_token');
+  final CustomModal customModal = CustomModal();
   String a = "";
 
   void onItemTapped(int index) {
@@ -64,7 +66,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
             }
           case 4:
             {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const BookingServices()));
+              customModal.showBottomToolDialog(context);
               break;
             }
           default:
@@ -102,7 +104,9 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                     onItemTapped(4);
                   },
                   child: Image.asset(
-                    "assets/images/logo.png",
+                    "assets/images/telesales.png",
+                    width: 45,
+                    height: 45,
                   ),
                 ),
               )),
