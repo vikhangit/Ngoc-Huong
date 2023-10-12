@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:intl/intl.dart';
@@ -16,6 +19,8 @@ class ModalChiTietBuy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final OrderModel orderModel = OrderModel();
+    final CustomModal customModal = CustomModal();
     DateTime getPSTTime(DateTime now) {
       tz.initializeTimeZones();
       final pacificTimeZone = tz.getLocation('Asia/Ho_Chi_Minh');
@@ -28,7 +33,7 @@ class ModalChiTietBuy extends StatelessWidget {
     num totalBooking() {
       num total = 0;
       for (var i = 0; i < list.length; i++) {
-        total += list[i]["Amount"];
+        total += list[i]["Product"]["PriceInbound"] * list[i]["Quantity"];
       }
       return total;
     }
@@ -42,22 +47,7 @@ class ModalChiTietBuy extends StatelessWidget {
         centerTitle: true,
         leading: GestureDetector(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BuyHistory(
-                            ac: type.isEmpty
-                                ? 0
-                                : type == "xác nhận"
-                                    ? 1
-                                    : type == "vận chuyển"
-                                        ? 2
-                                        : type == "hoàn thành"
-                                            ? 3
-                                            : type == "hủy đơn"
-                                                ? 4
-                                                : 0,
-                          )));
+              Navigator.pop(context);
             },
             child: Container(
               margin: const EdgeInsets.only(left: 15),
@@ -82,364 +72,383 @@ class ModalChiTietBuy extends StatelessWidget {
           Expanded(
             child: ListView(
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(top: 15),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-                  color:
-                      type == "thanh toán" ? Colors.green : Colors.amber[800],
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                FutureBuilder(
+                    future: orderModel.getStatusByCode(product["Status"]),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.only(top: 15),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 25),
+                            color: product["Status"] == "complete"
+                                ? Colors.green
+                                : Colors.amber[800],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Đơn hàng ${snapshot.data!["GroupName"].toString().toLowerCase()}",
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Text(
+                                        "Cảm ơn bạn đã mua hàng tại Ngọc Hường",
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w300,
+                                            color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Image.asset(
+                                  "assets/images/account/file-white.png",
+                                  width: 45,
+                                  height: 45,
+                                  fit: BoxFit.contain,
+                                )
+                              ],
+                            ));
+                      } else {
+                        return const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "Đơn hàng ${type.isNotEmpty ? "đã ${type.replaceAll("đơn", "")}" : "chờ xác nhận"}",
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white),
+                            SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: LoadingIndicator(
+                                colors: kDefaultRainbowColors,
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                strokeWidth: 1,
+                                // pathBackgroundColor: Colors.black45,
+                              ),
                             ),
-                            const SizedBox(
-                              height: 10,
+                            SizedBox(
+                              width: 10,
                             ),
-                            const Text(
-                              "Cảm ơn bạn đã mua hàng tại Ngọc Hường",
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.white),
+                            Text("Đang lấy dữ liệu")
+                          ],
+                        );
+                      }
+                    }),
+                // Column(
+                //   children: [
+                //     if (type != "")
+                //       Column(
+                //         children: [
+                //           Container(
+                //               margin: const EdgeInsets.only(
+                //                   top: 15, left: 15, right: 15),
+                //               child: Row(
+                //                 mainAxisAlignment:
+                //                     MainAxisAlignment.spaceBetween,
+                //                 children: [
+                //                   Row(
+                //                     children: [
+                //                       Image.asset(
+                //                         "assets/images/account/van-chuyen.png",
+                //                         width: 28,
+                //                         height: 28,
+                //                       ),
+                //                       const SizedBox(
+                //                         width: 5,
+                //                       ),
+                //                       const Text("Thông tin vận chuyển",
+                //                           style: TextStyle(
+                //                               fontSize: 16,
+                //                               fontWeight: FontWeight.w500,
+                //                               color: Colors.black))
+                //                     ],
+                //                   ),
+                //                   SizedBox(
+                //                     height: 30,
+                //                     child: TextButton(
+                //                         style: ButtonStyle(
+                //                             padding:
+                //                                 MaterialStateProperty.all(
+                //                                     const EdgeInsets
+                //                                             .symmetric(
+                //                                         vertical: 3,
+                //                                         horizontal: 5))),
+                //                         onPressed: () {},
+                //                         child: const Text(
+                //                           "Xem",
+                //                           style: TextStyle(
+                //                               fontWeight: FontWeight.w400),
+                //                         )),
+                //                   )
+                //                 ],
+                //               )),
+                //           Container(
+                //               width: MediaQuery.of(context).size.width,
+                //               margin: const EdgeInsets.only(
+                //                   left: 15, right: 15, top: 20, bottom: 5),
+                //               padding: const EdgeInsets.symmetric(
+                //                   horizontal: 15, vertical: 20),
+                //               decoration: BoxDecoration(
+                //                 color: Colors.white,
+                //                 borderRadius: const BorderRadius.all(
+                //                     Radius.circular(14)),
+                //                 boxShadow: [
+                //                   BoxShadow(
+                //                     color: Colors.grey.withOpacity(0.5),
+                //                     spreadRadius: 1,
+                //                     blurRadius: 8,
+                //                     offset: const Offset(
+                //                         4, 4), // changes position of shadow
+                //                   ),
+                //                 ],
+                //               ),
+                //               child: Column(
+                //                 crossAxisAlignment: CrossAxisAlignment.start,
+                //                 children: [
+                //                   const Text(
+                //                     "Nhanh",
+                //                     style: TextStyle(
+                //                         fontWeight: FontWeight.w400,
+                //                         color: Colors.black),
+                //                   ),
+                //                   const SizedBox(
+                //                     height: 1,
+                //                   ),
+                //                   const Text(
+                //                     "JT-Express",
+                //                     style: TextStyle(
+                //                         fontWeight: FontWeight.w400,
+                //                         color: Colors.black),
+                //                   ),
+                //                   const SizedBox(
+                //                     height: 10,
+                //                   ),
+                //                   Row(
+                //                     children: [
+                //                       const Icon(
+                //                         Icons.circle,
+                //                         size: 8,
+                //                         color: Colors.green,
+                //                       ),
+                //                       const SizedBox(
+                //                         width: 10,
+                //                       ),
+                //                       Expanded(
+                //                           child: Text(
+                //                         "Đơn hàng ${type == "hoàn thành" ? "đã giao thành công" : type == "xác nhận" ? "đã đến đơn vị vận chuyển" : type == "vận chuyển" ? "đang giao" : ""}",
+                //                         style: const TextStyle(
+                //                             fontWeight: FontWeight.w300,
+                //                             color: Colors.green),
+                //                       ))
+                //                     ],
+                //                   )
+                //                 ],
+                //               )),
+                //         ],
+                //       ),
+                //
+                //   ],
+                // ),
+
+                Container(
+                    margin: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          "assets/images/account/dia-chi.png",
+                          width: 28,
+                          height: 28,
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        const Text("Thông tin khách hàng",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black))
+                      ],
+                    )),
+                Container(
+                    margin: const EdgeInsets.only(
+                        left: 15, right: 15, top: 20, bottom: 0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(14)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 8,
+                          offset:
+                              const Offset(4, 4), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                "Tên khách hàng",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black),
+                              ),
+                            ),
+                            Expanded(
+                              child: FutureBuilder(
+                                future: profileModel.getProfile(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      snapshot.data!["CustomerName"],
+                                      textAlign: TextAlign.right,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black),
+                                    );
+                                  } else {
+                                    return const Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        SizedBox(
+                                          width: 40,
+                                          height: 40,
+                                          child: LoadingIndicator(
+                                            colors: kDefaultRainbowColors,
+                                            indicatorType:
+                                                Indicator.lineSpinFadeLoader,
+                                            strokeWidth: 1,
+                                            // pathBackgroundColor: Colors.black45,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                },
+                              ),
                             )
                           ],
                         ),
-                      ),
-                      Image.asset(
-                        "assets/images/account/file-white.png",
-                        width: 45,
-                        height: 45,
-                        fit: BoxFit.contain,
-                      )
-                    ],
-                  ),
-                ),
-                if (type != "hủy đơn")
-                  Column(
-                    children: [
-                      if (type != "")
-                        Column(
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 15),
+                          width: MediaQuery.of(context).size.width,
+                          height: 1,
+                          color: Colors.grey,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                                margin: const EdgeInsets.only(
-                                    top: 15, left: 15, right: 15),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                          "assets/images/account/van-chuyen.png",
-                                          width: 28,
-                                          height: 28,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        const Text("Thông tin vận chuyển",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black))
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 30,
-                                      child: TextButton(
-                                          style: ButtonStyle(
-                                              padding:
-                                                  MaterialStateProperty.all(
-                                                      const EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 3,
-                                                          horizontal: 5))),
-                                          onPressed: () {},
-                                          child: const Text(
-                                            "Xem",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400),
-                                          )),
-                                    )
-                                  ],
-                                )),
-                            Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.only(
-                                    left: 15, right: 15, top: 20, bottom: 5),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 20),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(14)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 1,
-                                      blurRadius: 8,
-                                      offset: const Offset(
-                                          4, 4), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Nhanh",
-                                      style: TextStyle(
+                            const Expanded(
+                                child: Text(
+                              "Số điện thoại",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black),
+                            )),
+                            Expanded(
+                              child: FutureBuilder(
+                                future: profileModel.getProfile(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      snapshot.data!["Phone"],
+                                      textAlign: TextAlign.right,
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           color: Colors.black),
-                                    ),
-                                    const SizedBox(
-                                      height: 1,
-                                    ),
-                                    const Text(
-                                      "JT-Express",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
+                                    );
+                                  } else {
+                                    return const Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        const Icon(
-                                          Icons.circle,
-                                          size: 8,
-                                          color: Colors.green,
+                                        SizedBox(
+                                          width: 40,
+                                          height: 40,
+                                          child: LoadingIndicator(
+                                            colors: kDefaultRainbowColors,
+                                            indicatorType:
+                                                Indicator.lineSpinFadeLoader,
+                                            strokeWidth: 1,
+                                            // pathBackgroundColor: Colors.black45,
+                                          ),
                                         ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                            child: Text(
-                                          "Đơn hàng ${type == "hoàn thành" ? "đã giao thành công" : type == "xác nhận" ? "đã đến đơn vị vận chuyển" : type == "vận chuyển" ? "đang giao" : ""}",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              color: Colors.green),
-                                        ))
                                       ],
-                                    )
-                                  ],
-                                )),
+                                    );
+                                  }
+                                },
+                              ),
+                            )
                           ],
                         ),
-                      Container(
-                          margin: const EdgeInsets.only(
-                              top: 10, left: 15, right: 15),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                "assets/images/account/dia-chi.png",
-                                width: 28,
-                                height: 28,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Text("Thông tin khách hàng",
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 15),
+                          width: MediaQuery.of(context).size.width,
+                          height: 1,
+                          color: Colors.grey,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Expanded(
+                                flex: 30,
+                                child: Text(
+                                  "Địa chỉ",
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black))
-                            ],
-                          )),
-                      Container(
-                          margin: const EdgeInsets.only(
-                              left: 15, right: 15, top: 20, bottom: 0),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(14)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 1,
-                                blurRadius: 8,
-                                offset: const Offset(
-                                    4, 4), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Expanded(
-                                    child: Text(
-                                      "Tên khách hàng",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: FutureBuilder(
-                                      future: profileModel.getProfile(),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasData) {
-                                          return Text(
-                                            snapshot.data!["CustomerName"],
-                                            textAlign: TextAlign.right,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black),
-                                          );
-                                        } else {
-                                          return const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              SizedBox(
-                                                width: 40,
-                                                height: 40,
-                                                child: LoadingIndicator(
-                                                  colors: kDefaultRainbowColors,
-                                                  indicatorType: Indicator
-                                                      .lineSpinFadeLoader,
-                                                  strokeWidth: 1,
-                                                  // pathBackgroundColor: Colors.black45,
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                width: MediaQuery.of(context).size.width,
-                                height: 1,
-                                color: Colors.grey,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Expanded(
-                                      child: Text(
-                                    "Số điện thoại",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black),
-                                  )),
-                                  Expanded(
-                                    child: FutureBuilder(
-                                      future: profileModel.getProfile(),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasData) {
-                                          return Text(
-                                            snapshot.data!["Phone"],
-                                            textAlign: TextAlign.right,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black),
-                                          );
-                                        } else {
-                                          return const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              SizedBox(
-                                                width: 40,
-                                                height: 40,
-                                                child: LoadingIndicator(
-                                                  colors: kDefaultRainbowColors,
-                                                  indicatorType: Indicator
-                                                      .lineSpinFadeLoader,
-                                                  strokeWidth: 1,
-                                                  // pathBackgroundColor: Colors.black45,
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                width: MediaQuery.of(context).size.width,
-                                height: 1,
-                                color: Colors.grey,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Expanded(
-                                      flex: 30,
-                                      child: Text(
-                                        "Địa chỉ",
-                                        style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black),
+                                )),
+                            Expanded(
+                                flex: 70,
+                                child: FutureBuilder(
+                                  future: profileModel.getProfile(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Text(
+                                        snapshot.data!["Address"],
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             color: Colors.black),
-                                      )),
-                                  Expanded(
-                                      flex: 70,
-                                      child: FutureBuilder(
-                                        future: profileModel.getProfile(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            return Text(
-                                              snapshot.data!["Address"],
-                                              textAlign: TextAlign.right,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black),
-                                            );
-                                          } else {
-                                            return const Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                              children: [
-                                                SizedBox(
-                                                  width: 40,
-                                                  height: 40,
-                                                  child: LoadingIndicator(
-                                                    colors: kDefaultRainbowColors,
-                                                    indicatorType: Indicator
-                                                        .lineSpinFadeLoader,
-                                                    strokeWidth: 1,
-                                                    // pathBackgroundColor: Colors.black45,
-                                                  ),
-                                                ),
-                                              ],
-                                            );
-                                          }
-                                        },
-                                      ))
-                                ],
-                              )
-                            ],
-                          )),
-                    ],
-                  ),
+                                      );
+                                    } else {
+                                      return const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          SizedBox(
+                                            width: 40,
+                                            height: 40,
+                                            child: LoadingIndicator(
+                                              colors: kDefaultRainbowColors,
+                                              indicatorType:
+                                                  Indicator.lineSpinFadeLoader,
+                                              strokeWidth: 1,
+                                              // pathBackgroundColor: Colors.black45,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  },
+                                ))
+                          ],
+                        )
+                      ],
+                    )),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -478,7 +487,7 @@ class ModalChiTietBuy extends StatelessWidget {
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(10)),
                                 child: Image.network(
-                                  "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                  "${"http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
                                   // width: 110,
                                   height: 60,
                                   fit: BoxFit.cover,
@@ -578,7 +587,7 @@ class ModalChiTietBuy extends StatelessWidget {
                                 )
                               ],
                             ),
-                            if (type != "hủy đơn")
+                            if (product["Status"] != "delete")
                               Column(
                                 children: [
                                   const SizedBox(
@@ -599,7 +608,7 @@ class ModalChiTietBuy extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (type != "hủy đơn")
+                if (product["Status"] != "delete")
                   Container(
                     margin: const EdgeInsets.only(left: 15, right: 15, top: 15),
                     padding: const EdgeInsets.symmetric(
@@ -728,7 +737,7 @@ class ModalChiTietBuy extends StatelessWidget {
                             )
                           ],
                         ),
-                        if (type.isNotEmpty)
+                        if (product["Status"] != "pending")
                           Column(
                             children: [
                               Container(
@@ -743,11 +752,21 @@ class ModalChiTietBuy extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
-                                      child: Text(
-                                    "Thời gian $type",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black),
+                                      child: FutureBuilder(
+                                    future: orderModel
+                                        .getStatusByCode(product["Status"]),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        return Text(
+                                          "Thời gian ${snapshot.data!["GroupName"].toString().toLowerCase().replaceAll("đã", "").replaceAll("đang", "").trim()}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        );
+                                      } else {
+                                        return Container();
+                                      }
+                                    },
                                   )),
                                   Text(
                                     DateFormat("dd-MM-yyyy HH:mm").format(
@@ -767,14 +786,38 @@ class ModalChiTietBuy extends StatelessWidget {
               ],
             ),
           ),
-          if (type == "")
+          if (product["Status"] == "pending")
             Container(
               margin: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom + 20,
                   left: 15,
                   right: 15),
               child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    customModal.showAlertDialog(
+                        context,
+                        "error",
+                        "Hủy Đơn Hàng",
+                        "Bạn có chắc chắn hủy đơn hàng không?", () {
+                      Navigator.pop(context);
+                      EasyLoading.show(status: "Vui lòng chờ...");
+                      Future.delayed(const Duration(seconds: 2), () {
+                        orderModel
+                            .putStatusOrder(product["Id"], "delete");
+                        orderModel.getStatusList().then((value) {
+                          EasyLoading.dismiss();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BuyHistory(
+                                    listTab: value,
+                                    ac: value.length - 1,
+                                  )));
+                          save!();
+                        });
+                      });
+                    }, () => Navigator.pop(context));
+                  },
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all(
                           const RoundedRectangleBorder(

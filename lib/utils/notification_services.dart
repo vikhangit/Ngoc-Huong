@@ -160,7 +160,7 @@ class NotificationService {
   }
 
   void handleMessage(BuildContext context, RemoteMessage message) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const BuyHistory()));
+    // Navigator.push(
+    //     context, MaterialPageRoute(builder: (context) => const BuyHistory()));
   }
 }

@@ -115,8 +115,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     itemBuilder: (context, index) {
                       if(listNotify[index]["ListService"] != null){
                         return Container(
-                          margin: const EdgeInsets.only(
-                              top: 10, left: 15, right: 15),
+                          margin: EdgeInsets.only(
+                              bottom: 10, left: 15, right: 15, top: index == 0 ? 15 : 0),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:

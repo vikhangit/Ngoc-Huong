@@ -8,11 +8,15 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/models/bookingModel.dart';
+import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/newsModel.dart';
+import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
+import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
 import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
@@ -31,6 +35,8 @@ import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:ngoc_huong/utils/notification_services.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -50,14 +56,18 @@ List toolServices = [
   {"icon": "assets/images/Home/Icon/my-pham.png", "title": "Mỹ phẩm"},
   {"icon": "assets/images/Home/Icon/dich-vu.png", "title": "Dịch vụ"},
   {"icon": "assets/images/Home/Icon/vi.png", "title": "Điểm"},
-  {"icon": "assets/images/Home/Icon/membership.png", "title": "Hạng thành viên"},
+  {
+    "icon": "assets/images/Home/Icon/membership.png",
+    "title": "Hạng thành viên"
+  },
   {"icon": "assets/images/Home/Icon/uu-dai.png", "title": "Ưu đãi"},
   {"icon": "assets/images/Home/Icon/history.png", "title": "Lịch sử làm đẹp"},
-  {"icon": "assets/images/Home/Icon/call.png", "title": "Tư vấn"},
+  {"icon": "assets/images/list-order.png", "title": "Lịch sử mua hàng"},
 ];
 bool showAppBar = false;
 int current = 0;
 String tokenfirebase = "";
+int activeCarousel = 0;
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   NotificationService notificationService = NotificationService();
@@ -68,7 +78,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final LocalStorage storageCustomerToken = LocalStorage('customer_token');
   final LocalStorage storageBranch = LocalStorage('branch');
   final ProductModel productModel = ProductModel();
-
+  final OrderModel orderModel = OrderModel();
+  final CartModel cartModel = CartModel();
+  final BookingModel bookingModel = BookingModel();
   @override
   void initState() {
     super.initState();
@@ -97,9 +109,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void goToService(BuildContext context, int index) {
     if (index == 1) {
       productModel.getGroupProduct().then((value) => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Cosmetic(
-        listTab: value,
-      ))));
+          context,
+          MaterialPageRoute(
+              builder: (context) => Cosmetic(
+                    listTab: value,
+                  ))));
     } else if (index == 2) {
       servicesModel.getGroupServiceByBranch().then((value) => Navigator.push(
           context,
@@ -107,10 +121,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               builder: (context) => AllServiceScreen(
                     listTab: value,
                   ))));
-    } else if(index == 7){
-      customModal.showAlertDialog(context, "error", "Gọi Điện Tư Vấn", "Bạn có chắc muốn gọi điện đến Ngọc Hường để nhận tư vẫn không?", () => makingPhoneCall(), () => Navigator.pop(context));
-    }
-    else{
+    } else {
       if (storageCustomerToken.getItem("customer_token") != null) {
         switch (index) {
           case 0:
@@ -123,17 +134,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             }
           case 3:
             {
-             customModal.showAlertDialog(context, "error", "Xin Lỗi Quý Khách", "Chúng tôi đang nâng cấp tính năng này", () => Navigator.pop(context), () => Navigator.pop(context));
+              customModal.showAlertDialog(
+                  context,
+                  "error",
+                  "Xin Lỗi Quý Khách",
+                  "Chúng tôi đang nâng cấp tính năng này",
+                  () => Navigator.pop(context),
+                  () => Navigator.pop(context));
               break;
             }
           case 4:
             {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const ThanhVienScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ThanhVienScreen()));
               break;
             }
           case 5:
             {
-              customModal.showAlertDialog(context, "error", "Xin Lỗi Quý Khách", "Chúng tôi đang nâng cấp tính năng này", () => Navigator.pop(context), () => Navigator.pop(context));
+              customModal.showAlertDialog(
+                  context,
+                  "error",
+                  "Xin Lỗi Quý Khách",
+                  "Chúng tôi đang nâng cấp tính năng này",
+                  () => Navigator.pop(context),
+                  () => Navigator.pop(context));
               break;
             }
           case 6:
@@ -146,7 +172,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           )));
               break;
             }
+          case 7:
+            {
+              orderModel.getStatusList().then((value) => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BuyHistory(
+                            listTab: value,
+                          ))));
+
+              break;
+            }
           default:
+            {
+              break;
+            }
         }
       } else {
         Navigator.push(context,
@@ -160,10 +200,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     setState(() {});
   }
 
+  void goPage(index, reason) {
+    activeCarousel = index;
+  }
+
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
-    print(storageCustomerToken.getItem("customer_token"));
+
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
@@ -349,8 +393,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           onRefresh: () => refreshData(),
           child: ListView(
             children: [
-              listView(
-                  context, (context, index) => goToService(context, index)),
+              listView(context, (context, index) => goToService(context, index),
+                  (index, reason) => goPage(index, reason)),
             ],
           ),
         ),
@@ -359,25 +403,67 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 }
 
-Widget listView(BuildContext context,
-    Function(BuildContext context, int index) goToService) {
+Widget listView(
+    BuildContext context,
+    Function(BuildContext context, int index) goToService,
+    Function(int index, CarouselPageChangedReason reason) goToPage) {
   final ServicesModel servicesModel = ServicesModel();
   final NewsModel newsModel = NewsModel();
   final ProductModel productModel = ProductModel();
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15),
+  return SizedBox(
     child: Column(
       children: [
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 20),
+              height: 250,
+              child: CarouselSlider.builder(
+                itemCount: 3,
+                options: CarouselOptions(
+                    height: 250,
+                    aspectRatio: 26 / 14,
+                    autoPlay: true,
+                    autoPlayInterval: const Duration(seconds: 3),
+                    viewportFraction: 1,
+                    initialPage: 0,
+                    onPageChanged: (index, reason) {
+                      goToPage(index, reason);
+                    }),
+                itemBuilder: (context, index, realIndex) {
+                  return Image.asset(
+                    "assets/images/Home/banner-sale.png",
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
         Container(
-          margin: const EdgeInsets.only(top: 15),
-          // height: 130,
+          margin: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          // decoration: BoxDecoration(
+          //   color: Colors.white,
+          //   borderRadius: const BorderRadius.all(Radius.circular(10)),
+          //   boxShadow: [
+          //     BoxShadow(
+          //       color: Colors.grey.withOpacity(0.5),
+          //       spreadRadius: 5,
+          //       blurRadius: 7,
+          //       offset: const Offset(0, 3), // changes position of shadow
+          //     ),
+          //   ],
+          // ),
           child: Wrap(
             alignment: WrapAlignment.spaceBetween,
             // scrollDirection: Axis.horizontal,
             children: toolServices.map((item) {
               int index = toolServices.indexOf(item);
               return SizedBox(
-                width: MediaQuery.of(context).size.width / 4 - 10,
+                width: MediaQuery.of(context).size.width / 4 - 8,
                 // height:90,
                 child: TextButton(
                   style: ButtonStyle(
@@ -422,7 +508,8 @@ Widget listView(BuildContext context,
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(top: 30),
+          margin: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
               Row(
@@ -470,7 +557,6 @@ Widget listView(BuildContext context,
                           scrollDirection: Axis.horizontal,
                           children: list.sublist(0, 3).map((item) {
                             int index = list.indexOf(item);
-                            print(list[index]["Image_Name"]);
                             return GestureDetector(
                               onTap: () => showModalBottomSheet<void>(
                                   backgroundColor: Colors.white,
@@ -501,9 +587,7 @@ Widget listView(BuildContext context,
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(6)),
                                     border: Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: mainColor,
                                         width: 1)),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -532,35 +616,31 @@ Widget listView(BuildContext context,
                                               fontSize: 13,
                                               fontWeight: FontWeight.w400),
                                         ),
-
                                       ],
                                     ),
                                     SizedBox(
-                                      width:
-                                      MediaQuery.of(context).size.width,
+                                      width: MediaQuery.of(context).size.width,
                                       child: TextButton(
                                           onPressed: () {
                                             showModalBottomSheet<void>(
-                                                backgroundColor:
-                                                Colors.white,
-                                                clipBehavior: Clip
-                                                    .antiAliasWithSaveLayer,
+                                                backgroundColor: Colors.white,
+                                                clipBehavior:
+                                                    Clip.antiAliasWithSaveLayer,
                                                 context: context,
                                                 isScrollControlled: true,
                                                 builder:
                                                     (BuildContext context) {
                                                   return Container(
                                                       padding: EdgeInsets.only(
-                                                          bottom: MediaQuery
-                                                              .of(
-                                                              context)
+                                                          bottom: MediaQuery.of(
+                                                                  context)
                                                               .viewInsets
                                                               .bottom),
-                                                      height: MediaQuery.of(
-                                                          context)
-                                                          .size
-                                                          .height *
-                                                          0.95,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.95,
                                                       child: ChiTietScreen(
                                                         detail: item,
                                                       ));
@@ -568,10 +648,8 @@ Widget listView(BuildContext context,
                                           },
                                           style: ButtonStyle(
                                               backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Theme.of(context)
-                                                      .colorScheme
-                                                      .primary)),
+                                                  MaterialStateProperty.all(
+                                                      mainColor)),
                                           child: const Text("Xem thêm",
                                               style: TextStyle(
                                                   fontSize: 12,
@@ -611,6 +689,7 @@ Widget listView(BuildContext context,
         ),
         Container(
           margin: const EdgeInsets.only(top: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
               Row(
@@ -688,9 +767,7 @@ Widget listView(BuildContext context,
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(6)),
                                     border: Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: mainColor,
                                         width: 1)),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -720,35 +797,31 @@ Widget listView(BuildContext context,
                                               fontSize: 13,
                                               fontWeight: FontWeight.w400),
                                         ),
-
                                       ],
                                     ),
                                     SizedBox(
-                                      width:
-                                      MediaQuery.of(context).size.width,
+                                      width: MediaQuery.of(context).size.width,
                                       child: TextButton(
                                           onPressed: () {
                                             showModalBottomSheet<void>(
-                                                backgroundColor:
-                                                Colors.white,
-                                                clipBehavior: Clip
-                                                    .antiAliasWithSaveLayer,
+                                                backgroundColor: Colors.white,
+                                                clipBehavior:
+                                                    Clip.antiAliasWithSaveLayer,
                                                 context: context,
                                                 isScrollControlled: true,
                                                 builder:
                                                     (BuildContext context) {
                                                   return Container(
                                                       padding: EdgeInsets.only(
-                                                          bottom: MediaQuery
-                                                              .of(
-                                                              context)
+                                                          bottom: MediaQuery.of(
+                                                                  context)
                                                               .viewInsets
                                                               .bottom),
-                                                      height: MediaQuery.of(
-                                                          context)
-                                                          .size
-                                                          .height *
-                                                          0.95,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.95,
                                                       child: ProductDetail(
                                                         details: item,
                                                       ));
@@ -756,10 +829,8 @@ Widget listView(BuildContext context,
                                           },
                                           style: ButtonStyle(
                                               backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Theme.of(context)
-                                                      .colorScheme
-                                                      .primary)),
+                                                  MaterialStateProperty.all(
+                                                      mainColor)),
                                           child: const Text("Xem thêm",
                                               style: TextStyle(
                                                   fontSize: 12,
@@ -799,6 +870,7 @@ Widget listView(BuildContext context,
         ),
         Container(
           margin: const EdgeInsets.only(top: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
               Row(
@@ -855,8 +927,8 @@ Widget listView(BuildContext context,
                                                   .viewInsets
                                                   .bottom),
                                           height: MediaQuery.of(context)
-                                              .size
-                                              .height *
+                                                  .size
+                                                  .height *
                                               0.95,
                                           child: ChiTietTinTuc(
                                             detail: item,
@@ -870,7 +942,7 @@ Widget listView(BuildContext context,
                                       22.5,
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.stretch,
+                                        CrossAxisAlignment.stretch,
                                     children: [
                                       const SizedBox(
                                         height: 5,
@@ -923,7 +995,7 @@ Widget listView(BuildContext context,
                             Container(
                               margin: const EdgeInsets.only(top: 0, bottom: 10),
                               child:
-                              Image.asset("assets/images/account/img.webp"),
+                                  Image.asset("assets/images/account/img.webp"),
                             ),
                             Container(
                               margin: const EdgeInsets.only(bottom: 40),
@@ -966,6 +1038,7 @@ Widget listView(BuildContext context,
         ),
         Container(
           margin: const EdgeInsets.only(top: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
               Row(

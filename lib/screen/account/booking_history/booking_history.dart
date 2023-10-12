@@ -157,7 +157,7 @@ class _BookingHistoryState extends State<BookingHistory>
                                           ),
                                         ],
                                       ),
-                                      height: 135,
+                                      height: 125,
                                       child:
                                       FutureBuilder(
                                         future: servicesModel.getServiceByName(list[index]["serviceList"][0]["ServiceName"]),
@@ -198,7 +198,7 @@ class _BookingHistoryState extends State<BookingHistory>
                                                   MaterialStateProperty.all(
                                                       const EdgeInsets
                                                           .symmetric(
-                                                          vertical: 12,
+                                                          vertical: 10,
                                                           horizontal: 8)),
                                                   backgroundColor:
                                                   MaterialStateProperty.all(
@@ -224,7 +224,8 @@ class _BookingHistoryState extends State<BookingHistory>
                                                               10)),
                                                       child: Image.network(
                                                         "${detail["Image_Name"]}",
-                                                        // width: 110,
+                                                        width: 110,
+                                                        height: MediaQuery.of(context).size.height,
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
@@ -274,19 +275,19 @@ class _BookingHistoryState extends State<BookingHistory>
                                                             //         },
                                                             //         data: "")),
                                                            const SizedBox(height: 5,),
-                                                            Text(
-                                                              NumberFormat.currency(
-                                                                  locale:
-                                                                  "vi_VI",
-                                                                  symbol:
-                                                                  "đ")
-                                                                  .format(
-                                                                  detail["PriceOutbound"],
-                                                              ),
-                                                             style: const TextStyle(
-                                                               color: Colors.black
-                                                             ),
-                                                            ),
+                                                           //  Text(
+                                                           //    NumberFormat.currency(
+                                                           //        locale:
+                                                           //        "vi_VI",
+                                                           //        symbol:
+                                                           //        "đ")
+                                                           //        .format(
+                                                           //        detail["PriceOutbound"],
+                                                           //    ),
+                                                           //   style: const TextStyle(
+                                                           //     color: Colors.black
+                                                           //   ),
+                                                           //  ),
                                                            const SizedBox(height: 5,),
                                                             Row(
                                                               children: [
@@ -299,10 +300,29 @@ class _BookingHistoryState extends State<BookingHistory>
                                                                 const SizedBox(
                                                                   width: 5,
                                                                 ),
-                                                                Expanded(child: Text(DateFormat("HH:mm dd/MM/yyyy").format(databook),
+                                                                Expanded(child: Text(DateFormat("HH:mm").format(databook),
                                                                   style: const TextStyle(
                                                                       color: Colors.black,
-                                                                      fontWeight: FontWeight.w300),)
+                                                                      fontWeight: FontWeight.w300),),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            const SizedBox(height: 5,),
+                                                            Row(
+                                                              children: [
+                                                                Image.asset(
+                                                                  "assets/images/calendar-solid-black.png",
+                                                                  width: 20,
+                                                                  height: 20,
+                                                                  fit: BoxFit.contain,
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Expanded(child: Text(DateFormat("dd/MM/yyyy").format(databook),
+                                                                  style: const TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontWeight: FontWeight.w300),),
                                                                 )
                                                               ],
                                                             ),
@@ -377,7 +397,6 @@ class _BookingHistoryState extends State<BookingHistory>
                           }
                         },
                       ),
-
                   ],
                 ),
               )

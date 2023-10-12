@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -197,7 +200,11 @@ class CustomModal {
                       children: [
                         TextButton(
                             onPressed: () {
-                              launchInBrowser("https://www.messenger.com/t/1505522193097958/?messaging_source=source%3Apages%3Amessage_shortlink&source_id=1441792&recurring_notification=0");
+                              EasyLoading.show(status: "Vui lòng chờ...");
+                            Future.delayed(const Duration(seconds: 2), () {
+                              launchInBrowser('https://www.messenger.com/t/1505522193097958').then((value) => EasyLoading.dismiss());
+        });
+
                             },
                             style: ButtonStyle(
                                 padding:

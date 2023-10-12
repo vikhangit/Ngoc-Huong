@@ -99,7 +99,7 @@ class ServicesModel {
       if (response.statusCode == 200) {
         return response.data["Data"].toList().firstWhere((e) => e["Name"]
             .toString()
-            .toLowerCase() == name.toString().toLowerCase(), orElse: () => null);;
+            .toLowerCase() == name.toString().toLowerCase(), orElse: () => null);
       } else {
         return;
       }

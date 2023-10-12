@@ -131,12 +131,10 @@ class _BookingServicesState extends State<BookingServices>
   }
 
   void selectTime() async {
-    TimeOfDay? result =
-        await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.now(),
-
-        );
+    TimeOfDay? result = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
     if (result != null) {
       setState(() {
         activeTime = result;
@@ -222,16 +220,21 @@ class _BookingServicesState extends State<BookingServices>
       } else {
         DateTime dateBook = DateTime(activeDate!.year, activeDate!.month,
             activeDate!.day, activeTime!.hour, activeTime!.minute);
-        DateTime dateOpen = DateTime(activeDate!.year, activeDate!.month,
-            activeDate!.day, 8, 0);
-        DateTime dateClose = DateTime(activeDate!.year, activeDate!.month,
-            activeDate!.day, 19, 0);
+        DateTime dateOpen = DateTime(
+            activeDate!.year, activeDate!.month, activeDate!.day, 8, 0);
+        DateTime dateClose = DateTime(
+            activeDate!.year, activeDate!.month, activeDate!.day, 19, 0);
         DateTime now = DateTime.now();
-        if(dateBook.isBefore(dateOpen) || dateBook.isAfter(dateClose)){
-          customModal.showAlertDialog(context, "error", "Lỗi Đặt Lịch",
-              "Bạn đã chọn đặt lịch vào thời gian Ngọc Hường chưa mở cửa. Xin qúy khách vui lòng kiểm tra lại", () => Navigator.pop(context), () => Navigator.pop(context));
-        }else{
-          if(dateBook.isAfter(now)){
+        if (dateBook.isBefore(dateOpen) || dateBook.isAfter(dateClose)) {
+          customModal.showAlertDialog(
+              context,
+              "error",
+              "Lỗi Đặt Lịch",
+              "Bạn đã chọn đặt lịch vào thời gian Ngọc Hường chưa mở cửa. Xin qúy khách vui lòng kiểm tra lại",
+              () => Navigator.pop(context),
+              () => Navigator.pop(context));
+        } else {
+          if (dateBook.isAfter(now)) {
             Map data = {
               "branchCode": jsonDecode(storageBranch.getItem("branch"))["Code"],
               "StartDate": "$dateBook",
@@ -243,24 +246,29 @@ class _BookingServicesState extends State<BookingServices>
             };
             customModal.showAlertDialog(context, "error", "Xác Nhận Đặt Lịch",
                 "Bạn có chắc chắn chọn đặt lịch này không?", () {
-                  Navigator.pop(context);
-                  EasyLoading.show(status: "Vui lòng chờ...");
-                  Future.delayed(const Duration(seconds: 2), () {
-                    bookingModel.setBookingService(data).then((value) {
-                      sendNotifications();
-                      EasyLoading.dismiss();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookingSuccess(
+              Navigator.pop(context);
+              EasyLoading.show(status: "Vui lòng chờ...");
+              Future.delayed(const Duration(seconds: 2), () {
+                bookingModel.setBookingService(data).then((value) {
+                  // sendNotifications();
+                  EasyLoading.dismiss();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BookingSuccess(
                                 details: value,
                               )));
-                    });
-                  });
-                }, () => Navigator.pop(context));
-          }else{
-            customModal.showAlertDialog(context, "error", "Lỗi Đặt Lịch",
-                "Không thể đặt lịch với thời gian trong quá khứ. Xin qúy khách vui lòng kiểm tra lại", () => Navigator.pop(context), () => Navigator.pop(context));
+                });
+              });
+            }, () => Navigator.pop(context));
+          } else {
+            customModal.showAlertDialog(
+                context,
+                "error",
+                "Lỗi Đặt Lịch",
+                "Không thể đặt lịch với thời gian trong quá khứ. Xin qúy khách vui lòng kiểm tra lại",
+                () => Navigator.pop(context),
+                () => Navigator.pop(context));
           }
         }
       }
@@ -465,7 +473,8 @@ class _BookingServicesState extends State<BookingServices>
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.only(bottom: 10),
+                              // padding: const EdgeInsets.only(bottom: 10),
+
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 border:
@@ -492,7 +501,7 @@ class _BookingServicesState extends State<BookingServices>
                                       style: ButtonStyle(
                                         padding: MaterialStateProperty.all(
                                             const EdgeInsets.symmetric(
-                                                vertical: 14, horizontal: 15)),
+                                                vertical: 16, horizontal: 15)),
                                       ),
                                       child: Row(
                                         mainAxisAlignment:

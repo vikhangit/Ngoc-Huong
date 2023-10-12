@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
+import 'package:ngoc_huong/models/order.dart';
+import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/checkout/checkout_success.dart';
 import 'package:ngoc_huong/screen/checkout/products/modal_payment.dart';
@@ -29,7 +31,9 @@ class _CheckOutScreenState extends State<CheckOutCart> {
 
   final ProfileModel profileModel = ProfileModel();
   final CartModel cartModel = CartModel();
+  final OrderModel orderModel = OrderModel();
   final CustomModal customModal = CustomModal();
+  final ProductModel productModel = ProductModel();
   final LocalStorage storageBranch = LocalStorage('branch');
   @override
   void initState() {
@@ -45,6 +49,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
     print(listProductPayment);
     void setCheckOutCart(){
       List details = [];
+      List idList = [];
       for (var i = 0; i < listProductPayment.length; i++){
         details.add({
           "Amount": listProductPayment[i]["Amount"],
@@ -53,9 +58,10 @@ class _CheckOutScreenState extends State<CheckOutCart> {
           "ProductId": listProductPayment[i]["ProductId"],
           "Status": "Chờ xác nhận"
         });
-        cartModel.deleteProductToCart(listProductPayment[i]);
+        idList.add(listProductPayment[i]["Id"]);
       };
         Map data = {
+          "TotalAmount": widget.total,
         "BranchName" : jsonDecode(storageBranch.getItem("branch"))["Name"],
         "DetailList":
         [...details
@@ -66,8 +72,22 @@ class _CheckOutScreenState extends State<CheckOutCart> {
             Navigator.pop(context);
             EasyLoading.show(status: "Vui lòng chờ...");
             Future.delayed(const Duration(seconds: 2), () {
-              cartModel.setOrder(data).then((value) {
-                print(value);
+              for (var i = 0; i < listProductPayment.length; i++){
+                cartModel.updateProductInCart({
+                  "Id": 1,
+                  "DetailList": [
+                    {
+                      ...listProductPayment[i],
+                      "IsDeleted": true
+                    }
+                  ]
+                })
+                    .then(
+                        (value) {
+
+                    });
+              };
+              orderModel.setOrder(data).then((value) {
                 EasyLoading.dismiss();
                 Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutSuccess()));
               });
@@ -393,152 +413,173 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                           Container(
                             margin: const EdgeInsets.only(left: 5),
                             width: MediaQuery.of(context).size.width - 70,
-                            child: TextButton(
-                              onPressed: () {
-                                // showModalBottomSheet<void>(
-                                //     backgroundColor: Colors.white,
-                                //     clipBehavior: Clip.antiAliasWithSaveLayer,
-                                //     context: context,
-                                //     isScrollControlled: true,
-                                //     builder: (BuildContext context) {
-                                //       return Container(
-                                //         padding: EdgeInsets.only(
-                                //             bottom: MediaQuery.of(context)
-                                //                 .viewInsets
-                                //                 .bottom),
-                                //         height:
-                                //             MediaQuery.of(context).size.height *
-                                //                 0.95,
-                                //         child: ProductDetail(
-                                //           details: item,
-                                //         ),
-                                //       );
-                                //     });
-                              },
-                              style: ButtonStyle(
-                                padding: MaterialStateProperty.all(
-                                    const EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 8)),
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                shape: MaterialStateProperty.all(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)))),
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      ClipRRect(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(10)),
-                                          child: Image.network(
-                                            "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                            width: 90,
-                                            height: 90,
-                                            fit: BoxFit.cover,
-                                          )),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                          child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Wrap(
-                                            children: [
-                                              Text(
-                                                item["ProductName"],
-                                                style: const TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.black),
+                            child: FutureBuilder(
+                                future: productModel.getProductCode(item["ProductCode"]),
+                              builder: (context, snapshot) {
+                                if(snapshot.hasData){
+                                  Map detail = snapshot.data!;
+                                  return TextButton(
+                                    onPressed: () {
+                                      showModalBottomSheet<void>(
+                                          backgroundColor: Colors.white,
+                                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                                          context: context,
+                                          isScrollControlled: true,
+                                          builder: (BuildContext context) {
+                                            return Container(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom),
+                                              height:
+                                                  MediaQuery.of(context).size.height *
+                                                      0.95,
+                                              child: ProductDetail(
+                                                details: detail,
                                               ),
-                                              Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 4),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      NumberFormat.currency(
-                                                              locale: "vi_VI",
-                                                              symbol: "đ")
-                                                          .format(item[
-                                                              "Amount"] / item["Quantity"]),
-                                                      style: TextStyle(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .primary),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ))
-                                    ],
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 10),
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    decoration: BoxDecoration(
-                                        border: BorderDirectional(
-                                            top: BorderSide(
-                                                width: 1,
-                                                color: Colors.grey[400]!),
-                                            bottom: BorderSide(
-                                                width: 1,
-                                                color: Colors.grey[400]!))),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                            );
+                                          });
+
+                                    },
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 8)),
+                                      backgroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                      shape: MaterialStateProperty.all(
+                                          const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10)))),
+                                    ),
+                                    child: Column(
                                       children: [
-                                        Text(
-                                          "${item["Quantity"]} sản phẩm",
-                                          style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w300,
-                                              color: Colors.black),
-                                        ),
                                         Row(
                                           children: [
-                                            const Text(
-                                              "Thành tiền:",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w300,
-                                                  color: Colors.black),
-                                            ),
+                                            ClipRRect(
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(10)),
+                                                child: Image.network(
+                                                  "${detail["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                  width: 90,
+                                                  height: 90,
+                                                  fit: BoxFit.cover,
+                                                )),
                                             const SizedBox(
-                                              width: 3,
+                                              width: 10,
                                             ),
-                                            Text(
-                                              NumberFormat.currency(
-                                                      locale: "vi_VI",
-                                                      symbol: "đ")
-                                                  .format(
-                                                      item["Amount"]),
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            )
+                                            Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                                  children: [
+                                                    Wrap(
+                                                      children: [
+                                                        Text(
+                                                          item["ProductName"],
+                                                          style: const TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight: FontWeight.w400,
+                                                              color: Colors.black),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                          const EdgeInsets.symmetric(
+                                                              vertical: 4),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                NumberFormat.currency(
+                                                                    locale: "vi_VI",
+                                                                    symbol: "đ")
+                                                                    .format(item["Price"]),
+                                                                style: TextStyle(
+                                                                    color:
+                                                                    Theme.of(context)
+                                                                        .colorScheme
+                                                                        .primary),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ))
                                           ],
+                                        ),
+                                        Container(
+                                          margin: const EdgeInsets.only(top: 10),
+                                          padding:
+                                          const EdgeInsets.symmetric(vertical: 5),
+                                          decoration: BoxDecoration(
+                                              border: BorderDirectional(
+                                                  top: BorderSide(
+                                                      width: 1,
+                                                      color: Colors.grey[400]!),
+                                                  bottom: BorderSide(
+                                                      width: 1,
+                                                      color: Colors.grey[400]!))),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                "${item["Quantity"]} sản phẩm",
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w300,
+                                                    color: Colors.black),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Text(
+                                                    "Thành tiền:",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w300,
+                                                        color: Colors.black),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 3,
+                                                  ),
+                                                  Text(
+                                                    NumberFormat.currency(
+                                                        locale: "vi_VI",
+                                                        symbol: "đ")
+                                                        .format(
+                                                        item["Amount"]),
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
                                         )
                                       ],
                                     ),
-                                  )
-                                ],
-                              ),
+                                  );
+                                }else{
+                                  return const Center(
+                                    child: SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType: Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
                             ),
                           ),
                         ],

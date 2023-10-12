@@ -143,8 +143,7 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                                             .start,
                                                     children: [
                                                       Image.network(
-                                                        // "${item["Image_Name"]}"
-                                                        "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                                        "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
                                                         fit: BoxFit.cover,
                                                         width: MediaQuery.of(
                                                                 context)

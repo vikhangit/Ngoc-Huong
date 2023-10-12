@@ -131,7 +131,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
     final isValid = _formKey.currentState!.validate();
     FocusManager.instance.primaryFocus!.unfocus();
     Map data = {
-      "CustomerName": name.isEmpty ? emailController.text : name,
+      "CustomerName": name.isEmpty ? nameController.text : name,
       "Birthday": DateFormat("yyyy-MM-dd").format(birthDay ?? DateTime.now()),
       "Gender": genderValue,
       "Address": address.isEmpty ? addressController.text : address,

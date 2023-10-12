@@ -16,6 +16,7 @@ import 'package:ngoc_huong/screen/member/thanh_vien.dart';
 import 'package:ngoc_huong/screen/news/tin_tuc.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +58,15 @@ class _MyAppState extends State<MyApp> {
   LocalStorage storage = LocalStorage("auth");
   final CustomThemeData _customThemeData = CustomThemeData();
   final FlutterLocalization localization = FlutterLocalization.instance;
+  Future<void> launchInBrowser(String link) async {
+    Uri url = Uri.parse(link);
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $url');
+    }
+  }
   @override
   void dispose() {
     super.dispose();

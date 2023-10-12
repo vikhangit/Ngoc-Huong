@@ -8,25 +8,25 @@ class CartModel {
   final DioClient client = DioClient();
   final LocalStorage localStorageCustomerToken = LocalStorage("customer_token");
   final LocalStorage localStorageCustomerCart = LocalStorage("customer_cart");
-  Future addProductToCart(Map product) async {
-    List products = localStorageCustomerCart.getItem("customer_cart") != null
-        ? jsonDecode(localStorageCustomerCart.getItem("customer_cart"))
-        : [];
-    if (products.isEmpty) {
-      products.insert(0, product);
-    } else {
-      int index =
-          products.indexWhere((element) => element["Code"] == product["Code"]);
-      if (index < 0) {
-        products.insert(0, product);
-      } else {
-        print("Product Quantity: ${product["quantity"]}");
-        products[index]["quantity"] =
-            products[index]["quantity"] + product["quantity"];
-      }
-    }
-    localStorageCustomerCart.setItem("customer_cart", jsonEncode(products));
-  }
+  // Future addProductToCart(Map product) async {
+  //   List products = localStorageCustomerCart.getItem("customer_cart") != null
+  //       ? jsonDecode(localStorageCustomerCart.getItem("customer_cart"))
+  //       : [];
+  //   if (products.isEmpty) {
+  //     products.insert(0, product);
+  //   } else {
+  //     int index =
+  //         products.indexWhere((element) => element["Code"] == product["Code"]);
+  //     if (index < 0) {
+  //       products.insert(0, product);
+  //     } else {
+  //       print("Product Quantity: ${product["quantity"]}");
+  //       products[index]["quantity"] =
+  //           products[index]["quantity"] + product["quantity"];
+  //     }
+  //   }
+  //   localStorageCustomerCart.setItem("customer_cart", jsonEncode(products));
+  // }
 
   Future<List> getProductCartList() async {
     List result = [];
@@ -67,7 +67,28 @@ class CartModel {
       print(e);
     }
   }
-
+  Future<Map> getDetailCartByCode(String code) async {
+     Map result = {};
+    try {
+      Response response =
+      await client.dio.get('${client.apiUrl}/ShoppingCart/getAddToCart',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"].toList().firstWhere((e) => e["ProductCode"]
+            .toString()
+            .toLowerCase() == code.toString().toLowerCase(), orElse: () => null);
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
   Future addToCart(Map data) async {
     try {
       Response response =
@@ -110,23 +131,6 @@ class CartModel {
     }
   }
 
-  Future updateProductToCartIn(Map product) async {
-    List products =
-        jsonDecode(localStorageCustomerCart.getItem("customer_cart"));
-    int index =
-        products.indexWhere((element) => element["Code"] == product["Code"]);
-    products[index]["quantity"] = products[index]["quantity"] + 1;
-    localStorageCustomerCart.setItem("customer_cart", jsonEncode(products));
-  }
-
-  Future updateProductToCartDe(Map product) async {
-    List products =
-        jsonDecode(localStorageCustomerCart.getItem("customer_cart"));
-    int index =
-        products.indexWhere((element) => element["Code"] == product["Code"]);
-    products[index]["quantity"] = products[index]["quantity"] - 1;
-    localStorageCustomerCart.setItem("customer_cart", jsonEncode(products));
-  }
 
   Future updateProductToCart(Map product) async {
 
@@ -150,14 +154,6 @@ class CartModel {
     }
   }
 
-  Future deleteProductToCart(Map product) async {
-    List products =
-        jsonDecode(localStorageCustomerCart.getItem("customer_cart"));
-    int index =
-        products.indexWhere((element) => element["Code"] == product["Code"]);
-    products.removeAt(index);
-    localStorageCustomerCart.setItem("customer_cart", jsonEncode(products));
-  }
   Future setOrder(Map data) async {
     try {
       Response response =

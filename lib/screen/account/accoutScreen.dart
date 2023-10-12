@@ -6,14 +6,18 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/account/dieu_khoan_sd/dieu_khoan_sd.dart';
 import 'package:ngoc_huong/screen/account/gioi_thieu_ban_be/gioi_thieu_ban_be.dart';
 import 'package:ngoc_huong/screen/account/tran_history/tran_history.dart';
+import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:open_file/open_file.dart';
 
@@ -28,13 +32,13 @@ List menu = [
     "icon": "assets/images/account/thong-tin.png",
     "title": "Thông tin tài khoản",
   },
-  {
-    "icon": "assets/images/account/giao-dich.png",
-    "title": "Lịch sử giao dịch",
-  },
+  // {
+  //   "icon": "assets/images/account/giao-dich.png",
+  //   "title": "Lịch sử giao dịch",
+  // },
   {
     "icon": "assets/images/account/dat-lich.png",
-    "title": "Lịch sử đặt lịch",
+    "title": "Lịch sử làm đep",
   },
   {
     "icon": "assets/images/cart-black.png",
@@ -48,22 +52,26 @@ List menu = [
     "icon": "assets/images/account/gioi-thieu.png",
     "title": "Giới thiệu bạn bè",
   },
-  {
-    "icon": "assets/images/account/dia-chi.png",
-    "title": "Quản lý địa chỉ",
-  },
-  {
-    "icon": "assets/images/account/cai-dat.png",
-    "title": "Cài đặt",
-  },
+  // {
+  //   "icon": "assets/images/account/dia-chi.png",
+  //   "title": "Quản lý địa chỉ",
+  // },
+
   {
     "icon": "assets/images/account/ve-chung-toi.png",
     "title": "Về Ngọc Hường",
-  }
+  },
+  {
+    "icon": "assets/images/account/dang-xuat.png",
+    "title": "Đăng xuất",
+  },
 ];
 
 class _AccountScreenState extends State<AccountScreen> {
+  final LocalStorage storageCustomerToken = LocalStorage('customer_token');
   final ProfileModel profileModel = ProfileModel();
+  final OrderModel orderModel = OrderModel();
+  final CustomModal customModal = CustomModal();
   void _openFile(PlatformFile file) {
     print(file.path);
     OpenFile.open(file.path);
@@ -101,6 +109,21 @@ class _AccountScreenState extends State<AccountScreen> {
     });
   }
 
+  void handleLogout() {
+    customModal.showAlertDialog(
+        context, "error", "Đang xuất", "Bạn có chắc chắn muốn đăng xuất không?",
+            () {
+          EasyLoading.show(status: "Đang xử lý...");
+          Future.delayed(const Duration(seconds: 1), () {
+            storageCustomerToken.deleteItem("customer_token").then((value) {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
+              EasyLoading.dismiss();
+            });
+          });
+        }, () => Navigator.pop(context));
+  }
   @override
   Widget build(BuildContext context) {
     void goAction(int index) {
@@ -109,32 +132,35 @@ class _AccountScreenState extends State<AccountScreen> {
         case 0:
           Navigator.pushNamed(context, "informationAccount");
           break;
+        // case 1:
+        //   Navigator.push(context,
+        //       MaterialPageRoute(builder: (context) => const TranHistory()));
+        //   break;
         case 1:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const TranHistory()));
-          break;
-        case 2:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const BookingHistory()));
           break;
-        case 3:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const BuyHistory()));
+        case 2:
+          orderModel.getStatusList().then((value) => Navigator.push(context,
+              MaterialPageRoute(builder: (context) => BuyHistory(
+                listTab: value,
+              ))));
+
           break;
-        case 4:
+        case 3:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
           break;
-        case 5:
+        case 4:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
           break;
-        case 6:
+        case 5:
           // Navigator.push(context,
           //     MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
-        case 7:
-          Navigator.pushNamed(context, "setting");
+        case 6:
+          handleLogout();
           break;
         default:
       }
@@ -240,9 +266,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                   )
                                 ]));
                               } else {
-                                return const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                return const Center(
+                                  child:
                                     SizedBox(
                                       width: 40,
                                       height: 40,
@@ -254,11 +279,6 @@ class _AccountScreenState extends State<AccountScreen> {
                                         // pathBackgroundColor: Colors.black45,
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text("Đang lấy dữ liệu")
-                                  ],
                                 );
                               }
                             })),
@@ -517,7 +537,8 @@ class _AccountScreenState extends State<AccountScreen> {
                     )
                   ],
                 ),
-              )
+              ),
+              Container(height: 25,)
             ],
           )),
     );

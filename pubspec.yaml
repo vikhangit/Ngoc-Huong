@@ -63,6 +63,8 @@ dependencies:
   yako_theme_switch: ^1.0.0+1
   lite_rolling_switch: ^1.0.1
   http: ^1.1.0
+  smooth_page_indicator: ^1.1.0
+  badges: ^3.1.2
 
 dev_dependencies:
   flutter_test:
@@ -155,7 +157,9 @@ flutter:
     - assets/images/x.png
     - assets/images/facebook.png
     - assets/images/chat-icon.png
+    - assets/images/list-order.png
     - assets/images/cancel.png
+    - assets/images/calendar-solid-black.png
     - assets/images/Home/banner1.jpg
     - assets/images/Home/banner2.jpg
     - assets/images/Home/banner3.jpg
@@ -262,6 +266,12 @@ flutter:
     - assets/images/account/van-chuyen.png
     - assets/images/pin-green.png
     - assets/images/account/img.webp
+    - assets/images/dieu-tri.png
+    - assets/images/may.png
+    - assets/images/tam-trang.png
+    - assets/images/tre-hoa.png
+    - assets/images/giam-beo.png
+    - assets/images/waxing.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

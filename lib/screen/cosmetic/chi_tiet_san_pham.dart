@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/cart/cart_success.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 
@@ -76,28 +78,26 @@ class _ProductDetailState extends State<ProductDetail>
 
   @override
   Widget build(BuildContext context) {
-    print("Quantity: ${quantity}");
     Map productDetail = widget.details;
     void addToCart() async {
-      Map data = {
-        "DetailList": [
-          {
-            "Amount": productDetail["PriceOutbound"] * quantity,
-            "Price": productDetail["PriceOutbound"],
-            "PrinceTest": productDetail["PriceOutbound"] * 1,
-            "ProductCode": productDetail["Code"],
-            "ProductId": productDetail["Id"],
-            "Quantity": quantity,
-          }
-        ]
-      };
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
           "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
         Navigator.pop(context);
         EasyLoading.show(status: "Vui lòng chờ...");
         Future.delayed(const Duration(seconds: 2), () {
+          Map data = {
+            "DetailList": [
+              {
+                "Amount": productDetail["PriceInbound"] * quantity,
+                "Price": productDetail["PriceInbound"],
+                "PrinceTest": productDetail["PriceInbound"] * quantity,
+                "ProductCode": productDetail["Code"],
+                "ProductId": productDetail["Id"],
+                "Quantity": quantity,
+              }
+            ]
+          };
           cartModel.addToCart(data).then((value) {
-            print(value);
             EasyLoading.dismiss();
             Navigator.push(
                 context,
@@ -106,6 +106,32 @@ class _ProductDetailState extends State<ProductDetail>
           });
         });
       }, () => Navigator.pop(context));
+    }
+    void updateCart(Map item) async {
+      customModal.showAlertDialog(context, "error", "Giỏ hàng",
+          "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
+            Navigator.pop(context);
+            EasyLoading.show(status: "Vui lòng chờ...");
+            Future.delayed(const Duration(seconds: 2), () {
+              cartModel
+                  .updateProductInCart({
+                "Id": 1,
+                "DetailList": [
+                  {
+                    ...item,
+                    "Ammount": item["Quantity"] + quantity * item["Price"],
+                    "Quantity": item["Quantity"] + quantity
+                  }
+                ]
+              }).then((value){
+                EasyLoading.dismiss();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddCartSuccess()));
+              });
+            });
+          }, () => Navigator.pop(context));
     }
 
     return SizedBox(
@@ -196,7 +222,7 @@ class _ProductDetailState extends State<ProductDetail>
                           Text(
                             NumberFormat.currency(locale: "vi_VI", symbol: "")
                                 .format(
-                              productDetail["PriceOutbound"],
+                              productDetail["PriceInbound"],
                             ),
                             style: TextStyle(
                                 fontSize: 15,
@@ -323,49 +349,72 @@ class _ProductDetailState extends State<ProductDetail>
                   height: 50,
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.only(top: 15),
-                  child: TextButton(
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(horizontal: 20)),
-                          shape: MaterialStateProperty.all(
-                              const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15)))),
-                          backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.4))),
-                      onPressed: () {
-                        if (storageCustomerToken.getItem("customer_token") !=
-                            null) {
-                          addToCart();
-                        } else {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()));
+                  child: FutureBuilder(future: cartModel.getDetailCartByCode(productDetail["Code"].toString()),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData){
+                          return TextButton(
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      const EdgeInsets.symmetric(horizontal: 20)),
+                                  shape: MaterialStateProperty.all(
+                                      const RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.all(Radius.circular(15)))),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.4))),
+                              onPressed: () {
+                                if (storageCustomerToken.getItem("customer_token") !=
+                                    null) {
+                                  if(snapshot.data!.isNotEmpty){
+                                    updateCart(snapshot.data!);
+                                  }else{
+                                    addToCart();
+                                  }
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const LoginScreen()));
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Thêm vào giỏ hàng",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Image.asset(
+                                    "assets/images/cart-black.png",
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ],
+                              ));
+                        }else{
+                          return const Center(
+                            child:  SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: LoadingIndicator(
+                                colors: kDefaultRainbowColors,
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                strokeWidth: 1,
+                                // pathBackgroundColor: Colors.black45,
+                              ),
+                            ),
+                          );
                         }
                       },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Thêm vào giỏ hàng",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400),
-                          ),
-                          const SizedBox(width: 15),
-                          Image.asset(
-                            "assets/images/cart-black.png",
-                            width: 24,
-                            height: 24,
-                            fit: BoxFit.contain,
-                          ),
-                        ],
-                      )),
+                  ),
                 ),
               ],
             ),
@@ -374,168 +423,6 @@ class _ProductDetailState extends State<ProductDetail>
       ),
     );
   }
-
-  // Widget pictureProduct(BuildContext context, Map productDetail) {
-  //   return Column(
-  //     children: [
-  //       SizedBox(
-  //           height: 350,
-  //           width: MediaQuery.of(context).size.width - 30,
-  //           child: Stack(
-  //             children: [
-  //               TabBarView(controller: tabController2, children: [
-  //                 Container(
-  //                   alignment: Alignment.center,
-  //                   decoration: const BoxDecoration(
-  //                       // color: checkColor,
-  //                       borderRadius: BorderRadius.all(Radius.circular(10))),
-  //                   child: Image.network(
-  //                     "$apiUrl${productDetail["picture"]}?$token",
-  //                     // height: 263,
-  //                     // width: 255,
-  //                     fit: BoxFit.contain,
-  //                   ),
-  //                 ),
-  //                 if (productDetail["picture2"] != null)
-  //                   Container(
-  //                     alignment: Alignment.center,
-  //                     decoration: const BoxDecoration(
-  //                         // color: checkColor,
-  //                         borderRadius: BorderRadius.all(Radius.circular(10))),
-  //                     child: Image.network(
-  //                       "$apiUrl${productDetail["picture2"]}?$token",
-  //                       // height: 263,
-  //                       // width: 255,
-  //                       fit: BoxFit.contain,
-  //                     ),
-  //                   ),
-  //                 if (productDetail["picture3"] != null)
-  //                   Container(
-  //                     alignment: Alignment.center,
-  //                     decoration: const BoxDecoration(
-  //                         // color: checkColor,
-  //                         borderRadius: BorderRadius.all(Radius.circular(10))),
-  //                     child: Image.network(
-  //                       "$apiUrl${productDetail["picture3"]}?$token",
-  //                       // height: 263,
-  //                       // width: 255,
-  //                       fit: BoxFit.contain,
-  //                     ),
-  //                   ),
-  //                 if (productDetail["picture4"] != null)
-  //                   Container(
-  //                     alignment: Alignment.center,
-  //                     decoration: const BoxDecoration(
-  //                         // color: checkColor,
-  //                         borderRadius: BorderRadius.all(Radius.circular(10))),
-  //                     child: Image.network(
-  //                       "$apiUrl${productDetail["picture4"]}?$token",
-  //                       // height: 263,
-  //                       // width: 255,
-  //                       fit: BoxFit.cover,
-  //                     ),
-  //                   ),
-  //               ]),
-  //               Positioned(
-  //                   top: 5,
-  //                   right: 15,
-  //                   width: 30,
-  //                   height: 30,
-  //                   child: TextButton(
-  //                     style: ButtonStyle(
-  //                         padding: MaterialStateProperty.all(
-  //                             const EdgeInsets.all(0))),
-  //                     onPressed: () {
-  //                       print("likes");
-  //                     },
-  //                     child: const Icon(
-  //                       Icons.favorite,
-  //                       size: 24,
-  //                       // color: checkTextColor,
-  //                     ),
-  //                   ))
-  //             ],
-  //           )),
-  //       const SizedBox(
-  //         height: 30,
-  //       ),
-  //       SizedBox(
-  //         height: 80,
-  //         child: TabBar(
-  //             controller: tabController2,
-  //             // padding: EdgeInsets.zero,
-  //             // indicatorPadding: EdgeInsets.zero,
-  //             onTap: (tabIndex) {
-  //               setState(() {
-  //                 _selectedIndex2 = tabIndex;
-  //               });
-  //             },
-  //             labelColor: Theme.of(context).colorScheme.primary,
-  //             isScrollable: true,
-  //             unselectedLabelColor: Colors.black,
-  //             indicatorColor: Colors.transparent,
-  //             indicator: BoxDecoration(
-  //                 border: Border.all(
-  //                     width: 1, color: Theme.of(context).colorScheme.primary),
-  //                 borderRadius: const BorderRadius.all(Radius.circular(10))),
-  //             labelStyle: const TextStyle(
-  //                 fontWeight: FontWeight.w500,
-  //                 fontSize: 14,
-  //                 fontFamily: "LexendDeca"),
-  //             tabs: [
-  //               if (productDetail["picture"] != null)
-  //                 SizedBox(
-  //                   width: 50,
-  //                   child: Tab(
-  //                     child: Image.network(
-  //                       "$apiUrl${productDetail["picture"]}?$token",
-  //                       width: 50,
-  //                       height: 60,
-  //                       fit: BoxFit.contain,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               if (productDetail["picture2"] != null)
-  //                 SizedBox(
-  //                   width: 50,
-  //                   child: Tab(
-  //                     child: Image.network(
-  //                       "$apiUrl${productDetail["picture2"]}?$token",
-  //                       width: 50,
-  //                       height: 60,
-  //                       fit: BoxFit.contain,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               if (productDetail["picture3"] != null)
-  //                 SizedBox(
-  //                   width: 50,
-  //                   child: Tab(
-  //                     child: Image.network(
-  //                       "$apiUrl${productDetail["picture3"]}?$token",
-  //                       width: 50,
-  //                       height: 60,
-  //                       fit: BoxFit.contain,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               if (productDetail["picture4"] != null)
-  //                 SizedBox(
-  //                   width: 50,
-  //                   child: Tab(
-  //                     child: Image.network(
-  //                       "$apiUrl${productDetail["picture4"]}?$token",
-  //                       width: 50,
-  //                       height: 60,
-  //                       fit: BoxFit.contain,
-  //                     ),
-  //                   ),
-  //                 ),
-  //             ]),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget infomation(String mieuTa, Function(int index) goToTab, int activeTab) {
     return Column(

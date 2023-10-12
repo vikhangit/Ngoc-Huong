@@ -59,10 +59,36 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
           EasyLoading.show(status: "Vui lòng chờ...");
           Future.delayed(const Duration(seconds: 2), () {
             cartModel.addToCart(data).then((value) {
-              print(value);
+              // print(value);
               EasyLoading.dismiss();
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const AddCartSuccess()));
+            });
+          });
+        }, () => Navigator.pop(context));
+  }
+  void updateCart(Map item) async {
+    customModal.showAlertDialog(context, "error", "Giỏ hàng",
+        "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
+          Navigator.pop(context);
+          EasyLoading.show(status: "Vui lòng chờ...");
+          Future.delayed(const Duration(seconds: 2), () {
+            cartModel
+                .updateProductInCart({
+              "Id": 1,
+              "DetailList": [
+                {
+                  ...item,
+                  "Amount": (item["Quantity"] + 1) * item["Price"],
+                  "Quantity": item["Quantity"] + 1
+                }
+              ]
+            }).then((value){
+              EasyLoading.dismiss();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddCartSuccess()));
             });
           });
         }, () => Navigator.pop(context));
@@ -113,6 +139,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                             runSpacing: 15,
                             alignment: WrapAlignment.spaceBetween,
                             children: list.map((item) {
+                              print(item["Image_Name"]);
                               return GestureDetector(
                                   onTap: () => setState(() {
                                         showIndex = item["Code"];
@@ -293,68 +320,88 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                                 )
                                                               ],
                                                             ))),
-                                                    GestureDetector(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            showIndex = "";
-                                                          });
-                                                          if (storageToken.getItem(
-                                                                  "customer_token") ==
-                                                              null) {
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            const LoginScreen()));
-                                                          } else {
-                                                            addToCart(item);
-                                                          }
-                                                        },
-                                                        child: Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    top: 10),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    vertical: 6,
-                                                                    horizontal:
-                                                                        10),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    const BorderRadius
-                                                                            .all(
-                                                                        Radius.circular(
-                                                                            4)),
-                                                                color: Colors
-                                                                    .blue[900]),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Image.asset(
-                                                                    "assets/images/cart-solid-white.png",
-                                                                    width: 24,
-                                                                    height: 24),
-                                                                const SizedBox(
-                                                                  width: 8,
-                                                                ),
-                                                                const Text(
-                                                                  "Mua hàng",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          13,
+                                                    FutureBuilder(future: cartModel.getDetailCartByCode(item["Code"].toString()),
+                                                      builder: (context, snapshot) {
+                                                        if(snapshot.hasData){
+                                                          return  GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  showIndex = "";
+                                                                });
+                                                                if (storageToken.getItem("customer_token") !=
+                                                                    null) {
+                                                                  if(snapshot.data!.isNotEmpty){
+                                                                    updateCart(snapshot.data!);
+                                                                  }else{
+                                                                    addToCart(item);
+                                                                  }
+                                                                } else {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) => const LoginScreen()));
+                                                                }
+                                                              },
+                                                              child: Container(
+                                                                  margin:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      top: 10),
+                                                                  padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical: 6,
+                                                                      horizontal:
+                                                                      10),
+                                                                  decoration: BoxDecoration(
+                                                                      borderRadius:
+                                                                      const BorderRadius
+                                                                          .all(
+                                                                          Radius.circular(
+                                                                              4)),
                                                                       color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400),
-                                                                )
-                                                              ],
-                                                            )))
+                                                                          .blue[900]),
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                    children: [
+                                                                      Image.asset(
+                                                                          "assets/images/cart-solid-white.png",
+                                                                          width: 24,
+                                                                          height: 24),
+                                                                      const SizedBox(
+                                                                        width: 8,
+                                                                      ),
+                                                                      const Text(
+                                                                        "Mua hàng",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                            13,
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontWeight:
+                                                                            FontWeight
+                                                                                .w400),
+                                                                      )
+                                                                    ],
+                                                                  )));
+                                                        }else{
+                                                          return const Center(
+                                                            child:  SizedBox(
+                                                              width: 40,
+                                                              height: 40,
+                                                              child: LoadingIndicator(
+                                                                colors: kDefaultRainbowColors,
+                                                                indicatorType: Indicator.lineSpinFadeLoader,
+                                                                strokeWidth: 1,
+                                                                // pathBackgroundColor: Colors.black45,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                    ),
                                                   ],
                                                 )))
                                     ],

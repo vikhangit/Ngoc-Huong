@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 
 class CheckoutSuccess extends StatefulWidget {
   const CheckoutSuccess({super.key});
@@ -13,6 +16,7 @@ double iconSize = 108;
 
 class _CheckoutSuccessState extends State<CheckoutSuccess>
     with TickerProviderStateMixin {
+  final OrderModel orderModel = OrderModel();
   late AnimationController scaleController = AnimationController(
       duration: const Duration(milliseconds: 800), vsync: this);
   late Animation<double> scaleAnimation =
@@ -151,42 +155,60 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                         Wrap(
                           runSpacing: 15,
                           children: [
-                            GestureDetector(
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(15))),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text("Xem chi tiết",
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w400,
-                                          )),
-                                      const SizedBox(
-                                        width: 15,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/cart-black.png",
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ],
+                            FutureBuilder(future: orderModel.getStatusList(), builder: (context, snapshot) {
+                              if(snapshot.hasData){
+return  GestureDetector(
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      height: 50,
+      decoration: BoxDecoration(
+          border: Border.all(
+              width: 1, color: Colors.grey),
+          borderRadius: const BorderRadius.all(
+              Radius.circular(15))),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("Xem chi tiết",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              )),
+          const SizedBox(
+            width: 15,
+          ),
+          Image.asset(
+            "assets/images/cart-black.png",
+            width: 24,
+            height: 24,
+            fit: BoxFit.fill,
+          ),
+        ],
+      ),
+    ),
+    onTap: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  BuyHistory(listTab: snapshot.data!,)));
+    });
+                              }else{
+                                return const Center(
+                                  child: SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child: LoadingIndicator(
+                                      colors: kDefaultRainbowColors,
+                                      indicatorType:
+                                      Indicator.lineSpinFadeLoader,
+                                      strokeWidth: 1,
+                                      // pathBackgroundColor: Colors.black45,
+                                    ),
                                   ),
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const BuyHistory()));
-                                }),
+                                );
+                              }
+                            },),
                             GestureDetector(
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,

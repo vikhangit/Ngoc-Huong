@@ -25,6 +25,49 @@ class OrderModel {
     }
     return result;
   }
+  Future<List> getStatusList() async {
+    List result = [];
+    try {
+      Response response =
+      await client.dio.get('${client.apiUrl}/ProductInvoice/getProductInvoiceStatus',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"];
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
+  Future<Map> getStatusByCode(String code) async {
+    Map result = {};
+    try {
+      Response response =
+      await client.dio.get('${client.apiUrl}/ProductInvoice/getProductInvoiceStatus',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"].toList().firstWhere((e) => e["GroupCode"]
+            .toString()
+            .toLowerCase() == code.toString().toLowerCase(), orElse: () => null);
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
 
   Future<List> getOrderListByStatus(String status) async {
     List result = [];
@@ -55,14 +98,34 @@ class OrderModel {
   Future setOrder(Map data) async {
     try {
       Response response =
-          await client.dio.post('${client.apiUrl}/ProductInvoice/setOrder',
-              options: Options(headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                'Authorization':
-                    '${localStorageCustomerToken.getItem("customer_token")}',
-              }),
-              data: data);
+      await client.dio.post('${client.apiUrl}/ProductInvoice/setOrder',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }),
+          data: data);
       if (response.statusCode == 200) {
+        print(response);
+        return response.data;
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+  Future putStatusOrder(int id, String status) async {
+    try {
+      Response response =
+      await client.dio.put('${client.apiUrl}/ProductInvoice/putOrderStatus?Id=$id&Status=$status',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
+      if (response.statusCode == 200) {
+        print(response);
         return response.data;
       } else {
         return;
