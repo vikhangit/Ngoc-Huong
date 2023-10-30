@@ -113,9 +113,8 @@ class _ProductDetailState extends State<ProductDetail>
             Navigator.pop(context);
             EasyLoading.show(status: "Vui lòng chờ...");
             Future.delayed(const Duration(seconds: 2), () {
-              cartModel
-                  .updateProductInCart({
-                "Id": 1,
+              cartModel.updateProductInCart({
+                // "Id": 1,
                 "DetailList": [
                   {
                     ...item,
@@ -183,7 +182,7 @@ class _ProductDetailState extends State<ProductDetail>
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             margin: const EdgeInsets.only(bottom: 5),
             height: MediaQuery.of(context).size.height * 0.95 -
                 195 -
@@ -198,7 +197,7 @@ class _ProductDetailState extends State<ProductDetail>
                   child: Image.network(
                     "${productDetail["Image_Name"]}",
                     // height: 150,
-                    // width: MediaQuery.of(context).size.width,
+                    width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
                   ),
                 ),

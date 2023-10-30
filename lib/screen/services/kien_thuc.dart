@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/menu/leftmenu.dart';
+import 'package:ngoc_huong/models/newsModel.dart';
 import 'package:ngoc_huong/screen/news/chi_tiet_tin_tuc.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
@@ -13,6 +14,7 @@ class KienThucScreen extends StatefulWidget {
 }
 
 class _KienThucScreenState extends State<KienThucScreen> {
+  final NewsModel newsModel = NewsModel();
   @override
   Widget build(BuildContext context) {
     Future refreshData() async {
@@ -57,7 +59,7 @@ class _KienThucScreenState extends State<KienThucScreen> {
                       margin: const EdgeInsets.only(
                           top: 10, left: 15, right: 15, bottom: 15),
                       child: FutureBuilder(
-                        future: callNewsApi("647015f5706fa019e66e93cb"),
+                        future: newsModel.getCustomerNewsByGroup("Kiến thức làm đẹp"),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return Wrap(
@@ -103,7 +105,7 @@ class _KienThucScreenState extends State<KienThucScreen> {
                                                 const BorderRadius.all(
                                                     Radius.circular(14)),
                                             child: Image.network(
-                                              "$apiUrl${item["picture"]}?$token",
+                                              "${item["Image"]}",
                                               height: 135,
                                               fit: BoxFit.cover,
                                             ),
@@ -112,7 +114,7 @@ class _KienThucScreenState extends State<KienThucScreen> {
                                             height: 8,
                                           ),
                                           Text(
-                                            "${item["title"]}",
+                                            "${item["Title"]}",
                                             textAlign: TextAlign.left,
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
@@ -127,7 +129,7 @@ class _KienThucScreenState extends State<KienThucScreen> {
                                           Text(
                                             DateFormat("dd/MM/yyyy").format(
                                                 DateTime.parse(
-                                                    item["date_updated"])),
+                                                    item["ModifiedDate"])),
                                             textAlign: TextAlign.left,
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,

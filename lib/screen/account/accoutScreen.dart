@@ -14,6 +14,7 @@ import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/account/dieu_khoan_sd/dieu_khoan_sd.dart';
 import 'package:ngoc_huong/screen/account/gioi_thieu_ban_be/gioi_thieu_ban_be.dart';
+import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/tran_history/tran_history.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -52,10 +53,10 @@ List menu = [
     "icon": "assets/images/account/gioi-thieu.png",
     "title": "Giới thiệu bạn bè",
   },
-  // {
-  //   "icon": "assets/images/account/dia-chi.png",
-  //   "title": "Quản lý địa chỉ",
-  // },
+  {
+    "icon": "assets/images/account/dia-chi.png",
+    "title": "Quản lý địa chỉ",
+  },
 
   {
     "icon": "assets/images/account/ve-chung-toi.png",
@@ -156,10 +157,10 @@ class _AccountScreenState extends State<AccountScreen> {
               MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
           break;
         case 5:
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
-        case 6:
+        case 7:
           handleLogout();
           break;
         default:
@@ -338,9 +339,8 @@ class _AccountScreenState extends State<AccountScreen> {
                       ],
                     );
                   } else {
-                    return const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                    return const Center(
+                      child:
                         SizedBox(
                           width: 40,
                           height: 40,
@@ -351,11 +351,11 @@ class _AccountScreenState extends State<AccountScreen> {
                             // pathBackgroundColor: Colors.black45,
                           ),
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text("Đang lấy dữ liệu")
-                      ],
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
+                        // Text("Đang lấy dữ liệu")
+
                     );
                   }
                 },
@@ -468,7 +468,7 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
               Container(
                 margin: const EdgeInsets.only(top: 20),
-                height: 450,
+                height: 420,
                 child: ListView(
                   physics: const BouncingScrollPhysics(),
                   children: [

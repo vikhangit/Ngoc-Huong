@@ -38,4 +38,22 @@ class NewsModel {
     }
     return result;
   }
+
+  Future<List> getCustomerNewsByGroup(String groupCode) async {
+    List result = [];
+    try {
+      Response response = await client.dio.get(
+        '${client.apiUrl}/CustomerNews/getNewsByGroup?groupNews=$groupCode',
+      );
+      if (response.statusCode == 200) {
+        return result = response.data["Data"];
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
 }

@@ -29,6 +29,7 @@ class _StartScreenState extends State<StartScreen> {
   final LocalStorage storageCustomer = LocalStorage('customer_token');
   final LocalStorage storageBrand = LocalStorage('branch');
   final LocalStorage localStorageCustomerCart = LocalStorage("customer_cart");
+  final LocalStorage localStorageStart = LocalStorage("start");
   late TextEditingController controller;
 
   @override
@@ -38,6 +39,7 @@ class _StartScreenState extends State<StartScreen> {
     Future.delayed(const Duration(seconds: 5), () {
       if (storageCustomer.getItem("customer_token") != null) {
         if (storageBrand.getItem("branch") == null) {
+          localStorageStart.deleteItem("start");
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -47,6 +49,7 @@ class _StartScreenState extends State<StartScreen> {
               MaterialPageRoute(builder: (context) => const HomeScreen()));
         }
       } else {
+        localStorageStart.setItem("start", "start");
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const LoginScreen()));
       }

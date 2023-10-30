@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/models/addressModel.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/sua_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/them_dia_chi.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class QuanLiDiaChi extends StatefulWidget {
@@ -13,7 +18,8 @@ class QuanLiDiaChi extends StatefulWidget {
 }
 
 class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
-  LocalStorage storage = LocalStorage('token');
+  final AddressModel addressModel = AddressModel();
+  final CustomModal customModal = CustomModal();
 
   Future refreshData() async {
     await Future.delayed(const Duration(seconds: 3));
@@ -26,37 +32,6 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
 
   @override
   Widget build(BuildContext context) {
-    void deleteAddressByID(String id) async {
-      await deleteAddress(id).then((value) => setState(() {}));
-    }
-
-    void onLoading(String id) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Dialog(
-              child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(
-                  width: 20,
-                ),
-                Text("Đang xử lý"),
-              ],
-            ),
-          ));
-        },
-      );
-      Future.delayed(const Duration(seconds: 3), () {
-        deleteAddressByID(id);
-        Navigator.pop(context);
-      });
-    }
-
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.white,
@@ -94,7 +69,7 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
               children: [
                 Expanded(
                     child: FutureBuilder(
-                  future: getAddress(),
+                  future: addressModel.getCustomerAddress(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List list = snapshot.data!.toList();
@@ -138,7 +113,15 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                                             )),
                                         TextButton(
                                             onPressed: () {
-                                              onLoading(item["_id"]);
+                                              customModal.showAlertDialog(context, "error", "Xóa địa chỉ", "Bạn có chắc chắn xóa địa chỉ này?", (){
+                                                EasyLoading.show(status: "Vui lòng chờ");
+                                                Navigator.pop(context);
+                                                Future.delayed(const Duration(seconds: 2), (){
+                                                  addressModel.deleteCustomerAddress(item["Id"]).then((value) => setState((){
+                                                    EasyLoading.dismiss();
+                                                  }));
+                                                });
+                                              }, ()=> Navigator.pop(context));
                                             },
                                             child: const Text(
                                               "Xóa",
@@ -148,7 +131,7 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                                       ],
                                     ),
                                     Text(
-                                      "${item["address"]}, ${item["ward"]}, ${item["district"]}, ${item["city"]}",
+                                      "${item["ApartmentNumber"]}, ${item["WardName"]}, ${item["DistrictName"]}, ${item["ProvinceName"]}",
                                       style: const TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w300),
@@ -156,7 +139,7 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    item["exfields"]["is_default"] == true
+                                    item["IsDefault"] == true
                                         ? Row(
                                             children: [
                                               Image.asset(
@@ -189,15 +172,34 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                       }
                     } else {
                       return const Center(
-                        child: CircularProgressIndicator(),
+                        child:  Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: LoadingIndicator(
+                                colors: kDefaultRainbowColors,
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                strokeWidth: 1,
+                                // pathBackgroundColor: Colors.black45,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Đang lấy dữ liệu")
+                          ],
+                        ),
                       );
                     }
                   },
                 )),
                 FutureBuilder(
-                  future: getAddress(),
+                  future: addressModel.getCustomerAddress(),
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      print(snapshot.data);
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 15),
                         child: TextButton(
@@ -232,9 +234,26 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                         ),
                       );
                     } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return Container();
+                      // return const Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [
+                      //     SizedBox(
+                      //       width: 40,
+                      //       height: 40,
+                      //       child: LoadingIndicator(
+                      //         colors: kDefaultRainbowColors,
+                      //         indicatorType: Indicator.lineSpinFadeLoader,
+                      //         strokeWidth: 1,
+                      //         // pathBackgroundColor: Colors.black45,
+                      //       ),
+                      //     ),
+                      //     SizedBox(
+                      //       width: 10,
+                      //     ),
+                      //     Text("Đang lấy dữ liệu")
+                      //   ],
+                      // );
                     }
                   },
                 )

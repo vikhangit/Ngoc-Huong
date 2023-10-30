@@ -49,6 +49,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
   @override
   Widget build(BuildContext context) {
     Map detail = widget.detail;
+    print(detail["Description"]);
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,7 +102,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
             padding: const EdgeInsets.symmetric(vertical: 10),
             // margin: const EdgeInsets.only(bottom: 10),
             height: MediaQuery.of(context).size.height * 0.95 -
-                192 -
+                200 -
                 MediaQuery.of(context).viewInsets.bottom,
             child: ListView(
               children: [
@@ -233,11 +234,11 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                               fontWeight: FontWeight.w300,
                             textAlign: TextAlign.justify
                           ),
-                          "img": Style(
-                            width: Width(MediaQuery.of(context).size.width * .85),
-                            margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
-                            textAlign: TextAlign.center
-                          )
+                        //   "img": Style(
+                        //     width: Width(MediaQuery.of(context).size.width * .85),
+                        //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
+                        //     textAlign: TextAlign.center
+                        //   )
                         },
                       ),
                       if(activeTab == 2) SizedBox(
@@ -312,7 +313,10 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                       ),
                     ],
                   )
-                )
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
               ],
             ),
           ),

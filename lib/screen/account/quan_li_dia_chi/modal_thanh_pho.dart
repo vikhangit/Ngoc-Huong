@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/models/addressModel.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_phuong_xa.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_quan_huyen.dart';
+import 'package:ngoc_huong/screen/account/quan_li_dia_chi/them_dia_chi.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalThanhPho extends StatefulWidget {
@@ -12,12 +16,10 @@ class ModalThanhPho extends StatefulWidget {
   State<ModalThanhPho> createState() => _ModalDiaDiemState();
 }
 
-String provinceId = "";
-String activeCity = "";
 String valueSearch = "";
 
 class _ModalDiaDiemState extends State<ModalThanhPho> {
-  final LocalStorage storage = LocalStorage('auth');
+  final AddressModel addressModel = AddressModel();
   late TextEditingController controller;
   @override
   void initState() {
@@ -41,10 +43,6 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
     setState(() {
       provinceId = id;
       activeCity = name;
-      districtId = "";
-      wardId = "";
-      activeDistrict = "";
-      activeWard = "";
     });
   }
 
@@ -106,60 +104,65 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
             ),
           ),
           FutureBuilder(
-            future: callProvinceApi(),
+            future: addressModel.getProvinceApi(valueSearch),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Expanded(
-                  child: ListView(
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      children: snapshot.data!.map((item) {
-                        if (item["province_name"]
-                            .toString()
-                            .toLowerCase()
-                            .replaceAll("Tỉnh", "")
-                            .replaceAll("Thành phố", "")
-                            .contains(valueSearch.toLowerCase())) {
-                          return Container(
-                            margin: const EdgeInsets.only(left: 10, right: 10),
-                            height: 50,
-                            child: TextButton(
-                              onPressed: () {
-                                changeAddress(
-                                    item["province_id"], item["province_name"]);
-                              },
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 10))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${item["province_name"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 16,
-                                        color: Colors.black),
-                                  ),
-                                  if (provinceId == item["province_id"])
-                                    const Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                    )
-                                ],
+                return Expanded(child:  ListView(
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    children: snapshot.data!.map((item) {
+                      return Container(
+                        margin: const EdgeInsets.only(left: 10, right: 10),
+                        height: 50,
+                        child: TextButton(
+                          onPressed: () {
+                            changeAddress(
+                                item["Id"], item["Name"]);
+                          },
+                          style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10))),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${item["Name"]}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 16,
+                                    color: Colors.black),
                               ),
-                            ),
-                          );
-                        } else {
-                          return Container();
-                        }
-                      }).toList()),
-                );
+                              if (provinceId == item["Id"])
+                                const Icon(
+                                  Icons.check,
+                                  color: Colors.green,
+                                )
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList()));
               } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: LoadingIndicator(
+                        colors: kDefaultRainbowColors,
+                        indicatorType: Indicator.lineSpinFadeLoader,
+                        strokeWidth: 1,
+                        // pathBackgroundColor: Colors.black45,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Đang lấy dữ liệu")
+                  ],
                 );
               }
             },
@@ -175,6 +178,10 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
                           const BorderRadius.all(Radius.circular(15))),
                   child: TextButton(
                       onPressed: () {
+                        districtId = "";
+                        wardId = "";
+                        activeDistrict = "";
+                        activeWard = "";
                         Navigator.pop(context);
                         widget.saveAddress();
                       },

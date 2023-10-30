@@ -15,7 +15,6 @@ class TinTucScreen extends StatefulWidget {
 }
 
 class _TinTucScreenState extends State<TinTucScreen> {
-  final LocalStorage storage = LocalStorage('auth');
   final NewsModel newsModel = NewsModel();
 
   @override

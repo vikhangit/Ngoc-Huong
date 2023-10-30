@@ -39,6 +39,8 @@ class CartModel {
             '${localStorageCustomerToken.getItem("customer_token")}',
           }));
       if (response.statusCode == 200) {
+        print("<ee>=============================================================================<ee>");
+        print(localStorageCustomerToken.getItem("customer_token"));
         return result = response.data["Data"];
       } else {
         return result;
@@ -100,6 +102,7 @@ class CartModel {
           }),
           data: data);
       if (response.statusCode == 200) {
+        print("<ee>=============================================================================<ee>");
         print(response);
         return response.data["Data"];
       } else {

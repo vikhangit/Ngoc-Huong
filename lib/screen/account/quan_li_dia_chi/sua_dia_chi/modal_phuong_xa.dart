@@ -1,36 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/models/addressModel.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_quan_huyen.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/sua_dia_chi.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalPhuongXa extends StatefulWidget {
   final Function saveAddress;
-  final String ward;
+  final String wardId;
   const ModalPhuongXa(
-      {super.key, required this.saveAddress, required this.ward});
+      {super.key, required this.saveAddress, required this.wardId});
 
   @override
   State<ModalPhuongXa> createState() => _ModalDiaDiemState();
 }
 
-String wardId = "";
-String activeWard = "";
-String wardType = "";
 String valueSearch = "";
 
 class _ModalDiaDiemState extends State<ModalPhuongXa> {
-  final LocalStorage storage = LocalStorage('auth');
+  final AddressModel addressModel = AddressModel();
   late TextEditingController controller;
   @override
   void initState() {
     controller = TextEditingController(text: valueSearch);
-    callWardApi(districtId).then(
-        (value) => setState(() => wardId = value[value.indexWhere((element) {
-              return element["ward_name"] == widget.ward;
-            })]["ward_id"]));
     setState(() {
-      activeWard = widget.ward;
+      wardId = widget.wardId.length == 1
+          ? "0000${widget.wardId}"
+          : widget.wardId.length == 2
+              ? "000${widget.wardId}"
+              : widget.wardId.length == 3
+                  ? "00${widget.wardId}"
+                  : widget.wardId.length == 4
+                      ? "0${widget.wardId}"
+                      : widget.wardId;
     });
     super.initState();
   }
@@ -111,7 +115,7 @@ class _ModalDiaDiemState extends State<ModalPhuongXa> {
             ),
           ),
           FutureBuilder(
-            future: callWardApi(districtId),
+            future: addressModel.getWardApi(districtId, valueSearch),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
@@ -119,51 +123,61 @@ class _ModalDiaDiemState extends State<ModalPhuongXa> {
                       shrinkWrap: true,
                       physics: const ClampingScrollPhysics(),
                       children: snapshot.data!.map((item) {
-                        if (item["district_name"]
-                            .toString()
-                            .replaceAll(item["ward_type"], "")
-                            .toLowerCase()
-                            .contains(valueSearch.toLowerCase())) {
-                          return Container(
-                            margin: const EdgeInsets.only(left: 10, right: 10),
-                            height: 50,
-                            child: TextButton(
-                              onPressed: () {
-                                changeAddress(
-                                    item["ward_id"], item["ward_name"]);
-                              },
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 10))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${item["ward_name"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 16,
-                                        color: Colors.black),
-                                  ),
-                                  if (wardId == item["ward_id"])
-                                    const Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                    )
-                                ],
-                              ),
+                        return Container(
+                          margin: const EdgeInsets.only(left: 10, right: 10),
+                          height: 50,
+                          child: TextButton(
+                            onPressed: () {
+                              changeAddress(
+                                  item["Id"], item["Name"]);
+                            },
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 10))),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${item["Name"]}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 16,
+                                      color: Colors.black),
+                                ),
+                                if (wardId == item["Id"])
+                                  const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  )
+                              ],
                             ),
-                          );
-                        } else {
-                          return Container();
-                        }
+                          ),
+                        );
                       }).toList()),
                 );
               } else {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: LoadingIndicator(
+                          colors: kDefaultRainbowColors,
+                          indicatorType: Indicator.lineSpinFadeLoader,
+                          strokeWidth: 1,
+                          // pathBackgroundColor: Colors.black45,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Đang lấy dữ liệu")
+                    ],
+                  ),
                 );
               }
             },

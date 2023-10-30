@@ -54,7 +54,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
     for (var i = 0; i < list.length; i++) {
       num total = 0;
       for (var i = 0; i < list.length; i++) {
-        total += list[i]["Product"]["PriceInbound"] * list[i]["Quantity"];
+        total += list[i]["Amount"];
       }
       return total;
     }
@@ -222,7 +222,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                                                               10)),
                                                                       child: Image
                                                                           .network(
-                                                                        "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                                                        "${list[index]["DetailList"][0]["Image_Name"]}",
                                                                         // width: 110,
                                                                         height:
                                                                             60,
@@ -246,7 +246,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                                                         Wrap(
                                                                           children: [
                                                                             Text(
-                                                                              "${list[index]["DetailList"][0]["Product"]["Name"]}",
+                                                                              "${list[index]["DetailList"][0]["ProductName"]}",
                                                                               overflow: TextOverflow.ellipsis,
                                                                               maxLines: 1,
                                                                               style: const TextStyle(color: Colors.black),
@@ -267,7 +267,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                                                                   width: 3,
                                                                                 ),
                                                                                 Text(
-                                                                                  NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[index]["DetailList"][0]["Product"]["PriceOutbound"]),
+                                                                                  NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[index]["DetailList"][0]["Price"]),
                                                                                   style: TextStyle(color: Theme.of(context).colorScheme.primary),
                                                                                 )
                                                                               ],

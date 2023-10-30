@@ -101,12 +101,13 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                       .toLowerCase() == details["ServiceList"][0].toString().toLowerCase(), orElse: () => null);
                  return Column(
                    children:  [
-                     Center(
+                     SizedBox(
+                       width: MediaQuery.of(context).size.width,
                        child: ClipRRect(
                          borderRadius: const BorderRadius.all(Radius.circular(10)),
                          child: Image.network(
                            "${detailProduct["Image_Name"]}",
-                           height: 210,
+                           // height: 210,
                            width: MediaQuery.of(context).size.width,
                          ),
                        ),
@@ -494,7 +495,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                       ]
                   );
                 }else{
-                  return const Row(
+                  return   Container( margin: const EdgeInsets.only(top: 60), child: const Row(
                     mainAxisAlignment:
                     MainAxisAlignment.center,
                     children: [
@@ -513,7 +514,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                       ),
                       Text("Đang lấy dữ liệu")
                     ],
-                  );
+                  ));
                 }
               },)
              ],

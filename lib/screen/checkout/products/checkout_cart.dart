@@ -5,16 +5,19 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/models/addressModel.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/checkout/checkout_success.dart';
+import 'package:ngoc_huong/screen/checkout/products/modalChooseAddress.dart';
 import 'package:ngoc_huong/screen/checkout/products/modal_payment.dart';
 import 'package:ngoc_huong/screen/checkout/products/modal_voucher.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class CheckOutCart extends StatefulWidget {
   final num total;
@@ -26,18 +29,29 @@ class CheckOutCart extends StatefulWidget {
 }
 
 int diem = 0;
+String selectAddress = "";
 
 class _CheckOutScreenState extends State<CheckOutCart> {
-
   final ProfileModel profileModel = ProfileModel();
   final CartModel cartModel = CartModel();
   final OrderModel orderModel = OrderModel();
   final CustomModal customModal = CustomModal();
   final ProductModel productModel = ProductModel();
+  final AddressModel addressModel = AddressModel();
   final LocalStorage storageBranch = LocalStorage('branch');
   @override
   void initState() {
     super.initState();
+    addressModel.getCustomerAddress().then((value) => setState((){
+      int index = value.indexWhere((element) => element["IsDefault"] == true);
+      if(index >= 0){
+        activeIndex = index;
+        selectAddress = "${value[index]["ApartmentNumber"]}, ${value[index]["WardName"]}, ${value[index]["DistrictName"]}, ${value[index]["ProvinceName"]}";
+      }else{
+        activeIndex = -1;
+        selectAddress = "";
+      }
+    }));
   }
 
   @override
@@ -46,83 +60,86 @@ class _CheckOutScreenState extends State<CheckOutCart> {
     void savePayment() {
       setState(() {});
     }
-    print(listProductPayment);
-    void setCheckOutCart(){
-      List details = [];
-      List idList = [];
-      for (var i = 0; i < listProductPayment.length; i++){
-        details.add({
-          "Amount": listProductPayment[i]["Amount"],
-          "Price": listProductPayment[i]["Amount"] / listProductPayment[i]["Quantity"],
-          "Quantity": listProductPayment[i]["Quantity"],
-          "ProductId": listProductPayment[i]["ProductId"],
-          "Status": "Chờ xác nhận"
-        });
-        idList.add(listProductPayment[i]["Id"]);
-      };
-        Map data = {
-          "TotalAmount": widget.total,
-        "BranchName" : jsonDecode(storageBranch.getItem("branch"))["Name"],
-        "DetailList":
-        [...details
-        ]
-      };
-      customModal.showAlertDialog(context, "error", "Đặt Hàng",
-          "Bạn có chắc chắn đăt hàng không?", () {
-            Navigator.pop(context);
-            EasyLoading.show(status: "Vui lòng chờ...");
-            Future.delayed(const Duration(seconds: 2), () {
-              for (var i = 0; i < listProductPayment.length; i++){
-                cartModel.updateProductInCart({
-                  "Id": 1,
-                  "DetailList": [
-                    {
-                      ...listProductPayment[i],
-                      "IsDeleted": true
-                    }
-                  ]
-                })
-                    .then(
-                        (value) {
 
-                    });
-              };
-              orderModel.setOrder(data).then((value) {
-                EasyLoading.dismiss();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutSuccess()));
-              });
+    void setCheckOutCart() {
+      if (selectAddress.isNotEmpty) {
+        List details = [];
+        List idList = [];
+        for (var i = 0; i < listProductPayment.length; i++) {
+          details.add({
+            "Amount": listProductPayment[i]["Amount"],
+            "Price": listProductPayment[i]["Amount"] /
+                listProductPayment[i]["Quantity"],
+            "Quantity": listProductPayment[i]["Quantity"],
+            "ProductId": listProductPayment[i]["ProductId"],
+          });
+          idList.add(listProductPayment[i]["Id"]);
+        }
+        Map data = {
+          "Address": selectAddress,
+          "TotalAmount": widget.total,
+          "BranchName": jsonDecode(storageBranch.getItem("branch"))["Name"],
+          "DetailList": [...details]
+        };
+        customModal.showAlertDialog(
+            context, "error", "Đặt Hàng", "Bạn có chắc chắn đăt hàng không?",
+            () {
+          Navigator.pop(context);
+          EasyLoading.show(status: "Vui lòng chờ...");
+          Future.delayed(const Duration(seconds: 2), () {
+            for (var i = 0; i < listProductPayment.length; i++) {
+              cartModel.updateProductInCart({
+                // "Id": 1,
+                "DetailList": [
+                  {...listProductPayment[i], "IsDeleted": true}
+                ]
+              }).then((value) {});
+            }
+            ;
+            orderModel.setOrder(data).then((value) {
+              EasyLoading.dismiss();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CheckoutSuccess()));
             });
-          }, () => Navigator.pop(context));
+          });
+        }, () => Navigator.pop(context));
+      } else {
+        customModal.showAlertDialog(
+            context, "error", "Đặt Hàng", "Bạn chưa chọn địa chỉ giao hàng",
+            () {
+          Navigator.pop(context);
+        }, () {
+          Navigator.pop(context);
+        });
+      }
     }
 
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      // bottomNavigationBar: const MyBottomMenu(
-      //   active: 1,
-      // ),
       appBar: AppBar(
-        // bottomOpacity: 0.0,
-        elevation: 0.0,
-        leadingWidth: 40,
-        backgroundColor: Colors.white,
+        leadingWidth: 45,
         centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.west,
-            size: 24,
-            color: Colors.black,
-          ),
-        ),
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              margin: const EdgeInsets.only(left: 15),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.white),
+              child: const Icon(
+                Icons.west,
+                size: 16,
+                color: Colors.black,
+              ),
+            )),
         title: const Text("Thanh toán",
             style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: Colors.black)),
+                color: Colors.white)),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -183,26 +200,16 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                           color: Colors.black),
                                     );
                                   } else {
-                                    return const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 40,
-                                          height: 40,
-                                          child: LoadingIndicator(
-                                            colors: kDefaultRainbowColors,
-                                            indicatorType:
-                                                Indicator.lineSpinFadeLoader,
-                                            strokeWidth: 1,
-                                            // pathBackgroundColor: Colors.black45,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text("Đang lấy dữ liệu")
-                                      ],
+                                    return const SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
                                     );
                                   }
                                 },
@@ -239,8 +246,16 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                         color: Colors.black),
                                   );
                                 } else {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
+                                  return const SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child: LoadingIndicator(
+                                      colors: kDefaultRainbowColors,
+                                      indicatorType:
+                                          Indicator.lineSpinFadeLoader,
+                                      strokeWidth: 1,
+                                      // pathBackgroundColor: Colors.black45,
+                                    ),
                                   );
                                 }
                               },
@@ -257,7 +272,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Expanded(
-                                flex: 4,
+                                flex: 30,
                                 child: Text(
                                   "Địa chỉ",
                                   style: TextStyle(
@@ -265,24 +280,82 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                       color: Colors.black),
                                 )),
                             Expanded(
-                                flex: 6,
-                                child: FutureBuilder(
-                                  future: profileModel.getProfile(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Text(
-                                        snapshot.data!["Address"],
-                                        textAlign: TextAlign.right,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black),
-                                      );
-                                    } else {
-                                      return const Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    }
-                                  },
+                                flex: 70,
+                                child:  Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    if(selectAddress.isNotEmpty) Text(
+                                      selectAddress,
+                                      textAlign: TextAlign.right,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black),
+                                    ),
+                                    Container(
+                                      // width: 15,
+                                      margin: EdgeInsets.only(top: 5),
+                                      height: 20,
+                                      alignment:
+                                      Alignment.centerRight,
+                                      child: TextButton(
+                                        style: ButtonStyle(
+                                            padding:
+                                            MaterialStateProperty
+                                                .all(
+                                                const EdgeInsets
+                                                    .all(
+                                                    0.0))),
+                                        onPressed: () {
+                                          showModalBottomSheet<void>(
+                                              backgroundColor:
+                                              Colors.white,
+                                              shape:
+                                              const RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius
+                                                    .vertical(
+                                                  top:
+                                                  Radius.circular(
+                                                      15.0),
+                                                ),
+                                              ),
+                                              clipBehavior: Clip
+                                                  .antiAliasWithSaveLayer,
+                                              context: context,
+                                              isScrollControlled:
+                                              true,
+                                              builder: (BuildContext
+                                              context) {
+                                                return Container(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: MediaQuery.of(
+                                                            context)
+                                                            .viewInsets
+                                                            .bottom),
+                                                    height: MediaQuery.of(
+                                                        context)
+                                                        .size
+                                                        .height *
+                                                        0.88,
+                                                    child: ChooseAddressShipping(
+                                                        saveAddress: () =>
+                                                            setState(
+                                                                    () {})));
+                                              });
+                                        },
+                                        child: Text(
+                                          selectAddress.isNotEmpty
+                                              ? "Thay đổi" : "Thêm",
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(
+                                              fontWeight:
+                                              FontWeight.w400,
+                                              color: mainColor),
+                                        ),
+                                      ),
+                                    )
+
+                                  ],
                                 ))
                           ],
                         ),
@@ -414,15 +487,17 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                             margin: const EdgeInsets.only(left: 5),
                             width: MediaQuery.of(context).size.width - 70,
                             child: FutureBuilder(
-                                future: productModel.getProductCode(item["ProductCode"]),
+                              future: productModel
+                                  .getProductCode(item["ProductCode"]),
                               builder: (context, snapshot) {
-                                if(snapshot.hasData){
+                                if (snapshot.hasData) {
                                   Map detail = snapshot.data!;
                                   return TextButton(
                                     onPressed: () {
                                       showModalBottomSheet<void>(
                                           backgroundColor: Colors.white,
-                                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
                                           context: context,
                                           isScrollControlled: true,
                                           builder: (BuildContext context) {
@@ -431,22 +506,23 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                   bottom: MediaQuery.of(context)
                                                       .viewInsets
                                                       .bottom),
-                                              height:
-                                                  MediaQuery.of(context).size.height *
-                                                      0.95,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.95,
                                               child: ProductDetail(
                                                 details: detail,
                                               ),
                                             );
                                           });
-
                                     },
                                     style: ButtonStyle(
                                       padding: MaterialStateProperty.all(
                                           const EdgeInsets.symmetric(
                                               vertical: 12, horizontal: 8)),
                                       backgroundColor:
-                                      MaterialStateProperty.all(Colors.white),
+                                          MaterialStateProperty.all(
+                                              Colors.white),
                                       shape: MaterialStateProperty.all(
                                           const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
@@ -457,8 +533,9 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                         Row(
                                           children: [
                                             ClipRRect(
-                                                borderRadius: const BorderRadius.all(
-                                                    Radius.circular(10)),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(10)),
                                                 child: Image.network(
                                                   "${detail["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
                                                   width: 90,
@@ -470,51 +547,55 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                             ),
                                             Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment:
+                                              crossAxisAlignment:
                                                   CrossAxisAlignment.start,
+                                              children: [
+                                                Wrap(
                                                   children: [
-                                                    Wrap(
-                                                      children: [
-                                                        Text(
-                                                          item["ProductName"],
-                                                          style: const TextStyle(
-                                                              fontSize: 12,
-                                                              fontWeight: FontWeight.w400,
-                                                              color: Colors.black),
-                                                        ),
-                                                        Container(
-                                                          margin:
-                                                          const EdgeInsets.symmetric(
-                                                              vertical: 4),
-                                                          child: Row(
-                                                            mainAxisAlignment:
+                                                    Text(
+                                                      item["ProductName"],
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Colors.black),
+                                                    ),
+                                                    Container(
+                                                      margin: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 4),
+                                                      child: Row(
+                                                        mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                NumberFormat.currency(
-                                                                    locale: "vi_VI",
+                                                        children: [
+                                                          Text(
+                                                            NumberFormat.currency(
+                                                                    locale:
+                                                                        "vi_VI",
                                                                     symbol: "đ")
-                                                                    .format(item["Price"]),
-                                                                style: TextStyle(
-                                                                    color:
-                                                                    Theme.of(context)
-                                                                        .colorScheme
-                                                                        .primary),
-                                                              ),
-                                                            ],
+                                                                .format(item[
+                                                                    "Price"]),
+                                                            style: TextStyle(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary),
                                                           ),
-                                                        ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
                                                   ],
-                                                ))
+                                                ),
+                                              ],
+                                            ))
                                           ],
                                         ),
                                         Container(
-                                          margin: const EdgeInsets.only(top: 10),
-                                          padding:
-                                          const EdgeInsets.symmetric(vertical: 5),
+                                          margin:
+                                              const EdgeInsets.only(top: 10),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 5),
                                           decoration: BoxDecoration(
                                               border: BorderDirectional(
                                                   top: BorderSide(
@@ -522,10 +603,11 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                       color: Colors.grey[400]!),
                                                   bottom: BorderSide(
                                                       width: 1,
-                                                      color: Colors.grey[400]!))),
+                                                      color:
+                                                          Colors.grey[400]!))),
                                           child: Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 "${item["Quantity"]} sản phẩm",
@@ -540,7 +622,8 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                     "Thành tiền:",
                                                     style: TextStyle(
                                                         fontSize: 14,
-                                                        fontWeight: FontWeight.w300,
+                                                        fontWeight:
+                                                            FontWeight.w300,
                                                         color: Colors.black),
                                                   ),
                                                   const SizedBox(
@@ -548,13 +631,13 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                   ),
                                                   Text(
                                                     NumberFormat.currency(
-                                                        locale: "vi_VI",
-                                                        symbol: "đ")
-                                                        .format(
-                                                        item["Amount"]),
+                                                            locale: "vi_VI",
+                                                            symbol: "đ")
+                                                        .format(item["Amount"]),
                                                     style: const TextStyle(
                                                       fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                     ),
                                                   )
                                                 ],
@@ -565,14 +648,15 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                       ],
                                     ),
                                   );
-                                }else{
+                                } else {
                                   return const Center(
                                     child: SizedBox(
                                       width: 40,
                                       height: 40,
                                       child: LoadingIndicator(
                                         colors: kDefaultRainbowColors,
-                                        indicatorType: Indicator.lineSpinFadeLoader,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
                                         strokeWidth: 1,
                                         // pathBackgroundColor: Colors.black45,
                                       ),

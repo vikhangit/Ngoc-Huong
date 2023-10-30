@@ -15,11 +15,11 @@ Widget gender(BuildContext context, Function(int index) changeGender,
               SizedBox(
                 width: 3,
               ),
-              Text("*",
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.red,
-                      fontWeight: FontWeight.w500)),
+              // Text("*",
+              //     style: TextStyle(
+              //         fontSize: 14,
+              //         color: Colors.red,
+              //         fontWeight: FontWeight.w500)),
             ],
           ),
           const SizedBox(

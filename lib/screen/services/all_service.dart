@@ -260,8 +260,8 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                 .start,
                                                         children: [
                                                           Image.network(
-                                                            // "${item["Image_Name"]}"
-                                                            "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                                            "${item["Image_Name"]}",
+                                                            // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                                             fit: BoxFit.cover,
                                                             width:
                                                                 MediaQuery.of(

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
@@ -29,6 +30,7 @@ import 'package:ngoc_huong/screen/services/all_service.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/news/chi_tiet_tin_tuc.dart';
+import 'package:ngoc_huong/screen/services/kien_thuc.dart';
 import 'package:ngoc_huong/screen/services/special_service.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
@@ -207,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
-
+print(storageCustomerToken.getItem("customer_token"));
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
@@ -873,46 +875,47 @@ Widget listView(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
-              Row(
+            const  Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Text(
+                  Text(
                     "Ưu đãi, khuyến mãi",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF555555),
+                      color: Colors.black,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const TinTucScreen()));
-                    },
-                    child: Text(
-                      "Xem thêm",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: mainColor,
-                      ),
-                    ),
-                  )
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => const TinTucScreen()));
+                  //   },
+                  //   child: Text(
+                  //     "Xem thêm",
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       fontWeight: FontWeight.w400,
+                  //       color: mainColor,
+                  //     ),
+                  //   ),
+                  // )
                 ],
               ),
               SizedBox(
-                // height: 250,
+                height: 285,
                 child: FutureBuilder(
-                  future: newsModel.getTop5CustomerNews(),
+                  future: newsModel.getCustomerNewsByGroup("Tin khuyến mãi"),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data!.isNotEmpty) {
-                        return Wrap(
-                          alignment: WrapAlignment.spaceBetween,
-                          spacing: 15,
+                        return ListView(
+                          padding: const EdgeInsets.only(top: 15),
+                          scrollDirection: Axis.horizontal,
                           children: snapshot.data!.map((item) {
+                            int index = snapshot.data!.toList().indexOf(item);
                             return GestureDetector(
                               onTap: () {
                                 showModalBottomSheet<void>(
@@ -932,14 +935,22 @@ Widget listView(
                                               0.95,
                                           child: ChiTietTinTuc(
                                             detail: item,
-                                            type: "tin tức",
+                                            type: "ưu đãi, khuyến mãi",
                                           ));
                                     });
                               },
-                              child: SizedBox(
-                                  height: 205,
-                                  width: MediaQuery.of(context).size.width / 2 -
-                                      22.5,
+                              child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(6)),
+                                      border: Border.all(
+                                          color: mainColor,
+                                          width: 1)),
+                                  margin:
+                                  EdgeInsets.only(left: index == 0 ? 0 : 15),
+                                  width: MediaQuery.of(context).size.width * .6,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
@@ -948,11 +959,12 @@ Widget listView(
                                         height: 5,
                                       ),
                                       ClipRRect(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(14)),
+                                        borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(6)
+                                            ),
                                         child: Image.network(
-                                          "",
-                                          height: 135,
+                                          "${item["Image"]}",
+                                          height: 160,
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -960,14 +972,14 @@ Widget listView(
                                         height: 8,
                                       ),
                                       Text(
-                                        "${item["title"]}",
+                                        "${item["Title"]}",
                                         textAlign: TextAlign.left,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                         style: const TextStyle(
                                             color: Color(0xFF212121),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400),
                                       ),
                                       const SizedBox(
                                         height: 5,
@@ -975,14 +987,23 @@ Widget listView(
                                       Text(
                                         DateFormat("dd/MM/yyyy").format(
                                             DateTime.parse(
-                                                item["date_updated"])),
+                                                item["ModifiedDate"])),
                                         textAlign: TextAlign.left,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: const TextStyle(
-                                            fontSize: 10,
+                                            fontSize: 12,
                                             color: Color(0xFF8B8B8B),
                                             fontWeight: FontWeight.w400),
+                                      ),
+                                      Html(
+                                        data: item["Content"], style: {
+                                          "*": Style(margin: Margins.only(left: 0, top: 0), maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                          "p": Style(
+                                              lineHeight: const LineHeight(1.5),
+                                              fontSize: FontSize(15),
+                                              fontWeight: FontWeight.w300)
+                                        },
                                       )
                                     ],
                                   )),
@@ -1049,7 +1070,7 @@ Widget listView(
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF555555),
+                      color: Colors.black,
                     ),
                   ),
                   GestureDetector(
@@ -1057,7 +1078,7 @@ Widget listView(
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const TinTucScreen()));
+                              builder: (context) => const KienThucScreen()));
                     },
                     child: Text(
                       "Xem thêm",
@@ -1071,16 +1092,17 @@ Widget listView(
                 ],
               ),
               SizedBox(
-                // height: 250,
+                height: 280,
                 child: FutureBuilder(
-                  future: newsModel.getTop5CustomerNews(),
+                  future: newsModel.getCustomerNewsByGroup("Kiến thức làm đẹp"),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data!.isNotEmpty) {
-                        return Wrap(
-                          alignment: WrapAlignment.spaceBetween,
-                          spacing: 15,
+                        return ListView(
+                          padding: const EdgeInsets.only(top: 15),
+                          scrollDirection: Axis.horizontal,
                           children: snapshot.data!.map((item) {
+                            int index = snapshot.data!.toList().indexOf(item);
                             return GestureDetector(
                               onTap: () {
                                 showModalBottomSheet<void>(
@@ -1095,32 +1117,41 @@ Widget listView(
                                                   .viewInsets
                                                   .bottom),
                                           height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
+                                              .size
+                                              .height *
                                               0.95,
                                           child: ChiTietTinTuc(
                                             detail: item,
-                                            type: "tin tức",
+                                            type: "kiến thức làm đẹp",
                                           ));
                                     });
                               },
-                              child: SizedBox(
-                                  height: 205,
-                                  width: MediaQuery.of(context).size.width / 2 -
-                                      22.5,
+                              child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(6)),
+                                      border: Border.all(
+                                          color: mainColor,
+                                          width: 1)),
+                                  margin:
+                                  EdgeInsets.only(left: index == 0 ? 0 : 15),
+                                  width: MediaQuery.of(context).size.width * .6,
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
+                                    CrossAxisAlignment.stretch,
                                     children: [
                                       const SizedBox(
                                         height: 5,
                                       ),
                                       ClipRRect(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(14)),
+                                        borderRadius: const BorderRadius.vertical(
+                                            top: Radius.circular(6)
+                                        ),
                                         child: Image.network(
-                                          "",
-                                          height: 135,
+                                          "${item["Image"]}",
+                                          height: 160,
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -1128,14 +1159,14 @@ Widget listView(
                                         height: 8,
                                       ),
                                       Text(
-                                        "${item["title"]}",
+                                        "${item["Title"]}",
                                         textAlign: TextAlign.left,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                         style: const TextStyle(
                                             color: Color(0xFF212121),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400),
                                       ),
                                       const SizedBox(
                                         height: 5,
@@ -1143,14 +1174,24 @@ Widget listView(
                                       Text(
                                         DateFormat("dd/MM/yyyy").format(
                                             DateTime.parse(
-                                                item["date_updated"])),
+                                                item["ModifiedDate"])),
                                         textAlign: TextAlign.left,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: const TextStyle(
-                                            fontSize: 10,
+                                            fontSize: 12,
                                             color: Color(0xFF8B8B8B),
                                             fontWeight: FontWeight.w400),
+                                      ),
+                                      Html(
+                                        data: item["Content"],
+                                        style: {
+                                          "*": Style(margin: Margins.only(left: 0, top: 0), maxLines: 2, textOverflow: TextOverflow.ellipsis),
+                                          "p": Style(
+                                              lineHeight: const LineHeight(1.5),
+                                              fontSize: FontSize(15),
+                                              fontWeight: FontWeight.w300)
+                                        },
                                       )
                                     ],
                                   )),
@@ -1163,12 +1204,12 @@ Widget listView(
                             Container(
                               margin: const EdgeInsets.only(top: 0, bottom: 10),
                               child:
-                                  Image.asset("assets/images/account/img.webp"),
+                              Image.asset("assets/images/account/img.webp"),
                             ),
                             Container(
                               margin: const EdgeInsets.only(bottom: 40),
                               child: const Text(
-                                "Xin lỗi! Hiện tại Ngọc Hường chưa bài viết về kiến thức làm đẹp",
+                                "Xin lỗi! Hiện tại Ngọc Hường chưa có ưu đãi và khuyến mãi",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 15, fontWeight: FontWeight.w400),
@@ -1204,6 +1245,7 @@ Widget listView(
             ],
           ),
         ),
+        SizedBox(height: 25,)
       ],
     ),
   );

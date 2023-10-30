@@ -6,13 +6,13 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
-import 'package:ngoc_huong/screen/account/information/child/button_confirm.dart';
-import 'package:ngoc_huong/screen/account/information/child/field_address.dart';
-import 'package:ngoc_huong/screen/account/information/child/field_birthDay.dart';
-import 'package:ngoc_huong/screen/account/information/child/field_email.dart';
-import 'package:ngoc_huong/screen/account/information/child/field_gender.dart';
-import 'package:ngoc_huong/screen/account/information/child/field_name.dart';
-import 'package:ngoc_huong/screen/account/information/child/field_phone.dart';
+import 'package:ngoc_huong/screen/profile/child/button_confirm.dart';
+import 'package:ngoc_huong/screen//profile/child/field_address.dart';
+import 'package:ngoc_huong/screen/profile/child/field_birthDay.dart';
+import 'package:ngoc_huong/screen/profile/child/field_email.dart';
+import 'package:ngoc_huong/screen/profile/child/field_gender.dart';
+import 'package:ngoc_huong/screen/profile/child/field_name.dart';
+import 'package:ngoc_huong/screen//profile/child/field_phone.dart';
 import 'package:ngoc_huong/screen/choose_brand/chooseBrand.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -63,14 +63,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // storage.deleteItem("userInfo");
     super.initState();
+    super.initState();
     profileModel.getProfile().then((value) => setState(() {
-          nameController = TextEditingController(text: value["CustomerName"]);
-          phoneController = TextEditingController(text: value["Phone"]);
-          birthDay = DateTime.parse(value["Birthday"]);
-          emailController = TextEditingController(text: value["Email"]);
-          addressController = TextEditingController(text: value["Address"]);
-          genderValue = value["Gender"] == true ? 1 : 0;
-        }));
+      nameController = TextEditingController(text: value["CustomerName"]);
+      phoneController = TextEditingController(text: value["Phone"]);
+      birthDay = value["Birthday"] != null ? DateTime.parse(value["Birthday"]): null;
+      emailController = TextEditingController(text: value["Email"]);
+      addressController = TextEditingController(text: value["Address"]);
+      genderValue =  value["Gender"] == null ? -1 : value["Gender"] == true ? 1 : 0;
+    }));
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         loading = false;
@@ -84,6 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     phoneController.dispose();
     emailController.dispose();
     addressController.dispose();
+    birthDay = null;
     loading = true;
     super.dispose();
   }
@@ -136,8 +138,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     FocusManager.instance.primaryFocus!.unfocus();
     Map data = {
       "CustomerName": name.isEmpty ? nameController.text : name,
-      "Birthday": DateFormat("yyyy-MM-dd").format(birthDay ?? DateTime.now()),
-      "Gender": genderValue,
+      "Birthday":birthDay != null ? DateFormat("yyyy-MM-dd").format(birthDay!) : null,
+      "Gender": genderValue == -1 ? null : genderValue,
       "Address": address.isEmpty ? addressController.text : address,
       "Email": email.isEmpty ? emailController.text : email,
       "Phone": phoneController.text,
@@ -193,20 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     appBar: AppBar(
                       leadingWidth: 45,
                       centerTitle: true,
-                      leading: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 15),
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.white),
-                            child: const Icon(
-                              Icons.west,
-                              size: 16,
-                              color: Colors.black,
-                            ),
-                          )),
+                      automaticallyImplyLeading: false,
                       title: const Text("Thông tin tài khoản",
                           style: TextStyle(
                               fontSize: 16,

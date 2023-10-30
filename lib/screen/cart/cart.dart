@@ -52,41 +52,6 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     setState(() {});
   }
 
-  void updateCart(Map item, int qty) async {
-    if (quantity <= 0) {
-      // showAlertDialog(context, "Số lượng phải lớn hơn 0");
-    } else {
-      Map data = {
-        "Id": 1,
-        "DetailList": [
-          {
-            "Id": item["Id"],
-            "Quantity": quantity
-          }
-        ]
-      };
-      cartModel.updateProductInCart(data).then((value) {
-        // if (listCheckout.isNotEmpty) {
-        //   int idx = listCheckout
-        //       .indexWhere((item) => item["Id"] == value["Id"]);
-        //   if (idx < 0) {
-        //     setState(() {});
-        //   } else {
-        //     setState(() {
-        //       listCheckout[idx] = value;
-        //     });
-        //   }
-        // } else {
-        //   setState(() {});
-        // }
-        // } else {
-        //   color = Colors.white;
-        // }
-        print(value);
-      });
-    }
-  }
-
   void deleteProductInCart(String id) async {
     await deleteCart(id);
     setState(() {});
@@ -98,7 +63,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       num total = 0;
       if (listCheckout.isNotEmpty) {
         for (var i = 0; i < listCheckout.length; i++) {
-          total += listCheckout[i]["Price"] * listCheckout[i]["Quantity"] ;
+          total += listCheckout[i]["Price"] * listCheckout[i]["Quantity"];
         }
       } else {
         total = 0;
@@ -109,8 +74,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     Color checkColor(Map it) {
       Color color = Colors.white;
       if (listCheckout.isNotEmpty) {
-        int idx = listCheckout.indexWhere(
-            (item) => item["Id"] == it["Id"]);
+        int idx = listCheckout.indexWhere((item) => item["Id"] == it["Id"]);
         if (idx < 0) {
           color = Colors.white;
         } else {
@@ -125,8 +89,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     Color checkColorBorder(Map it) {
       Color color = Colors.grey;
       if (listCheckout.isNotEmpty) {
-        int idx = listCheckout.indexWhere(
-            (item) => item["Id"] == it["Id"]);
+        int idx = listCheckout.indexWhere((item) => item["Id"] == it["Id"]);
         if (idx < 0) {
           color = Colors.grey;
         } else {
@@ -140,8 +103,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
     checkIcon(Map it) {
       if (listCheckout.isNotEmpty) {
-        int idx = listCheckout.indexWhere(
-            (item) => item["Id"] == it["Id"]);
+        int idx = listCheckout.indexWhere((item) => item["Id"] == it["Id"]);
         if (idx < 0) {
           return null;
         } else {
@@ -192,8 +154,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
             future: cartModel.getProductCartList(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-               List allCart =  snapshot.data!.toList();
+                List allCart = snapshot.data!.toList();
                 if (allCart.isNotEmpty) {
+                  print("========================================================");
                   print(allCart);
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -233,392 +196,375 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                         width: 24,
                                         height: 24,
                                         decoration: BoxDecoration(
-                                            color: checkColor(
-                                                allCart[index]),
+                                            color: checkColor(allCart[index]),
                                             border: Border.all(
                                                 width: 1,
                                                 color: checkColorBorder(
                                                     allCart[index])),
                                             borderRadius:
-                                            const BorderRadius.all(
-                                                Radius.circular(8))),
+                                                const BorderRadius.all(
+                                                    Radius.circular(8))),
                                         child: GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                if (listCheckout
-                                                    .isNotEmpty) {
+                                                if (listCheckout.isNotEmpty) {
                                                   int idx = listCheckout
                                                       .indexWhere((item) =>
-                                                  item[
-                                                  "Id"] ==
-                                                      ele["Id"]);
+                                                          item["Id"] ==
+                                                          ele["Id"]);
                                                   if (idx < 0) {
-                                                    listCheckout
-                                                        .add(ele);
+                                                    listCheckout.add(ele);
                                                   } else {
-                                                    listCheckout
-                                                        .removeAt(idx);
+                                                    listCheckout.removeAt(idx);
                                                   }
                                                 } else {
-                                                  listCheckout
-                                                      .add(ele);
+                                                  listCheckout.add(ele);
                                                 }
                                               });
                                             },
-                                            child: checkIcon(
-                                                allCart[index])),
+                                            child: checkIcon(allCart[index])),
                                       ),
                                       Container(
-                                        alignment: Alignment.center,
-                                        margin: const EdgeInsets.only(
-                                            left: 5),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width -
-                                            70,
-                                        child: FutureBuilder(
-                                          future: productModel.getProductCode(ele["ProductCode"]),
-                                          builder: (context, snapshot) {
-                                            if(snapshot.hasData){
-                                              Map detail = snapshot.data!;
-                                              return TextButton(
-                                                onPressed: () {
-                                                  showModalBottomSheet<void>(
-                                                      backgroundColor:
-                                                      Colors.white,
-                                                      clipBehavior: Clip
-                                                          .antiAliasWithSaveLayer,
-                                                      context: context,
-                                                      isScrollControlled: true,
-                                                      builder: (BuildContext
-                                                      context) {
-                                                        return Container(
-                                                          padding: EdgeInsets.only(
-                                                              bottom: MediaQuery
-                                                                  .of(context)
-                                                                  .viewInsets
-                                                                  .bottom),
-                                                          height: MediaQuery.of(
-                                                              context)
-                                                              .size
-                                                              .height *
-                                                              0.95,
-                                                          child: ProductDetail(
-                                                            details: detail,
-                                                          ),
-                                                        );
-                                                      });
-
-                                                },
-                                                style: ButtonStyle(
-                                                  padding:
-                                                  MaterialStateProperty.all(
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                          vertical: 12,
-                                                          horizontal: 8)),
-                                                  backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.white),
-                                                  shape: MaterialStateProperty.all(
-                                                      const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius
-                                                                  .circular(
-                                                                  10)))),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    ClipRRect(
-                                                        borderRadius:
-                                                        const BorderRadius
+                                          alignment: Alignment.center,
+                                          margin:
+                                              const EdgeInsets.only(left: 5),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              70,
+                                          child: FutureBuilder(
+                                            future: productModel.getProductCode(
+                                                ele["ProductCode"]),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                Map detail = snapshot.data!;
+                                                return TextButton(
+                                                  onPressed: () {
+                                                    showModalBottomSheet<void>(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        clipBehavior: Clip
+                                                            .antiAliasWithSaveLayer,
+                                                        context: context,
+                                                        isScrollControlled:
+                                                            true,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return Container(
+                                                            padding: EdgeInsets.only(
+                                                                bottom: MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                0.95,
+                                                            child:
+                                                                ProductDetail(
+                                                              details: detail,
+                                                            ),
+                                                          );
+                                                        });
+                                                  },
+                                                  style: ButtonStyle(
+                                                    padding:
+                                                        MaterialStateProperty
                                                             .all(
-                                                            Radius.circular(
-                                                                10)),
-                                                        child: Image.network(
-                                                         "${detail["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                          width: 90,
-                                                          height: 110,
-                                                          fit: BoxFit.cover,
-                                                        )),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              "${ele["ProductName"]}",
-                                                              style:
-                                                              const TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                                  color: Colors
-                                                                      .black),
-                                                            ),
-                                                            Container(
-                                                              margin:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical: 4),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                    NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(ele["Price"]),
-                                                                    style: TextStyle(
-                                                                        color: Theme.of(
-                                                                            context)
-                                                                            .colorScheme
-                                                                            .primary),
-                                                                  ),
-                                                                  Row(
-                                                                    children: [
-                                                                      GestureDetector(
-                                                                        onTap: () {
-                                                                          EasyLoading.show(
-                                                                              status:
-                                                                              "Đang xử lý...");
-                                                                          Future.delayed(
-                                                                              const Duration(
-                                                                                  seconds:
-                                                                                  1),
-                                                                                  () {
-                                                                                Map data = {
-                                                                                  "Id": 1,
-                                                                                  "DetailList": [
-                                                                                    {
-                                                                                      ...ele,
-                                                                                      "Quantity": ele["Quantity"] - 1
-                                                                                    }
-                                                                                  ]
-                                                                                };
-                                                                                cartModel
-                                                                                    .updateProductInCart(data)
-                                                                                    .then(
-                                                                                        (value) {
-                                                                                      if (listCheckout
-                                                                                          .isNotEmpty) {
-                                                                                        int idx = listCheckout.indexWhere((item) =>
-                                                                                        item["Id"] ==
-                                                                                            allCart[index]["Id"]);
-                                                                                        if (idx <
-                                                                                            0) {
-                                                                                          setState(
-                                                                                                  () {});
-                                                                                        } else {
-                                                                                          setState(
-                                                                                                  () {
-                                                                                                listCheckout[idx]["quantity"]--;
-                                                                                              });
-                                                                                        }
-                                                                                      } else {
-                                                                                        setState(
-                                                                                                () {});
-                                                                                      }
-                                                                                      EasyLoading
-                                                                                          .dismiss();
-                                                                                    });
-                                                                              });
-
-                                                                        },
-                                                                        child:
-                                                                        Container(
-                                                                          width: 25,
-                                                                          height:
-                                                                          25,
-                                                                          decoration: BoxDecoration(
-                                                                              border: Border.all(
-                                                                                  width: 1,
-                                                                                  color: Colors.orange),
-                                                                              shape: BoxShape.circle),
-                                                                          alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                          child:
-                                                                          const Icon(
-                                                                            Icons
-                                                                                .remove,
-                                                                            size:
-                                                                            16,
-                                                                            color: Colors
-                                                                                .orange,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      Container(
-                                                                        margin: const EdgeInsets
-                                                                            .symmetric(
-                                                                            horizontal:
-                                                                            10),
-                                                                        child: Text(
-                                                                          "${ele["Quantity"]}",
-                                                                          style: const TextStyle(
-                                                                              fontWeight:
-                                                                              FontWeight.w300),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap: () {
-                                                                          EasyLoading.show(
-                                                                              status:
-                                                                              "Đang xử lý...");
-                                                                          Future.delayed(
-                                                                              const Duration(
-                                                                                  seconds:
-                                                                                  1),
-                                                                                  () {
-                                                                                cartModel
-                                                                                    .updateProductInCart({
-                                                                                  "Id": 1,
-                                                                                  "DetailList": [
-                                                                                    {
-                                                                                      ...ele,
-                                                                                      "Quantity": ele["Quantity"] + 1
-                                                                                    }
-                                                                                  ]
-                                                                                })
-                                                                                    .then(
-                                                                                        (value) {
-                                                                                      if (listCheckout
-                                                                                          .isNotEmpty) {
-                                                                                        int idx = listCheckout.indexWhere((item) =>
-                                                                                        item["Id"] ==
-                                                                                            allCart[index]["Id"]);
-                                                                                        if (idx <
-                                                                                            0) {
-                                                                                          setState(
-                                                                                                  () {});
-                                                                                        } else {
-                                                                                          setState(
-                                                                                                  () {
-                                                                                                listCheckout[idx]["quantity"]++;
-                                                                                              });
-                                                                                        }
-                                                                                      } else {
-                                                                                        setState(
-                                                                                                () {});
-                                                                                      }
-                                                                                      EasyLoading
-                                                                                          .dismiss();
-                                                                                    });
-                                                                              });
-
-                                                                        },
-                                                                        child:
-                                                                        Container(
-                                                                          width: 25,
-                                                                          height:
-                                                                          25,
-                                                                          decoration: BoxDecoration(
-                                                                              border: Border.all(
-                                                                                  width: 1,
-                                                                                  color: Colors.orange),
-                                                                              shape: BoxShape.circle),
-                                                                          alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                          child:
-                                                                          const Icon(
-                                                                            Icons
-                                                                                .add,
-                                                                            size:
-                                                                            16,
-                                                                            color: Colors
-                                                                                .orange,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Container(
-                                                              child:
-                                                              GestureDetector(
-                                                                  onTap: () {
-                                                                    customModal.showAlertDialog(
-                                                                        context,
-                                                                        "error",
-                                                                        "Xóa sản phẩm",
-                                                                        "Bạn có chắc chắn xóa sản phẩm này?",
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    vertical:
+                                                                        12,
+                                                                    horizontal:
+                                                                        8)),
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors.white),
+                                                    shape: MaterialStateProperty.all(
+                                                        const RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        10)))),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      ClipRRect(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10)),
+                                                          child: Image.network(
+                                                            "${detail["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                            width: 90,
+                                                            height: 110,
+                                                            fit: BoxFit.cover,
+                                                          )),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Expanded(
+                                                          child: Column(
+                                                        children: [
+                                                          Text(
+                                                            "${ele["ProductName"]}",
+                                                            style: const TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                          Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    vertical:
+                                                                        4),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  NumberFormat.currency(
+                                                                          locale:
+                                                                              "vi_VI",
+                                                                          symbol:
+                                                                              "đ")
+                                                                      .format(ele[
+                                                                          "Price"]),
+                                                                  style: TextStyle(
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .colorScheme
+                                                                          .primary),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        EasyLoading.show(
+                                                                            status:
+                                                                                "Đang xử lý...");
+                                                                        Future.delayed(
+                                                                            const Duration(seconds: 1),
                                                                             () {
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                          EasyLoading.show(
-                                                                              status:
-                                                                              "Đang xử lý...");
-                                                                          Future.delayed(
-                                                                              const Duration(
-                                                                                  seconds:
-                                                                                  1),
-                                                                                  () {
-                                                                                cartModel.updateProductInCart({
-                                                                                  "Id": 1,
-                                                                                  "DetailList": [
-                                                                                    {
-                                                                                      ...ele,
-                                                                                      "IsDeleted": true
-                                                                                    }
-                                                                                  ]
-                                                                                })
-                                                                                    .then(
-                                                                                        (value) {
-                                                                                      setState(() {
-                                                                                        EasyLoading
-                                                                                            .dismiss();
-                                                                                      });
-                                                                                    });
-                                                                              });
-                                                                        },
-                                                                            () => Navigator
-                                                                            .pop(
-                                                                            context));
-
-                                                                  },
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Image
-                                                                          .asset(
-                                                                        "assets/images/delete-red.png",
+                                                                          Map data =
+                                                                              {
+                                                                            "DetailList":
+                                                                                [
+                                                                              {
+                                                                                ...ele,
+                                                                                "Quantity": ele["Quantity"] - 1
+                                                                              }
+                                                                            ]
+                                                                          };
+                                                                          cartModel
+                                                                              .updateProductInCart(data)
+                                                                              .then((value) {
+                                                                            if (listCheckout.isNotEmpty) {
+                                                                              int idx = listCheckout.indexWhere((item) => item["Id"] == allCart[index]["Id"]);
+                                                                              if (idx < 0) {
+                                                                                setState(() {});
+                                                                              } else {
+                                                                                setState(() {
+                                                                                  listCheckout[idx]["Quantity"]--;
+                                                                                });
+                                                                              }
+                                                                            } else {
+                                                                              setState(() {});
+                                                                            }
+                                                                            EasyLoading.dismiss();
+                                                                          });
+                                                                        });
+                                                                      },
+                                                                      child:
+                                                                          Container(
                                                                         width:
-                                                                        16,
+                                                                            25,
                                                                         height:
-                                                                        16,
+                                                                            25,
+                                                                        decoration: BoxDecoration(
+                                                                            border:
+                                                                                Border.all(width: 1, color: Colors.orange),
+                                                                            shape: BoxShape.circle),
+                                                                        alignment:
+                                                                            Alignment.center,
+                                                                        child:
+                                                                            const Icon(
+                                                                          Icons
+                                                                              .remove,
+                                                                          size:
+                                                                              16,
+                                                                          color:
+                                                                              Colors.orange,
+                                                                        ),
                                                                       ),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                        5,
-                                                                      ),
-                                                                      Text(
-                                                                        "Xóa",
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                            13,
+                                                                    ),
+                                                                    Container(
+                                                                      margin: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                              10),
+                                                                      child:
+                                                                          Text(
+                                                                        "${ele["Quantity"]}",
+                                                                        style: const TextStyle(
                                                                             fontWeight:
-                                                                            FontWeight.w300,
-                                                                            color: Theme.of(context).colorScheme.primary),
-                                                                      )
-                                                                    ],
-                                                                  )),
-                                                            )
-                                                          ],
-                                                        ))
-                                                  ],
-                                                ),
-                                              );
-                                            }else{
-                                              return Container();
-                                            }
-                                          },
-                                        )
-                                      ),
+                                                                                FontWeight.w300),
+                                                                      ),
+                                                                    ),
+                                                                    GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        EasyLoading.show(
+                                                                            status:
+                                                                                "Đang xử lý...");
+                                                                        Future.delayed(
+                                                                            const Duration(seconds: 1),
+                                                                            () {
+                                                                          cartModel
+                                                                              .updateProductInCart({
+                                                                            "DetailList":
+                                                                                [
+                                                                              {
+                                                                                ...ele,
+                                                                                "Quantity": ele["Quantity"] + 1
+                                                                              }
+                                                                            ]
+                                                                          }).then((value) {
+                                                                            if (listCheckout.isNotEmpty) {
+                                                                              int idx = listCheckout.indexWhere((item) => item["Id"] == allCart[index]["Id"]);
+                                                                              if (idx < 0) {
+                                                                                setState(() {});
+                                                                              } else {
+                                                                                setState(() {
+                                                                                  listCheckout[idx]["Quantity"]++;
+                                                                                });
+                                                                              }
+                                                                            } else {
+                                                                              setState(() {});
+                                                                            }
+                                                                            EasyLoading.dismiss();
+                                                                          });
+                                                                        });
+                                                                      },
+                                                                      child:
+                                                                          Container(
+                                                                        width:
+                                                                            25,
+                                                                        height:
+                                                                            25,
+                                                                        decoration: BoxDecoration(
+                                                                            border:
+                                                                                Border.all(width: 1, color: Colors.orange),
+                                                                            shape: BoxShape.circle),
+                                                                        alignment:
+                                                                            Alignment.center,
+                                                                        child:
+                                                                            const Icon(
+                                                                          Icons
+                                                                              .add,
+                                                                          size:
+                                                                              16,
+                                                                          color:
+                                                                              Colors.orange,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            child:
+                                                                GestureDetector(
+                                                                    onTap: () {
+                                                                      customModal.showAlertDialog(
+                                                                          context,
+                                                                          "error",
+                                                                          "Xóa sản phẩm",
+                                                                          "Bạn có chắc chắn xóa sản phẩm này?",
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                        EasyLoading.show(
+                                                                            status:
+                                                                                "Đang xử lý...");
+                                                                        Future.delayed(
+                                                                            const Duration(seconds: 1),
+                                                                            () {
+                                                                          cartModel
+                                                                              .updateProductInCart({
+                                                                            "DetailList":
+                                                                                [
+                                                                              {
+                                                                                ...ele,
+                                                                                "IsDeleted": true
+                                                                              }
+                                                                            ]
+                                                                          }).then((value) {
+                                                                            setState(() {
+                                                                              listCheckout.removeWhere((element) => element["Id"] == listCheckout[index]["id"]);
+                                                                              EasyLoading.dismiss();
+                                                                            });
+                                                                          });
+                                                                        });
+                                                                      },
+                                                                          () =>
+                                                                              Navigator.pop(context));
+                                                                    },
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Image
+                                                                            .asset(
+                                                                          "assets/images/delete-red.png",
+                                                                          width:
+                                                                              16,
+                                                                          height:
+                                                                              16,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              5,
+                                                                        ),
+                                                                        Text(
+                                                                          "Xóa",
+                                                                          style: TextStyle(
+                                                                              fontSize: 13,
+                                                                              fontWeight: FontWeight.w300,
+                                                                              color: Theme.of(context).colorScheme.primary),
+                                                                        )
+                                                                      ],
+                                                                    )),
+                                                          )
+                                                        ],
+                                                      ))
+                                                    ],
+                                                  ),
+                                                );
+                                              } else {
+                                                return const Center(
+                                                  child: SizedBox(
+                                                    width: 40,
+                                                    height: 40,
+                                                    child: LoadingIndicator(
+                                                      colors: kDefaultRainbowColors,
+                                                      indicatorType: Indicator.lineSpinFadeLoader,
+                                                      strokeWidth: 1,
+                                                      // pathBackgroundColor: Colors.black45,
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          )),
                                     ],
                                   ));
                             }).toList(),

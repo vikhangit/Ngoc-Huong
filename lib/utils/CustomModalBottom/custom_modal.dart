@@ -20,7 +20,7 @@ class CustomModal {
           alignment: Alignment.center,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 35),
-            height: 315,
+            height: 300,
             margin: const EdgeInsets.only(left: 25, right: 25),
             decoration: BoxDecoration(
               color: Colors.white,

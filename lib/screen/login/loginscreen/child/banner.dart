@@ -6,7 +6,7 @@ import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 Widget bannerLogin(BuildContext context) {
   final LocalStorage storageBranch = LocalStorage("branch");
-  print(storageBranch.getItem("branch"));
+  final LocalStorage storageStart = LocalStorage("start");
   return Container(
     height: MediaQuery.of(context).size.height - 325,
     width: MediaQuery.of(context).size.width,
@@ -19,12 +19,20 @@ Widget bannerLogin(BuildContext context) {
           fit: BoxFit.cover,
         )),
     child: GestureDetector(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => storageBranch.getItem("branch") != null
-                  ? const HomeScreen()
-                  : const ChooseBrandScreen())),
+      onTap: () {
+        if(storageStart.getItem("start") != null) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                  storageBranch.getItem("branch") != null
+                      ? const HomeScreen()
+                      : const ChooseBrandScreen()));
+          storageStart.deleteItem("start");
+        }else {
+          Navigator.pop(context);
+        }
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
         decoration: BoxDecoration(

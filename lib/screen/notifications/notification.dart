@@ -227,24 +227,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   );
                 }
               } else {
-                return const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: LoadingIndicator(
-                        colors: kDefaultRainbowColors,
-                        indicatorType: Indicator.lineSpinFadeLoader,
-                        strokeWidth: 1,
-                        // pathBackgroundColor: Colors.black45,
+                return const Center(
+                  child:  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: LoadingIndicator(
+                          colors: kDefaultRainbowColors,
+                          indicatorType: Indicator.lineSpinFadeLoader,
+                          strokeWidth: 1,
+                          // pathBackgroundColor: Colors.black45,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text("Đang lấy dữ liệu")
-                  ],
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Đang lấy dữ liệu")
+                    ],
+                  )
                 );
               }
             },

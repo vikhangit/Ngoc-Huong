@@ -33,7 +33,7 @@ Widget inputOTP(
         blinkWhenObscuring: true,
         animationType: AnimationType.fade,
         validator: (v) {
-          if (v!.length < 3) {
+          if (v!.length < 6) {
             return "Nhập đầy đủ mã xác nhận";
           } else {
             return null;

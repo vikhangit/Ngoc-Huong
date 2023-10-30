@@ -15,11 +15,11 @@ Widget fieldAddress(
           SizedBox(
             width: 3,
           ),
-          Text("*",
-              style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500)),
+          // Text("*",
+          //     style: TextStyle(
+          //         fontSize: 14,
+          //         color: Colors.red,
+          //         fontWeight: FontWeight.w500)),
         ],
       ),
       const SizedBox(
@@ -32,12 +32,12 @@ Widget fieldAddress(
         onChanged: (value) {
           changeValueAddress(value);
         },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Vui lòng nhập địa chỉ";
-          }
-          return null;
-        },
+        // validator: (value) {
+        //   if (value == null || value.isEmpty) {
+        //     return "Vui lòng nhập địa chỉ";
+        //   }
+        //   return null;
+        // },
         controller: controller,
         decoration: InputDecoration(
           focusedBorder: theme.border,

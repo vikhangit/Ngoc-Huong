@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/models/addressModel.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_quan_huyen.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_thanh_pho.dart';
+import 'package:ngoc_huong/screen/account/quan_li_dia_chi/them_dia_chi.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalPhuongXa extends StatefulWidget {
@@ -12,12 +16,10 @@ class ModalPhuongXa extends StatefulWidget {
   State<ModalPhuongXa> createState() => _ModalDiaDiemState();
 }
 
-String wardId = "";
-String activeWard = "";
 String valueSearch = "";
 
 class _ModalDiaDiemState extends State<ModalPhuongXa> {
-  final LocalStorage storage = LocalStorage('auth');
+  final AddressModel addressModel = AddressModel();
   late TextEditingController controller;
   @override
   void initState() {
@@ -47,7 +49,6 @@ class _ModalDiaDiemState extends State<ModalPhuongXa> {
 
   @override
   Widget build(BuildContext context) {
-    print(provinceId);
     return Container(
       padding: const EdgeInsets.all(15.0),
       child: Column(
@@ -104,59 +105,66 @@ class _ModalDiaDiemState extends State<ModalPhuongXa> {
             ),
           ),
           FutureBuilder(
-            future: callWardApi(districtId),
+            future: addressModel.getWardApi(districtId, valueSearch),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
                   child: ListView(
                       shrinkWrap: true,
                       physics: const ClampingScrollPhysics(),
-                      children: snapshot.data!.map((item) {
-                        if (item["district_name"]
-                            .toString()
-                            .replaceAll(item["ward_type"], "")
-                            .toLowerCase()
-                            .contains(valueSearch.toLowerCase())) {
-                          return Container(
-                            margin: const EdgeInsets.only(left: 10, right: 10),
-                            height: 50,
-                            child: TextButton(
-                              onPressed: () {
-                                changeAddress(
-                                    item["ward_id"], item["ward_name"]);
-                              },
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 10))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${item["ward_name"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 16,
-                                        color: Colors.black),
-                                  ),
-                                  if (wardId == item["ward_id"])
-                                    const Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                    )
-                                ],
+                      children: snapshot.data!.map((item) {return Container(
+                        margin: const EdgeInsets.only(left: 10, right: 10),
+                        height: 50,
+                        child: TextButton(
+                          onPressed: () {
+                            changeAddress(
+                                item["Id"], item["Name"]);
+                          },
+                          style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10))),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${item["Name"]}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 16,
+                                    color: Colors.black),
                               ),
-                            ),
-                          );
-                        } else {
-                          return Container();
-                        }
+                              if (wardId == item["Id"])
+                                const Icon(
+                                  Icons.check,
+                                  color: Colors.green,
+                                )
+                            ],
+                          ),
+                        ),
+                      );
                       }).toList()),
                 );
               } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: LoadingIndicator(
+                        colors: kDefaultRainbowColors,
+                        indicatorType: Indicator.lineSpinFadeLoader,
+                        strokeWidth: 1,
+                        // pathBackgroundColor: Colors.black45,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Đang lấy dữ liệu")
+                  ],
                 );
               }
             },

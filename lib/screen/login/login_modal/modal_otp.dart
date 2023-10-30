@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/loginModel.dart';
 import 'package:ngoc_huong/screen/login/login_modal/child/headerOtp.dart';
 import 'package:ngoc_huong/screen/login/login_modal/child/inputOtp.dart';
@@ -23,6 +24,7 @@ Timer? _timer;
 
 class _ModalOTPState extends State<ModalOTP> {
   TextEditingController textEditingController = TextEditingController();
+  final LocalStorage storageStart = LocalStorage("start");
   StreamController<ErrorAnimationType>? errorController;
   final Login login = Login();
   bool hasError = false;
@@ -32,6 +34,9 @@ class _ModalOTPState extends State<ModalOTP> {
   void initState() {
     _startTimer();
     errorController = StreamController<ErrorAnimationType>();
+    setState(() {
+      seconds = 30;
+    });
     super.initState();
   }
 
@@ -39,6 +44,8 @@ class _ModalOTPState extends State<ModalOTP> {
   void dispose() {
     _timer?.cancel();
     errorController!.close();
+    seconds = 30;
+    textEditingController.dispose();
     super.dispose();
   }
 
@@ -69,6 +76,7 @@ class _ModalOTPState extends State<ModalOTP> {
     login.getOtp(widget.phone).then((value) {
       setState(() {
         seconds = 29;
+        textEditingController = TextEditingController(text: "");
       });
       _startTimer();
     });
@@ -79,14 +87,10 @@ class _ModalOTPState extends State<ModalOTP> {
       status: 'Đăng nhập...',
       maskType: EasyLoadingMaskType.black,
     );
-    login.setLogin(widget.phone.toString(), otp).then((value) {
+    login.setLogin(context, widget.phone.toString(), otp).then((value) {
       EasyLoading.dismiss();
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfileScreen(
-                    phone: widget.phone.toString(),
-                  )));
+
+      storageStart.deleteItem("start");
     });
   }
 

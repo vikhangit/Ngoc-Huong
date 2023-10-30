@@ -14,11 +14,11 @@ Widget fieldBirthDay(BuildContext context,
           SizedBox(
             width: 3,
           ),
-          Text("*",
-              style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500)),
+          // Text("*",
+          //     style: TextStyle(
+          //         fontSize: 14,
+          //         color: Colors.red,
+          //         fontWeight: FontWeight.w500)),
         ],
       ),
       const SizedBox(
@@ -32,12 +32,12 @@ Widget fieldBirthDay(BuildContext context,
         ),
         readOnly: true,
         onTap: () => selectBirthDay(context),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Vui lòng chọn ngày sinh";
-          }
-          return null;
-        },
+        // validator: (value) {
+        //   if (value == null || value.isEmpty) {
+        //     return "Vui lòng chọn ngày sinh";
+        //   }
+        //   return null;
+        // },
         style: const TextStyle(
             fontSize: 14, color: Colors.black, fontWeight: FontWeight.w400),
         decoration: InputDecoration(

@@ -15,7 +15,7 @@ class ChiTietTinTuc extends StatefulWidget {
 class _ChiTietTinTucState extends State<ChiTietTinTuc> {
   @override
   Widget build(BuildContext context) {
-    Map uudaiDetail = widget.detail;
+    Map newsDetail = widget.detail;
     return Container(
       // margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Column(
@@ -49,7 +49,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                   flex: 84,
                   child: Center(
                     child: Text(
-                      "Chi tiết ${widget.type}",
+                      widget.type == "kiến thức làm đẹp" ? "Kiến thức làm đẹp" : "Chi tiết ${widget.type}",
                       style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -84,9 +84,8 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(14)),
                   child: Image.network(
-                    "$apiUrl${uudaiDetail["picture"]}?$token",
+                    "${newsDetail["Image"]}",
                     width: MediaQuery.of(context).size.width - 40,
-                    height: 160,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -98,7 +97,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                 children: [
                   Expanded(
                     child: Text(
-                      "${uudaiDetail["title"]}",
+                      "${newsDetail["Title"]}",
                       textAlign: TextAlign.left,
                       style: const TextStyle(
                           fontSize: 20,
@@ -113,7 +112,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
               ),
               Text(
                 DateFormat("dd/MM/yyyy")
-                    .format(DateTime.parse(uudaiDetail["date_updated"])),
+                    .format(DateTime.parse(newsDetail["ModifiedDate"])),
                 textAlign: TextAlign.left,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -122,7 +121,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
               ),
               SizedBox(
                 child: Html(
-                  data: uudaiDetail["content"],
+                  data: newsDetail["Content"],
                   style: {
                     "*": Style(
                       fontSize: FontSize(15),

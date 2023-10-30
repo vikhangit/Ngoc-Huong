@@ -1,38 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/models/addressModel.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_phuong_xa.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_thanh_pho.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/sua_dia_chi.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalQuanHuyen extends StatefulWidget {
   final Function saveAddress;
-  final String district;
+  // final String districtId;
   const ModalQuanHuyen(
-      {super.key, required this.saveAddress, required this.district});
+      {super.key, required this.saveAddress});
 
   @override
   State<ModalQuanHuyen> createState() => _ModalDiaDiemState();
 }
 
-String districtId = "";
-String activeDistrict = "";
-String districtType = "";
+
 String valueSearch = "";
 
 class _ModalDiaDiemState extends State<ModalQuanHuyen> {
-  final LocalStorage storage = LocalStorage('auth');
+  final AddressModel addressModel = AddressModel();
   late TextEditingController controller;
   @override
   void initState() {
     controller = TextEditingController(text: valueSearch);
-    callDistrictApi(provinceId).then((value) =>
-        setState(() => districtId = value[value.indexWhere((element) {
-              return element["district_name"] == widget.district;
-            })]["district_id"]));
-    setState(() {
-      activeDistrict = widget.district;
-    });
     super.initState();
   }
 
@@ -47,15 +41,13 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
     setState(() {
       districtId = id;
       districtController = TextEditingController(text: name);
-      wardController = TextEditingController(text: "");
       activeDistrict = name;
-      wardId = "";
-      activeWard = "";
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    print(provinceId);
     return Container(
       padding: const EdgeInsets.all(15.0),
       child: Column(
@@ -112,7 +104,7 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
             ),
           ),
           FutureBuilder(
-            future: callDistrictApi(provinceId),
+            future: addressModel.getDistrictApi(provinceId, valueSearch),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Expanded(
@@ -120,51 +112,61 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
                       shrinkWrap: true,
                       physics: const ClampingScrollPhysics(),
                       children: snapshot.data!.map((item) {
-                        if (item["district_name"]
-                            .toString()
-                            .replaceAll(item["district_type"], "")
-                            .toLowerCase()
-                            .contains(valueSearch.toLowerCase())) {
-                          return Container(
-                            margin: const EdgeInsets.only(left: 10, right: 10),
-                            height: 50,
-                            child: TextButton(
-                              onPressed: () {
-                                changeAddress(
-                                    item["district_id"], item["district_name"]);
-                              },
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 10))),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${item["district_name"]}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 16,
-                                        color: Colors.black),
-                                  ),
-                                  if (districtId == item["district_id"])
-                                    const Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                    )
-                                ],
-                              ),
+                        return Container(
+                          margin: const EdgeInsets.only(left: 10, right: 10),
+                          height: 50,
+                          child: TextButton(
+                            onPressed: () {
+                              changeAddress(
+                                  item["Id"], item["Name"]);
+                            },
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 10))),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${item["Name"]}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 16,
+                                      color: Colors.black),
+                                ),
+                                if (districtId == item["Id"])
+                                  const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  )
+                              ],
                             ),
-                          );
-                        } else {
-                          return Container();
-                        }
+                          ),
+                        );
                       }).toList()),
                 );
               } else {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: LoadingIndicator(
+                          colors: kDefaultRainbowColors,
+                          indicatorType: Indicator.lineSpinFadeLoader,
+                          strokeWidth: 1,
+                          // pathBackgroundColor: Colors.black45,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Đang lấy dữ liệu")
+                    ],
+                  ),
                 );
               }
             },
@@ -180,6 +182,9 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
                           const BorderRadius.all(Radius.circular(15))),
                   child: TextButton(
                       onPressed: () {
+                        wardController = TextEditingController(text: "");
+                        wardId = "";
+                        activeWard = "";
                         Navigator.pop(context);
                         widget.saveAddress();
                       },

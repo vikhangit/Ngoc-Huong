@@ -14,11 +14,11 @@ Widget fieldEmail(BuildContext context, Function(String value) changeEmail,
           SizedBox(
             width: 3,
           ),
-          Text("*",
-              style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w500)),
+          // Text("*",
+          //     style: TextStyle(
+          //         fontSize: 14,
+          //         color: Colors.red,
+          //         fontWeight: FontWeight.w500)),
         ],
       ),
       const SizedBox(
@@ -32,9 +32,10 @@ Widget fieldEmail(BuildContext context, Function(String value) changeEmail,
           changeEmail(value);
         },
         validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "Vui lòng nhập email";
-          } else if (!value.isValidEmail) {
+        //   if (value == null || value.isEmpty) {
+        //     return "Vui lòng nhập email";
+        //   }
+            if (value != null && value.isNotEmpty && !value.isValidEmail) {
             return "Email không hợp lệ";
           }
           return null;
