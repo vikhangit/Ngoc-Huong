@@ -16,6 +16,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
   @override
   Widget build(BuildContext context) {
     Map newsDetail = widget.detail;
+    print(newsDetail);
     return Container(
       // margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Column(
@@ -119,6 +120,30 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                 style:
                     const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
               ),
+            if(widget.type == "khuyến mãi")  Container(
+              margin: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+             decoration: BoxDecoration(
+               color: Color(0xFFFED766),
+               borderRadius: BorderRadius.all(Radius.circular(10))
+             ),
+                child: Html(
+                  data: newsDetail["ShortDescription"],
+                  style: {
+                    "*": Style(
+                      fontSize: FontSize(15),
+                      lineHeight: LineHeight(1),
+                      margin: Margins.all(0)
+                    ),
+                    "*:not(strong)": Style(
+                      fontWeight: FontWeight.w300,
+                    ),
+                    "*:not(img)": Style(
+                        lineHeight: const LineHeight(1.5),
+                        margin: Margins.only(left: 0, top: 10, bottom: 10))
+                  },
+                ),
+              ),
               SizedBox(
                 child: Html(
                   data: newsDetail["Content"],
@@ -126,8 +151,13 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                     "*": Style(
                       fontSize: FontSize(15),
                     ),
-                    "*:not(strong)": Style(
-                      fontWeight: FontWeight.w300,
+                    "a": Style(
+                      textDecoration: TextDecoration.none,
+                      color: Colors.black
+                    ),
+                    "img": Style(
+                      height: Height.auto(),
+                      width: Width(MediaQuery.of(context).size.width)
                     ),
                     "*:not(img)": Style(
                         lineHeight: const LineHeight(1.5),

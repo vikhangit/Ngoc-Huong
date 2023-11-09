@@ -157,7 +157,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                       .width /
                                                   2 -
                                               22.5,
-                                          height: 230,
+                                          height: 205,
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 6, vertical: 6),
                                           decoration: BoxDecoration(
@@ -187,7 +187,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                         MediaQuery.of(context)
                                                             .size
                                                             .width,
-                                                    height: 120,
+                                                    height: 150,
                                                   ),
                                                   const SizedBox(
                                                     height: 5,
@@ -206,30 +206,48 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                   ),
                                                 ],
                                               ),
-                                              SizedBox(
-                                                width:
-                                                MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                child: TextButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        showIndex =
-                                                        item["Code"];
-                                                      });
-                                                    },
-                                                    style: ButtonStyle(
-                                                        backgroundColor: MaterialStateProperty
-                                                            .all(Theme.of(
-                                                            context)
-                                                            .colorScheme
-                                                            .primary)),
-                                                    child: const Text(
-                                                        "Xem thêm",
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        "đ",
                                                         style: TextStyle(
                                                             fontSize: 12,
-                                                            color: Colors
-                                                                .white))),
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Theme.of(context)
+                                                                .colorScheme
+                                                                .primary),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 2,
+                                                      ),
+                                                      Text(
+                                                        NumberFormat.currency(
+                                                            locale: "vi_VI", symbol: "")
+                                                            .format(
+                                                          item["CustomerPrice"] ??
+                                                              item["PriceInbound"] ??
+                                                              0,
+                                                        ),
+                                                        style: TextStyle(
+                                                            fontSize: 13,
+                                                            fontWeight: FontWeight.w400,
+                                                            color: Theme.of(context)
+                                                                .colorScheme
+                                                                .primary),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    "-5%",
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight: FontWeight.w400,
+                                                        color: Colors.amber),
+                                                  ),
+                                                ],
                                               )
                                             ],
                                           )),

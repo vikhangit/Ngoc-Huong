@@ -103,14 +103,19 @@ flutter:
     - assets/images/cart-solid-white.png
     - assets/images/icon/notifications-black.png
     - assets/images/icon/notifications-red.png
+    - assets/images/notification-solid-black.png
+    - assets/images/shopping-cart.png
     - assets/images/icon/profile-black.png
     - assets/images/icon/profile-red.png
     - assets/images/voucher.png
     - assets/images/uu-dai-black.png
     - assets/images/uu-dai-red.png
     - assets/images/telesales.png
+    - assets/images/telesales-black.png
     - assets/images/gift-black.png
     - assets/images/gift-solid-red.png
+    - assets/images/lich-da-hen.png
+    - assets/images/lich-da-hen1.png
     - assets/images/vi-solid-red.png
     - assets/images/history-solid-red.png
     - assets/images/diem-solid-red.png
@@ -256,6 +261,8 @@ flutter:
     - assets/images/account/giao-dich.png
     - assets/images/account/dat-lich.png
     - assets/images/account/dieu-khoan.png
+    - assets/images/list.png
+    - assets/images/list1.png
     - assets/images/account/file-white.png
     - assets/images/account/gioi-thieu.png
     - assets/images/account/dia-chi.png

@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
@@ -55,16 +56,16 @@ List listBanner = [
 
 List toolServices = [
   {"icon": "assets/images/Home/Icon/calendar.png", "title": "Đặt lịch"},
-  {"icon": "assets/images/Home/Icon/my-pham.png", "title": "Mỹ phẩm"},
-  {"icon": "assets/images/Home/Icon/dich-vu.png", "title": "Dịch vụ"},
-  {"icon": "assets/images/Home/Icon/vi.png", "title": "Điểm"},
+  {"icon": "assets/images/lich-da-hen.png", "title": "Lịch đã hẹn"},
+  {"icon": "assets/images/Home/Icon/history.png", "title": "Lịch sử làm đẹp"},
   {
     "icon": "assets/images/Home/Icon/membership.png",
     "title": "Hạng thành viên"
   },
   {"icon": "assets/images/Home/Icon/uu-dai.png", "title": "Ưu đãi"},
-  {"icon": "assets/images/Home/Icon/history.png", "title": "Lịch sử làm đẹp"},
-  {"icon": "assets/images/list-order.png", "title": "Lịch sử mua hàng"},
+  // {"icon": "assets/images/Home/Icon/dich-vu.png", "title": "Dịch vụ"},
+  // {"icon": "assets/images/Home/Icon/vi.png", "title": "Điểm"},
+  // {"icon": "assets/images/list-order.png", "title": "Lịch sử mua hàng"},
 ];
 bool showAppBar = false;
 int current = 0;
@@ -109,43 +110,38 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void goToService(BuildContext context, int index) {
-    if (index == 1) {
-      productModel.getGroupProduct().then((value) => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Cosmetic(
-                    listTab: value,
-                  ))));
-    } else if (index == 2) {
-      servicesModel.getGroupServiceByBranch().then((value) => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => AllServiceScreen(
-                    listTab: value,
-                  ))));
-    } else {
-      if (storageCustomerToken.getItem("customer_token") != null) {
-        switch (index) {
-          case 0:
-            {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const BookingServices()));
-              break;
-            }
-          case 3:
-            {
-              customModal.showAlertDialog(
-                  context,
-                  "error",
-                  "Xin Lỗi Quý Khách",
-                  "Chúng tôi đang nâng cấp tính năng này",
-                  () => Navigator.pop(context),
-                  () => Navigator.pop(context));
-              break;
-            }
-          case 4:
+    if (storageCustomerToken.getItem("customer_token") != null) {
+      switch (index) {
+        case 0:
+          {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const BookingServices()));
+            break;
+          }
+        case 1:
+          {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const BookingHistory(
+                      ac: 1,
+                    )));
+            break;
+          }
+        case 2:
+          {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const BookingHistory(
+                      ac: 0,
+                    )));
+            break;
+          }
+        case 3:
+
             {
               Navigator.push(
                   context,
@@ -153,47 +149,37 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       builder: (context) => const ThanhVienScreen()));
               break;
             }
-          case 5:
-            {
-              customModal.showAlertDialog(
-                  context,
-                  "error",
-                  "Xin Lỗi Quý Khách",
-                  "Chúng tôi đang nâng cấp tính năng này",
-                  () => Navigator.pop(context),
-                  () => Navigator.pop(context));
-              break;
-            }
-          case 6:
-            {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const BookingHistory(
-                            ac: 0,
-                          )));
-              break;
-            }
-          case 7:
-            {
-              orderModel.getStatusList().then((value) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => BuyHistory(
-                            listTab: value,
-                          ))));
 
-              break;
-            }
-          default:
-            {
-              break;
-            }
-        }
-      } else {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()));
+        case 4:
+          {
+            customModal.showAlertDialog(
+                context,
+                "error",
+                "Xin Lỗi Quý Khách",
+                "Chúng tôi đang nâng cấp tính năng này",
+                    () => Navigator.pop(context),
+                    () => Navigator.pop(context));
+            break;
+          }
+        // case 7:
+        //   {
+        //     orderModel.getStatusList().then((value) => Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //             builder: (context) => BuyHistory(
+        //               listTab: value,
+        //             ))));
+        //
+        //     break;
+        //   }
+        default:
+          {
+            break;
+          }
       }
+    } else {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
     }
   }
 
@@ -209,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
-print(storageCustomerToken.getItem("customer_token"));
+    print(storageCustomerToken.getItem("customer_token"));
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
@@ -218,179 +204,7 @@ print(storageCustomerToken.getItem("customer_token"));
         bottomNavigationBar: const MyBottomMenu(
           active: 0,
         ),
-        appBar: storageCustomerToken.getItem("customer_token") != null
-            ? AppBar(
-                automaticallyImplyLeading: false,
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FutureBuilder(
-                      future: profileModel.getProfile(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          Map profile = snapshot.data!;
-                          return Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  await showDialog(
-                                    context: context,
-                                    builder: (_) => Dialog(
-                                      backgroundColor: Colors.black,
-                                      insetPadding: const EdgeInsets.all(20),
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 350,
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    "${profile["CustomerImage"]}"),
-                                                fit: BoxFit.cover)),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: CircleAvatar(
-                                    backgroundColor: const Color(0xff00A3FF),
-                                    backgroundImage: NetworkImage(
-                                        "${profile["CustomerImage"]}"),
-                                    radius: 35.0,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 6,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Xin chào!",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                  Text(
-                                    "${profile["CustomerName"]}",
-                                    style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400),
-                                  )
-                                ],
-                              )
-                            ],
-                          );
-                        } else {
-                          return const SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: LoadingIndicator(
-                              colors: <Color>[
-                                Colors.white,
-                                Colors.white,
-                                Colors.white,
-                                Colors.white,
-                                Colors.white,
-                                Colors.white,
-                                Colors.white
-                              ],
-                              indicatorType: Indicator.lineSpinFadeLoader,
-                              strokeWidth: 1,
-                              // pathBackgroundColor: Colors.black45,
-                            ),
-                          );
-                        }
-                      },
-                    )
-                  ],
-                ),
-                actions: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 15),
-                    child: GestureDetector(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const CartScreen())),
-                      child: Image.asset("assets/images/cart-solid-white.png",
-                          width: 28, height: 28),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 15),
-                    child: GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationScreen()));
-                      },
-                      child: Image.asset(
-                        "assets/images/notification-solid-empty.png",
-                        width: 28,
-                        height: 28,
-                      ),
-                    ),
-                  )
-                ],
-              )
-            : AppBar(
-                automaticallyImplyLeading: false,
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                        width: 40,
-                        height: 40,
-                        margin: const EdgeInsets.only(right: 10),
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.white),
-                            color: Colors.white,
-                            shape: BoxShape.circle),
-                        child: Image.asset("assets/images/logo2.png")),
-                    const Text(
-                      "Ngọc Hường Xin chào!!!",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-                    )
-                  ],
-                ),
-                actions: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 15),
-                    height: 30,
-                    child: GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginScreen())),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 30,
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(15)),
-                                color: Colors.white,
-                                border:
-                                    Border.all(width: 1, color: Colors.white)),
-                            child: Text(
-                              "Đăng nhập",
-                              style: TextStyle(
-                                  color: mainColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ),
-                        )),
-                  )
-                ],
-              ),
+        appBar: null,
         body: RefreshIndicator(
           onRefresh: () => refreshData(),
           child: ListView(
@@ -412,101 +226,433 @@ Widget listView(
   final ServicesModel servicesModel = ServicesModel();
   final NewsModel newsModel = NewsModel();
   final ProductModel productModel = ProductModel();
+  final LocalStorage storageCustomerToken = LocalStorage('customer_token');
+  final ProfileModel profileModel = ProfileModel();
+  final CartModel cartModel = CartModel();
+  final BookingModel bookingModel = BookingModel();
   return SizedBox(
     child: Column(
       children: [
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 20),
-              height: 250,
-              child: CarouselSlider.builder(
-                itemCount: 3,
-                options: CarouselOptions(
-                    height: 250,
-                    aspectRatio: 26 / 14,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 3),
-                    viewportFraction: 1,
-                    initialPage: 0,
-                    onPageChanged: (index, reason) {
-                      goToPage(index, reason);
-                    }),
-                itemBuilder: (context, index, realIndex) {
-                  return Image.asset(
-                    "assets/images/Home/banner-sale.png",
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.cover,
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 20),
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          // decoration: BoxDecoration(
-          //   color: Colors.white,
-          //   borderRadius: const BorderRadius.all(Radius.circular(10)),
-          //   boxShadow: [
-          //     BoxShadow(
-          //       color: Colors.grey.withOpacity(0.5),
-          //       spreadRadius: 5,
-          //       blurRadius: 7,
-          //       offset: const Offset(0, 3), // changes position of shadow
-          //     ),
-          //   ],
-          // ),
-          child: Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            // scrollDirection: Axis.horizontal,
-            children: toolServices.map((item) {
-              int index = toolServices.indexOf(item);
-              return SizedBox(
-                width: MediaQuery.of(context).size.width / 4 - 8,
-                // height:90,
-                child: TextButton(
-                  style: ButtonStyle(
-                      padding: MaterialStateProperty.all(
-                          const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 0))),
-                  onPressed: () {
-                    goToService(context, index);
+        SizedBox(
+          height: 360,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              SizedBox(
+                height: 250,
+                child: CarouselSlider.builder(
+                  itemCount: 3,
+                  options: CarouselOptions(
+                      height: 250,
+                      aspectRatio: 26 / 14,
+                      autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 3),
+                      viewportFraction: 1,
+                      initialPage: 0,
+                      onPageChanged: (index, reason) {
+                        goToPage(index, reason);
+                      }),
+                  itemBuilder: (context, index, realIndex) {
+                    return Image.asset(
+                      "assets/images/Home/banner-sale.png",
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+                    );
                   },
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                width: MediaQuery.of(context).size.width,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20, left: 15, right: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset:
+                            const Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                            border: Border.all(width: 1, color: mainColor)),
-                        width: 60,
-                        height: 60,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
-                        child: Image.asset(
-                          width: 30,
-                          height: 30,
-                          "${item["icon"]}",
-                          fit: BoxFit.fill,
+                            horizontal: 15.0, vertical: 10),
+                        decoration: const BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    width: 0.5, color: Colors.black38))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            storageCustomerToken.getItem("customer_token") !=
+                                    null
+                                ? FutureBuilder(
+                                    future: profileModel.getProfile(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        Map profile = snapshot.data!;
+                                        return Row(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () async {
+                                                await showDialog(
+                                                  context: context,
+                                                  builder: (_) => Dialog(
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    insetPadding:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    child: Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      height: 350,
+                                                      decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  "${profile["CustomerImage"]}"),
+                                                              fit: BoxFit
+                                                                  .cover)),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: SizedBox(
+                                                width: 35,
+                                                height: 35,
+                                                child: CircleAvatar(
+                                                  backgroundColor:
+                                                      const Color(0xff00A3FF),
+                                                  backgroundImage: NetworkImage(
+                                                      "${profile["CustomerImage"]}"),
+                                                  radius: 35.0,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 6,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  "Hi!",
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                Text(
+                                                  "${profile["CustomerName"]}",
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        );
+                                      } else {
+                                        return const SizedBox(
+                                          width: 30,
+                                          height: 30,
+                                          child: LoadingIndicator(
+                                            colors: kDefaultRainbowColors,
+                                            indicatorType:
+                                                Indicator.lineSpinFadeLoader,
+                                            strokeWidth: 1,
+                                            // pathBackgroundColor: Colors.black45,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  )
+                                : Container(
+                                    margin: const EdgeInsets.only(right: 15),
+                                    decoration: BoxDecoration(
+                                      color: mainColor,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(20)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 5,
+                                          blurRadius: 7,
+                                          offset: const Offset(0,
+                                              3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 5),
+                                    child: GestureDetector(
+                                        onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const LoginScreen())),
+                                        child: const Row(
+                                          children: [
+                                            Icon(
+                                              Icons.account_circle_outlined,
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(
+                                              width: 2,
+                                            ),
+                                            Text(
+                                              "Đăng nhập",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400),
+                                            )
+                                          ],
+                                        )),
+                                  ),
+                            Row(
+                              children: [
+                                FutureBuilder(
+                                  future: cartModel.getProductCartList() ,
+                                  builder: (context, snapshot) {
+                                    if(snapshot.hasData){
+                                      return badges.Badge(
+                                        position: badges.BadgePosition.topEnd(top: -8, end: 2),
+                                        showBadge: true,
+                                        ignorePointer: false,
+                                        onTap: () {
+                                          if(storageCustomerToken.getItem("customer_token") != null){
+                                            Navigator.push(context, MaterialPageRoute(builder: (contex) => CartScreen()));
+                                          }else{
+                                            Navigator.push(context,
+                                                MaterialPageRoute(builder: (context) => const LoginScreen()));
+                                          }
+                                        },
+                                        badgeContent:
+                                        Text("${snapshot.data!.length}", style: TextStyle(fontSize: 8, color: Colors.white),),
+                                        badgeAnimation: badges.BadgeAnimation.rotation(
+                                          animationDuration: Duration(seconds: 1),
+                                          colorChangeAnimationDuration: Duration(seconds: 1),
+                                          loopAnimation: false,
+                                          curve: Curves.fastOutSlowIn,
+                                          colorChangeAnimationCurve: Curves.easeInCubic,
+                                        ),
+
+                                        child: Container(
+                                          margin: const EdgeInsets.only(right: 5),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              if(storageCustomerToken.getItem("customer_token") != null){
+                                                Navigator.push(context, MaterialPageRoute(builder: (contex) => CartScreen()));
+                                              }else{
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(builder: (context) => const LoginScreen()));
+                                              }
+                                            },
+                                            child: Image.asset(
+                                              "assets/images/shopping-cart.png",
+                                              width: 30,
+                                              height: 30,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    else{
+                                      return const SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: LoadingIndicator(
+                                          colors: kDefaultRainbowColors,
+                                          indicatorType:
+                                          Indicator.lineSpinFadeLoader,
+                                          strokeWidth: 1,
+                                          // pathBackgroundColor: Colors.black45,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                                FutureBuilder(
+                                  future: bookingModel.getNotifications(),
+                                    builder: (context, snapshot) {
+                                      if(snapshot.hasData){
+                                       return badges.Badge(
+                                          position: badges.BadgePosition.topEnd(top: -8, end: 2),
+                                          showBadge: true,
+                                          ignorePointer: false,
+                                         onTap: () {
+                                           if(storageCustomerToken.getItem("customer_token") != null) {
+                                             Navigator.push(
+                                                 context,
+                                                 MaterialPageRoute(
+                                                     builder: (context) =>
+                                                     const NotificationScreen()));
+                                           }else{
+                                             Navigator.push(context,
+                                                 MaterialPageRoute(builder: (context) => const LoginScreen()));
+                                           }
+                                         },
+                                          badgeContent:
+                                          Text("${snapshot.data!.length}", style: TextStyle(fontSize: 8, color: Colors.white),),
+                                          badgeAnimation: badges.BadgeAnimation.rotation(
+                                            animationDuration: Duration(seconds: 1),
+                                            colorChangeAnimationDuration: Duration(seconds: 1),
+                                            loopAnimation: false,
+                                            curve: Curves.fastOutSlowIn,
+                                            colorChangeAnimationCurve: Curves.easeInCubic,
+                                          ),
+
+                                          child: Container(
+                                            margin: const EdgeInsets.only(right: 5),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                if(storageCustomerToken.getItem("customer_token") != null) {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                          const NotificationScreen()));
+                                                }else{
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(builder: (context) => const LoginScreen()));
+                                                }
+                                              },
+                                              child: Image.asset(
+                                                "assets/images/notification-solid-black.png",
+                                                width: 30,
+                                                height: 30,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                      else{
+                                        return const SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: LoadingIndicator(
+                                            colors: kDefaultRainbowColors,
+                                            indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                            strokeWidth: 1,
+                                            // pathBackgroundColor: Colors.black45,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                ),
+                              ],
+                            )
+                          ],
                         ),
                       ),
-                      Text(
-                        "${item["title"]}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: mainColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: toolServices.map((item) {
+                            int index = toolServices.indexOf(item);
+                            return SizedBox(
+                              width: MediaQuery.of(context).size.width / 5 - 18,
+                              // height:90,
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 0))),
+                                onPressed: () {
+                                  goToService(context, index);
+                                },
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(bottom: 10),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              width: 1, color: mainColor)),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 6),
+                                      child: Image.asset(
+                                        width: 35,
+                                        height: 35,
+                                        "${item["icon"]}",
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${item["title"]}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: mainColor,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w400),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       )
                     ],
                   ),
                 ),
-              );
-            }).toList(),
+              )
+            ],
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 20, left: 15, right: 15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: Color(0xFFfed766),
+            gradient: LinearGradient(
+                colors: [Colors.amber, mainColor],
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight),
+            borderRadius: const BorderRadius.all(Radius.circular(10))
+          ),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "ĐĂNG KÝ THÀNH VIÊN",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 5,),
+              Text(
+                "Nhận ngay voucher làm đẹp 100.000đ và rất nhiều quà tặng",
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
         ),
         Container(
@@ -518,10 +664,10 @@ Widget listView(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   const Text(
-                    "Dịch Vụ Nổi Bật",
+                    "DỊCH VỤ NỔI BẬT",
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
@@ -533,19 +679,19 @@ Widget listView(
                               builder: (context) =>
                                   const SpecialServiceScreen()));
                     },
-                    child: Text(
+                    child: const Text(
                       "Xem thêm",
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
-                        color: mainColor,
+                        color: Colors.black,
                       ),
                     ),
                   )
                 ],
               ),
               Container(
-                height: 30,
+                height: 15,
               ),
               SizedBox(
                 height: 230,
@@ -588,9 +734,8 @@ Widget listView(
                                 decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(6)),
-                                    border: Border.all(
-                                        color: mainColor,
-                                        width: 1)),
+                                    border:
+                                        Border.all(color: mainColor, width: 1)),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment:
@@ -690,18 +835,18 @@ Widget listView(
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(top: 30),
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+          margin: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   const Text(
-                    "Sản Phẩm Bán Chạy",
+                    "SẢN PHẨM BÁN CHẠY",
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
@@ -713,22 +858,22 @@ Widget listView(
                               builder: (context) =>
                                   const SpecialCosmeticScreen()));
                     },
-                    child: Text(
+                    child: const Text(
                       "Xem thêm",
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
-                        color: mainColor,
+                        color: Colors.black,
                       ),
                     ),
                   )
                 ],
               ),
               Container(
-                height: 30,
+                height: 15,
               ),
               SizedBox(
-                height: 230,
+                height: 190,
                 child: FutureBuilder(
                   future: productModel.getHotProduct(),
                   builder: (context, snapshot) {
@@ -760,17 +905,16 @@ Widget listView(
                                   }),
                               child: Container(
                                 margin:
-                                    EdgeInsets.only(left: index == 0 ? 0 : 10),
+                                    EdgeInsets.only(left: index == 0 ? 0 : 5),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 45,
+                                    MediaQuery.of(context).size.width / 3 - 10,
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 6),
+                                    horizontal: 4, vertical: 6),
                                 decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(
-                                        Radius.circular(6)),
-                                    border: Border.all(
-                                        color: mainColor,
-                                        width: 1)),
+                                        Radius.circular(4)),
+                                    border:
+                                        Border.all(color: mainColor, width: 1)),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment:
@@ -779,6 +923,8 @@ Widget listView(
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Image.network(
                                           "${item["Image_Name"]}",
@@ -796,47 +942,54 @@ Widget listView(
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
-                                              fontSize: 13,
+                                              fontSize: 10,
+                                              height: 1.3,
                                               fontWeight: FontWeight.w400),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: TextButton(
-                                          onPressed: () {
-                                            showModalBottomSheet<void>(
-                                                backgroundColor: Colors.white,
-                                                clipBehavior:
-                                                    Clip.antiAliasWithSaveLayer,
-                                                context: context,
-                                                isScrollControlled: true,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return Container(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: MediaQuery.of(
-                                                                  context)
-                                                              .viewInsets
-                                                              .bottom),
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.95,
-                                                      child: ProductDetail(
-                                                        details: item,
-                                                      ));
-                                                });
-                                          },
-                                          style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      mainColor)),
-                                          child: const Text("Xem thêm",
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "đ",
                                               style: TextStyle(
                                                   fontSize: 12,
-                                                  color: Colors.white))),
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                            ),
+                                            const SizedBox(
+                                              width: 2,
+                                            ),
+                                            Text(
+                                              NumberFormat.currency(
+                                                  locale: "vi_VI", symbol: "")
+                                                  .format(
+                                                item["CustomerPrice"] ??
+                                                    item["PriceInbound"] ??
+                                                    0,
+                                              ),
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          "-5%",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.amber),
+                                        ),
+                                      ],
                                     )
                                   ],
                                 ),
@@ -871,146 +1024,50 @@ Widget listView(
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(top: 30),
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+          margin: const EdgeInsets.only(top: 20, bottom: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-            const  Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    "Ưu đãi, khuyến mãi",
+                  const Text(
+                    "KHUYẾN MÃI HOT",
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) => const TinTucScreen()));
-                  //   },
-                  //   child: Text(
-                  //     "Xem thêm",
-                  //     style: TextStyle(
-                  //       fontSize: 12,
-                  //       fontWeight: FontWeight.w400,
-                  //       color: mainColor,
-                  //     ),
-                  //   ),
-                  // )
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const SpecialCosmeticScreen()));
+                    },
+                    child: const Text(
+                      "Xem thêm",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                      ),
+                    ),
+                  )
                 ],
               ),
+              Container(
+                height: 15,
+              ),
               SizedBox(
-                height: 285,
                 child: FutureBuilder(
                   future: newsModel.getCustomerNewsByGroup("Tin khuyến mãi"),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      if (snapshot.data!.isNotEmpty) {
-                        return ListView(
-                          padding: const EdgeInsets.only(top: 15),
-                          scrollDirection: Axis.horizontal,
-                          children: snapshot.data!.map((item) {
-                            int index = snapshot.data!.toList().indexOf(item);
-                            return GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet<void>(
-                                    backgroundColor: Colors.white,
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (BuildContext context) {
-                                      return Container(
-                                          padding: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
-                                                  .viewInsets
-                                                  .bottom),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.95,
-                                          child: ChiTietTinTuc(
-                                            detail: item,
-                                            type: "ưu đãi, khuyến mãi",
-                                          ));
-                                    });
-                              },
-                              child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(6)),
-                                      border: Border.all(
-                                          color: mainColor,
-                                          width: 1)),
-                                  margin:
-                                  EdgeInsets.only(left: index == 0 ? 0 : 15),
-                                  width: MediaQuery.of(context).size.width * .6,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      ClipRRect(
-                                        borderRadius: const BorderRadius.vertical(
-                                          top: Radius.circular(6)
-                                            ),
-                                        child: Image.network(
-                                          "${item["Image"]}",
-                                          height: 160,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Text(
-                                        "${item["Title"]}",
-                                        textAlign: TextAlign.left,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: const TextStyle(
-                                            color: Color(0xFF212121),
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        DateFormat("dd/MM/yyyy").format(
-                                            DateTime.parse(
-                                                item["ModifiedDate"])),
-                                        textAlign: TextAlign.left,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xFF8B8B8B),
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      Html(
-                                        data: item["Content"], style: {
-                                          "*": Style(margin: Margins.only(left: 0, top: 0), maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                          "p": Style(
-                                              lineHeight: const LineHeight(1.5),
-                                              fontSize: FontSize(15),
-                                              fontWeight: FontWeight.w300)
-                                        },
-                                      )
-                                    ],
-                                  )),
-                            );
-                          }).toList(),
-                        );
-                      } else {
+                      List list = snapshot.data!.toList();
+                      if (list.isEmpty) {
                         return Column(
                           children: [
                             Container(
@@ -1029,80 +1086,11 @@ Widget listView(
                             )
                           ],
                         );
-                      }
-                    } else {
-                      return const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: LoadingIndicator(
-                              colors: kDefaultRainbowColors,
-                              indicatorType: Indicator.lineSpinFadeLoader,
-                              strokeWidth: 1,
-                              // pathBackgroundColor: Colors.black45,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text("Đang lấy dữ liệu")
-                        ],
-                      );
-                    }
-                  },
-                ),
-              )
-            ],
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 30),
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text(
-                    "Kiến thức làm đẹp",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const KienThucScreen()));
-                    },
-                    child: Text(
-                      "Xem thêm",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: mainColor,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 280,
-                child: FutureBuilder(
-                  future: newsModel.getCustomerNewsByGroup("Kiến thức làm đẹp"),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.isNotEmpty) {
-                        return ListView(
-                          padding: const EdgeInsets.only(top: 15),
-                          scrollDirection: Axis.horizontal,
-                          children: snapshot.data!.map((item) {
-                            int index = snapshot.data!.toList().indexOf(item);
+                      } else {
+                        return  Wrap(
+                          spacing: 5,
+                          runSpacing: 15,
+                          children: list.sublist(0, list.length > 6 ? 6 : list.length).map((item) {
                             return GestureDetector(
                               onTap: () {
                                 showModalBottomSheet<void>(
@@ -1122,100 +1110,60 @@ Widget listView(
                                               0.95,
                                           child: ChiTietTinTuc(
                                             detail: item,
-                                            type: "kiến thức làm đẹp",
+                                            type: "khuyến mãi",
                                           ));
                                     });
                               },
                               child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(6)),
-                                      border: Border.all(
-                                          color: mainColor,
-                                          width: 1)),
-                                  margin:
-                                  EdgeInsets.only(left: index == 0 ? 0 : 15),
-                                  width: MediaQuery.of(context).size.width * .6,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.stretch,
-                                    children: [
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      ClipRRect(
-                                        borderRadius: const BorderRadius.vertical(
-                                            top: Radius.circular(6)
-                                        ),
-                                        child: Image.network(
+                                width:
+                                MediaQuery.of(context).size.width / 3 - 10,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 6),
+                                decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(4)),
+                                    border: Border.all(
+                                        color: mainColor,
+                                        width: 1)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Image.network(
                                           "${item["Image"]}",
-                                          height: 160,
+                                          // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                           fit: BoxFit.cover,
+                                          width:
+                                          MediaQuery.of(context).size.width,
+                                          height: 120,
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Text(
-                                        "${item["Title"]}",
-                                        textAlign: TextAlign.left,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: const TextStyle(
-                                            color: Color(0xFF212121),
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        DateFormat("dd/MM/yyyy").format(
-                                            DateTime.parse(
-                                                item["ModifiedDate"])),
-                                        textAlign: TextAlign.left,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xFF8B8B8B),
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      Html(
-                                        data: item["Content"],
-                                        style: {
-                                          "*": Style(margin: Margins.only(left: 0, top: 0), maxLines: 2, textOverflow: TextOverflow.ellipsis),
-                                          "p": Style(
-                                              lineHeight: const LineHeight(1.5),
-                                              fontSize: FontSize(15),
-                                              fontWeight: FontWeight.w300)
-                                        },
-                                      )
-                                    ],
-                                  )),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          "${item["Title"]}",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 10,
+                                              height: 1.3,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        SizedBox(height: 8,)
+                                      ],
+                                    ),
+
+                                  ],
+                                ),
+                              ),
                             );
                           }).toList(),
-                        );
-                      } else {
-                        return Column(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 0, bottom: 10),
-                              child:
-                              Image.asset("assets/images/account/img.webp"),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 40),
-                              child: const Text(
-                                "Xin lỗi! Hiện tại Ngọc Hường chưa có ưu đãi và khuyến mãi",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w400),
-                              ),
-                            )
-                          ],
                         );
                       }
                     } else {
@@ -1241,11 +1189,10 @@ Widget listView(
                     }
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),
-        SizedBox(height: 25,)
       ],
     ),
   );

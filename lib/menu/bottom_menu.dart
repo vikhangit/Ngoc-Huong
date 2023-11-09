@@ -1,9 +1,21 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/models/cartModel.dart';
+import 'package:ngoc_huong/models/productModel.dart';
+import 'package:ngoc_huong/models/profileModel.dart';
+import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
+import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
+import 'package:ngoc_huong/screen/services/all_service.dart';
+import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+
 
 class MyBottomMenu extends StatefulWidget {
   final int active;
@@ -13,6 +25,8 @@ class MyBottomMenu extends StatefulWidget {
   State<MyBottomMenu> createState() => _MyBottomMenuState();
 }
 
+int selectedTab = 0;
+
 List bottomList = [
   {
     "icon": "assets/images/icon/home-black.png",
@@ -20,129 +34,254 @@ List bottomList = [
     "title": "Trang chủ"
   },
   {
-    "icon": "assets/images/calendar-black.png",
-    "icon_active": "assets/images/calendar-solid-red.png",
-    "title": "Lịch hẹn"
+    "icon": "assets/images/list.png",
+    "icon_active": "assets/images/list1.png",
+    "title": "Dịch vụ"
+  },
+  // {
+  //   "icon": "assets/images/telesales-black.png",
+  //   "icon_active": "assets/images/telesales.png",
+  //   "title": "Tư vấn"
+  // },
+  {
+    "icon": "assets/images/Home/Icon/my-pham.png",
+    "icon_active": "assets/images/Home/Icon/my-pham.png",
+    "title": "Mỹ phẩm cao cấp"
   },
   {
-    "icon": "assets/images/gift-black.png",
-    "icon_active": "assets/images/gift-solid-red.png",
-    "title": "Ưu đãi"
-  },
-  {
-    "icon": "assets/images/icon/profile-black.png",
-    "icon_active": "assets/images/icon/profile-red.png",
-    "title": "Tài khoản"
+    "icon": "assets/images/telesales-black.png",
+    "icon_active": "assets/images/telesales.png",
+    "title": "Tư vấn"
   },
 ];
 
 class _MyBottomMenuState extends State<MyBottomMenu> {
   final LocalStorage storageCustomer = LocalStorage('customer_token');
   final CustomModal customModal = CustomModal();
+  final ProductModel productModel = ProductModel();
+  final ProfileModel profileModel = ProfileModel();
+  final CartModel cartModel = CartModel();
+  final ServicesModel servicesModel = ServicesModel();
   String a = "";
 
+  @override
+  void initState() {
+    setState(() {
+      selectedTab = widget.active;
+    });
+
+    super.initState();
+  }
+
   void onItemTapped(int index) {
-    if (index == 0) {
-      Navigator.pushNamed(context, "home");
-    } else {
-      if (storageCustomer.getItem("customer_token") != null) {
-        switch (index) {
-          case 1:
-            {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const BookingHistory()));
-              break;
-            }
-          case 2:
-            {
-              break;
-            }
-          case 3:
-            {
-              Navigator.pushNamed(context, "account");
-              break;
-            }
-          case 4:
-            {
-              customModal.showBottomToolDialog(context);
-              break;
-            }
-          default:
-        }
-      } else if (storageCustomer.getItem("customer_Token") == null) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: ((context) => const LoginScreen())));
-      }
+    setState(() {
+      selectedTab = index;
+    });
+   {
+     if(index == 3){
+       if (storageCustomer.getItem("customer_token") != null) {
+         Navigator.pushNamed(context, "account");
+       } else if (storageCustomer.getItem("customer_Token") == null) {
+         Navigator.push(context,
+             MaterialPageRoute(builder: ((context) => const LoginScreen())));
+       }
+     }else{
+       switch (index) {
+         case 0:{
+           Navigator.pushNamed(context, "home");
+           break;
+         }
+         case 1:
+          {
+            servicesModel.getGroupServiceByBranch().then((value) => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AllServiceScreen(
+                      listTab: value,
+                    ))));
+            break;
+          }
+         case 2:
+           {
+             productModel.getGroupProduct().then((value) => Navigator.push(
+                 context,
+                 MaterialPageRoute(
+                     builder: (context) => Cosmetic(
+                       listTab: value,
+                     ))));
+             break;
+           }
+         case 4:
+           {
+             customModal.showBottomToolDialog(context);
+             break;
+           }
+         default:
+       }
+     }
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Container(
-      color: Colors.transparent,
-      width: size.width,
-      height: 90,
-      child: Stack(
-        children: [
-          CustomPaint(
-            size: Size(size.width, 90),
-            painter: BNBCustomPainter(),
-          ),
-          Center(
-              heightFactor: 0.55,
-              child: SizedBox(
-                width: 65,
-                height: 65,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.white,
-                  focusColor: Colors.white,
-                  splashColor: Colors.white,
-                  onPressed: () {
-                    onItemTapped(4);
-                  },
-                  child: Image.asset(
-                    "assets/images/telesales.png",
-                    width: 45,
-                    height: 45,
-                  ),
-                ),
-              )),
-          SizedBox(
-            width: size.width,
-            height: 110,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: bottomList.map((e) {
-                int index = bottomList.indexOf(e);
-                return Container(
-                  height: 56,
-                  margin: EdgeInsets.only(
-                      left: index == 2 ? 15 : 0, right: index == 1 ? 15 : 0),
-                  alignment: Alignment.center,
-                  child: GestureDetector(
+    return Stack(
+      children: [
+        Center(
+            heightFactor: 1,
+            child: Container(
+              height: 60,
+              child: TextButton(
+                // backgroundColor: Colors.white,
+                // focusColor: Colors.white,
+                // splashColor: Colors.white,
+                onPressed: () {
+                  onItemTapped(4);
+                },
+                child:Column(
+                  children: [
+                   Container(
+                     padding: EdgeInsets.all(2),
+                     decoration: BoxDecoration(
+                         border: Border.all(color: mainColor, width: 1),
+                         borderRadius: BorderRadius.all(Radius.circular(9999999))
+                     ),
+                     child:  Image.asset(
+                     "assets/images/telesales.png",
+                     width: 22,
+                     height: 22,
+                   ),),
+                    Text(
+                      "Tư vấn",
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w300,
+                         ),
+                    )
+                  ],
+                )
+
+              ),
+            )),
+        SizedBox(
+          width: size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: bottomList.map((e) {
+              int index = bottomList.indexOf(e);
+              if(index == 3){
+                if(storageCustomer.getItem("customer_token") != null){
+                  return Container(
+                      height: 60,
+                      margin: EdgeInsets.only(
+                          left: index == 2 ? 60 : 0, right: index == 1 ? 30 : 0),
+                      alignment: Alignment.center,
+                      child: GestureDetector(
+                        // style: ButtonStyle(
+                        //     padding: MaterialStateProperty.all(
+                        //         const EdgeInsets.symmetric(
+                        //             vertical: 0.0, horizontal: 0.0))),
+                          onTap: () => onItemTapped(index),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FutureBuilder(future: profileModel.getProfile(),
+                                builder: (context, snapshot) {
+                                  if(snapshot.hasData){
+                                    return SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                      child: CircleAvatar(
+                                        backgroundColor: const Color(0xff00A3FF),
+                                        backgroundImage: NetworkImage(snapshot.data["CustomerImage"],),
+                                      )
+                                    );
+                                  }else{
+                                    return const SizedBox(
+                                      width: 12,
+                                      height: 12,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType: Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                              Text(
+                                "Tài khoản",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w300,
+                                    color: widget.active == index
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Colors.black),
+                              )
+                            ],
+                          ))
+                  );
+                }else{
+                  return Container(
+                    height: 60,
+                    margin: EdgeInsets.only(
+                        left: index == 2 ? 60 : 0, right: index == 1 ? 30 : 0),
+                    alignment: Alignment.center,
+                    child: GestureDetector(
                       // style: ButtonStyle(
                       //     padding: MaterialStateProperty.all(
                       //         const EdgeInsets.symmetric(
                       //             vertical: 0.0, horizontal: 0.0))),
+                        onTap: () => onItemTapped(index),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                               "assets/images/icon/profile-black.png",
+                              width: 24,
+                              height: 24,
+                            ),
+                            Text(
+                              "Tài khoản",
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w300,
+                                  color: widget.active == index
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.black),
+                            )
+                          ],
+                        )),
+                  );
+                }
+
+              }else{
+                return Container(
+                  height: 60,
+                  margin: EdgeInsets.only(
+                      left: index == 2 ? 60 : 0, right: index == 1 ? 30 : 0),
+                  alignment: Alignment.center,
+                  child: GestureDetector(
+                    // style: ButtonStyle(
+                    //     padding: MaterialStateProperty.all(
+                    //         const EdgeInsets.symmetric(
+                    //             vertical: 0.0, horizontal: 0.0))),
                       onTap: () => onItemTapped(index),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            index == widget.active
-                                ? e["icon_active"]
-                                : e["icon"],
-                            width: 26,
-                            height: 26,
+                            index == widget.active ? e["icon_active"] : e["icon"],
+                            width: 24,
+                            height: 24,
                           ),
                           Text(
                             "${e["title"]}",
                             style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 10,
                                 fontWeight: FontWeight.w300,
                                 color: widget.active == index
                                     ? Theme.of(context).colorScheme.primary
@@ -151,11 +290,11 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                         ],
                       )),
                 );
-              }).toList(),
-            ),
-          )
-        ],
-      ),
+              }
+            }).toList(),
+          ),
+        )
+      ],
     );
   }
 }

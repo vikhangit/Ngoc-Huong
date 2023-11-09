@@ -45,6 +45,7 @@ class _ProductDetailState extends State<ProductDetail>
     super.initState();
     setState(() {
       quantity = 1;
+      activeTab= 1;
     });
     tabController = TabController(length: 2, vsync: this);
     tabController?.addListener(_getActiveTabIndex);
@@ -55,6 +56,7 @@ class _ProductDetailState extends State<ProductDetail>
   @override
   void dispose() {
     quantity = 1;
+    activeTab= 1;
     super.dispose();
   }
 
