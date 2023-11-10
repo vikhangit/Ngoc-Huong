@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/addressModel.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/order.dart';
@@ -42,16 +43,18 @@ class _CheckOutScreenState extends State<CheckOutCart> {
   @override
   void initState() {
     super.initState();
-    addressModel.getCustomerAddress().then((value) => setState((){
-      int index = value.indexWhere((element) => element["IsDefault"] == true);
-      if(index >= 0){
-        activeIndex = index;
-        selectAddress = "${value[index]["ApartmentNumber"]}, ${value[index]["WardName"]}, ${value[index]["DistrictName"]}, ${value[index]["ProvinceName"]}";
-      }else{
-        activeIndex = -1;
-        selectAddress = "";
-      }
-    }));
+    addressModel.getCustomerAddress().then((value) => setState(() {
+          int index =
+              value.indexWhere((element) => element["IsDefault"] == true);
+          if (index >= 0) {
+            activeIndex = index;
+            selectAddress =
+                "${value[index]["ApartmentNumber"]}, ${value[index]["WardName"]}, ${value[index]["DistrictName"]}, ${value[index]["ProvinceName"]}";
+          } else {
+            activeIndex = -1;
+            selectAddress = "";
+          }
+        }));
   }
 
   @override
@@ -93,9 +96,8 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                 "DetailList": [
                   {...listProductPayment[i], "IsDeleted": true}
                 ]
-              }).then((value) {});
+              }).then((value) => setState((){}));
             }
-            ;
             orderModel.setOrder(data).then((value) {
               EasyLoading.dismiss();
               Navigator.push(context,
@@ -141,6 +143,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                 fontWeight: FontWeight.w500,
                 color: Colors.white)),
       ),
+      bottomNavigationBar: const MyBottomMenu(active: -1),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,80 +284,70 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                 )),
                             Expanded(
                                 flex: 70,
-                                child:  Column(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    if(selectAddress.isNotEmpty) Text(
-                                      selectAddress,
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    ),
+                                    if (selectAddress.isNotEmpty)
+                                      Text(
+                                        selectAddress,
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      ),
                                     Container(
                                       // width: 15,
                                       margin: EdgeInsets.only(top: 5),
                                       height: 20,
-                                      alignment:
-                                      Alignment.centerRight,
+                                      alignment: Alignment.centerRight,
                                       child: TextButton(
                                         style: ButtonStyle(
-                                            padding:
-                                            MaterialStateProperty
-                                                .all(
-                                                const EdgeInsets
-                                                    .all(
-                                                    0.0))),
+                                            padding: MaterialStateProperty.all(
+                                                const EdgeInsets.all(0.0))),
                                         onPressed: () {
                                           showModalBottomSheet<void>(
-                                              backgroundColor:
-                                              Colors.white,
+                                              backgroundColor: Colors.white,
                                               shape:
-                                              const RoundedRectangleBorder(
+                                                  const RoundedRectangleBorder(
                                                 borderRadius:
-                                                BorderRadius
-                                                    .vertical(
-                                                  top:
-                                                  Radius.circular(
-                                                      15.0),
+                                                    BorderRadius.vertical(
+                                                  top: Radius.circular(15.0),
                                                 ),
                                               ),
-                                              clipBehavior: Clip
-                                                  .antiAliasWithSaveLayer,
+                                              clipBehavior:
+                                                  Clip.antiAliasWithSaveLayer,
                                               context: context,
-                                              isScrollControlled:
-                                              true,
-                                              builder: (BuildContext
-                                              context) {
+                                              isScrollControlled: true,
+                                              builder: (BuildContext context) {
                                                 return Container(
                                                     padding: EdgeInsets.only(
                                                         bottom: MediaQuery.of(
-                                                            context)
+                                                                context)
                                                             .viewInsets
                                                             .bottom),
-                                                    height: MediaQuery.of(
-                                                        context)
-                                                        .size
-                                                        .height *
-                                                        0.88,
-                                                    child: ChooseAddressShipping(
-                                                        saveAddress: () =>
-                                                            setState(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.88,
+                                                    child:
+                                                        ChooseAddressShipping(
+                                                            saveAddress: () =>
+                                                                setState(
                                                                     () {})));
                                               });
                                         },
                                         child: Text(
                                           selectAddress.isNotEmpty
-                                              ? "Thay đổi" : "Thêm",
+                                              ? "Thay đổi"
+                                              : "Thêm",
                                           textAlign: TextAlign.end,
                                           style: TextStyle(
-                                              fontWeight:
-                                              FontWeight.w400,
+                                              fontWeight: FontWeight.w400,
                                               color: mainColor),
                                         ),
                                       ),
                                     )
-
                                   ],
                                 ))
                           ],

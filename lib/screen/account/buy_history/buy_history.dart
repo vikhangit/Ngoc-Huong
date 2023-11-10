@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
@@ -67,9 +68,9 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          // bottomNavigationBar: const MyBottomMenu(
-          //   active: 1,
-          // ),
+          bottomNavigationBar: const MyBottomMenu(
+            active: 4,
+          ),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
@@ -94,7 +95,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                     color: Colors.white)),
           ),
           body: widget.listTab.isNotEmpty
-              ? Column(
+              ? ListView(
                   children: [
                     const SizedBox(
                       height: 10,
@@ -128,7 +129,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                       ),
                     ),
                     SizedBox(
-                        height: MediaQuery.of(context).size.height - 180,
+                        height: MediaQuery.of(context).size.height - 250,
                         child: TabBarView(
                             controller: tabController,
                             children: widget.listTab

@@ -157,7 +157,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                       .width /
                                                   2 -
                                               22.5,
-                                          height: 205,
+                                          height: 230,
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 6, vertical: 6),
                                           decoration: BoxDecoration(
@@ -293,7 +293,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                                     height: MediaQuery.of(context)
                                                                             .size
                                                                             .height *
-                                                                        0.95,
+                                                                        0.85,
                                                                     child:
                                                                         ProductDetail(
                                                                       details:

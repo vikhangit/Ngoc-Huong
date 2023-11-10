@@ -703,7 +703,7 @@ Widget listView(
                       return ListView(
                           physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
-                          children: list.sublist(0, 3).map((item) {
+                          children: list.sublist(0, 4).map((item) {
                             int index = list.indexOf(item);
                             return GestureDetector(
                               onTap: () => showModalBottomSheet<void>(
@@ -719,7 +719,7 @@ Widget listView(
                                                 .bottom),
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                0.95,
+                                                0.85,
                                         child: ChiTietScreen(
                                           detail: item,
                                         ));
@@ -787,7 +787,7 @@ Widget listView(
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .height *
-                                                              0.95,
+                                                              0.85,
                                                       child: ChiTietScreen(
                                                         detail: item,
                                                       ));
@@ -898,7 +898,7 @@ Widget listView(
                                                 .bottom),
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                0.95,
+                                                0.85,
                                         child: ProductDetail(
                                           details: item,
                                         ));
@@ -1045,7 +1045,7 @@ Widget listView(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  const SpecialCosmeticScreen()));
+                                  const TinTucScreen()));
                     },
                     child: const Text(
                       "Xem thêm",
@@ -1107,7 +1107,7 @@ Widget listView(
                                           height: MediaQuery.of(context)
                                               .size
                                               .height *
-                                              0.95,
+                                              0.85,
                                           child: ChiTietTinTuc(
                                             detail: item,
                                             type: "khuyến mãi",

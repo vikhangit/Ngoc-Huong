@@ -5,6 +5,7 @@ import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/information/child/button_confirm.dart';
@@ -180,6 +181,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
                   child: Scaffold(
                     backgroundColor: Colors.white,
                     resizeToAvoidBottomInset: true,
+                    bottomNavigationBar: const MyBottomMenu(active: 4),
                     appBar: AppBar(
                       leadingWidth: 45,
                       centerTitle: true,

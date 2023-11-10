@@ -67,7 +67,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            height: MediaQuery.of(context).size.height * 0.95 - 100,
+            height: MediaQuery.of(context).size.height * 0.85 - 100,
             child: ListView(children: [
               Container(
                 decoration: const BoxDecoration(

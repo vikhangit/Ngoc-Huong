@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_chi_tiet_booking.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
@@ -79,6 +80,7 @@ class _BookingSuccessState extends State<BookingSuccess>
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
             ),
+            bottomNavigationBar: const MyBottomMenu(active: 1),
             body: Container(
                 padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
                 child: SizedBox(
@@ -145,133 +147,86 @@ class _BookingSuccessState extends State<BookingSuccess>
                             ],
                           ),
                         ),
-                        Wrap(
-                          runSpacing: 15,
-                          children: [
-                              GestureDetector(
-                                  child: Container(
-                                    width: MediaQuery.of(
-                                        context)
-                                        .size
-                                        .width,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1,
-                                            color: Colors
-                                                .grey),
-                                        borderRadius:
-                                        const BorderRadius
-                                            .all(
-                                            Radius.circular(
-                                                15))),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .center,
-                                      children: [
-                                        const Text(
-                                            "Xem chi tiết",
-                                            style:
-                                            TextStyle(
-                                              fontSize: 14,
-                                              fontWeight:
-                                              FontWeight
-                                                  .w400,
-                                            )),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        Image.asset(
-                                          "assets/images/calendar-black.png",
-                                          width: 24,
-                                          height: 24,
-                                          fit: BoxFit
-                                              .contain,
-                                        ),
-                                      ],
-                                    ),
+                        GestureDetector(
+                            child: Container(
+                              width: MediaQuery.of(
+                                  context)
+                                  .size
+                                  .width,
+                              height: 50,
+                              margin: EdgeInsets.only(bottom: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                  const BorderRadius.all(
+                                      Radius.circular(15)),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.2)),
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment
+                                    .center,
+                                children: [
+                                  const Text(
+                                      "Xem chi tiết",
+                                      style:
+                                      TextStyle(
+                                        fontSize: 14,
+                                        fontWeight:
+                                        FontWeight
+                                            .w400,
+                                      )),
+                                  const SizedBox(
+                                    width: 15,
                                   ),
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder:
-                                                (context) =>
-                                            const BookingHistory()));
-                                    showModalBottomSheet<
-                                        void>(
-                                        backgroundColor:
-                                        Colors.white,
-                                        clipBehavior: Clip
-                                            .antiAliasWithSaveLayer,
-                                        context: context,
-                                        isScrollControlled:
-                                        true,
-                                        builder:
-                                            (BuildContext
-                                        context) {
-                                          return Container(
-                                              padding: EdgeInsets.only(
-                                                  bottom: MediaQuery.of(
-                                                      context)
-                                                      .viewInsets
-                                                      .bottom),
-                                              height: MediaQuery.of(
-                                                  context)
-                                                  .size
-                                                  .height *
-                                                  0.95,
-                                              child:
-                                              ModalChiTietBooking(
-                                                details:
-                                               details,
-                                              ));
-                                        });
-                                  }),
-                            GestureDetector(
-                                child: Container(
-                                  width:
-                                  MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                      const BorderRadius.all(
-                                          Radius.circular(15)),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withOpacity(0.2)),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Về trang chủ",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                      ),
-                                      const SizedBox(
-                                        width: 15,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/icon/home-red.png",
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ],
+                                  Image.asset(
+                                    "assets/images/calendar-black.png",
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit
+                                        .contain,
                                   ),
-                                ),
-                                onTap: () {
-                                  Navigator.pushNamed(context, "home");
-                                }),
-                          ],
-                        )
+                                ],
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                      const BookingHistory()));
+                              showModalBottomSheet<
+                                  void>(
+                                  backgroundColor:
+                                  Colors.white,
+                                  clipBehavior: Clip
+                                      .antiAliasWithSaveLayer,
+                                  context: context,
+                                  isScrollControlled:
+                                  true,
+                                  builder:
+                                      (BuildContext
+                                  context) {
+                                    return Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(
+                                                context)
+                                                .viewInsets
+                                                .bottom),
+                                        height: MediaQuery.of(
+                                            context)
+                                            .size
+                                            .height *
+                                            0.8,
+                                        child:
+                                        ModalChiTietBooking(
+                                          details:
+                                          details,
+                                        ));
+                                  });
+                            }),
                       ],
                     )))));
   }

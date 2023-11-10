@@ -106,7 +106,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(active: 0),
+            bottomNavigationBar: const MyBottomMenu(active: -1),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,

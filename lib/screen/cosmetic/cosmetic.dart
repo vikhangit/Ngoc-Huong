@@ -158,7 +158,7 @@ class _CosmeticState extends State<Cosmetic> {
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(active: 0),
+            bottomNavigationBar: const MyBottomMenu(active: 3),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -412,7 +412,7 @@ class _CosmeticState extends State<Cosmetic> {
                                                                             height: MediaQuery.of(context)
                                                                                 .size
                                                                                 .height *
-                                                                                0.95,
+                                                                                0.85,
                                                                             child:
                                                                             ProductDetail(
                                                                               details:

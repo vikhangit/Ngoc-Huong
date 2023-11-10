@@ -7,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
@@ -27,7 +28,7 @@ class BookingServices extends StatefulWidget {
   State<BookingServices> createState() => _BookingServicesState();
 }
 
-bool showService = false;
+bool showService = true;
 bool showDay = false;
 bool showTime = false;
 DateTime now = DateTime.now();
@@ -230,8 +231,11 @@ class _BookingServicesState extends State<BookingServices>
               context,
               "error",
               "Lỗi Đặt Lịch",
-              "Bạn đã chọn đặt lịch vào thời gian Ngọc Hường chưa mở cửa. Xin qúy khách vui lòng kiểm tra lại",
-              () => Navigator.pop(context),
+              "Bạn đã chọn đặt lịch vào thời gian Ngọc Hường chưa mở cửa",
+              (){
+                Navigator.pop(context);
+                selectTime();
+              },
               () => Navigator.pop(context));
         } else {
           if (dateBook.isAfter(now)) {
@@ -301,6 +305,7 @@ class _BookingServicesState extends State<BookingServices>
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
             ),
+            bottomNavigationBar: const MyBottomMenu(active: 1),
             body: Column(
                 // reverse: true,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

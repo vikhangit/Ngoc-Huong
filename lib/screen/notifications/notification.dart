@@ -39,7 +39,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         child: Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      bottomNavigationBar: const MyBottomMenu(active: 2),
+      bottomNavigationBar: const MyBottomMenu(active: -1),
       appBar: AppBar(
         leadingWidth: 45,
         centerTitle: true,

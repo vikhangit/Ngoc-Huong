@@ -88,7 +88,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
           ),
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.95 -
+          height: MediaQuery.of(context).size.height * 0.8 -
               (details["dien_giai"] == "Đang chờ" ? 155 : 100),
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -100,6 +100,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                       .toString()
                       .toLowerCase() == details["ServiceList"][0].toString().toLowerCase(), orElse: () => null);
                  return Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
                    children:  [
                      SizedBox(
                        width: MediaQuery.of(context).size.width,
@@ -127,41 +128,41 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                              const SizedBox(
                                height: 10,
                              ),
-                             Row(
-                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                               children: [
-                                 Text(
-                                   NumberFormat.currency(locale: "vi_VI", symbol: "đ")
-                                       .format(
-                                     detailProduct["PriceOutbound"],
-                                   ),
-                                   style: TextStyle(
-                                       fontSize: 16,
-                                       color: Theme.of(context).colorScheme.primary),
-                                 ),
-                                 // Row(
-                                 //   children: [
-                                 //     const Icon(
-                                 //       Icons.star,
-                                 //       size: 20,
-                                 //       color: Colors.orange,
-                                 //     ),
-                                 //     Container(
-                                 //       margin:
-                                 //       const EdgeInsets.symmetric(horizontal: 5),
-                                 //       child: const Text("4.8"),
-                                 //     ),
-                                 //     const Text(
-                                 //       "(130 đánh giá)",
-                                 //       style: TextStyle(fontWeight: FontWeight.w300),
-                                 //     )
-                                 //   ],
-                                 // )
-                               ],
-                             ),
-                             const SizedBox(
-                               height: 10,
-                             ),
+                             // Row(
+                             //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             //   children: [
+                             //     Text(
+                             //       NumberFormat.currency(locale: "vi_VI", symbol: "đ")
+                             //           .format(
+                             //         detailProduct["PriceOutbound"],
+                             //       ),
+                             //       style: TextStyle(
+                             //           fontSize: 16,
+                             //           color: Theme.of(context).colorScheme.primary),
+                             //     ),
+                             //     // Row(
+                             //     //   children: [
+                             //     //     const Icon(
+                             //     //       Icons.star,
+                             //     //       size: 20,
+                             //     //       color: Colors.orange,
+                             //     //     ),
+                             //     //     Container(
+                             //     //       margin:
+                             //     //       const EdgeInsets.symmetric(horizontal: 5),
+                             //     //       child: const Text("4.8"),
+                             //     //     ),
+                             //     //     const Text(
+                             //     //       "(130 đánh giá)",
+                             //     //       style: TextStyle(fontWeight: FontWeight.w300),
+                             //     //     )
+                             //     //   ],
+                             //     // )
+                             //   ],
+                             // ),
+                             // const SizedBox(
+                             //   height: 10,
+                             // ),
                              const Text(
                                "Thông tin đặt lịch",
                                style: TextStyle(fontSize: 15),
@@ -312,8 +313,8 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                             borderRadius: const BorderRadius.all(Radius.circular(10)),
                             child: Image.network(
                               "${detailProduct["Image_Name"]}",
-                              height: 210,
-                              width: MediaQuery.of(context).size.width * 0.8,
+                              // height: 210,
+                              width: MediaQuery.of(context).size.width,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -415,7 +416,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                                           const BorderRadius.all(
                                                               Radius.circular(10))),
                                                       child: Text(
-                                                        widget!.status == null ? "Sắp tới" : "${details["Status"]}",
+                                                        widget!.status == null ? "Sắp tới" : "${widget.status}",
                                                         style: TextStyle(
                                                             color: Theme.of(context)
                                                                 .colorScheme

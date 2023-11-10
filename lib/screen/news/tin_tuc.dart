@@ -41,7 +41,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                       color: Colors.black,
                     ),
                   )),
-              title: const Text("Tin tức",
+              title: const Text("Khuyến mãi",
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -53,7 +53,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                     margin: const EdgeInsets.only(
                         top: 10, left: 15, right: 15, bottom: 15),
                     child: FutureBuilder(
-                      future: newsModel.getAllCustomerNews(),
+                      future: newsModel.getCustomerNewsByGroup("Tin khuyến mãi"),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           if (snapshot.data!.isNotEmpty) {
@@ -78,10 +78,10 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  0.95,
+                                                  0.85,
                                               child: ChiTietTinTuc(
                                                 detail: item,
-                                                type: "tin tức",
+                                                type: "khuyến mãi",
                                               ));
                                         });
                                   },
@@ -102,7 +102,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                                 const BorderRadius.all(
                                                     Radius.circular(14)),
                                             child: Image.network(
-                                              "",
+                                              item["Image"],
                                               height: 135,
                                               fit: BoxFit.cover,
                                             ),
@@ -111,7 +111,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                             height: 8,
                                           ),
                                           Text(
-                                            "${item["title"]}",
+                                            "${item["Title"]}",
                                             textAlign: TextAlign.left,
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
@@ -123,18 +123,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                           const SizedBox(
                                             height: 5,
                                           ),
-                                          Text(
-                                            DateFormat("dd/MM/yyyy").format(
-                                                DateTime.parse(
-                                                    item["date_updated"])),
-                                            textAlign: TextAlign.left,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                                fontSize: 10,
-                                                color: Color(0xFF8B8B8B),
-                                                fontWeight: FontWeight.w400),
-                                          )
+
                                         ],
                                       )),
                                 );
@@ -153,7 +142,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 20),
                                   child: const Text(
-                                    "Ngọc Hường chưa có tin tức",
+                                    "Ngọc Hường chưa có tin tức khuyến mãi",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 15,

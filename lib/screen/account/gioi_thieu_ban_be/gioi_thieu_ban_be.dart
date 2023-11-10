@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
 
 class GioiThieuBanBe extends StatefulWidget {
   const GioiThieuBanBe({super.key});
@@ -37,27 +38,25 @@ class _GioiThieuBanBeState extends State<GioiThieuBanBe> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          body: SizedBox(
-            child: Expanded(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 40, bottom: 15),
-                    child: Image.asset("assets/images/account/img.webp"),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Text(
-                      'Bạn chưa có lượt giới thiệu bạn bè. Đừng quên "Giới Thiệu Bạn Bè" để cùng nhận được nhiều ưu đãi hấp dẫn',
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
-                    ),
-                  )
-                ],
+          bottomNavigationBar: const MyBottomMenu(active: 4),
+          body: ListView(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 40, bottom: 15),
+                child: Image.asset("assets/images/account/img.webp"),
               ),
-            ),
-          )),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: const Text(
+                  'Bạn chưa có lượt giới thiệu bạn bè. Đừng quên "Giới Thiệu Bạn Bè" để cùng nhận được nhiều ưu đãi hấp dẫn',
+                  textAlign: TextAlign.center,
+                  style:
+                  TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
+                ),
+              )
+            ],
+          )
+      ),
     );
   }
 }

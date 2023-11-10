@@ -42,6 +42,11 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       listCheckout = [];
     });
   }
+  @override
+  void dispose() {
+    listCheckout = [];
+    super.dispose();
+  }
 
   void _getActiveTabIndex() {
     _selectedIndex = tabController?.index;
@@ -125,7 +130,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          bottomNavigationBar: const MyBottomMenu(active: 1),
+          bottomNavigationBar: const MyBottomMenu(active: -1),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,

@@ -186,7 +186,7 @@ class _ProductDetailState extends State<ProductDetail>
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             margin: const EdgeInsets.only(bottom: 5),
-            height: MediaQuery.of(context).size.height * 0.95 -
+            height: MediaQuery.of(context).size.height * 0.85 -
                 195 -
                 MediaQuery.of(context).viewInsets.bottom,
             child: ListView(

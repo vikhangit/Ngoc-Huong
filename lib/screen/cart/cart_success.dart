@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class AddCartSuccess extends StatefulWidget {
   const AddCartSuccess({super.key});
@@ -54,9 +56,9 @@ class _AddCartSuccessState extends State<AddCartSuccess>
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            // bottomNavigationBar: const MyBottomMenu(
-            //   active: 5,
-            // ),
+            bottomNavigationBar: const MyBottomMenu(
+              active: -1,
+            ),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
@@ -154,81 +156,37 @@ class _AddCartSuccessState extends State<AddCartSuccess>
                             ],
                           ),
                         ),
-                        Wrap(
-                          runSpacing: 15,
-                          children: [
-                            GestureDetector(
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1, color: Colors.grey),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(15))),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text("Xem giỏ hàng",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                          )),
-                                      const SizedBox(
-                                        width: 15,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/cart-black.png",
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ],
+                        GestureDetector(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  color: mainColor.withOpacity(0.3),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(15))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text("Xem giỏ hàng",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      )),
+                                  const SizedBox(
+                                    width: 15,
                                   ),
-                                ),
-                                onTap: () {
-                                  Navigator.pushNamed(context, "cart");
-                                }),
-                            GestureDetector(
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(15)),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withOpacity(0.2)),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Về trang chủ",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                      ),
-                                      const SizedBox(
-                                        width: 15,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/icon/home-red.png",
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ],
+                                  Image.asset(
+                                    "assets/images/cart-black.png",
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.contain,
                                   ),
-                                ),
-                                onTap: () {
-                                  Navigator.pushNamed(context, "home");
-                                }),
-                          ],
-                        )
+                                ],
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.pushNamed(context, "cart");
+                            }),
                       ],
                     )))));
   }

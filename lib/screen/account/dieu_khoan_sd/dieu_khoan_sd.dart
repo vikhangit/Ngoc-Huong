@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
 
 class DieuKhoanSudung extends StatefulWidget {
   const DieuKhoanSudung({super.key});
@@ -71,6 +72,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
+          bottomNavigationBar: const MyBottomMenu(active: 4),
           body: SizedBox(
             child: ListView(
               children: [

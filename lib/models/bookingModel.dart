@@ -26,6 +26,27 @@ class BookingModel {
     return result;
   }
 
+  Future<List> getListBookinfStatus() async {
+    List result = [];
+    try {
+      Response response =
+      await client.dio.get('${client.apiUrl}/Home/getStatusBookService',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"];
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
   Future<List> getBookingListByStatus(String status) async {
     List result = [];
     try {
@@ -43,6 +64,27 @@ class BookingModel {
           }
         }
         return result;
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
+  Future<List> getBookingListByStatusCode(String statusCode) async {
+    List result = [];
+    try {
+      Response response =
+      await client.dio.get('${client.apiUrl}/Home/getBookServiceByStatus?Status=$statusCode',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+            '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"];
       } else {
         return result;
       }

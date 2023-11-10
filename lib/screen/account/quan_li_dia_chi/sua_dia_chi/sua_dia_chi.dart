@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/addressModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
@@ -193,6 +194,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
+          bottomNavigationBar: const MyBottomMenu(active: 4),
           body: SizedBox(
               child: FutureBuilder(
                   future: profileModel.getProfile(),
@@ -450,7 +452,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
                                                                     context)
                                                                 .size
                                                                 .height *
-                                                            0.88,
+                                                            0.8,
                                                         child: ModalThanhPho(
                                                           saveAddress:
                                                               saveAddress,
@@ -526,7 +528,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
                                                                     context)
                                                                 .size
                                                                 .height *
-                                                            0.88,
+                                                            0.8,
                                                         child: ModalQuanHuyen(
                                                             saveAddress:
                                                                 saveAddress));
@@ -599,7 +601,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
                                                                     context)
                                                                 .size
                                                                 .height *
-                                                            0.88,
+                                                            0.8,
                                                         child: ModalPhuongXa(
                                                           saveAddress:
                                                               saveAddress,

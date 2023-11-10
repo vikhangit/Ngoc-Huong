@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
+import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 
 class CheckoutSuccess extends StatefulWidget {
@@ -50,9 +52,9 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            // bottomNavigationBar: const MyBottomMenu(
-            //   active: 5,
-            // ),
+            bottomNavigationBar: const MyBottomMenu(
+              active: -1,
+            ),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
@@ -152,103 +154,73 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                             ],
                           ),
                         ),
-                        Wrap(
-                          runSpacing: 15,
-                          children: [
-                            FutureBuilder(future: orderModel.getStatusList(), builder: (context, snapshot) {
+                        FutureBuilder(future: orderModel.getOrderListByStatus("pending"), builder: (context, snapshot) {
+                          List list = snapshot.data!.toList();
+                          if(snapshot.hasData){
+                            return  FutureBuilder(future: orderModel.getStatusList(), builder: (context, snapshot) {
                               if(snapshot.hasData){
-return  GestureDetector(
-    child: Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50,
-      decoration: BoxDecoration(
-          border: Border.all(
-              width: 1, color: Colors.grey),
-          borderRadius: const BorderRadius.all(
-              Radius.circular(15))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text("Xem chi tiết",
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-              )),
-          const SizedBox(
-            width: 15,
-          ),
-          Image.asset(
-            "assets/images/cart-black.png",
-            width: 24,
-            height: 24,
-            fit: BoxFit.fill,
-          ),
-        ],
-      ),
-    ),
-    onTap: () {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  BuyHistory(listTab: snapshot.data!,)));
-    });
-                              }else{
-                                return const Center(
-                                  child: SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: LoadingIndicator(
-                                      colors: kDefaultRainbowColors,
-                                      indicatorType:
-                                      Indicator.lineSpinFadeLoader,
-                                      strokeWidth: 1,
-                                      // pathBackgroundColor: Colors.black45,
+                            return    GestureDetector(
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1, color: Colors.grey),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(15))),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Text("Xem chi tiết",
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                              )),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          Image.asset(
+                                            "assets/images/cart-black.png",
+                                            width: 24,
+                                            height: 24,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BuyHistory(listTab: snapshot.data!)));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ModalChiTietBuy(product: list[list.length - 1], type: "")));
+                                    });
+                              }else{
+                                return Container();
                               }
-                            },),
-                            GestureDetector(
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary
-                                          .withOpacity(0.2),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(15))),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Về trang chủ",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Image.asset(
-                                        "assets/images/icon/home-red.png",
-                                        width: 24,
-                                        height: 24,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ],
-                                  ),
+                            },);
+                          }else{
+                            return const Center(
+                              child: SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: LoadingIndicator(
+                                  colors: kDefaultRainbowColors,
+                                  indicatorType:
+                                  Indicator.lineSpinFadeLoader,
+                                  strokeWidth: 1,
+                                  // pathBackgroundColor: Colors.black45,
                                 ),
-                                onTap: () {
-                                  Navigator.pushNamed(context, "home");
-                                }),
-                          ],
-                        )
+                              ),
+                            );
+                          }
+                        },),
+
                       ],
                     )))));
   }

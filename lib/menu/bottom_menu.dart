@@ -38,11 +38,11 @@ List bottomList = [
     "icon_active": "assets/images/list1.png",
     "title": "Dịch vụ"
   },
-  // {
-  //   "icon": "assets/images/telesales-black.png",
-  //   "icon_active": "assets/images/telesales.png",
-  //   "title": "Tư vấn"
-  // },
+  {
+    "icon": "assets/images/telesales-black.png",
+    "icon_active": "assets/images/telesales.png",
+    "title": "Tư vấn"
+  },
   {
     "icon": "assets/images/Home/Icon/my-pham.png",
     "icon_active": "assets/images/Home/Icon/my-pham.png",
@@ -78,7 +78,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
       selectedTab = index;
     });
    {
-     if(index == 3){
+     if(index == 4){
        if (storageCustomer.getItem("customer_token") != null) {
          Navigator.pushNamed(context, "account");
        } else if (storageCustomer.getItem("customer_Token") == null) {
@@ -101,7 +101,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                     ))));
             break;
           }
-         case 2:
+         case 3:
            {
              productModel.getGroupProduct().then((value) => Navigator.push(
                  context,
@@ -111,7 +111,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                      ))));
              break;
            }
-         case 4:
+         case 2:
            {
              customModal.showBottomToolDialog(context);
              break;
@@ -128,55 +128,31 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
     final Size size = MediaQuery.of(context).size;
     return Stack(
       children: [
-        Center(
-            heightFactor: 1,
-            child: Container(
-              height: 60,
-              child: TextButton(
-                // backgroundColor: Colors.white,
-                // focusColor: Colors.white,
-                // splashColor: Colors.white,
-                onPressed: () {
-                  onItemTapped(4);
-                },
-                child:Column(
-                  children: [
-                   Container(
-                     padding: EdgeInsets.all(2),
-                     decoration: BoxDecoration(
-                         border: Border.all(color: mainColor, width: 1),
-                         borderRadius: BorderRadius.all(Radius.circular(9999999))
-                     ),
-                     child:  Image.asset(
-                     "assets/images/telesales.png",
-                     width: 22,
-                     height: 22,
-                   ),),
-                    Text(
-                      "Tư vấn",
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w300,
-                         ),
-                    )
-                  ],
-                )
-
-              ),
-            )),
-        SizedBox(
+        Container(
           width: size.width,
+          padding: EdgeInsets.only(top: 15),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.black38,
+                  blurRadius: 10.0,
+                  offset: Offset(0.0, 0.75)
+              )
+            ],
+          ),
+          height: 70,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: bottomList.map((e) {
               int index = bottomList.indexOf(e);
-              if(index == 3){
+              if(index == 4){
                 if(storageCustomer.getItem("customer_token") != null){
                   return Container(
-                      height: 60,
-                      margin: EdgeInsets.only(
-                          left: index == 2 ? 60 : 0, right: index == 1 ? 30 : 0),
+                      // margin: EdgeInsets.only(
+                      //     left: index == 2 ? 60 : 0, right: index == 1 ? 30 : 0),
+                      width: MediaQuery.of(context).size.width / 5,
                       alignment: Alignment.center,
                       child: GestureDetector(
                         // style: ButtonStyle(
@@ -185,14 +161,13 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                         //             vertical: 0.0, horizontal: 0.0))),
                           onTap: () => onItemTapped(index),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               FutureBuilder(future: profileModel.getProfile(),
                                 builder: (context, snapshot) {
                                   if(snapshot.hasData){
                                     return SizedBox(
-                                        width: 24,
-                                        height: 24,
+                                        width: 28,
+                                        height: 28,
                                       child: CircleAvatar(
                                         backgroundColor: const Color(0xff00A3FF),
                                         backgroundImage: NetworkImage(snapshot.data["CustomerImage"],),
@@ -200,8 +175,8 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                                     );
                                   }else{
                                     return const SizedBox(
-                                      width: 12,
-                                      height: 12,
+                                      width: 28,
+                                      height: 28,
                                       child: LoadingIndicator(
                                         colors: kDefaultRainbowColors,
                                         indicatorType: Indicator.lineSpinFadeLoader,
@@ -212,11 +187,13 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                                   }
                                 },
                               ),
+                              const  SizedBox(height: 5),
                               Text(
                                 "Tài khoản",
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 10,
-                                    fontWeight: FontWeight.w300,
+                                    fontWeight: FontWeight.w400,
                                     color: widget.active == index
                                         ? Theme.of(context).colorScheme.primary
                                         : Colors.black),
@@ -226,9 +203,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                   );
                 }else{
                   return Container(
-                    height: 60,
-                    margin: EdgeInsets.only(
-                        left: index == 2 ? 60 : 0, right: index == 1 ? 30 : 0),
+                    width: index == 3 ? 200 :  (MediaQuery.of(context).size.width - 200) / 4,
                     alignment: Alignment.center,
                     child: GestureDetector(
                       // style: ButtonStyle(
@@ -237,18 +212,19 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                       //             vertical: 0.0, horizontal: 0.0))),
                         onTap: () => onItemTapped(index),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
                                "assets/images/icon/profile-black.png",
-                              width: 24,
-                              height: 24,
+                              width: 28,
+                              height: 28,
                             ),
+                            const  SizedBox(height: 5),
                             Text(
                               "Tài khoản",
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontSize: 10,
-                                  fontWeight: FontWeight.w300,
+                                  fontWeight: FontWeight.w400,
                                   color: widget.active == index
                                       ? Theme.of(context).colorScheme.primary
                                       : Colors.black),
@@ -260,9 +236,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
 
               }else{
                 return Container(
-                  height: 60,
-                  margin: EdgeInsets.only(
-                      left: index == 2 ? 60 : 0, right: index == 1 ? 30 : 0),
+                  width: index == 3 ? 100 :  (MediaQuery.of(context).size.width - 100) / 4 - 5,
                   alignment: Alignment.center,
                   child: GestureDetector(
                     // style: ButtonStyle(
@@ -271,18 +245,31 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                     //             vertical: 0.0, horizontal: 0.0))),
                       onTap: () => onItemTapped(index),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          index == 2 ?  Container(
+                            width: 28,
+                            height: 28,
+                                   padding: EdgeInsets.all(3),
+                                   decoration: BoxDecoration(
+                                       border: Border.all(color: mainColor, width: 1),
+                                       borderRadius: BorderRadius.all(Radius.circular(9999999))
+                                   ),
+                                   child:  Image.asset(
+                                   "assets/images/telesales.png",
+                                   
+                                 ),):
                           Image.asset(
                             index == widget.active ? e["icon_active"] : e["icon"],
-                            width: 24,
-                            height: 24,
+                            width: 28,
+                            height: 28,
                           ),
+                        const  SizedBox(height: 5),
                           Text(
                             "${e["title"]}",
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 10,
-                                fontWeight: FontWeight.w300,
+                                fontWeight: FontWeight.w400,
                                 color: widget.active == index
                                     ? Theme.of(context).colorScheme.primary
                                     : Colors.black),

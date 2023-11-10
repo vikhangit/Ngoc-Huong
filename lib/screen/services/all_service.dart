@@ -110,7 +110,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(active: 0),
+            bottomNavigationBar: const MyBottomMenu(active: 1),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -362,7 +362,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                         return Container(
                                                                             padding:
                                                                                 EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                                                            height: MediaQuery.of(context).size.height * 0.95,
+                                                                            height: MediaQuery.of(context).size.height * 0.85,
                                                                             child: ChiTietScreen(
                                                                               detail: item,
                                                                             ));

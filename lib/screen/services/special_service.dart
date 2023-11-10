@@ -241,7 +241,7 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                                                     height: MediaQuery.of(context)
                                                                             .size
                                                                             .height *
-                                                                        0.95,
+                                                                        0.85,
                                                                     child:
                                                                         ChiTietScreen(
                                                                       detail:

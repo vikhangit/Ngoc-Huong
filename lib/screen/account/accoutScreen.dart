@@ -115,13 +115,13 @@ class _AccountScreenState extends State<AccountScreen> {
         context, "error", "Đang xuất", "Bạn có chắc chắn muốn đăng xuất không?",
             () {
           EasyLoading.show(status: "Đang xử lý...");
+          storageCustomerToken.deleteItem("customer_token");
           Future.delayed(const Duration(seconds: 1), () {
-            storageCustomerToken.deleteItem("customer_token").then((value) {
+              EasyLoading.dismiss();
               Navigator.pop(context);
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const HomeScreen()));
-              EasyLoading.dismiss();
-            });
+
           });
         }, () => Navigator.pop(context));
   }
@@ -172,7 +172,7 @@ class _AccountScreenState extends State<AccountScreen> {
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           bottomNavigationBar: const MyBottomMenu(
-            active: 3,
+            active: 4,
           ),
           body: ListView(
             padding: const EdgeInsets.symmetric(vertical: 25),
