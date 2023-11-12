@@ -66,8 +66,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '365783008418',
     projectId: 'ngoc-huong-86683',
     storageBucket: 'ngoc-huong-86683.appspot.com',
-    iosClientId: '365783008418-s7ja1hgn8bufu88j2hibt5l2nopeuenj.apps.googleusercontent.com',
-    iosBundleId: 'com.example.ngocHuong',
+    iosClientId:
+        '365783008418-s7ja1hgn8bufu88j2hibt5l2nopeuenj.apps.googleusercontent.com',
+    iosBundleId: 'com.tanxe.ngocHuong',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -76,7 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '365783008418',
     projectId: 'ngoc-huong-86683',
     storageBucket: 'ngoc-huong-86683.appspot.com',
-    iosClientId: '365783008418-s7ja1hgn8bufu88j2hibt5l2nopeuenj.apps.googleusercontent.com',
-    iosBundleId: 'com.example.ngocHuong',
+    iosClientId:
+        '365783008418-s7ja1hgn8bufu88j2hibt5l2nopeuenj.apps.googleusercontent.com',
+    iosBundleId: 'com.tanxe.ngocHuong',
   );
 }

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:365783008418:android:ce0fda1c85153d4904c3fb",
         "android_client_info": {
-          "package_name": "com.example.ngoc_huong"
+          "package_name": "com.tanxe.ngoc_huong"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "365783008418-gdls54j89c8lg0p0ffpqhocg27c2e99n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.ngoc_huong",
+            "package_name": "com.tanxe.ngoc_huong",
             "certificate_hash": "58120ff0eb2df95d80189142e8b41fefc4261e71"
           }
         },
@@ -42,7 +42,7 @@
               "client_id": "365783008418-s7ja1hgn8bufu88j2hibt5l2nopeuenj.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.ngocHuong"
+                "bundle_id": "com.tanxe.ngocHuong"
               }
             }
           ]

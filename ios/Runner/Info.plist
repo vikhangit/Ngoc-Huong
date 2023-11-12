@@ -10,7 +10,7 @@
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<!-- $(PRODUCT_BUNDLE_IDENTIFIER)  -->
-	<string>com.example.ngoc_huong</string>
+	<string>com.tanxe.ngoc_huong</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
