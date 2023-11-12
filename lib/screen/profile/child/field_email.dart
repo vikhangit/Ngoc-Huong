@@ -32,7 +32,7 @@ Widget fieldEmail(BuildContext context, Function(String value) changeEmail,
           changeEmail(value);
         },
         validator: (value) {
-           if (value != null && value.isValidEmail) {
+          if (value != null && value.isNotEmpty && !value.isValidEmail) {
             return "Email không hợp lệ";
           }
           return null;
