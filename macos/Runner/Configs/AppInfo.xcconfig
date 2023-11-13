@@ -8,7 +8,7 @@
 PRODUCT_NAME = ngoc_huong
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.tanxe.ngocHuong
+PRODUCT_BUNDLE_IDENTIFIER = com.tanxe.ngochuongspa
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2023 com.tanxe. All rights reserved.
