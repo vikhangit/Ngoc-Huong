@@ -23,8 +23,7 @@ void main() async {
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // to initialize the notificationservice.
   await Firebase.initializeApp(
-    name: "ngoc-huong-86683",
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform
   );
   // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   runApp(const MyApp());

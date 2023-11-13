@@ -154,20 +154,18 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          body: SizedBox(
-              child: FutureBuilder(
+          body: SingleChildScrollView(
+            child:  FutureBuilder(
             future: cartModel.getProductCartList(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List allCart = snapshot.data!.toList();
                 if (allCart.isNotEmpty) {
-                  print("========================================================");
-                  print(allCart);
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                          height: MediaQuery.of(context).size.height - 355,
+                          height: MediaQuery.of(context).size.height - 375,
                           child: ListView(
                             children: allCart.map((ele) {
                               int index = allCart.toList().indexOf(ele);
@@ -575,6 +573,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                             }).toList(),
                           )),
                       Container(
+                        margin: const EdgeInsets.only(bottom: 20),
                         decoration: BoxDecoration(
                             border: Border(
                                 top: BorderSide(
@@ -624,7 +623,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                             ),
                             Container(
                                 margin:
-                                    const EdgeInsets.only(bottom: 30, top: 20),
+                                    const EdgeInsets.only(top: 20),
                                 child: TextButton(
                                     style: ButtonStyle(
                                         padding: MaterialStateProperty.all(
@@ -737,7 +736,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                 );
               }
             },
-          ))),
+          )
+          )),
     );
   }
 }
