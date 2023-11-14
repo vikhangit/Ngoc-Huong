@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -89,8 +90,9 @@ class CustomModal {
                               )
                                 ),
                             onPressed: () => cancleFuc(),
-                            child: const Text(
+                            child:  Text(
                               "Hủy bỏ",
+                              style: TextStyle(color: mainColor),
                             )))
                   ],
                 )
