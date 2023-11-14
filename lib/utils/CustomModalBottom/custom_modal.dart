@@ -20,7 +20,7 @@ class CustomModal {
           alignment: Alignment.center,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 35),
-            height: 300,
+            height: 310,
             margin: const EdgeInsets.only(left: 25, right: 25),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -62,17 +62,32 @@ class CustomModal {
                     Expanded(
                         child: ElevatedButton(
                             style: ButtonStyle(
+                shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))
+          )
+        ),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.blue[900])),
                             onPressed: () => okFuc(),
                             child: const Text(
                               "Đồng ý",
+                              style: TextStyle(color: Colors.white),
                             ))),
                     const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                         child: ElevatedButton(
+                            style: ButtonStyle( 
+        backgroundColor: MaterialStateProperty.all(Colors.white),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  side: BorderSide(width: 0.5, color: Colors.black),
+                                  borderRadius: BorderRadius.all(Radius.circular(10))
+                                )
+                              )
+                                ),
                             onPressed: () => cancleFuc(),
                             child: const Text(
                               "Hủy bỏ",

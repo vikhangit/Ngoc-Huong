@@ -30,6 +30,15 @@ class _ChiTietScreenState extends State<ChiTietScreen>
     super.initState();
     tabController = TabController(length: 2, vsync: this);
     tabController?.addListener(_getActiveTabIndex);
+    setState(() {
+      activeTab = 1;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    activeTab = 1;
   }
 
   void _getActiveTabIndex() {
@@ -101,6 +110,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10),
             // margin: const EdgeInsets.only(bottom: 10),
+            color: Colors.white,
             height: MediaQuery.of(context).size.height * 0.85 -
                 200 -
                 MediaQuery.of(context).viewInsets.bottom,

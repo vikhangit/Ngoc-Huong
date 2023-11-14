@@ -34,7 +34,8 @@ class _ModalVoucherState extends State<ModalPayment> {
   Widget build(BuildContext context) {
 
     return Container(
-        margin: const EdgeInsets.only(top: 15),
+        padding: const EdgeInsets.only(top: 15),
+        color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

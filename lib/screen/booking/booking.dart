@@ -135,6 +135,12 @@ class _BookingServicesState extends State<BookingServices>
     TimeOfDay? result = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+     builder: (context, child) {
+       return MediaQuery(
+         data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+         child: child!,
+       );
+     },
     );
     if (result != null) {
       setState(() {
@@ -351,7 +357,7 @@ class _BookingServicesState extends State<BookingServices>
                                           fontWeight: FontWeight.w300),
                                       decoration: InputDecoration(
                                         focusedBorder: dataCustom.border,
-                                        border: dataCustom.border,
+                                        enabledBorder: dataCustom.border,
                                         suffixIcon: const Icon(
                                           Icons.keyboard_arrow_down,
                                           color: Colors.black,
@@ -391,7 +397,7 @@ class _BookingServicesState extends State<BookingServices>
                                             fontWeight: FontWeight.w300),
                                         decoration: InputDecoration(
                                           focusedBorder: dataCustom.border,
-                                          border: dataCustom.border,
+                                          enabledBorder: dataCustom.border,
                                           suffixIcon: const Icon(
                                             Icons.keyboard_arrow_down,
                                             color: Colors.black,
@@ -453,7 +459,7 @@ class _BookingServicesState extends State<BookingServices>
                                     fontWeight: FontWeight.w300),
                                 decoration: InputDecoration(
                                   focusedBorder: dataCustom.border,
-                                  border: dataCustom.border,
+                                  enabledBorder: dataCustom.border,
                                   suffixIcon: const Icon(
                                     Icons.keyboard_arrow_down,
                                     color: Colors.black,

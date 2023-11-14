@@ -10,7 +10,8 @@ class DataCustom {
   OutlineInputBorder border2 = OutlineInputBorder(
       borderRadius: const BorderRadius.all(Radius.circular(10)),
       borderSide: BorderSide(width: 1, color: mainColor));
-  AppBarTheme appBarTheme = const AppBarTheme(
+  AppBarTheme appBarTheme =  AppBarTheme(
+    backgroundColor: mainColor,
     toolbarHeight: 70,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(

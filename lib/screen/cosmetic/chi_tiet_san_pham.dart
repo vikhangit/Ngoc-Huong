@@ -135,7 +135,8 @@ class _ProductDetailState extends State<ProductDetail>
           }, () => Navigator.pop(context));
     }
 
-    return SizedBox(
+    return Container(
+      color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -186,6 +187,7 @@ class _ProductDetailState extends State<ProductDetail>
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             margin: const EdgeInsets.only(bottom: 5),
+            color: Colors.white,
             height: MediaQuery.of(context).size.height * 0.85 -
                 195 -
                 MediaQuery.of(context).viewInsets.bottom,
@@ -307,12 +309,14 @@ class _ProductDetailState extends State<ProductDetail>
           ),
           Container(
             margin: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
+            color: Colors.white,
             child: Column(
               children: [
                 Container(
                   height: 50,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
+                    color: Colors.white ,
                       border: Border.all(width: 1, color: Colors.grey),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(15))),
@@ -350,6 +354,7 @@ class _ProductDetailState extends State<ProductDetail>
                   height: 50,
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.only(top: 15),
+                  color: Colors.white,
                   child: FutureBuilder(future: cartModel.getDetailCartByCode(productDetail["Code"].toString()),
                       builder: (context, snapshot) {
                         if(snapshot.hasData){

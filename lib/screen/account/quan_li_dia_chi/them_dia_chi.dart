@@ -203,6 +203,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
                                             top: 18,
                                             bottom: 18),
                                         suffixIcon: DropdownButtonFormField(
+                                          dropdownColor: Colors.white,
                                           value: typeAdress,
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 20),

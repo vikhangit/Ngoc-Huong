@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
+import 'package:dynamic_carousel_indicator/dynamic_carousel_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
@@ -55,14 +57,11 @@ List listBanner = [
 ];
 
 List toolServices = [
-  {"icon": "assets/images/Home/Icon/calendar.png", "title": "Đặt lịch"},
-  {"icon": "assets/images/lich-da-hen.png", "title": "Lịch đã hẹn"},
-  {"icon": "assets/images/Home/Icon/history.png", "title": "Lịch sử làm đẹp"},
-  {
-    "icon": "assets/images/Home/Icon/membership.png",
-    "title": "Hạng thành viên"
-  },
-  {"icon": "assets/images/Home/Icon/uu-dai.png", "title": "Ưu đãi"},
+  {"icon": "assets/images/icon/icon1.png", "title": "Đặt lịch"},
+  {"icon": "assets/images/icon/icon2.png", "title": "Lịch đã hẹn"},
+  {"icon": "assets/images/icon/icon3.png", "title": "Lịch sử làm đẹp"},
+  {"icon": "assets/images/icon/icon4.png", "title": "Hạng thành viên"},
+  {"icon": "assets/images/icon/icon5.png", "title": "Ưu đãi"},
   // {"icon": "assets/images/Home/Icon/dich-vu.png", "title": "Dịch vụ"},
   // {"icon": "assets/images/Home/Icon/vi.png", "title": "Điểm"},
   // {"icon": "assets/images/list-order.png", "title": "Lịch sử mua hàng"},
@@ -126,8 +125,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 context,
                 MaterialPageRoute(
                     builder: (context) => const BookingHistory(
-                      ac: 1,
-                    )));
+                          ac: 1,
+                        )));
             break;
           }
         case 2:
@@ -136,19 +135,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 context,
                 MaterialPageRoute(
                     builder: (context) => const BookingHistory(
-                      ac: 0,
-                    )));
+                          ac: 0,
+                        )));
             break;
           }
         case 3:
-
-            {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ThanhVienScreen()));
-              break;
-            }
+          {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ThanhVienScreen()));
+            break;
+          }
 
         case 4:
           {
@@ -157,8 +155,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 "error",
                 "Xin Lỗi Quý Khách",
                 "Chúng tôi đang nâng cấp tính năng này",
-                    () => Navigator.pop(context),
-                    () => Navigator.pop(context));
+                () => Navigator.pop(context),
+                () => Navigator.pop(context));
             break;
           }
         // case 7:
@@ -217,8 +215,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
   }
-}
-
 Widget listView(
     BuildContext context,
     Function(BuildContext context, int index) goToService,
@@ -244,7 +240,7 @@ Widget listView(
                   itemCount: 3,
                   options: CarouselOptions(
                       height: 250,
-                      aspectRatio: 26 / 14,
+                      // aspectRatio: 26 / 14,
                       autoPlay: true,
                       autoPlayInterval: const Duration(seconds: 3),
                       viewportFraction: 1,
@@ -253,10 +249,9 @@ Widget listView(
                         goToPage(index, reason);
                       }),
                   itemBuilder: (context, index, realIndex) {
-                    return Image.asset(
-                      "assets/images/Home/banner-sale.png",
-                      width: MediaQuery.of(context).size.width,
-                      fit: BoxFit.cover,
+                    return ClipRRect(
+                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+                      child: Image.asset("assets/images/banner.png", fit: BoxFit.fill),
                     );
                   },
                 ),
@@ -267,280 +262,229 @@ Widget listView(
                 width: MediaQuery.of(context).size.width,
                 child: Container(
                   margin: const EdgeInsets.only(top: 20, left: 15, right: 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
+                  decoration: const BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 10),
-                        decoration: const BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 0.5, color: Colors.black38))),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            storageCustomerToken.getItem("customer_token") !=
-                                    null
-                                ? FutureBuilder(
-                                    future: profileModel.getProfile(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        Map profile = snapshot.data!;
-                                        return Row(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () async {
-                                                await showDialog(
-                                                  context: context,
-                                                  builder: (_) => Dialog(
-                                                    backgroundColor:
-                                                        Colors.black,
-                                                    insetPadding:
-                                                        const EdgeInsets.all(
-                                                            20),
-                                                    child: Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      height: 350,
-                                                      decoration: BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image: NetworkImage(
-                                                                  "${profile["CustomerImage"]}"),
-                                                              fit: BoxFit
-                                                                  .cover)),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              child: SizedBox(
-                                                width: 35,
-                                                height: 35,
-                                                child: CircleAvatar(
-                                                  backgroundColor:
-                                                      const Color(0xff00A3FF),
-                                                  backgroundImage: NetworkImage(
-                                                      "${profile["CustomerImage"]}"),
-                                                  radius: 35.0,
+                  child: Container(
+                    margin: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset:
+                          const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 10),
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 0.5, color: Colors.black38))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              storageCustomerToken.getItem("customer_token") !=
+                                  null
+                                  ? FutureBuilder(
+                                future: profileModel.getProfile(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    Map profile = snapshot.data!;
+                                    return Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async {
+                                            await showDialog(
+                                              context: context,
+                                              builder: (_) => Dialog(
+                                                backgroundColor:
+                                                Colors.black,
+                                                insetPadding:
+                                                const EdgeInsets.all(
+                                                    20),
+                                                child: Container(
+                                                  width:
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  height: 350,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              "${profile["CustomerImage"]}"),
+                                                          fit: BoxFit
+                                                              .cover)),
                                                 ),
                                               ),
+                                            );
+                                          },
+                                          child: SizedBox(
+                                            width: 35,
+                                            height: 35,
+                                            child: CircleAvatar(
+                                              backgroundColor:
+                                              const Color(0xff00A3FF),
+                                              backgroundImage: NetworkImage(
+                                                  "${profile["CustomerImage"]}"),
+                                              radius: 35.0,
                                             ),
-                                            const SizedBox(
-                                              width: 6,
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                  "Hi!",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                Text(
-                                                  "${profile["CustomerName"]}",
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        );
-                                      } else {
-                                        return const SizedBox(
-                                          width: 30,
-                                          height: 30,
-                                          child: LoadingIndicator(
-                                            colors: kDefaultRainbowColors,
-                                            indicatorType:
-                                                Indicator.lineSpinFadeLoader,
-                                            strokeWidth: 1,
-                                            // pathBackgroundColor: Colors.black45,
                                           ),
-                                        );
-                                      }
-                                    },
-                                  )
-                                : Container(
-                                    margin: const EdgeInsets.only(right: 15),
-                                    decoration: BoxDecoration(
-                                      color: mainColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(20)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 5,
-                                          blurRadius: 7,
-                                          offset: const Offset(0,
-                                              3), // changes position of shadow
                                         ),
-                                      ],
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 5),
-                                    child: GestureDetector(
-                                        onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const LoginScreen())),
-                                        child: const Row(
+                                        const SizedBox(
+                                          width: 6,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Icon(
-                                              Icons.account_circle_outlined,
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(
-                                              width: 2,
-                                            ),
                                             Text(
-                                              "Đăng nhập",
+                                              "Hi, ${profile["CustomerName"]}",
                                               style: TextStyle(
-                                                  color: Colors.white,
                                                   fontSize: 12,
-                                                  fontWeight: FontWeight.w400),
+                                                  fontWeight:
+                                                  FontWeight.w600, color: mainColor),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(top: 4) ,
+                                              padding: EdgeInsets.symmetric(horizontal: 5,vertical:2) ,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(Radius.circular(99999)),
+                                                color: Colors.amberAccent
+                                              ) ,
+                                              child: Text(
+                                                "Thành viên vàng >",
+                                                style: TextStyle(
+                                                    fontSize: 9,
+                                                    fontWeight:
+                                                    FontWeight.w500, color: Colors.white),
+                                              ),
                                             )
                                           ],
-                                        )),
-                                  ),
-                            Row(
-                              children: [
-                                FutureBuilder(
-                                  future: cartModel.getProductCartList() ,
-                                  builder: (context, snapshot) {
-                                    if(snapshot.hasData){
-                                      return badges.Badge(
-                                        position: badges.BadgePosition.topEnd(top: -8, end: 2),
-                                        showBadge: true,
-                                        ignorePointer: false,
-                                        onTap: () {
-                                          if(storageCustomerToken.getItem("customer_token") != null){
-                                            Navigator.push(context, MaterialPageRoute(builder: (contex) => CartScreen()));
-                                          }else{
-                                            Navigator.push(context,
-                                                MaterialPageRoute(builder: (context) => const LoginScreen()));
-                                          }
-                                        },
-                                        badgeContent:
-                                        Text("${snapshot.data!.length}", style: TextStyle(fontSize: 8, color: Colors.white),),
-                                        badgeAnimation: badges.BadgeAnimation.rotation(
-                                          animationDuration: Duration(seconds: 1),
-                                          colorChangeAnimationDuration: Duration(seconds: 1),
-                                          loopAnimation: false,
-                                          curve: Curves.fastOutSlowIn,
-                                          colorChangeAnimationCurve: Curves.easeInCubic,
+                                        )
+                                      ],
+                                    );
+                                  } else {
+                                    return const SizedBox(
+                                      width: 30,
+                                      height: 30,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                        Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    );
+                                  }
+                                },
+                              )
+                                  : Container(
+                                margin: const EdgeInsets.only(right: 15),
+                                decoration: BoxDecoration(
+                                  color: mainColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(20)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 5,
+                                      blurRadius: 7,
+                                      offset: const Offset(0,
+                                          3), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 5),
+                                child: GestureDetector(
+                                    onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                            const LoginScreen())),
+                                    child: const Row(
+                                      children: [
+                                        Icon(
+                                          Icons.account_circle_outlined,
+                                          color: Colors.white,
                                         ),
-
-                                        child: Container(
-                                          margin: const EdgeInsets.only(right: 5),
+                                        SizedBox(
+                                          width: 2,
+                                        ),
+                                        Text(
+                                          "Đăng nhập",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400),
+                                        )
+                                      ],
+                                    )),
+                              ),
+                              Row(
+                                children: [
+                                  Text("900 điểm", style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight:
+                                      FontWeight.w600, color: mainColor),),
+                                  SizedBox(width: 8,),
+                                  FutureBuilder(
+                                    future: cartModel.getProductCartList(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        return  Container(
+                                          margin:
+                                          const EdgeInsets.only(right: 5),
+                                          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: const BorderRadius.all(
+                                              Radius.circular(8)
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.withOpacity(0.3),
+                                                spreadRadius: 2,
+                                                blurRadius: 2,
+                                                offset: Offset(0, 2), // changes position of shadow
+                                              ),
+                                            ],
+                                          ),
                                           child: GestureDetector(
                                             onTap: () {
-                                              if(storageCustomerToken.getItem("customer_token") != null){
-                                                Navigator.push(context, MaterialPageRoute(builder: (contex) => CartScreen()));
-                                              }else{
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(builder: (context) => const LoginScreen()));
+                                              if (storageCustomerToken.getItem(
+                                                  "customer_token") !=
+                                                  null) {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (contex) =>
+                                                            CartScreen()));
+                                              } else {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                        const LoginScreen()));
                                               }
                                             },
                                             child: Image.asset(
-                                              "assets/images/shopping-cart.png",
-                                              width: 30,
-                                              height: 30,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                    else{
-                                      return const SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: LoadingIndicator(
-                                          colors: kDefaultRainbowColors,
-                                          indicatorType:
-                                          Indicator.lineSpinFadeLoader,
-                                          strokeWidth: 1,
-                                          // pathBackgroundColor: Colors.black45,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                                FutureBuilder(
-                                  future: bookingModel.getNotifications(),
-                                    builder: (context, snapshot) {
-                                      if(snapshot.hasData){
-                                       return badges.Badge(
-                                          position: badges.BadgePosition.topEnd(top: -8, end: 2),
-                                          showBadge: true,
-                                          ignorePointer: false,
-                                         onTap: () {
-                                           if(storageCustomerToken.getItem("customer_token") != null) {
-                                             Navigator.push(
-                                                 context,
-                                                 MaterialPageRoute(
-                                                     builder: (context) =>
-                                                     const NotificationScreen()));
-                                           }else{
-                                             Navigator.push(context,
-                                                 MaterialPageRoute(builder: (context) => const LoginScreen()));
-                                           }
-                                         },
-                                          badgeContent:
-                                          Text("${snapshot.data!.length}", style: TextStyle(fontSize: 8, color: Colors.white),),
-                                          badgeAnimation: badges.BadgeAnimation.rotation(
-                                            animationDuration: Duration(seconds: 1),
-                                            colorChangeAnimationDuration: Duration(seconds: 1),
-                                            loopAnimation: false,
-                                            curve: Curves.fastOutSlowIn,
-                                            colorChangeAnimationCurve: Curves.easeInCubic,
-                                          ),
-
-                                          child: Container(
-                                            margin: const EdgeInsets.only(right: 5),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                if(storageCustomerToken.getItem("customer_token") != null) {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                          const NotificationScreen()));
-                                                }else{
-                                                  Navigator.push(context,
-                                                      MaterialPageRoute(builder: (context) => const LoginScreen()));
-                                                }
-                                              },
-                                              child: Image.asset(
-                                                "assets/images/notification-solid-black.png",
-                                                width: 30,
-                                                height: 30,
-                                              ),
+                                              "assets/images/icon/cart.png",
+                                              width: 24,
+                                              height: 24,
                                             ),
                                           ),
                                         );
-                                      }
-                                      else{
+                                      } else {
                                         return const SizedBox(
                                           width: 24,
                                           height: 24,
@@ -554,66 +498,157 @@ Widget listView(
                                         );
                                       }
                                     },
-                                ),
-                              ],
-                            )
-                          ],
+                                  ),
+                                  FutureBuilder(
+                                    future: bookingModel.getNotifications(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(8)
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.withOpacity(0.3),
+                                                spreadRadius: 2,
+                                                blurRadius: 2,
+                                                offset: Offset(0, 2), // changes position of shadow
+                                              ),
+                                            ],
+                                          ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              if (storageCustomerToken.getItem(
+                                                  "customer_token") !=
+                                                  null) {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                        const NotificationScreen()));
+                                              } else {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                        const LoginScreen()));
+                                              }
+                                            },
+                                            child: Stack(
+                                              children: [
+                                                Icon(Icons.notifications, color: mainColor,),
+                                                Positioned(
+                                                  right: 0,
+                                                    top: 4,
+                                                    child: Container(
+                                                        alignment: Alignment.center,
+
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Colors.white
+                                                      ),
+                                                      child: Container(
+                                                        alignment: Alignment.center,
+                                                        width: 10,
+                                                        height: 10,
+                                                        margin: EdgeInsets.all(1),
+                                                        decoration: BoxDecoration(
+                                                            shape: BoxShape.circle,
+                                                          color: mainColor
+                                                        ),
+                                                        child: Text("1", style: TextStyle(fontSize: 6, color: Colors.white, fontWeight: FontWeight.w400)),
+                                                      )
+                                                    ))
+                                              ],
+                                            )
+                                          ),
+                                        );
+                                      } else {
+                                        return const SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: LoadingIndicator(
+                                            colors: kDefaultRainbowColors,
+                                            indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                            strokeWidth: 1,
+                                            // pathBackgroundColor: Colors.black45,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: toolServices.map((item) {
-                            int index = toolServices.indexOf(item);
-                            return SizedBox(
-                              width: MediaQuery.of(context).size.width / 5 - 18,
-                              // height:90,
-                              child: TextButton(
-                                style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
-                                        const EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 0))),
-                                onPressed: () {
-                                  goToService(context, index);
-                                },
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 10),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: toolServices.map((item) {
+                              int index = toolServices.indexOf(item);
+                              return SizedBox(
+                                width: MediaQuery.of(context).size.width / 5 - 18,
+                                // height:90,
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 0))),
+                                  onPressed: () {
+                                    goToService(context, index);
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(bottom: 10),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
                                           color: Colors.white,
-                                          border: Border.all(
-                                              width: 1, color: mainColor)),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 6),
-                                      child: Image.asset(
-                                        width: 35,
-                                        height: 35,
-                                        "${item["icon"]}",
-                                        fit: BoxFit.fill,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.3),
+                                              spreadRadius: 2,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 2), // changes position of shadow
+                                            ),
+                                          ],
+
+                                           ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 6),
+                                        child: Image.asset(
+                                          width: 35,
+                                          height: 35,
+                                          "${item["icon"]}",
+                                          fit: BoxFit.contain,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      "${item["title"]}",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: mainColor,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w400),
-                                    )
-                                  ],
+                                      Text(
+                                        "${item["title"]}",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: mainColor,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w400),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      )
-                    ],
+                              );
+                            }).toList(),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -622,407 +657,55 @@ Widget listView(
         ),
         Container(
           margin: const EdgeInsets.only(top: 20, left: 15, right: 15),
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            color: Color(0xFFfed766),
-            gradient: LinearGradient(
-                colors: [Colors.amber, mainColor],
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight),
-            borderRadius: const BorderRadius.all(Radius.circular(10))
-          ),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "ĐĂNG KÝ THÀNH VIÊN",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
+            padding: EdgeInsets.all(5),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
                 ),
-              ),
-              SizedBox(height: 5,),
-              Text(
-                "Nhận ngay voucher làm đẹp 100.000đ và rất nhiều quà tặng",
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 20),
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text(
-                    "DỊCH VỤ NỔI BẬT",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
+              ],
+            ),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                color: mainColor,
+                borderRadius: const BorderRadius.all(Radius.circular(10))),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "ĐĂNG KÝ THÀNH VIÊN",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.amber,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const SpecialServiceScreen()));
-                    },
-                    child: const Text(
-                      "Xem thêm",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Container(
-                height: 15,
-              ),
-              SizedBox(
-                height: 230,
-                child: FutureBuilder(
-                  future: servicesModel.getHotServices(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List list = snapshot.data!.toList();
-                      return ListView(
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          children: list.sublist(0, 4).map((item) {
-                            int index = list.indexOf(item);
-                            return GestureDetector(
-                              onTap: () => showModalBottomSheet<void>(
-                                  backgroundColor: Colors.white,
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.85,
-                                        child: ChiTietScreen(
-                                          detail: item,
-                                        ));
-                                  }),
-                              child: Container(
-                                margin:
-                                    EdgeInsets.only(left: index == 0 ? 0 : 10),
-                                width:
-                                    MediaQuery.of(context).size.width / 2 - 45,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 6),
-                                decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(6)),
-                                    border:
-                                        Border.all(color: mainColor, width: 1)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Image.network(
-                                          "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                          fit: BoxFit.cover,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: 120,
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          "${item["Name"]}",
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: TextButton(
-                                          onPressed: () {
-                                            showModalBottomSheet<void>(
-                                                backgroundColor: Colors.white,
-                                                clipBehavior:
-                                                    Clip.antiAliasWithSaveLayer,
-                                                context: context,
-                                                isScrollControlled: true,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return Container(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: MediaQuery.of(
-                                                                  context)
-                                                              .viewInsets
-                                                              .bottom),
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.85,
-                                                      child: ChiTietScreen(
-                                                        detail: item,
-                                                      ));
-                                                });
-                                          },
-                                          style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      mainColor)),
-                                          child: const Text("Xem thêm",
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.white))),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          }).toList());
-                    } else {
-                      return const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: LoadingIndicator(
-                              colors: kDefaultRainbowColors,
-                              indicatorType: Indicator.lineSpinFadeLoader,
-                              strokeWidth: 1,
-                              // pathBackgroundColor: Colors.black45,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text("Đang lấy dữ liệu")
-                        ],
-                      );
-                    }
-                  },
                 ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 20),
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text(
-                    "SẢN PHẨM BÁN CHẠY",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  "Nhận ngay voucher làm đẹp 100.000đ và rất nhiều quà tặng",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.amber,
+                    fontStyle: FontStyle.italic
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const SpecialCosmeticScreen()));
-                    },
-                    child: const Text(
-                      "Xem thêm",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Container(
-                height: 15,
-              ),
-              SizedBox(
-                height: 190,
-                child: FutureBuilder(
-                  future: productModel.getHotProduct(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List list = snapshot.data!.toList();
-                      return ListView(
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          children: list.sublist(0, 4).map((item) {
-                            int index = list.indexOf(item);
-                            return GestureDetector(
-                              onTap: () => showModalBottomSheet<void>(
-                                  backgroundColor: Colors.white,
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.85,
-                                        child: ProductDetail(
-                                          details: item,
-                                        ));
-                                  }),
-                              child: Container(
-                                margin:
-                                    EdgeInsets.only(left: index == 0 ? 0 : 5),
-                                width:
-                                    MediaQuery.of(context).size.width / 3 - 10,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 6),
-                                decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(4)),
-                                    border:
-                                        Border.all(color: mainColor, width: 1)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Image.network(
-                                          "${item["Image_Name"]}",
-                                          // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                          fit: BoxFit.cover,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: 120,
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          "${item["Name"]}",
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 10,
-                                              height: 1.3,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "đ",
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary),
-                                            ),
-                                            const SizedBox(
-                                              width: 2,
-                                            ),
-                                            Text(
-                                              NumberFormat.currency(
-                                                  locale: "vi_VI", symbol: "")
-                                                  .format(
-                                                item["CustomerPrice"] ??
-                                                    item["PriceInbound"] ??
-                                                    0,
-                                              ),
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          "-5%",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.amber),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          }).toList());
-                    } else {
-                      return const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: LoadingIndicator(
-                              colors: kDefaultRainbowColors,
-                              indicatorType: Indicator.lineSpinFadeLoader,
-                              strokeWidth: 1,
-                              // pathBackgroundColor: Colors.black45,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text("Đang lấy dữ liệu")
-                        ],
-                      );
-                    }
-                  },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
+        ServicesPage(),
+        ProductPage(),
         Container(
           margin: const EdgeInsets.only(top: 20, bottom: 20),
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -1031,12 +714,12 @@ Widget listView(
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Text(
+                  Text(
                     "KHUYẾN MÃI HOT",
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                      color: mainColor,
                     ),
                   ),
                   GestureDetector(
@@ -1044,15 +727,18 @@ Widget listView(
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const TinTucScreen()));
+                              builder: (context) => const TinTucScreen()));
                     },
-                    child: const Text(
-                      "Xem thêm",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                    child:  Container(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Text(
+                        "Xem thêm...",
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: mainColor,
+                            fontStyle: FontStyle.italic
+                        ),
                       ),
                     ),
                   )
@@ -1087,10 +773,12 @@ Widget listView(
                           ],
                         );
                       } else {
-                        return  Wrap(
-                          spacing: 5,
+                        return Wrap(
+                          spacing: 15,
                           runSpacing: 15,
-                          children: list.sublist(0, list.length > 6 ? 6 : list.length).map((item) {
+                          children: list
+                              .sublist(0, list.length > 6 ? 6 : list.length)
+                              .map((item) {
                             return GestureDetector(
                               onTap: () {
                                 showModalBottomSheet<void>(
@@ -1100,13 +788,14 @@ Widget listView(
                                     isScrollControlled: true,
                                     builder: (BuildContext context) {
                                       return Container(
+                                        color: Colors.white,
                                           padding: EdgeInsets.only(
                                               bottom: MediaQuery.of(context)
                                                   .viewInsets
                                                   .bottom),
                                           height: MediaQuery.of(context)
-                                              .size
-                                              .height *
+                                                  .size
+                                                  .height *
                                               0.85,
                                           child: ChiTietTinTuc(
                                             detail: item,
@@ -1116,49 +805,62 @@ Widget listView(
                               },
                               child: Container(
                                 width:
-                                MediaQuery.of(context).size.width / 3 - 10,
+                                    MediaQuery.of(context).size.width / 2 - 20,
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 6),
+                                    horizontal: 6, vertical: 6),
                                 decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(4)),
-                                    border: Border.all(
-                                        color: mainColor,
-                                        width: 1)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(15)),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.3),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      offset: Offset(0, 1), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
-                                        Image.network(
-                                          "${item["Image"]}",
-                                          // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                          fit: BoxFit.cover,
-                                          width:
-                                          MediaQuery.of(context).size.width,
-                                          height: 120,
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(15),
+                                          child: Image.network(
+                                            "${item["Image"]}",
+                                            // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                            fit: BoxFit.cover,
+                                            width:
+                                            MediaQuery.of(context).size.width,
+                                            height: 200,
+                                          ),
                                         ),
                                         const SizedBox(
-                                          height: 10,
+                                          height: 15,
                                         ),
                                         Text(
                                           "${item["Title"]}",
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                               fontSize: 10,
-                                              height: 1.3,
-                                              fontWeight: FontWeight.w400),
+                                              height: 1.2,
+                                              color: mainColor,
+                                              fontWeight: FontWeight.w500),
                                         ),
-                                        SizedBox(height: 8,)
+                                        SizedBox(
+                                          height: 15,
+                                        )
                                       ],
                                     ),
-
                                   ],
                                 ),
                               ),
@@ -1196,4 +898,610 @@ Widget listView(
       ],
     ),
   );
+}
+}
+
+
+
+class ServicesPage extends StatefulWidget {
+  const ServicesPage({super.key});
+
+  @override
+  State<ServicesPage> createState() => _ServicesPageState();
+}
+int currentIndex = 0;
+class _ServicesPageState extends State<ServicesPage> {
+  final ServicesModel servicesModel = ServicesModel();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "DỊCH VỤ NỔI BẬT",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: mainColor,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                          const SpecialServiceScreen()));
+                },
+                child: Container(
+                  padding: EdgeInsets.only(right: 20),
+                  child:  Text(
+                    "Xem thêm...",
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: mainColor,
+                        fontStyle: FontStyle.italic
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          Container(
+            height: 15,
+          ),
+          SizedBox(
+            height: 230,
+            child: FutureBuilder(
+              future: servicesModel.getHotServices(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List list = snapshot.data!.toList();
+                  List<Widget> pages = List<Widget>.generate(
+                      list.length,
+                          (i) => GestureDetector(
+                          onTap: () => showModalBottomSheet<void>(
+                              backgroundColor: Colors.white,
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return Container(
+                                    color: Colors.white,
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom),
+                                    height:
+                                    MediaQuery.of(context).size.height *
+                                        0.85,
+                                    child: ChiTietScreen(
+                                      detail: list[i],
+                                    ));
+                              }),
+                          child: Container(
+                            margin:
+                            const EdgeInsets.only(left: 5, top: 5, bottom: 5, right: 5),
+                            // width:
+                            // MediaQuery.of(context).size.width,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 6),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(15)),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 1), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(15) ,
+                                      child: Image.network(
+                                        "${list[i]["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                        fit: BoxFit.cover,
+                                        width:
+                                        MediaQuery.of(context).size.width,
+                                        height: 100,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      "${list[i]["Name"]}",
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          color: mainColor,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  padding: EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.3),
+                                        spreadRadius: 2,
+                                        blurRadius: 2,
+                                        offset: Offset(0, 1), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        showModalBottomSheet<void>(
+                                            backgroundColor: Colors.white,
+                                            clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                            context: context,
+                                            isScrollControlled: true,
+                                            builder:
+                                                (BuildContext context) {
+                                              return Container(
+                                                  padding: EdgeInsets.only(
+                                                      bottom: MediaQuery.of(
+                                                          context)
+                                                          .viewInsets
+                                                          .bottom),
+                                                  height:
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                      0.85,
+                                                  child: ChiTietScreen(
+                                                    detail: list[i],
+                                                  ));
+                                            });
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        padding: EdgeInsets.symmetric(vertical: 8),
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(8)),
+                                          color: mainColor,
+                                        ),
+                                        child: Text("Xem thêm",
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.amber)),
+                                      )),
+                                )
+                              ],
+                            ),
+                          )
+                      )
+                  );
+
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 210,
+                        child: CarouselSlider.builder(
+                          options: CarouselOptions(
+                            // aspectRatio: 2.0,
+                            enlargeCenterPage: false,
+                            viewportFraction: 1,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                currentIndex = index;
+                              });
+                            },
+                          ),
+                          itemCount: (pages.length / 3).round(),
+                          itemBuilder: (context, index, realIndex) {
+                            final int first = index * 3;
+                            final int? second = first + 1;
+                            final int? three = second !+ 1;
+                            return Row(
+                              children: [first, second, three].map((idx) {
+                                return idx != null
+                                    ? Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    child: pages[idx],
+                                  ),
+                                )
+                                    : Container();
+                              }).toList(),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      DotsIndicator(
+                        dotsCount: (pages.length /3).round(),
+                        position: currentIndex,
+                        decorator: DotsDecorator(
+                          shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+                ),
+                          size: Size(12, 8),
+                          activeSize: Size(24, 8),
+                          activeShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                          ),
+                          spacing: EdgeInsets.all(1)
+                        ),
+                      )
+                    ],
+                  );
+                } else {
+                  return const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: LoadingIndicator(
+                          colors: kDefaultRainbowColors,
+                          indicatorType: Indicator.lineSpinFadeLoader,
+                          strokeWidth: 1,
+                          // pathBackgroundColor: Colors.black45,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Đang lấy dữ liệu")
+                    ],
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProductPage extends StatefulWidget {
+  const ProductPage({super.key});
+
+  @override
+  State<ProductPage> createState() => _ProductPageState();
+}
+int currentIndexPr = 0;
+class _ProductPageState extends State<ProductPage> {
+  final ProductModel productModel = ProductModel();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "SẢN PHẨM BÁN CHẠY",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: mainColor,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                          const SpecialCosmeticScreen()));
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: Text(
+                    "Xem thêm...",
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: mainColor,
+                        fontStyle: FontStyle.italic
+                    ),
+                  ),
+                )
+              )
+            ],
+          ),
+          Container(
+            height: 15,
+          ),
+          SizedBox(
+            height: 240,
+            child: FutureBuilder(
+              future: productModel.getHotProduct(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List list = snapshot.data!.toList();
+                  List<Widget> pages = List<Widget>.generate(
+                      list.length,
+                          (i) => GestureDetector(
+                            onTap: () => showModalBottomSheet<void>(
+                                backgroundColor: Colors.white,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                      color: Colors.white,
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      height:
+                                      MediaQuery.of(context).size.height *
+                                          0.85,
+                                      child: ProductDetail(
+                                        details: list[i],
+                                      ));
+                                }),
+                            child: Container(
+                              margin:
+                              EdgeInsets.only(left: 5, top: 5, bottom: 5, right: 5),
+                              width:
+                              MediaQuery.of(context).size.width / 3 - 10,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 6),
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(15)),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 2,
+                                    offset: Offset(0, 1), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                          width:
+                                          MediaQuery.of(context).size.width,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(15)),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.withOpacity(0.3),
+                                                spreadRadius: 2,
+                                                blurRadius: 2,
+                                                offset: Offset(0, 1), // changes position of shadow
+                                              ),
+                                            ],
+                                          ),
+                                          child:
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(15),
+                                            child: Image.network(
+                                              "${list[i]["Image_Name"]}",
+                                              // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                              fit: BoxFit.contain,
+                                            ),
+                                          )
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        "${list[i]["Name"]}",
+                                        textAlign: TextAlign.center,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            height: 1.3,
+                                            color: mainColor,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      SizedBox(height: 5,),
+                                      Text(
+                                        "${list[i]["CategoryCode"]}",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            height: 1.2,
+                                            color: mainColor,
+                                            fontStyle: FontStyle.italic,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      SizedBox(height: 5,),
+                                    ],
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(8)),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.3),
+                                          spreadRadius: 2,
+                                          blurRadius: 2,
+                                          offset: Offset(0, 1), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          showModalBottomSheet<void>(
+                                              backgroundColor: Colors.white,
+                                              clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                              context: context,
+                                              isScrollControlled: true,
+                                              builder:
+                                                  (BuildContext context) {
+                                                return Container(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: MediaQuery.of(
+                                                            context)
+                                                            .viewInsets
+                                                            .bottom),
+                                                    height:
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                        0.85,
+                                                    child: ChiTietScreen(
+                                                      detail: list[i],
+                                                    ));
+                                              });
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          padding: EdgeInsets.symmetric(vertical: 8),
+                                          decoration: BoxDecoration(
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(8)),
+                                            color: mainColor,
+                                          ),
+                                          child: Text("${NumberFormat.currency(locale: "vi_VI", symbol: "")
+                                              .format(
+                                              list[i]["PriceInbound"]
+                                          )} Đ",
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.amber)),
+                                        )),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                  );
+
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 220,
+                        child: CarouselSlider.builder(
+                          options: CarouselOptions(
+                            // aspectRatio: 2.0,
+                            enlargeCenterPage: false,
+                            viewportFraction: 1,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                currentIndexPr = index;
+                              });
+                            },
+                          ),
+                          itemCount: (pages.length / 3).round(),
+                          itemBuilder: (context, index, realIndex) {
+                            final int first = index * 3;
+                            final int? second = first + 1;
+                            final int? three = (pages.length / 3).round() % 3 > 0 && first > 2 ? null : second !+ 1;
+                            return Row(
+                              children: [first, second, three].map((idx) {
+                                return idx != null
+                                    ? Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    child: pages[idx],
+                                  ),
+                                )
+                                    : Container();
+                              }).toList(),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      DotsIndicator(
+                        dotsCount: (pages.length /3).round(),
+                        position: currentIndexPr,
+                        decorator: DotsDecorator(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            size: Size(12, 8),
+                            activeSize: Size(24, 8),
+                            activeShape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            spacing: EdgeInsets.all(1)
+                        ),
+                      )
+                    ],
+                  );
+                } else {
+                  return const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: LoadingIndicator(
+                          colors: kDefaultRainbowColors,
+                          indicatorType: Indicator.lineSpinFadeLoader,
+                          strokeWidth: 1,
+                          // pathBackgroundColor: Colors.black45,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Đang lấy dữ liệu")
+                    ],
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

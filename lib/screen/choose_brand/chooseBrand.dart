@@ -67,6 +67,7 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
       appBar: AppBar(
         primary: false,
         elevation: 0.0,

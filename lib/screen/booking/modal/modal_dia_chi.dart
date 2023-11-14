@@ -68,6 +68,7 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.white,
       child: Column(
         children: [
           Column(

@@ -9,6 +9,7 @@ import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class AllServiceScreen extends StatefulWidget {
   final List listTab;
@@ -202,7 +203,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                       ),
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * .75 - 20,
+                      width: MediaQuery.of(context).size.width * .75 - 17,
                       height: MediaQuery.of(context).size.height - 200,
                       child: ListView(
                         // crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +214,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                               if (snapshot.hasData) {
                                 List list = snapshot.data!.toList();
                                 return Wrap(
-                                    runSpacing: 8,
+                                    // runSpacing: 8,
                                     alignment: WrapAlignment.spaceBetween,
                                     children: list.map((item) {
                                       return GestureDetector(
@@ -227,92 +228,105 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                               .size
                                                               .width *
                                                           .7 /
-                                                          2 -
-                                                      4,
-                                                  height: 245,
+                                                          2 - 10,
+                                                  margin: EdgeInsets.only(left: 5, right: 5, top: 8),
+                                                  height: 230,
                                                   padding:
                                                       const EdgeInsets.symmetric(
                                                           horizontal: 6,
                                                           vertical: 6),
                                                   decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                              Radius.circular(
-                                                                  6)),
-                                                      border: Border.all(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .primary,
-                                                          width: 1)),
+                                                    borderRadius: const BorderRadius.all(
+                                                        Radius.circular(15)),
+                                                    color: Colors.white,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey.withOpacity(0.3),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 2,
+                                                        offset: Offset(0, 1), // changes position of shadow
+                                                      ),
+                                                    ],
+                                                  ),
                                                   child: Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    CrossAxisAlignment.start,
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                     children: [
                                                       Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
                                                         children: [
-                                                          Image.network(
-                                                            "${item["Image_Name"]}",
-                                                            // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                                            fit: BoxFit.cover,
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            height: 120,
+                                                          ClipRRect(
+                                                            borderRadius: BorderRadius.circular(15),
+                                                            child: Image.network(
+                                                              "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                              fit: BoxFit.cover,
+                                                              width: MediaQuery.of(
+                                                                  context)
+                                                                  .size
+                                                                  .width,
+                                                              height: 120,
+                                                            ),
                                                           ),
                                                           const SizedBox(
                                                             height: 5,
                                                           ),
                                                           Text(
                                                             "${item["Name"]}",
-                                                            maxLines: 3,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: const TextStyle(
-                                                                fontSize: 13,
+                                                            maxLines: 2,
+                                                            overflow: TextOverflow
+                                                                .ellipsis,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: mainColor,
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
+                                                                FontWeight
+                                                                    .w600),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 2,
                                                           ),
                                                         ],
                                                       ),
-                                                      SizedBox(
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        child: TextButton(
-                                                            onPressed: () {
+
+                                                      Container(
+                                                        padding: EdgeInsets.all(4),
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: const BorderRadius.all(
+                                                              Radius.circular(8)),
+                                                          color: Colors.white,
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors.grey.withOpacity(0.3),
+                                                              spreadRadius: 2,
+                                                              blurRadius: 2,
+                                                              offset: Offset(0, 1), // changes position of shadow
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        child: GestureDetector(
+                                                            onTap: () {
                                                               setState(() {
                                                                 showIndex =
-                                                                    item[
-                                                                        "Code"];
+                                                                item["Code"];
                                                               });
                                                             },
-                                                            style: ButtonStyle(
-                                                                backgroundColor:
-                                                                    MaterialStateProperty.all(Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary)),
-                                                            child: const Text(
-                                                                "Xem thêm",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    color: Colors
-                                                                        .white))),
+                                                            child: Container(
+                                                              alignment: Alignment.center,
+                                                              padding: EdgeInsets.symmetric(vertical: 8),
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: const BorderRadius.all(
+                                                                    Radius.circular(8)),
+                                                                color: mainColor,
+                                                              ),
+                                                              child: Text("Xem thêm",
+                                                                  style: TextStyle(
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.w400,
+                                                                      color: Colors.amber)),
+                                                            )),
                                                       )
                                                     ],
                                                   )),
@@ -324,12 +338,13 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                             const EdgeInsets
                                                                 .symmetric(
                                                                 horizontal: 8),
+                                                        margin: EdgeInsets.only(top: 8, left: 5, right: 5) ,
                                                         decoration: BoxDecoration(
                                                             borderRadius:
                                                                 const BorderRadius
                                                                     .all(Radius
                                                                         .circular(
-                                                                            6)),
+                                                                            15)),
                                                             color: Colors.black
                                                                 .withOpacity(
                                                                     0.4)),

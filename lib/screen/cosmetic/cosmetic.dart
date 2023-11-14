@@ -11,6 +11,7 @@ import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class Cosmetic extends StatefulWidget {
   final List listTab;
@@ -19,6 +20,7 @@ class Cosmetic extends StatefulWidget {
   @override
   State<Cosmetic> createState() => _CosmeticState();
 }
+
 List listAction = [];
 
 String showIndex = "";
@@ -39,57 +41,59 @@ class _CosmeticState extends State<Cosmetic> {
       listAction.clear();
     });
     setState(() {
-      widget.listTab.map((e){
-        if(e["GroupCode"] != "GDC"){
-          if(e["GroupCode"].toString().contains("làm trắng")){
+      widget.listTab.map((e) {
+        if (e["GroupCode"] != "GDC") {
+          if (e["GroupCode"].toString().contains("làm trắng")) {
             listAction.add({
               "img": "assets/images/Services/MyPham/Icon/lam-trang.png",
               "title": "Làm trắng",
               "code": e["GroupCode"]
             });
-          }else if(e["GroupCode"].toString().contains("dinh dưỡng cho da")){
+          } else if (e["GroupCode"].toString().contains("dinh dưỡng cho da")) {
             listAction.add({
               "img": "assets/images/Services/MyPham/Icon/dinh-duong-da.png",
               "title": "Dinh dưỡng cho da",
               "code": e["GroupCode"]
             });
-          }else if(e["GroupCode"].toString().contains("nâng cơ")){
+          } else if (e["GroupCode"].toString().contains("nâng cơ")) {
             listAction.add({
               "img": "assets/images/Services/MyPham/Icon/nang-co.png",
               "title": "Nâng cơ - Giảm nhăn",
               "code": e["GroupCode"]
             });
-          }else if(e["GroupCode"].toString().contains("dành cho mắt")){
+          } else if (e["GroupCode"].toString().contains("dành cho mắt")) {
             listAction.add({
               "img": "assets/images/Services/MyPham/Icon/danh-cho-mat.png",
               "title": "Dành cho mắt",
               "code": e["GroupCode"]
             });
-          }else if(e["GroupCode"].toString().contains("nuôi dưỡng và phục hồi da")){
+          } else if (e["GroupCode"]
+              .toString()
+              .contains("nuôi dưỡng và phục hồi da")) {
             listAction.add({
               "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
               "title": "Nuôi dưỡng và phục hồi",
               "code": e["GroupCode"]
             });
-          }else if(e["GroupCode"].toString().contains("dành cho da mụn")){
+          } else if (e["GroupCode"].toString().contains("dành cho da mụn")) {
             listAction.add({
               "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
               "title": "Nuôi dưỡng và phục hồi",
               "code": e["GroupCode"]
             });
-          }else if(e["GroupCode"].toString().contains("dành cho da mụn")){
+          } else if (e["GroupCode"].toString().contains("dành cho da mụn")) {
             listAction.add({
               "img": "assets/images/Services/MyPham/Icon/da-mun.png",
               "title": "Dành cho da mụn",
               "code": e["GroupCode"]
             });
-          }else if(e["GroupCode"].toString().contains("dành cho dưỡng môi")){
+          } else if (e["GroupCode"].toString().contains("dành cho dưỡng môi")) {
             listAction.add({
               "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
               "title": "Dưỡng môi",
               "code": e["GroupCode"]
             });
-          }else if(e["GroupCode"].toString().contains("dành cho dưỡng môi")){
+          } else if (e["GroupCode"].toString().contains("dành cho dưỡng môi")) {
             listAction.add({
               "img": "assets/images/Services/MyPham/Icon/lam-sach.png",
               "title": "Làm sạch",
@@ -101,6 +105,7 @@ class _CosmeticState extends State<Cosmetic> {
       activeCode = listAction[0]["code"];
     });
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -121,36 +126,38 @@ class _CosmeticState extends State<Cosmetic> {
     //   });
     // }, () => Navigator.pop(context));
 
-
     Map data = {
-      "DetailList": [{
-        "Amount": item["PriceOutbound"] * 1,
-        "Price": item["PriceOutbound"],
-        "ProductCode":item["Code"],
-        "ProductId": item["Id"],
-        "Quantity":1,
-      }]
+      "DetailList": [
+        {
+          "Amount": item["PriceOutbound"] * 1,
+          "Price": item["PriceOutbound"],
+          "ProductCode": item["Code"],
+          "ProductId": item["Id"],
+          "Quantity": 1,
+        }
+      ]
     };
     customModal.showAlertDialog(context, "error", "Giỏ hàng",
         "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-          Navigator.pop(context);
-          EasyLoading.show(status: "Vui lòng chờ...");
-          Future.delayed(const Duration(seconds: 2), () {
-            cartModel.addToCart(data).then((value) {
-              print(value);
-              EasyLoading.dismiss();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-            });
-          });
-        }, () => Navigator.pop(context));
+      Navigator.pop(context);
+      EasyLoading.show(status: "Vui lòng chờ...");
+      Future.delayed(const Duration(seconds: 2), () {
+        cartModel.addToCart(data).then((value) {
+          print(value);
+          EasyLoading.dismiss();
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
+        });
+      });
+    }, () => Navigator.pop(context));
   }
 
-  void goToAction(String code){
+  void goToAction(String code) {
     setState(() {
       activeCode = code;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     print(listAction);
@@ -201,7 +208,7 @@ class _CosmeticState extends State<Cosmetic> {
                                 border: Border(
                                     left: activeCode == item["code"]
                                         ? const BorderSide(
-                                        width: 3, color: Colors.red)
+                                            width: 3, color: Colors.red)
                                         : BorderSide.none)),
                             width: MediaQuery.of(context).size.width,
                             height: 120,
@@ -222,8 +229,7 @@ class _CosmeticState extends State<Cosmetic> {
                                 goToAction(item["code"]);
                               },
                               child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.stretch,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
@@ -237,12 +243,12 @@ class _CosmeticState extends State<Cosmetic> {
                                   ),
                                   Flexible(
                                       child: Text(
-                                        item["title"],
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                      ))
+                                    item["title"],
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                  ))
                                 ],
                               ),
                             ),
@@ -261,112 +267,149 @@ class _CosmeticState extends State<Cosmetic> {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 List list = snapshot.data!.toList();
-                                return  Wrap(
-                                    runSpacing: 8,
+                                return Wrap(
+                                    // runSpacing: 8,
                                     alignment: WrapAlignment.spaceBetween,
                                     children: list.map((item) {
                                       return GestureDetector(
                                           onTap: () => setState(() {
-                                            showIndex = item["Code"];
-                                          }),
+                                                showIndex = item["Code"];
+                                              }),
                                           child: Stack(
                                             children: [
                                               Container(
                                                   width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                      .7 /
-                                                      2 -
-                                                      4,
-                                                  height: 245,
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 6, vertical: 6),
+                                                              .size
+                                                              .width *
+                                                          .7 /
+                                                          2 -
+                                                      10,
+                                                  height: 260,
+                                                  margin: EdgeInsets.only(left: 5, right: 5, top: 8),
                                                   decoration: BoxDecoration(
-                                                      borderRadius: const BorderRadius
-                                                          .all(Radius.circular(6)),
-                                                      border:
-                                                      Border.all(
-                                                          color: Theme.of(context)
-                                                              .colorScheme
-                                                              .primary,
-                                                          width: 1)),
+                                                    borderRadius: const BorderRadius.all(
+                                                        Radius.circular(15)),
+                                                    color: Colors.white,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey.withOpacity(0.3),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 2,
+                                                        offset: Offset(0, 1), // changes position of shadow
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 6,
+                                                          vertical: 6),
+
                                                   child: Column(
                                                     crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment.spaceBetween,
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
                                                       Column(
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                         children: [
-                                                          Image.network(
-                                                            // "${item["Image_Name"]}"
-                                                            "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                                            fit: BoxFit.cover,
-                                                            width:
-                                                            MediaQuery.of(context)
-                                                                .size
-                                                                .width,
-                                                            height: 150,
+                                                          Container(
+                                                              width:
+                                                              MediaQuery.of(context).size.width,
+                                                              height: 120,
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: const BorderRadius.all(
+                                                                    Radius.circular(15)),
+                                                                color: Colors.white,
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors.grey.withOpacity(0.3),
+                                                                    spreadRadius: 2,
+                                                                    blurRadius: 2,
+                                                                    offset: Offset(0, 1), // changes position of shadow
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child:
+                                                              ClipRRect(
+                                                                borderRadius: BorderRadius.circular(15),
+                                                                child: Image.network(
+                                                                  "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                                  fit: BoxFit.contain,
+                                                                ),
+                                                              )
                                                           ),
                                                           const SizedBox(
-                                                            height: 5,
+                                                            height: 10,
                                                           ),
                                                           Text(
                                                             "${item["Name"]}",
                                                             maxLines: 2,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: const TextStyle(
+                                                            overflow:
+                                                            TextOverflow.ellipsis,
+                                                            textAlign: TextAlign.center ,
+                                                            style:  TextStyle(
                                                                 fontSize: 12,
+                                                                color: mainColor,
                                                                 fontWeight:
-                                                                FontWeight.w400),
+                                                                FontWeight.w600),
                                                           ),
-
+                                                          SizedBox(height: 5,),
+                                                          Text(
+                                                            "${item["CategoryCode"]}",
+                                                            maxLines: 2,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                                fontSize: 10,
+                                                                height: 1.2,
+                                                                color: mainColor,
+                                                                fontStyle: FontStyle.italic,
+                                                                fontWeight: FontWeight.w400),
+                                                          ),
+                                                          SizedBox(height: 5,),
                                                         ],
                                                       ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                "đ",
-                                                                style: TextStyle(
-                                                                    fontSize: 12,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    color: Theme.of(context)
-                                                                        .colorScheme
-                                                                        .primary),
+                                                      Container(
+                                                        padding: EdgeInsets.all(2),
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: const BorderRadius.all(
+                                                              Radius.circular(8)),
+                                                          color: Colors.white,
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors.grey.withOpacity(0.3),
+                                                              spreadRadius: 2,
+                                                              blurRadius: 2,
+                                                              offset: Offset(0, 1), // changes position of shadow
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        child: GestureDetector(
+                                                            child: Container(
+                                                              alignment: Alignment.center,
+                                                              padding: EdgeInsets.symmetric(vertical: 8),
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: const BorderRadius.all(
+                                                                    Radius.circular(8)),
+                                                                color: mainColor,
                                                               ),
-                                                              const SizedBox(
-                                                                width: 2,
-                                                              ),
-                                                              Text(
-                                                                NumberFormat.currency(
-                                                                    locale: "vi_VI", symbol: "")
-                                                                    .format(
-                                                                  item["CustomerPrice"] ??
-                                                                      item["PriceInbound"] ??
-                                                                      0,
-                                                                ),
-                                                                style: TextStyle(
-                                                                    fontSize: 12,
-                                                                    fontWeight: FontWeight.w400,
-                                                                    color: Theme.of(context)
-                                                                        .colorScheme
-                                                                        .primary),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Text(
-                                                            "-5%",
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight: FontWeight.w400,
-                                                                color: Colors.amber),
-                                                          ),
-                                                        ],
+                                                              child: Text("${NumberFormat.currency(locale: "vi_VI", symbol: "")
+                                                                  .format(
+                                                                  item["PriceInbound"]
+                                                              )} Đ",
+                                                                  style: TextStyle(
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.w400,
+                                                                      color: Colors.amber)),
+                                                            )),
                                                       )
                                                     ],
                                                   )),
@@ -375,155 +418,141 @@ class _CosmeticState extends State<Cosmetic> {
                                                 Positioned.fill(
                                                     child: Container(
                                                         padding:
-                                                        const EdgeInsets.symmetric(
-                                                            horizontal: 8),
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 8),
+                                                        margin: EdgeInsets.only(left: 5, right: 5, top: 8),
                                                         decoration: BoxDecoration(
                                                             borderRadius:
-                                                            const BorderRadius.all(
-                                                                Radius.circular(6)),
+                                                                const BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            15)),
                                                             color: Colors.black
-                                                                .withOpacity(0.4)),
+                                                                .withOpacity(
+                                                                    0.4)),
                                                         child: Column(
                                                           mainAxisAlignment:
-                                                          MainAxisAlignment.center,
+                                                              MainAxisAlignment
+                                                                  .center,
                                                           children: [
                                                             GestureDetector(
                                                                 onTap: () {
                                                                   setState(() {
-                                                                    showIndex = "";
+                                                                    showIndex =
+                                                                        "";
                                                                   });
                                                                   showModalBottomSheet<
-                                                                      void>(
+                                                                          void>(
                                                                       backgroundColor:
-                                                                      Colors.white,
-                                                                      clipBehavior: Clip
-                                                                          .antiAliasWithSaveLayer,
-                                                                      context: context,
+                                                                          Colors
+                                                                              .white,
+                                                                      clipBehavior:
+                                                                          Clip
+                                                                              .antiAliasWithSaveLayer,
+                                                                      context:
+                                                                          context,
                                                                       isScrollControlled:
-                                                                      true,
+                                                                          true,
                                                                       builder:
                                                                           (BuildContext
-                                                                      context) {
+                                                                              context) {
                                                                         return Container(
-                                                                            padding: EdgeInsets.only(
-                                                                                bottom: MediaQuery.of(context)
-                                                                                    .viewInsets
-                                                                                    .bottom),
-                                                                            height: MediaQuery.of(context)
-                                                                                .size
-                                                                                .height *
-                                                                                0.85,
-                                                                            child:
-                                                                            ProductDetail(
-                                                                              details:
-                                                                              item,
+                                                                            padding:
+                                                                                EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                                                            height: MediaQuery.of(context).size.height * 0.85,
+                                                                            child: ProductDetail(
+                                                                              details: item,
                                                                             ));
                                                                       });
                                                                 },
-                                                                child: Container(
-                                                                    padding:
-                                                                    const EdgeInsets
-                                                                        .symmetric(
-                                                                        vertical: 6,
-                                                                        horizontal:
-                                                                        10),
-                                                                    decoration:
-                                                                    BoxDecoration(
-                                                                      color: Colors
-                                                                          .blue[500],
-                                                                      borderRadius:
-                                                                      const BorderRadius
-                                                                          .all(
-                                                                          Radius.circular(
-                                                                              4)),
-                                                                    ),
-                                                                    child: Row(
-                                                                      mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                      children: [
-                                                                        Image.asset(
-                                                                            "assets/images/eye-white.png",
-                                                                            width: 18,
-                                                                            height: 18),
-                                                                        const SizedBox(
-                                                                          width: 8,
+                                                                child:
+                                                                    Container(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            vertical:
+                                                                                6,
+                                                                            horizontal:
+                                                                                10),
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          color:
+                                                                              Colors.blue[500],
+                                                                          borderRadius: const BorderRadius
+                                                                              .all(
+                                                                              Radius.circular(4)),
                                                                         ),
-                                                                        const Text(
-                                                                          "Xem chi tiết",
-                                                                          style: TextStyle(
-                                                                              fontSize:
-                                                                              10,
-                                                                              color: Colors
-                                                                                  .white,
-                                                                              fontWeight:
-                                                                              FontWeight
-                                                                                  .w400),
-                                                                        )
-                                                                      ],
-                                                                    ))),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Image.asset("assets/images/eye-white.png",
+                                                                                width: 18,
+                                                                                height: 18),
+                                                                            const SizedBox(
+                                                                              width: 8,
+                                                                            ),
+                                                                            const Text(
+                                                                              "Xem chi tiết",
+                                                                              style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w400),
+                                                                            )
+                                                                          ],
+                                                                        ))),
                                                             GestureDetector(
                                                                 onTap: () {
                                                                   setState(() {
-                                                                    showIndex = "";
+                                                                    showIndex =
+                                                                        "";
                                                                   });
-                                                                  if (storageToken.getItem(
-                                                                      "customer_token") ==
+                                                                  if (storageToken
+                                                                          .getItem(
+                                                                              "customer_token") ==
                                                                       null) {
                                                                     Navigator.push(
                                                                         context,
                                                                         MaterialPageRoute(
-                                                                            builder:
-                                                                                (context) =>
-                                                                            const LoginScreen()));
+                                                                            builder: (context) =>
+                                                                                const LoginScreen()));
                                                                   } else {
-                                                                    addToCart(item);
+                                                                    addToCart(
+                                                                        item);
                                                                   }
                                                                 },
-                                                                child: Container(
-                                                                    margin:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                        top: 10),
-                                                                    padding:
-                                                                    const EdgeInsets
-                                                                        .symmetric(
-                                                                        vertical: 6,
-                                                                        horizontal:
-                                                                        10),
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius:
-                                                                        const BorderRadius
-                                                                            .all(
-                                                                            Radius.circular(
+                                                                child:
+                                                                    Container(
+                                                                        margin: const EdgeInsets
+                                                                            .only(
+                                                                            top:
+                                                                                10),
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            vertical:
+                                                                                6,
+                                                                            horizontal:
+                                                                                10),
+                                                                        decoration: BoxDecoration(
+                                                                            borderRadius: const BorderRadius.all(Radius.circular(
                                                                                 4)),
-                                                                        color: Colors
-                                                                            .blue[900]),
-                                                                    child: Row(
-                                                                      mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                      children: [
-                                                                        Image.asset(
-                                                                            "assets/images/cart-solid-white.png",
-                                                                            width: 18,
-                                                                            height: 18),
-                                                                        const SizedBox(
-                                                                          width: 8,
-                                                                        ),
-                                                                        const Text(
-                                                                          "Mua hàng",
-                                                                          style: TextStyle(
-                                                                              fontSize:
-                                                                              10,
-                                                                              color: Colors
-                                                                                  .white,
-                                                                              fontWeight:
-                                                                              FontWeight
-                                                                                  .w400),
-                                                                        )
-                                                                      ],
-                                                                    )))
+                                                                            color: Colors.blue[
+                                                                                900]),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Image.asset("assets/images/cart-solid-white.png",
+                                                                                width: 18,
+                                                                                height: 18),
+                                                                            const SizedBox(
+                                                                              width: 8,
+                                                                            ),
+                                                                            const Text(
+                                                                              "Mua hàng",
+                                                                              style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w400),
+                                                                            )
+                                                                          ],
+                                                                        )))
                                                           ],
                                                         )))
                                             ],
@@ -531,29 +560,32 @@ class _CosmeticState extends State<Cosmetic> {
                                     }).toList());
                               } else {
                                 return Container(
-                                  alignment: Alignment.center,
-                                  height: MediaQuery.of(context).size.height - 250,
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: LoadingIndicator(
-                                          colors: kDefaultRainbowColors,
-                                          indicatorType: Indicator.lineSpinFadeLoader,
-                                          strokeWidth: 1,
-                                          // pathBackgroundColor: Colors.black45,
+                                    alignment: Alignment.center,
+                                    height: MediaQuery.of(context).size.height -
+                                        250,
+                                    child: const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 40,
+                                          height: 40,
+                                          child: LoadingIndicator(
+                                            colors: kDefaultRainbowColors,
+                                            indicatorType:
+                                                Indicator.lineSpinFadeLoader,
+                                            strokeWidth: 1,
+                                            // pathBackgroundColor: Colors.black45,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text("Đang lấy dữ liệu")
-                                    ],
-                                  )
-                                );
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text("Đang lấy dữ liệu")
+                                      ],
+                                    ));
                               }
                             },
                           ),
@@ -564,7 +596,6 @@ class _CosmeticState extends State<Cosmetic> {
                       ),
                     )
                   ],
-                ))
-        ));
+                ))));
   }
 }

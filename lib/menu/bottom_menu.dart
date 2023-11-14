@@ -29,28 +29,23 @@ int selectedTab = 0;
 
 List bottomList = [
   {
-    "icon": "assets/images/icon/home-black.png",
-    "icon_active": "assets/images/icon/home-red.png",
+    "icon": "assets/images/icon/home.png",
     "title": "Trang chủ"
   },
   {
-    "icon": "assets/images/list.png",
-    "icon_active": "assets/images/list1.png",
+    "icon": "assets/images/icon/dich-vu.png",
     "title": "Dịch vụ"
   },
   {
-    "icon": "assets/images/telesales-black.png",
-    "icon_active": "assets/images/telesales.png",
+    "icon": "assets/images/icon/tu-van.png",
     "title": "Tư vấn"
   },
   {
-    "icon": "assets/images/Home/Icon/my-pham.png",
-    "icon_active": "assets/images/Home/Icon/my-pham.png",
+    "icon": "assets/images/icon/my-pham.png",
     "title": "Mỹ phẩm cao cấp"
   },
   {
     "icon": "assets/images/telesales-black.png",
-    "icon_active": "assets/images/telesales.png",
     "title": "Tư vấn"
   },
 ];
@@ -203,7 +198,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                   );
                 }else{
                   return Container(
-                    width: index == 3 ? 200 :  (MediaQuery.of(context).size.width - 200) / 4,
+                    width:  MediaQuery.of(context).size.width / 5,
                     alignment: Alignment.center,
                     child: GestureDetector(
                       // style: ButtonStyle(
@@ -214,9 +209,10 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                         child: Column(
                           children: [
                             Image.asset(
-                               "assets/images/icon/profile-black.png",
+                               "assets/images/icon/profile-red.png",
                               width: 28,
                               height: 28,
+                              fit: BoxFit.contain,
                             ),
                             const  SizedBox(height: 5),
                             Text(
@@ -233,7 +229,6 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                         )),
                   );
                 }
-
               }else{
                 return Container(
                   width: index == 3 ? 100 :  (MediaQuery.of(context).size.width - 100) / 4 - 5,
@@ -246,22 +241,11 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                       onTap: () => onItemTapped(index),
                       child: Column(
                         children: [
-                          index == 2 ?  Container(
-                            width: 28,
-                            height: 28,
-                                   padding: EdgeInsets.all(3),
-                                   decoration: BoxDecoration(
-                                       border: Border.all(color: mainColor, width: 1),
-                                       borderRadius: BorderRadius.all(Radius.circular(9999999))
-                                   ),
-                                   child:  Image.asset(
-                                   "assets/images/telesales.png",
-                                   
-                                 ),):
                           Image.asset(
-                            index == widget.active ? e["icon_active"] : e["icon"],
+                            e["icon"],
                             width: 28,
                             height: 28,
+                            fit: BoxFit.contain,
                           ),
                         const  SizedBox(height: 5),
                           Text(

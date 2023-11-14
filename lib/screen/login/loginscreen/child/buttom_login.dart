@@ -15,5 +15,5 @@ Widget loginButton(BuildContext context, VoidCallback submit, bool loading) {
               shape: MaterialStateProperty.all(const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))))),
           onPressed: submit,
-          child: const Text("Đăng nhập")));
+          child: const Text("Đăng nhập", style: TextStyle(color: Colors.white),)));
 }

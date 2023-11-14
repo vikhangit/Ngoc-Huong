@@ -50,6 +50,7 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
     print(provinceId);
     return Container(
       padding: const EdgeInsets.all(15.0),
+      color: Colors.white,
       child: Column(
         children: [
           Container(

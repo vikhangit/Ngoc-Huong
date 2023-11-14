@@ -50,6 +50,7 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(15.0),
+      color: Colors.white,
       child: Column(
         children: [
           Container(

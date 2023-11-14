@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'ngoc-huong-86683.appspot.com',
     iosClientId:
         '365783008418-s7ja1hgn8bufu88j2hibt5l2nopeuenj.apps.googleusercontent.com',
-    iosBundleId: '',
+    iosBundleId: 'com.tan',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

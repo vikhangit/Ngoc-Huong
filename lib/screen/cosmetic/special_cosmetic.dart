@@ -11,6 +11,7 @@ import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class SpecialCosmeticScreen extends StatefulWidget {
   const SpecialCosmeticScreen({super.key});
@@ -44,59 +45,59 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
 
   void addToCart(Map item) async {
     Map data = {
-      "DetailList": [{
-        "Amount": item["PriceOutbound"] * 1,
-        "Price": item["PriceOutbound"],
-        "PrinceTest": item["PriceOutbound"] * 1,
-        "ProductCode":item["Code"],
-        "ProductId": item["Id"],
-        "Quantity":1,
-      }]
+      "DetailList": [
+        {
+          "Amount": item["PriceOutbound"] * 1,
+          "Price": item["PriceOutbound"],
+          "PrinceTest": item["PriceOutbound"] * 1,
+          "ProductCode": item["Code"],
+          "ProductId": item["Id"],
+          "Quantity": 1,
+        }
+      ]
     };
     print("================ Data ==================");
     print(data);
     print("================ Data ==================");
     customModal.showAlertDialog(context, "error", "Giỏ hàng",
         "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-          Navigator.pop(context);
-          EasyLoading.show(status: "Vui lòng chờ...");
-          Future.delayed(const Duration(seconds: 2), () {
-            cartModel.addToCart(data).then((value) {
-              print("================ Value ==================");
-              print(value);
-              print("================ Value ==================");
-              EasyLoading.dismiss();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-            });
-          });
-        }, () => Navigator.pop(context));
+      Navigator.pop(context);
+      EasyLoading.show(status: "Vui lòng chờ...");
+      Future.delayed(const Duration(seconds: 2), () {
+        cartModel.addToCart(data).then((value) {
+          print("================ Value ==================");
+          print(value);
+          print("================ Value ==================");
+          EasyLoading.dismiss();
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
+        });
+      });
+    }, () => Navigator.pop(context));
   }
+
   void updateCart(Map item) async {
     customModal.showAlertDialog(context, "error", "Giỏ hàng",
         "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-          Navigator.pop(context);
-          EasyLoading.show(status: "Vui lòng chờ...");
-          Future.delayed(const Duration(seconds: 2), () {
-            cartModel
-                .updateProductInCart({
-              "Id": 1,
-              "DetailList": [
-                {
-                  ...item,
-                  "Amount": (item["Quantity"] + 1) * item["Price"],
-                  "Quantity": item["Quantity"] + 1
-                }
-              ]
-            }).then((value){
-              EasyLoading.dismiss();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AddCartSuccess()));
-            });
-          });
-        }, () => Navigator.pop(context));
+      Navigator.pop(context);
+      EasyLoading.show(status: "Vui lòng chờ...");
+      Future.delayed(const Duration(seconds: 2), () {
+        cartModel.updateProductInCart({
+          "Id": 1,
+          "DetailList": [
+            {
+              ...item,
+              "Amount": (item["Quantity"] + 1) * item["Price"],
+              "Quantity": item["Quantity"] + 1
+            }
+          ]
+        }).then((value) {
+          EasyLoading.dismiss();
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
+        });
+      });
+    }, () => Navigator.pop(context));
   }
 
   @override
@@ -144,7 +145,6 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                             runSpacing: 15,
                             alignment: WrapAlignment.spaceBetween,
                             children: list.map((item) {
-                              print(item["Image_Name"]);
                               return GestureDetector(
                                   onTap: () => setState(() {
                                         showIndex = item["Code"];
@@ -157,97 +157,122 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                       .width /
                                                   2 -
                                               22.5,
-                                          height: 230,
+                                          height: 280,
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 6, vertical: 6),
                                           decoration: BoxDecoration(
-                                              borderRadius: const BorderRadius
-                                                  .all(Radius.circular(6)),
-                                              border:
-                                                  Border.all(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary,
-                                                      width: 1)),
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(15)),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.withOpacity(0.3),
+                                                spreadRadius: 2,
+                                                blurRadius: 2,
+                                                offset: Offset(0, 1), // changes position of shadow
+                                              ),
+                                            ],
+                                          ),
                                           child: Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                CrossAxisAlignment.center,
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Column(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.center,
                                                 children: [
-                                                  Image.network(
-                                                    "${item["Image_Name"]}",
-                                                    // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                                    fit: BoxFit.cover,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    height: 150,
+                                                  Container(
+                                                      width:
+                                                      MediaQuery.of(context).size.width,
+                                                      height: 140,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: const BorderRadius.all(
+                                                            Radius.circular(15)),
+                                                        color: Colors.white,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey.withOpacity(0.3),
+                                                            spreadRadius: 2,
+                                                            blurRadius: 2,
+                                                            offset: Offset(0, 1), // changes position of shadow
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child:
+                                                      ClipRRect(
+                                                        borderRadius: BorderRadius.circular(15),
+                                                        child: Image.network(
+                                                          "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                          fit: BoxFit.contain,
+                                                        ),
+                                                      )
                                                   ),
                                                   const SizedBox(
-                                                    height: 5,
+                                                    height: 10,
                                                   ),
                                                   Text(
                                                     "${item["Name"]}",
                                                     maxLines: 2,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: const TextStyle(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center ,
+                                                    style:  TextStyle(
                                                         fontSize: 13,
+                                                        color: mainColor,
                                                         fontWeight:
-                                                            FontWeight.w400),
+                                                            FontWeight.w600),
                                                   ),
-                                                  const SizedBox(
-                                                    height: 2,
+                                                  SizedBox(height: 5,),
+                                                  Text(
+                                                    "${item["CategoryCode"]}",
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 11,
+                                                        height: 1.2,
+                                                        color: mainColor,
+                                                        fontStyle: FontStyle.italic,
+                                                        fontWeight: FontWeight.w400),
                                                   ),
+                                                  SizedBox(height: 5,),
                                                 ],
                                               ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        "đ",
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: Theme.of(context)
-                                                                .colorScheme
-                                                                .primary),
+                                              Container(
+                                                padding: EdgeInsets.all(2),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: const BorderRadius.all(
+                                                      Radius.circular(8)),
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey.withOpacity(0.3),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 2,
+                                                      offset: Offset(0, 1), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: GestureDetector(
+                                                    child: Container(
+                                                      alignment: Alignment.center,
+                                                      padding: EdgeInsets.symmetric(vertical: 8),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: const BorderRadius.all(
+                                                            Radius.circular(8)),
+                                                        color: mainColor,
                                                       ),
-                                                      const SizedBox(
-                                                        width: 2,
-                                                      ),
-                                                      Text(
-                                                        NumberFormat.currency(
-                                                            locale: "vi_VI", symbol: "")
-                                                            .format(
-                                                          item["CustomerPrice"] ??
-                                                              item["PriceInbound"] ??
-                                                              0,
-                                                        ),
-                                                        style: TextStyle(
-                                                            fontSize: 13,
-                                                            fontWeight: FontWeight.w400,
-                                                            color: Theme.of(context)
-                                                                .colorScheme
-                                                                .primary),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Text(
-                                                    "-5%",
-                                                    style: TextStyle(
-                                                        fontSize: 13,
-                                                        fontWeight: FontWeight.w400,
-                                                        color: Colors.amber),
-                                                  ),
-                                                ],
+                                                      child: Text("${NumberFormat.currency(locale: "vi_VI", symbol: "")
+                                                          .format(
+                                                          item["PriceInbound"]
+                                                      )} Đ",
+                                                          style: TextStyle(
+                                                              fontSize: 11,
+                                                              fontWeight: FontWeight.w400,
+                                                              color: Colors.amber)),
+                                                    )),
                                               )
                                             ],
                                           )),
@@ -261,7 +286,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                 decoration: BoxDecoration(
                                                     borderRadius:
                                                         const BorderRadius.all(
-                                                            Radius.circular(6)),
+                                                            Radius.circular(15)),
                                                     color: Colors.black
                                                         .withOpacity(0.4)),
                                                 child: Column(
@@ -304,7 +329,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                         child: Container(
                                                             padding:
                                                                 const EdgeInsets
-                                                                        .symmetric(
+                                                                    .symmetric(
                                                                     vertical: 6,
                                                                     horizontal:
                                                                         10),
@@ -314,7 +339,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                                   .blue[500],
                                                               borderRadius:
                                                                   const BorderRadius
-                                                                          .all(
+                                                                      .all(
                                                                       Radius.circular(
                                                                           4)),
                                                             ),
@@ -343,80 +368,100 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                                 )
                                                               ],
                                                             ))),
-                                                    FutureBuilder(future: cartModel.getDetailCartByCode(item["Code"].toString()),
-                                                      builder: (context, snapshot) {
-                                                        if(snapshot.hasData){
-                                                          return  GestureDetector(
+                                                    FutureBuilder(
+                                                      future: cartModel
+                                                          .getDetailCartByCode(
+                                                              item["Code"]
+                                                                  .toString()),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot.hasData) {
+                                                          return GestureDetector(
                                                               onTap: () {
                                                                 setState(() {
-                                                                  showIndex = "";
+                                                                  showIndex =
+                                                                      "";
                                                                 });
-                                                                if (storageToken.getItem("customer_token") !=
+                                                                if (storageToken
+                                                                        .getItem(
+                                                                            "customer_token") !=
                                                                     null) {
-                                                                  if(snapshot.data!.isNotEmpty){
-                                                                    updateCart(snapshot.data!);
-                                                                  }else{
-                                                                    addToCart(item);
+                                                                  if (snapshot
+                                                                      .data!
+                                                                      .isNotEmpty) {
+                                                                    updateCart(
+                                                                        snapshot
+                                                                            .data!);
+                                                                  } else {
+                                                                    addToCart(
+                                                                        item);
                                                                   }
                                                                 } else {
                                                                   Navigator.push(
                                                                       context,
                                                                       MaterialPageRoute(
-                                                                          builder: (context) => const LoginScreen()));
+                                                                          builder: (context) =>
+                                                                              const LoginScreen()));
                                                                 }
                                                               },
                                                               child: Container(
                                                                   margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      top: 10),
-                                                                  padding:
-                                                                  const EdgeInsets
+                                                                      const EdgeInsets
+                                                                          .only(
+                                                                          top:
+                                                                              10),
+                                                                  padding: const EdgeInsets
                                                                       .symmetric(
-                                                                      vertical: 6,
+                                                                      vertical:
+                                                                          6,
                                                                       horizontal:
-                                                                      10),
+                                                                          10),
                                                                   decoration: BoxDecoration(
-                                                                      borderRadius:
-                                                                      const BorderRadius
+                                                                      borderRadius: const BorderRadius
                                                                           .all(
                                                                           Radius.circular(
                                                                               4)),
                                                                       color: Colors
-                                                                          .blue[900]),
+                                                                              .blue[
+                                                                          900]),
                                                                   child: Row(
                                                                     mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
+                                                                        MainAxisAlignment
+                                                                            .center,
                                                                     children: [
                                                                       Image.asset(
                                                                           "assets/images/cart-solid-white.png",
-                                                                          width: 24,
-                                                                          height: 24),
+                                                                          width:
+                                                                              24,
+                                                                          height:
+                                                                              24),
                                                                       const SizedBox(
-                                                                        width: 8,
+                                                                        width:
+                                                                            8,
                                                                       ),
                                                                       const Text(
                                                                         "Mua hàng",
                                                                         style: TextStyle(
                                                                             fontSize:
-                                                                            13,
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontWeight:
-                                                                            FontWeight
-                                                                                .w400),
+                                                                                13,
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontWeight: FontWeight.w400),
                                                                       )
                                                                     ],
                                                                   )));
-                                                        }else{
+                                                        } else {
                                                           return const Center(
-                                                            child:  SizedBox(
+                                                            child: SizedBox(
                                                               width: 40,
                                                               height: 40,
-                                                              child: LoadingIndicator(
-                                                                colors: kDefaultRainbowColors,
-                                                                indicatorType: Indicator.lineSpinFadeLoader,
+                                                              child:
+                                                                  LoadingIndicator(
+                                                                colors:
+                                                                    kDefaultRainbowColors,
+                                                                indicatorType:
+                                                                    Indicator
+                                                                        .lineSpinFadeLoader,
                                                                 strokeWidth: 1,
                                                                 // pathBackgroundColor: Colors.black45,
                                                               ),

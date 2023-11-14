@@ -68,6 +68,7 @@ class _StartScreenState extends State<StartScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(15.0),
         child: Column(

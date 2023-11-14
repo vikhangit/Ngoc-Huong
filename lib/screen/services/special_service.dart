@@ -8,6 +8,7 @@ import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class SpecialServiceScreen extends StatefulWidget {
   const SpecialServiceScreen({super.key});
@@ -54,7 +55,6 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
               elevation: 0.0,
               leadingWidth: 45,
               centerTitle: true,
-
               leading: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
@@ -103,14 +103,18 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 6, vertical: 6),
                                         decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(6)),
-                                            border: Border.all(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                                width: 1)),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(15)),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.3),
+                                              spreadRadius: 2,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 1), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
                                         child: isLoading
                                             ? const Row(
                                                 mainAxisAlignment:
@@ -138,18 +142,18 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                                         .spaceBetween,
                                                 children: [
                                                   Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
                                                     children: [
-                                                      Image.network(
-                                                        "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                        fit: BoxFit.cover,
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        height: 120,
+                                                      ClipRRect(
+                                                        borderRadius: BorderRadius.circular(15),
+                                                        child: Image.network(
+                                                          "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                          fit: BoxFit.cover,
+                                                          width: MediaQuery.of(
+                                                              context)
+                                                              .size
+                                                              .width,
+                                                          height: 120,
+                                                        ),
                                                       ),
                                                       const SizedBox(
                                                         height: 5,
@@ -157,9 +161,12 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                                       Text(
                                                         "${item["Name"]}",
                                                         maxLines: 2,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: const TextStyle(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
                                                             fontSize: 13,
+                                                            color: mainColor,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w400),
@@ -169,32 +176,43 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                                       ),
                                                     ],
                                                   ),
-                                                  SizedBox(
-                                                    width: MediaQuery.of(
-                                                        context)
-                                                        .size
-                                                        .width,
-                                                    child: TextButton(
-                                                        onPressed: () {
+
+                                                  Container(
+                                                    padding: EdgeInsets.all(4),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: const BorderRadius.all(
+                                                          Radius.circular(8)),
+                                                      color: Colors.white,
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey.withOpacity(0.3),
+                                                          spreadRadius: 2,
+                                                          blurRadius: 2,
+                                                          offset: Offset(0, 1), // changes position of shadow
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: GestureDetector(
+                                                        onTap: () {
                                                           setState(() {
                                                             showIndex =
-                                                            item[
-                                                            "Code"];
+                                                            item["Code"];
                                                           });
                                                         },
-                                                        style: ButtonStyle(
-                                                            backgroundColor:
-                                                            MaterialStateProperty.all(Theme.of(
-                                                                context)
-                                                                .colorScheme
-                                                                .primary)),
-                                                        child: const Text(
-                                                            "Xem thêm",
-                                                            style: TextStyle(
-                                                                fontSize:
-                                                                12,
-                                                                color: Colors
-                                                                    .white))),
+                                                        child: Container(
+                                                          alignment: Alignment.center,
+                                                          padding: EdgeInsets.symmetric(vertical: 8),
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: const BorderRadius.all(
+                                                                Radius.circular(8)),
+                                                            color: mainColor,
+                                                          ),
+                                                          child: Text("Xem thêm",
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontWeight: FontWeight.w400,
+                                                                  color: Colors.amber)),
+                                                        )),
                                                   )
                                                 ],
                                               ),
@@ -209,7 +227,7 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                                 decoration: BoxDecoration(
                                                     borderRadius:
                                                         const BorderRadius.all(
-                                                            Radius.circular(6)),
+                                                            Radius.circular(15)),
                                                     color: Colors.black
                                                         .withOpacity(0.4)),
                                                 child: Column(
@@ -252,7 +270,7 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                                         child: Container(
                                                             padding:
                                                                 const EdgeInsets
-                                                                        .symmetric(
+                                                                    .symmetric(
                                                                     vertical: 6,
                                                                     horizontal:
                                                                         10),
@@ -262,7 +280,7 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                                                   .blue[500],
                                                               borderRadius:
                                                                   const BorderRadius
-                                                                          .all(
+                                                                      .all(
                                                                       Radius.circular(
                                                                           4)),
                                                             ),
@@ -319,18 +337,18 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                                                         child: Container(
                                                             margin:
                                                                 const EdgeInsets
-                                                                        .only(
+                                                                    .only(
                                                                     top: 10),
                                                             padding:
                                                                 const EdgeInsets
-                                                                        .symmetric(
+                                                                    .symmetric(
                                                                     vertical: 6,
                                                                     horizontal:
                                                                         10),
                                                             decoration: BoxDecoration(
                                                                 borderRadius:
                                                                     const BorderRadius
-                                                                            .all(
+                                                                        .all(
                                                                         Radius.circular(
                                                                             4)),
                                                                 color: Colors

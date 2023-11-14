@@ -11,8 +11,8 @@ class _ModalVoucherState extends State<ModalVoucher> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        margin: const EdgeInsets.only(top: 15),
+      color: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -110,7 +110,7 @@ class _ModalVoucherState extends State<ModalVoucher> {
                       ],
                     )),
                 SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.6 - 200,
+                    height: MediaQuery.of(context).size.height * 0.6 - 220,
                     child: ListView(
                       children: const [
                         Column(
