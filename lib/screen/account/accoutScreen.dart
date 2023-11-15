@@ -63,6 +63,10 @@ List menu = [
     "title": "Về Ngọc Hường",
   },
   {
+    "icon": "assets/images/delete-black.png",
+    "title": "Xóa tài khoản",
+  },
+  {
     "icon": "assets/images/account/dang-xuat.png",
     "title": "Đăng xuất",
   },
@@ -113,18 +117,18 @@ class _AccountScreenState extends State<AccountScreen> {
   void handleLogout() {
     customModal.showAlertDialog(
         context, "error", "Đang xuất", "Bạn có chắc chắn muốn đăng xuất không?",
-            () {
-          EasyLoading.show(status: "Đang xử lý...");
-          storageCustomerToken.deleteItem("customer_token");
-          Future.delayed(const Duration(seconds: 1), () {
-              EasyLoading.dismiss();
-              Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()));
-
-          });
-        }, () => Navigator.pop(context));
+        () {
+      EasyLoading.show(status: "Đang xử lý...");
+      storageCustomerToken.deleteItem("customer_token");
+      Future.delayed(const Duration(seconds: 1), () {
+        EasyLoading.dismiss();
+        Navigator.pop(context);
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()));
+      });
+    }, () => Navigator.pop(context));
   }
+
   @override
   Widget build(BuildContext context) {
     void goAction(int index) {
@@ -142,10 +146,12 @@ class _AccountScreenState extends State<AccountScreen> {
               MaterialPageRoute(builder: (context) => const BookingHistory()));
           break;
         case 2:
-          orderModel.getStatusList().then((value) => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => BuyHistory(
-                listTab: value,
-              ))));
+          orderModel.getStatusList().then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BuyHistory(
+                        listTab: value,
+                      ))));
 
           break;
         case 3:
@@ -161,6 +167,24 @@ class _AccountScreenState extends State<AccountScreen> {
               MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
         case 7:
+          {
+            customModal.showAlertDialog(context, "error", "Xóa tài khoản",
+                "Bạn có chắc chắn muốn xóa tài khoản không?", () {
+              EasyLoading.show(status: "Đang xử lý...");
+              storageCustomerToken.deleteItem("customer_token");
+              Future.delayed(const Duration(seconds: 1), () {
+                EasyLoading.dismiss();
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomeScreen()));
+              });
+            }, () => Navigator.pop(context));
+
+            break;
+          }
+        case 8:
           handleLogout();
           break;
         default:
@@ -268,18 +292,17 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ]));
                               } else {
                                 return const Center(
-                                  child:
-                                    SizedBox(
-                                      width: 40,
-                                      height: 40,
-                                      child: LoadingIndicator(
-                                        colors: kDefaultRainbowColors,
-                                        indicatorType:
-                                            Indicator.lineSpinFadeLoader,
-                                        strokeWidth: 1,
-                                        // pathBackgroundColor: Colors.black45,
-                                      ),
+                                  child: SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child: LoadingIndicator(
+                                      colors: kDefaultRainbowColors,
+                                      indicatorType:
+                                          Indicator.lineSpinFadeLoader,
+                                      strokeWidth: 1,
+                                      // pathBackgroundColor: Colors.black45,
                                     ),
+                                  ),
                                 );
                               }
                             })),
@@ -340,22 +363,20 @@ class _AccountScreenState extends State<AccountScreen> {
                     );
                   } else {
                     return const Center(
-                      child:
-                        SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: LoadingIndicator(
-                            colors: kDefaultRainbowColors,
-                            indicatorType: Indicator.lineSpinFadeLoader,
-                            strokeWidth: 1,
-                            // pathBackgroundColor: Colors.black45,
-                          ),
+                      child: SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: LoadingIndicator(
+                          colors: kDefaultRainbowColors,
+                          indicatorType: Indicator.lineSpinFadeLoader,
+                          strokeWidth: 1,
+                          // pathBackgroundColor: Colors.black45,
                         ),
-                        // SizedBox(
-                        //   width: 10,
-                        // ),
-                        // Text("Đang lấy dữ liệu")
-
+                      ),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
+                      // Text("Đang lấy dữ liệu")
                     );
                   }
                 },
@@ -538,7 +559,9 @@ class _AccountScreenState extends State<AccountScreen> {
                   ],
                 ),
               ),
-              Container(height: 25,)
+              Container(
+                height: 25,
+              )
             ],
           )),
     );

@@ -39,14 +39,27 @@ class Login {
             context,
             MaterialPageRoute(
                 builder: (context) => ProfileScreen(
-                  phone: phone.toString(),
-                )));
+                      phone: phone.toString(),
+                    )));
         return response.data;
       } else {
+        customModal.showAlertDialog(
+            context,
+            "error",
+            "Lỗi xác thực",
+            "Mã xác thực otp không đúng!",
+            () => Navigator.pop(context),
+            () => Navigator.pop(context));
         return;
       }
     } catch (e) {
-      customModal.showAlertDialog(context, "error", "Lỗi xác thực", "Mã xác thực otp không đúng!", () => Navigator.pop(context), () => Navigator.pop(context));
+      customModal.showAlertDialog(
+          context,
+          "error",
+          "Lỗi xác thực",
+          "Mã xác thực otp không đúng!",
+          () => Navigator.pop(context),
+          () => Navigator.pop(context));
     }
   }
 }

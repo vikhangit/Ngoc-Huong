@@ -36,7 +36,7 @@ class _StartScreenState extends State<StartScreen> {
   void initState() {
     super.initState();
     notificationService.requestNotificationPermission();
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 1), () {
       if (storageCustomer.getItem("customer_token") != null) {
         if (storageBrand.getItem("branch") == null) {
           localStorageStart.deleteItem("start");
@@ -68,7 +68,7 @@ class _StartScreenState extends State<StartScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-          backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       body: Container(
         padding: const EdgeInsets.all(15.0),
         child: Column(
@@ -82,28 +82,31 @@ class _StartScreenState extends State<StartScreen> {
             SizedBox(
               height: 20,
             ),
-           Stack(
-             children: [
-               const SizedBox(
-                 width: 110,
-                 height: 110,
-                 child: LoadingIndicator(
-                   colors: kDefaultRainbowColors,
-                   indicatorType: Indicator.ballRotateChase,
-                   strokeWidth: 3,
-                   // pathBackgroundColor: Colors.black45,
-                 ),
-               ),
-               Positioned.fill(
-                 // top: 0,
-                 //   left: 0,
-                   child: Container(
-                     alignment: Alignment.center,
-                     child: Image.asset("assets/images/logo.png", width: 60, height: 60,),
-                   )
-               )
-             ],
-           )
+            Stack(
+              children: [
+                const SizedBox(
+                  width: 110,
+                  height: 110,
+                  child: LoadingIndicator(
+                    colors: kDefaultRainbowColors,
+                    indicatorType: Indicator.ballRotateChase,
+                    strokeWidth: 3,
+                    // pathBackgroundColor: Colors.black45,
+                  ),
+                ),
+                Positioned.fill(
+                    // top: 0,
+                    //   left: 0,
+                    child: Container(
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    "assets/images/logo.png",
+                    width: 60,
+                    height: 60,
+                  ),
+                ))
+              ],
+            )
           ],
         ),
       ),
