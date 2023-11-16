@@ -63,12 +63,18 @@ class _InfomationAccountState extends State<InfomationAccount> {
     profileModel.getProfile().then((value) => setState(() {
           nameController = TextEditingController(text: value["CustomerName"]);
           phoneController = TextEditingController(text: value["Phone"]);
-          birthDay = value["Birthday"] != null ? DateTime.parse(value["Birthday"]): null;
+          birthDay = value["Birthday"] != null
+              ? DateTime.parse(value["Birthday"])
+              : null;
           emailController = TextEditingController(text: value["Email"]);
           addressController = TextEditingController(text: value["Address"]);
-          genderValue =  value["Gender"] == null ? -1 : value["Gender"] == true ? 1 : 0;
+          genderValue = value["Gender"] == null
+              ? -1
+              : value["Gender"] == true
+                  ? 1
+                  : 0;
         }));
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         loading = false;
       });
@@ -133,7 +139,8 @@ class _InfomationAccountState extends State<InfomationAccount> {
     FocusManager.instance.primaryFocus!.unfocus();
     Map data = {
       "CustomerName": name.isEmpty ? nameController.text : name,
-      "Birthday":birthDay != null ? DateFormat("yyyy-MM-dd").format(birthDay!) : null,
+      "Birthday":
+          birthDay != null ? DateFormat("yyyy-MM-dd").format(birthDay!) : null,
       "Gender": genderValue == -1 ? null : genderValue,
       "Address": address.isEmpty ? addressController.text : address,
       "Email": email.isEmpty ? emailController.text : email,

@@ -1,4 +1,4 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
@@ -65,14 +65,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     super.initState();
     profileModel.getProfile().then((value) => setState(() {
-      nameController = TextEditingController(text: value["CustomerName"]);
-      phoneController = TextEditingController(text: value["Phone"]);
-      birthDay = value["Birthday"] != null ? DateTime.parse(value["Birthday"]): null;
-      emailController = TextEditingController(text: value["Email"]);
-      addressController = TextEditingController(text: value["Address"]);
-      genderValue =  value["Gender"] == null ? -1 : value["Gender"] == true ? 1 : 0;
-    }));
-    Future.delayed(const Duration(seconds: 2), () {
+          nameController = TextEditingController(text: value["CustomerName"]);
+          phoneController = TextEditingController(text: value["Phone"]);
+          birthDay = value["Birthday"] != null
+              ? DateTime.parse(value["Birthday"])
+              : null;
+          emailController = TextEditingController(text: value["Email"]);
+          addressController = TextEditingController(text: value["Address"]);
+          genderValue = value["Gender"] == null
+              ? -1
+              : value["Gender"] == true
+                  ? 1
+                  : 0;
+        }));
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         loading = false;
       });
@@ -138,7 +144,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     FocusManager.instance.primaryFocus!.unfocus();
     Map data = {
       "CustomerName": name.isEmpty ? nameController.text : name,
-      "Birthday":birthDay != null ? DateFormat("yyyy-MM-dd").format(birthDay!) : null,
+      "Birthday":
+          birthDay != null ? DateFormat("yyyy-MM-dd").format(birthDay!) : null,
       "Gender": genderValue == -1 ? null : genderValue,
       "Address": address.isEmpty ? addressController.text : address,
       "Email": email.isEmpty ? emailController.text : email,

@@ -36,7 +36,7 @@ class _StartScreenState extends State<StartScreen> {
   void initState() {
     super.initState();
     notificationService.requestNotificationPermission();
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (storageCustomer.getItem("customer_token") != null) {
         if (storageBrand.getItem("branch") == null) {
           localStorageStart.deleteItem("start");
