@@ -45,23 +45,19 @@ List menu = [
     "icon": "assets/images/cart-black.png",
     "title": "Lịch sử đặt hàng",
   },
-  {
-    "icon": "assets/images/account/dieu-khoan.png",
-    "title": "Điều khoản sử dụng",
-  },
-  {
-    "icon": "assets/images/account/gioi-thieu.png",
-    "title": "Giới thiệu bạn bè",
-  },
+  //{
+    //"icon": "assets/images/account/dieu-khoan.png",
+    //"title": "Điều khoản sử dụng",
+  //},
   {
     "icon": "assets/images/account/dia-chi.png",
     "title": "Quản lý địa chỉ",
   },
 
-  {
-    "icon": "assets/images/account/ve-chung-toi.png",
-    "title": "Về Ngọc Hường",
-  },
+  //{
+    //"icon": "assets/images/account/ve-chung-toi.png",
+    //"title": "Về Ngọc Hường",
+  //},
   {
     "icon": "assets/images/delete-black.png",
     "title": "Xóa tài khoản",
@@ -154,19 +150,19 @@ class _AccountScreenState extends State<AccountScreen> {
                       ))));
 
           break;
+        //case 3:
+          //Navigator.push(context,
+             // MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
+          //break;
+        //case 4:
+        //  Navigator.push(context,
+         //     MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
+          //break;
         case 3:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
-          break;
-        case 4:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
-          break;
-        case 5:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
-        case 7:
+        case 4:
           {
             customModal.showAlertDialog(context, "error", "Xóa tài khoản",
                 "Bạn có chắc chắn muốn xóa tài khoản không?", () {
@@ -184,7 +180,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
             break;
           }
-        case 8:
+        case 5:
           handleLogout();
           break;
         default:
