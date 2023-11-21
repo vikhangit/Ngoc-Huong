@@ -1,5 +1,5 @@
 PODS:
-  - app_settings (4.3.0):
+  - app_settings (5.1.1):
     - Flutter
   - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
@@ -212,10 +212,10 @@ CHECKOUT OPTIONS:
     :tag: 10.17.0
 
 SPEC CHECKSUMS:
-  app_settings: ee4ae4d1c9a907a23b81c40e5c56a5ca8a20a62b
+  app_settings: 017320c6a680cdc94c799949d95b84cb69389ebc
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  file_picker: ce3938a0df3cc1ef404671531facef740d03f920
+  file_picker: 15fd9539e4eb735dc54bae8c0534a7a9511a03de
   Firebase: f4ac0b02927af9253ae094d23deecf0890da7374
   firebase_auth: 8b51489f374ea36b8f0aac047738de1d1f02e573
   firebase_core: efc9455611b8769fa90fbdae5da182600bd6901c
@@ -242,7 +242,7 @@ SPEC CHECKSUMS:
   SDWebImage: 96e0c18ef14010b7485210e92fac888587ebb958
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
-  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  url_launcher_ios: 68d46cc9766d0c41dbdc884310529557e3cd7a86
 
 PODFILE CHECKSUM: cdf7ebb1e68002498c0cca12a6979a076daae12f
 

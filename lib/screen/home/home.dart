@@ -1202,6 +1202,8 @@ class _ServicesPageState extends State<ServicesPage> {
                             ),
                             size: Size(12, 8),
                             activeSize: Size(24, 8),
+                            color: mainColor,
+                            activeColor: mainColor,
                             activeShape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4.0),
                             ),
@@ -1529,6 +1531,8 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                             size: Size(12, 8),
                             activeSize: Size(24, 8),
+                            color: mainColor,
+                            activeColor: mainColor,
                             activeShape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4.0),
                             ),
