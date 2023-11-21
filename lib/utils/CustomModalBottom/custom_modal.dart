@@ -63,11 +63,10 @@ class CustomModal {
                     Expanded(
                         child: ElevatedButton(
                             style: ButtonStyle(
-                shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))
-          )
-        ),
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)))),
                                 backgroundColor: MaterialStateProperty.all(
                                     Colors.blue[900])),
                             onPressed: () => okFuc(),
@@ -80,17 +79,17 @@ class CustomModal {
                     ),
                     Expanded(
                         child: ElevatedButton(
-                            style: ButtonStyle( 
-        backgroundColor: MaterialStateProperty.all(Colors.white),
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                  side: BorderSide(width: 0.5, color: Colors.black),
-                                  borderRadius: BorderRadius.all(Radius.circular(10))
-                                )
-                              )
-                                ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.white),
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            width: 0.5, color: Colors.black),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))))),
                             onPressed: () => cancleFuc(),
-                            child:  Text(
+                            child: Text(
                               "Hủy bỏ",
                               style: TextStyle(color: mainColor),
                             )))
@@ -110,6 +109,7 @@ class CustomModal {
       },
     );
   }
+
   void showBottomToolDialog(BuildContext context) {
     Future<void> launchInBrowser(String link) async {
       Uri url = Uri.parse(link);
@@ -120,6 +120,7 @@ class CustomModal {
         throw Exception('Could not launch $url');
       }
     }
+
     showGeneralDialog(
       barrierLabel: "Label",
       barrierDismissible: true,
@@ -140,171 +141,195 @@ class CustomModal {
             ),
             child: SizedBox.expand(
                 child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          makingPhoneCall();
+                        },
+                        style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(0.0)),
+                            shape: MaterialStateProperty.all(
+                                const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(9999))))),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 65,
+                              height: 65,
+                              margin: const EdgeInsets.only(bottom: 5),
+                              alignment: Alignment.center,
+                              decoration: const BoxDecoration(
+                                  color: Colors.white, shape: BoxShape.circle),
+                              child: Image.asset(
+                                "assets/images/call-solid-red.png",
+                                height: 40,
+                                width: 40,
+                              ),
+                            ),
+                            const Text(
+                              "Hotline",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal),
+                            )
+                          ],
+                        )),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BookingServices()));
+                        },
+                        style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(0.0)),
+                            shape: MaterialStateProperty.all(
+                                const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(9999))))),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 65,
+                              height: 65,
+                              margin: const EdgeInsets.only(bottom: 5),
+                              alignment: Alignment.center,
+                              decoration: const BoxDecoration(
+                                  color: Colors.white, shape: BoxShape.circle),
+                              child: Image.asset(
+                                "assets/images/calendar-solid-red.png",
+                                height: 40,
+                                width: 40,
+                              ),
+                            ),
+                            const Text(
+                              "Đặt lịch",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal),
+                            )
+                          ],
+                        )),
+                  ],
+                ),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              makingPhoneCall();
-                            },
-                            style: ButtonStyle(
-                                padding:
-                                MaterialStateProperty.all(const EdgeInsets.all(0.0)),
-                                shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(9999))
-                                ))
+                    TextButton(
+                        onPressed: () {
+                          EasyLoading.show(status: "Vui lòng chờ...");
+                          Future.delayed(const Duration(seconds: 2), () {
+                            launchInBrowser(
+                                    'https://www.messenger.com/t/1505522193097958')
+                                .then((value) => EasyLoading.dismiss());
+                          });
+                        },
+                        style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(0.0)),
+                            shape: MaterialStateProperty.all(
+                                const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(9999))))),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 65,
+                              height: 65,
+                              margin: const EdgeInsets.only(bottom: 5),
+                              alignment: Alignment.center,
+                              decoration: const BoxDecoration(
+                                  color: Colors.white, shape: BoxShape.circle),
+                              child: Image.asset(
+                                "assets/images/messenger-red.png",
+                                height: 40,
+                                width: 40,
+                              ),
                             ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 65,
-                                  height: 65,
-                                  margin: const EdgeInsets.only(bottom: 5),
-                                  alignment: Alignment.center,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle
-                                  ),
-                                  child: Image.asset("assets/images/call-solid-red.png", height: 40, width: 40,),
-                                ),
-                                const Text("Hotline", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                  fontWeight: FontWeight.normal
-                                ),)
-                              ],
+                            const Text(
+                              "Messenger",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal),
                             )
-                        ),
-                       const SizedBox(width: 30,),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const BookingServices()));
-                            },
-                            style: ButtonStyle(
-                                padding:
-                                MaterialStateProperty.all(const EdgeInsets.all(0.0)),
-                                shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(9999))
-                                ))
+                          ],
+                        )),
+                    TextButton(
+                        onPressed: () {
+                          launchInBrowser(
+                              "https://zalo.me/1153947579240797013?gidzl=bSlKCNNPH6IHrzKqVy55OvtMqJPaanLfqO7KDZR5HsFItDHcPvb6OuEErM5Zpq8tXudQOsFN8A1cSzD3Rm");
+                        },
+                        style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(0.0)),
+                            shape: MaterialStateProperty.all(
+                                const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(9999))))),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 65,
+                              height: 65,
+                              margin: const EdgeInsets.only(bottom: 5),
+                              alignment: Alignment.center,
+                              decoration: const BoxDecoration(
+                                  color: Colors.white, shape: BoxShape.circle),
+                              child: Image.asset(
+                                "assets/images/zalo1.png",
+                                height: 40,
+                                width: 40,
+                              ),
                             ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 65,
-                                  height: 65,
-                                  margin: const EdgeInsets.only(bottom: 5),
-                                  alignment: Alignment.center,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle
-                                  ),
-                                  child: Image.asset("assets/images/calendar-solid-red.png", height: 40, width: 40,),
-                                ),
-                                const Text("Đặt lịch", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.normal
-                                ),)
-                              ],
+                            const Text(
+                              "Zalo",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal),
                             )
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              EasyLoading.show(status: "Vui lòng chờ...");
-                            Future.delayed(const Duration(seconds: 2), () {
-                              launchInBrowser('https://www.messenger.com/t/1505522193097958').then((value) => EasyLoading.dismiss());
-        });
-
-                            },
-                            style: ButtonStyle(
-                                padding:
-                                MaterialStateProperty.all(const EdgeInsets.all(0.0)),
-                                shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(9999))
-                                ))
-                            ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 65,
-                                  height: 65,
-                                  margin: const EdgeInsets.only(bottom: 5),
-                                  alignment: Alignment.center,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle
-                                  ),
-                                  child: Image.asset("assets/images/messenger-red.png", height: 40, width: 40,),
-                                ),
-                                const Text("Messenger", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.normal
-                                ),)
-                              ],
-                            )
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              launchInBrowser("https://zalo.me/1153947579240797013?gidzl=bSlKCNNPH6IHrzKqVy55OvtMqJPaanLfqO7KDZR5HsFItDHcPvb6OuEErM5Zpq8tXudQOsFN8A1cSzD3Rm");
-                            },
-                            style: ButtonStyle(
-                                padding:
-                                MaterialStateProperty.all(const EdgeInsets.all(0.0)),
-                                shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(9999))
-                                ))
-                            ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 65,
-                                  height: 65,
-                                  margin: const EdgeInsets.only(bottom: 5),
-                                  alignment: Alignment.center,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle
-                                  ),
-                                  child: Image.asset("assets/images/zalo1.png", height: 40, width: 40,),
-                                ),
-                                const Text("Zalo", style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.normal
-                                ),)
-                              ],
-                            )
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 65,
-                      height: 65,
-                      child: TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Colors.white),
-                              padding:
-                              MaterialStateProperty.all(const EdgeInsets.all(0.0)),
-                              shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(9999))
-                              ))
-                          ),
-                          child: Image.asset("assets/images/x.png", height: 40, width: 40,)
-                      ),
-                    )
+                          ],
+                        )),
                   ],
-                )),
+                ),
+                SizedBox(
+                  width: 65,
+                  height: 65,
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.all(0.0)),
+                          shape: MaterialStateProperty.all(
+                              const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(9999))))),
+                      child: Image.asset(
+                        "assets/images/x.png",
+                        height: 40,
+                        width: 40,
+                      )),
+                )
+              ],
+            )),
           ),
         );
       },

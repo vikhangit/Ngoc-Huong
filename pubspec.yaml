@@ -67,6 +67,7 @@ dependencies:
   badges: ^3.1.2
   dynamic_carousel_indicator: ^1.0.3
   dots_indicator: ^3.0.0
+  scroll_to_hide: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -166,6 +167,7 @@ flutter:
     - assets/images/chat-icon.png
     - assets/images/list-order.png
     - assets/images/cancel.png
+    - assets/images/location-to.png
     - assets/images/calendar-solid-black.png
     - assets/images/Home/banner1.jpg
     - assets/images/Home/banner2.jpg
@@ -282,6 +284,7 @@ flutter:
     - assets/images/giam-beo.png
     - assets/images/waxing.png
     - assets/images/banner.png
+    - assets/images/banner-flash.png
     - assets/images/icon/cart.png
     - assets/images/icon/icon1.png
     - assets/images/icon/icon2.png

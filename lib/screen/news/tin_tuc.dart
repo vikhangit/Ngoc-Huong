@@ -55,7 +55,8 @@ class _TinTucScreenState extends State<TinTucScreen> {
                         top: 10, left: 15, right: 15, bottom: 15),
                     child: SizedBox(
                       child: FutureBuilder(
-                        future: newsModel.getCustomerNewsByGroup("Tin khuyến mãi"),
+                        future:
+                            newsModel.getCustomerNewsByGroup("Tin khuyến mãi"),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             List list = snapshot.data!.toList();
@@ -63,9 +64,10 @@ class _TinTucScreenState extends State<TinTucScreen> {
                               return Column(
                                 children: [
                                   Container(
-                                    margin: const EdgeInsets.only(top: 0, bottom: 10),
-                                    child:
-                                    Image.asset("assets/images/account/img.webp"),
+                                    margin: const EdgeInsets.only(
+                                        top: 0, bottom: 10),
+                                    child: Image.asset(
+                                        "assets/images/account/img.webp"),
                                   ),
                                   Container(
                                     margin: const EdgeInsets.only(bottom: 40),
@@ -73,7 +75,8 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                       "Xin lỗi! Hiện tại Ngọc Hường chưa có ưu đãi và khuyến mãi",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: 15, fontWeight: FontWeight.w400),
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400),
                                     ),
                                   )
                                 ],
@@ -82,34 +85,22 @@ class _TinTucScreenState extends State<TinTucScreen> {
                               return Wrap(
                                 spacing: 15,
                                 runSpacing: 15,
-                                children: list
-                                    .map((item) {
+                                children: list.map((item) {
                                   return GestureDetector(
                                     onTap: () {
-                                      showModalBottomSheet<void>(
-                                          backgroundColor: Colors.white,
-                                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                                          context: context,
-                                          isScrollControlled: true,
-                                          builder: (BuildContext context) {
-                                            return Container(
-                                                padding: EdgeInsets.only(
-                                                    bottom: MediaQuery.of(context)
-                                                        .viewInsets
-                                                        .bottom),
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                    0.85,
-                                                child: ChiTietTinTuc(
-                                                  detail: item,
-                                                  type: "khuyến mãi",
-                                                ));
-                                          });
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ChiTietTinTuc(
+                                                    detail: item,
+                                                    type: "khuyến mãi",
+                                                  )));
                                     },
                                     child: Container(
-                                      width:
-                                      MediaQuery.of(context).size.width / 2 - 25,
+                                      width: MediaQuery.of(context).size.width /
+                                              2 -
+                                          22.5,
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 6, vertical: 6),
                                       decoration: BoxDecoration(
@@ -121,29 +112,33 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                             color: Colors.grey.withOpacity(0.3),
                                             spreadRadius: 2,
                                             blurRadius: 2,
-                                            offset: Offset(0, 1), // changes position of shadow
+                                            offset: Offset(0,
+                                                1), // changes position of shadow
                                           ),
                                         ],
                                       ),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                             children: [
                                               ClipRRect(
-                                                borderRadius: BorderRadius.circular(15),
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
                                                 child: Image.network(
                                                   "${item["Image"]}",
                                                   // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                                   fit: BoxFit.cover,
-                                                  width:
-                                                  MediaQuery.of(context).size.width,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
                                                   height: 200,
                                                 ),
                                               ),
@@ -158,7 +153,8 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                                     fontSize: 10,
                                                     height: 1.2,
                                                     color: mainColor,
-                                                    fontWeight: FontWeight.w500),
+                                                    fontWeight:
+                                                        FontWeight.w500),
                                               ),
                                               SizedBox(
                                                 height: 15,

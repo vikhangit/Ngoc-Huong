@@ -22,7 +22,9 @@ import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
+import 'package:ngoc_huong/screen/booking/modal/modal_dia_chi.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
+import 'package:ngoc_huong/screen/choose_brand/chooseBrand.dart';
 import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
 import 'package:ngoc_huong/screen/cosmetic/special_cosmetic.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
@@ -41,6 +43,7 @@ import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:ngoc_huong/utils/notification_services.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -58,10 +61,10 @@ List listBanner = [
 
 List toolServices = [
   {"icon": "assets/images/icon/icon1.png", "title": "Đặt lịch"},
-  {"icon": "assets/images/icon/icon2.png", "title": "Lịch đã hẹn"},
   {"icon": "assets/images/icon/icon3.png", "title": "Lịch sử làm đẹp"},
+  {"icon": "assets/images/location-to.png", "title": "Chi nhánh gần nhất"},
   {"icon": "assets/images/icon/icon4.png", "title": "Hạng thành viên"},
-  {"icon": "assets/images/icon/icon5.png", "title": "Ưu đãi"},
+  {"icon": "assets/images/icon/icon5.png", "title": "Ưu đãi tháng"},
   // {"icon": "assets/images/Home/Icon/dich-vu.png", "title": "Dịch vụ"},
   // {"icon": "assets/images/Home/Icon/vi.png", "title": "Điểm"},
   // {"icon": "assets/images/list-order.png", "title": "Lịch sử mua hàng"},
@@ -72,7 +75,7 @@ String tokenfirebase = "";
 int activeCarousel = 0;
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  NotificationService notificationService = NotificationService();
+  final NotificationService notificationService = NotificationService();
   final CarouselController controller = CarouselController();
   final ProfileModel profileModel = ProfileModel();
   final ServicesModel servicesModel = ServicesModel();
@@ -83,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final OrderModel orderModel = OrderModel();
   final CartModel cartModel = CartModel();
   final BookingModel bookingModel = BookingModel();
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -101,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     super.dispose();
+    scrollController.dispose();
     if (Platform.isAndroid) {
       SystemNavigator.pop();
     } else if (Platform.isIOS) {
@@ -131,12 +136,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           }
         case 2:
           {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const BookingHistory(
-                          ac: 0,
-                        )));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => ChooseBrandScreen(
+            //               saveCN: () => setState(() {}),
+            //             )));
+            showModalBottomSheet<void>(
+                backgroundColor: Colors.white,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                context: context,
+                isScrollControlled: true,
+                builder: (BuildContext context) {
+                  return Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      height: MediaQuery.of(context).size.height * .95,
+                      child: ModalDiaChi(saveCN: () => setState(() {})));
+                });
             break;
           }
         case 3:
@@ -150,13 +168,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
         case 4:
           {
-            customModal.showAlertDialog(
-                context,
-                "error",
-                "Xin Lỗi Quý Khách",
-                "Chúng tôi đang nâng cấp tính năng này",
-                () => Navigator.pop(context),
-                () => Navigator.pop(context));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const TinTucScreen()));
             break;
           }
         // case 7:
@@ -201,13 +214,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         key: scaffoldKey,
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: true,
-        bottomNavigationBar: const MyBottomMenu(
-          active: 0,
-        ),
+        bottomNavigationBar: ScrollToHide(
+            scrollController: scrollController,
+            height: 70,
+            child: const MyBottomMenu(
+              active: 0,
+            )),
         appBar: null,
         body: RefreshIndicator(
           onRefresh: () => refreshData(),
           child: ListView(
+            controller: scrollController,
             children: [
               listView(context, (context, index) => goToService(context, index),
                   (index, reason) => goPage(index, reason)),
@@ -231,6 +248,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final BookingModel bookingModel = BookingModel();
     return SizedBox(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             height: 360,
@@ -266,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   left: 0,
                   width: MediaQuery.of(context).size.width,
                   child: Container(
-                    margin: const EdgeInsets.only(top: 20, left: 15, right: 15),
+                    margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -364,28 +382,39 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                               FontWeight.w600,
                                                           color: mainColor),
                                                     ),
-                                                    Container(
-                                                      margin: EdgeInsets.only(
-                                                          top: 4),
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 5,
-                                                              vertical: 2),
-                                                      decoration: BoxDecoration(
+                                                    GestureDetector(
+                                                      onTap: () => Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const ThanhVienScreen())),
+                                                      child: Container(
+                                                        margin: const EdgeInsets
+                                                            .only(top: 4),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 5,
+                                                                vertical: 2),
+                                                        decoration:
+                                                            const BoxDecoration(
                                                           borderRadius:
                                                               BorderRadius.all(
                                                                   Radius.circular(
                                                                       99999)),
-                                                          color: Colors
-                                                              .amberAccent),
-                                                      child: Text(
-                                                        "Thành viên vàng >",
-                                                        style: TextStyle(
-                                                            fontSize: 9,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color:
-                                                                Colors.white),
+                                                          color: Color.fromRGBO(
+                                                              223, 223, 223, 1),
+                                                        ),
+                                                        child: const Text(
+                                                          "Thành viên vàng >",
+                                                          style: TextStyle(
+                                                              fontSize: 9,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
                                                       ),
                                                     )
                                                   ],
@@ -649,7 +678,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 int index = toolServices.indexOf(item);
                                 return SizedBox(
                                   width: MediaQuery.of(context).size.width / 5 -
-                                      18,
+                                      15,
                                   // height:90,
                                   child: TextButton(
                                     style: ButtonStyle(
@@ -661,33 +690,46 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     },
                                     child: Column(
                                       children: [
-                                        Container(
-                                          margin:
-                                              const EdgeInsets.only(bottom: 10),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.3),
-                                                spreadRadius: 2,
-                                                blurRadius: 2,
-                                                offset: Offset(0,
-                                                    2), // changes position of shadow
+                                        index == 2
+                                            ? Container(
+                                                margin: const EdgeInsets.only(
+                                                    bottom: 10),
+                                                child: Image.asset(
+                                                  width: 48,
+                                                  height: 48,
+                                                  "${item["icon"]}",
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              )
+                                            : Container(
+                                                margin: const EdgeInsets.only(
+                                                    bottom: 10),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 2,
+                                                      offset: Offset(0,
+                                                          2), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 6),
+                                                child: Image.asset(
+                                                  width: 35,
+                                                  height: 35,
+                                                  "${item["icon"]}",
+                                                  fit: BoxFit.contain,
+                                                ),
                                               ),
-                                            ],
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 6, vertical: 6),
-                                          child: Image.asset(
-                                            width: 35,
-                                            height: 35,
-                                            "${item["icon"]}",
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
                                         Text(
                                           "${item["title"]}",
                                           textAlign: TextAlign.center,
@@ -712,7 +754,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 20, left: 15, right: 15),
+            margin: const EdgeInsets.only(top: 20, left: 12.5, right: 12.5),
             padding: EdgeInsets.all(5),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
@@ -758,6 +800,69 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ],
               ),
             ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 20, left: 12.5, right: 12.5),
+            width: MediaQuery.of(context).size.width,
+            child: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    "FLASH SALE",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: mainColor,
+                    ),
+                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => const TinTucScreen()));
+                  //   },
+                  //   child: Container(
+                  //     padding: EdgeInsets.only(right: 20),
+                  //     child: Text(
+                  //       "Xem thêm...",
+                  //       style: TextStyle(
+                  //           fontSize: 12,
+                  //           fontWeight: FontWeight.w400,
+                  //           color: mainColor,
+                  //           fontStyle: FontStyle.italic),
+                  //     ),
+                  //   ),
+                  // )
+                ],
+              ),
+              Container(
+                height: 15,
+              ),
+              Container(
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      "assets/images/banner-flash.png",
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  )),
+            ]),
           ),
           ServicesPage(),
           ProductPage(),
@@ -837,31 +942,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 .map((item) {
                               return GestureDetector(
                                 onTap: () {
-                                  showModalBottomSheet<void>(
-                                      backgroundColor: Colors.white,
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (BuildContext context) {
-                                        return Container(
-                                            color: Colors.white,
-                                            padding: EdgeInsets.only(
-                                                bottom: MediaQuery.of(context)
-                                                    .viewInsets
-                                                    .bottom),
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.85,
-                                            child: ChiTietTinTuc(
-                                              detail: item,
-                                              type: "khuyến mãi",
-                                            ));
-                                      });
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ChiTietTinTuc(
+                                                detail: item,
+                                                type: "khuyến mãi",
+                                              )));
                                 },
                                 child: Container(
                                   width: MediaQuery.of(context).size.width / 2 -
-                                      20,
+                                      17.5,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 6, vertical: 6),
                                   decoration: BoxDecoration(
@@ -975,41 +1066,46 @@ class _ServicesPageState extends State<ServicesPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.only(top: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "DỊCH VỤ NỔI BẬT",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: mainColor,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SpecialServiceScreen()));
-                },
-                child: Container(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Text(
-                    "Xem thêm...",
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: mainColor,
-                        fontStyle: FontStyle.italic),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "DỊCH VỤ NỔI BẬT",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: mainColor,
                   ),
                 ),
-              )
-            ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const SpecialServiceScreen()));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(right: 20),
+                    child: Text(
+                      "Xem thêm...",
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: mainColor,
+                          fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
           Container(
             height: 15,
@@ -1044,9 +1140,12 @@ class _ServicesPageState extends State<ServicesPage> {
                               }),
                           child: Container(
                             margin: const EdgeInsets.only(
-                                left: 5, top: 5, bottom: 5, right: 5),
-                            // width:
-                            // MediaQuery.of(context).size.width,
+                              left: 5,
+                              top: 5,
+                              bottom: 5,
+                              right: 5,
+                            ),
+                            width: MediaQuery.of(context).size.width,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 6, vertical: 6),
                             decoration: BoxDecoration(
@@ -1155,61 +1254,64 @@ class _ServicesPageState extends State<ServicesPage> {
                             ),
                           )));
 
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: 210,
-                        child: CarouselSlider.builder(
-                          options: CarouselOptions(
-                            // aspectRatio: 2.0,
-                            enlargeCenterPage: false,
-                            viewportFraction: 1,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                currentIndex = index;
-                              });
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 210,
+                          child: CarouselSlider.builder(
+                            options: CarouselOptions(
+                              aspectRatio: 2.0,
+                              enlargeCenterPage: false,
+                              viewportFraction: 1,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  currentIndex = index;
+                                });
+                              },
+                            ),
+                            itemCount: (pages.length / 3).round(),
+                            itemBuilder: (context, index, realIndex) {
+                              final int first = index * 3;
+                              final int? second = first + 1;
+                              final int? three = second! + 1;
+                              return Row(
+                                children: [first, second, three].map((idx) {
+                                  return idx != null
+                                      ? Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            child: pages[idx],
+                                          ))
+                                      : Container();
+                                }).toList(),
+                              );
                             },
                           ),
-                          itemCount: (pages.length / 3).round(),
-                          itemBuilder: (context, index, realIndex) {
-                            final int first = index * 3;
-                            final int? second = first + 1;
-                            final int? three = second! + 1;
-                            return Row(
-                              children: [first, second, three].map((idx) {
-                                return idx != null
-                                    ? Expanded(
-                                        flex: 1,
-                                        child: Container(
-                                          child: pages[idx],
-                                        ),
-                                      )
-                                    : Container();
-                              }).toList(),
-                            );
-                          },
                         ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      DotsIndicator(
-                        dotsCount: (pages.length / 3).round(),
-                        position: currentIndex,
-                        decorator: DotsDecorator(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                            size: Size(12, 8),
-                            activeSize: Size(24, 8),
-                            color: mainColor,
-                            activeColor: mainColor,
-                            activeShape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                            spacing: EdgeInsets.all(1)),
-                      )
-                    ],
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        DotsIndicator(
+                          dotsCount: (pages.length / 3).round(),
+                          position: currentIndex,
+                          decorator: DotsDecorator(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4.0),
+                              ),
+                              size: Size(12, 8),
+                              activeSize: Size(24, 8),
+                              color: mainColor,
+                              activeColor: mainColor,
+                              activeShape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4.0),
+                              ),
+                              spacing: EdgeInsets.all(1)),
+                        )
+                      ],
+                    ),
                   );
                 } else {
                   return const Row(
@@ -1256,40 +1358,43 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "SẢN PHẨM BÁN CHẠY",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: mainColor,
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "SẢN PHẨM BÁN CHẠY",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: mainColor,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const SpecialCosmeticScreen()));
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: Text(
-                      "Xem thêm...",
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: mainColor,
-                          fontStyle: FontStyle.italic),
-                    ),
-                  ))
-            ],
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const SpecialCosmeticScreen()));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Text(
+                        "Xem thêm...",
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: mainColor,
+                            fontStyle: FontStyle.italic),
+                      ),
+                    ))
+              ],
+            ),
           ),
           Container(
             height: 15,
@@ -1326,7 +1431,7 @@ class _ProductPageState extends State<ProductPage> {
                             child: Container(
                               margin: EdgeInsets.only(
                                   left: 5, top: 5, bottom: 5, right: 5),
-                              width: MediaQuery.of(context).size.width / 3 - 10,
+                              width: MediaQuery.of(context).size.width,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 6),
                               decoration: BoxDecoration(
@@ -1481,64 +1586,68 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                           ));
 
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: 220,
-                        child: CarouselSlider.builder(
-                          options: CarouselOptions(
-                            // aspectRatio: 2.0,
-                            enlargeCenterPage: false,
-                            viewportFraction: 1,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                currentIndexPr = index;
-                              });
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 220,
+                          child: CarouselSlider.builder(
+                            options: CarouselOptions(
+                              aspectRatio: 16 / 9,
+                              enlargeCenterPage: false,
+                              viewportFraction: 1,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  currentIndexPr = index;
+                                });
+                              },
+                            ),
+                            itemCount: (pages.length / 3).round(),
+                            itemBuilder: (context, index, realIndex) {
+                              final int first = index * 3;
+                              final int? second = first + 1;
+                              final int? three =
+                                  (pages.length / 3).round() % 3 > 0 &&
+                                          first > 2
+                                      ? null
+                                      : second! + 1;
+                              return Row(
+                                children: [first, second, three].map((idx) {
+                                  return idx != null
+                                      ? Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            child: pages[idx],
+                                          ),
+                                        )
+                                      : Container();
+                                }).toList(),
+                              );
                             },
                           ),
-                          itemCount: (pages.length / 3).round(),
-                          itemBuilder: (context, index, realIndex) {
-                            final int first = index * 3;
-                            final int? second = first + 1;
-                            final int? three =
-                                (pages.length / 3).round() % 3 > 0 && first > 2
-                                    ? null
-                                    : second! + 1;
-                            return Row(
-                              children: [first, second, three].map((idx) {
-                                return idx != null
-                                    ? Expanded(
-                                        flex: 1,
-                                        child: Container(
-                                          child: pages[idx],
-                                        ),
-                                      )
-                                    : Container();
-                              }).toList(),
-                            );
-                          },
                         ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      DotsIndicator(
-                        dotsCount: (pages.length / 3).round(),
-                        position: currentIndexPr,
-                        decorator: DotsDecorator(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                            size: Size(12, 8),
-                            activeSize: Size(24, 8),
-                            color: mainColor,
-                            activeColor: mainColor,
-                            activeShape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                            spacing: EdgeInsets.all(1)),
-                      )
-                    ],
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        DotsIndicator(
+                          dotsCount: (pages.length / 3).round(),
+                          position: currentIndexPr,
+                          decorator: DotsDecorator(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4.0),
+                              ),
+                              size: Size(12, 8),
+                              activeSize: Size(24, 8),
+                              color: mainColor,
+                              activeColor: mainColor,
+                              activeShape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4.0),
+                              ),
+                              spacing: EdgeInsets.all(1)),
+                        )
+                      ],
+                    ),
                   );
                 } else {
                   return const Row(

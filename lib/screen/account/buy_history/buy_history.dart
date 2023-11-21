@@ -103,6 +103,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                     SizedBox(
                       height: 50,
                       child: TabBar(
+                        tabAlignment: TabAlignment.start,
                         controller: tabController,
                         isScrollable: true,
                         labelColor: Theme.of(context).colorScheme.primary,
@@ -134,8 +135,8 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                             controller: tabController,
                             children: widget.listTab
                                 .map((e) => FutureBuilder(
-                                    future: orderModel.getOrderListByStatus(
-                                        e["GroupCode"]),
+                                    future: orderModel
+                                        .getOrderListByStatus(e["GroupCode"]),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         if (snapshot.data!.isNotEmpty) {
@@ -327,7 +328,9 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                                                                 3,
                                                                           ),
                                                                           Text(
-                                                                            NumberFormat.currency(locale: "vi_VI", symbol: "đ").format( list[index]["TotalAmount"] == 0 ? totalBooking(list[index]["DetailList"]) : list[index]["TotalAmount"]),
+                                                                            NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[index]["TotalAmount"] == 0
+                                                                                ? totalBooking(list[index]["DetailList"])
+                                                                                : list[index]["TotalAmount"]),
                                                                             style:
                                                                                 const TextStyle(
                                                                               fontSize: 12,

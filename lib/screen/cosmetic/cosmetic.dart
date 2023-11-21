@@ -195,7 +195,7 @@ class _CosmeticState extends State<Cosmetic> {
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: Wrap(
                   alignment: WrapAlignment.spaceBetween,
-                  spacing: 16,
+                  spacing: 5,
                   children: [
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 0),
@@ -257,7 +257,7 @@ class _CosmeticState extends State<Cosmetic> {
                       ),
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * .75 - 20,
+                      width: MediaQuery.of(context).size.width * .75 - 10,
                       height: MediaQuery.of(context).size.height - 200,
                       child: ListView(
                         // crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,27 +283,33 @@ class _CosmeticState extends State<Cosmetic> {
                                                               .width *
                                                           .7 /
                                                           2 -
-                                                      10,
+                                                      5,
                                                   height: 260,
-                                                  margin: EdgeInsets.only(left: 5, right: 5, top: 8),
+                                                  margin: EdgeInsets.only(
+                                                      left: 2,
+                                                      right: 2,
+                                                      top: 8),
                                                   decoration: BoxDecoration(
-                                                    borderRadius: const BorderRadius.all(
-                                                        Radius.circular(15)),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                15)),
                                                     color: Colors.white,
                                                     boxShadow: [
                                                       BoxShadow(
-                                                        color: Colors.grey.withOpacity(0.3),
+                                                        color: Colors.grey
+                                                            .withOpacity(0.3),
                                                         spreadRadius: 2,
                                                         blurRadius: 2,
-                                                        offset: Offset(0, 1), // changes position of shadow
+                                                        offset: Offset(0,
+                                                            1), // changes position of shadow
                                                       ),
                                                     ],
                                                   ),
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 6,
-                                                          vertical: 6),
-
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 6,
+                                                      vertical: 6),
                                                   child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
@@ -317,35 +323,53 @@ class _CosmeticState extends State<Cosmetic> {
                                                             CrossAxisAlignment
                                                                 .center,
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                         children: [
                                                           Container(
                                                               width:
-                                                              MediaQuery.of(context).size.width,
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
                                                               height: 120,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: const BorderRadius.all(
-                                                                    Radius.circular(15)),
-                                                                color: Colors.white,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                        .all(
+                                                                        Radius.circular(
+                                                                            15)),
+                                                                color: Colors
+                                                                    .white,
                                                                 boxShadow: [
                                                                   BoxShadow(
-                                                                    color: Colors.grey.withOpacity(0.3),
-                                                                    spreadRadius: 2,
-                                                                    blurRadius: 2,
-                                                                    offset: Offset(0, 1), // changes position of shadow
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .withOpacity(
+                                                                            0.3),
+                                                                    spreadRadius:
+                                                                        2,
+                                                                    blurRadius:
+                                                                        2,
+                                                                    offset: Offset(
+                                                                        0,
+                                                                        1), // changes position of shadow
                                                                   ),
                                                                 ],
                                                               ),
-                                                              child:
-                                                              ClipRRect(
-                                                                borderRadius: BorderRadius.circular(15),
-                                                                child: Image.network(
+                                                              child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15),
+                                                                child: Image
+                                                                    .network(
                                                                   "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                                  fit: BoxFit.contain,
+                                                                  fit: BoxFit
+                                                                      .contain,
                                                                 ),
-                                                              )
-                                                          ),
+                                                              )),
                                                           const SizedBox(
                                                             height: 10,
                                                           ),
@@ -353,63 +377,95 @@ class _CosmeticState extends State<Cosmetic> {
                                                             "${item["Name"]}",
                                                             maxLines: 2,
                                                             overflow:
-                                                            TextOverflow.ellipsis,
-                                                            textAlign: TextAlign.center ,
-                                                            style:  TextStyle(
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
                                                                 fontSize: 12,
-                                                                color: mainColor,
+                                                                color:
+                                                                    mainColor,
                                                                 fontWeight:
-                                                                FontWeight.w600),
+                                                                    FontWeight
+                                                                        .w600),
                                                           ),
-                                                          SizedBox(height: 5,),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
                                                           Text(
                                                             "${item["CategoryCode"]}",
                                                             maxLines: 2,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            textAlign: TextAlign.center,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
                                                                 fontSize: 10,
                                                                 height: 1.2,
-                                                                color: mainColor,
-                                                                fontStyle: FontStyle.italic,
-                                                                fontWeight: FontWeight.w400),
+                                                                color:
+                                                                    mainColor,
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .italic,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
                                                           ),
-                                                          SizedBox(height: 5,),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
                                                         ],
                                                       ),
                                                       Container(
-                                                        padding: EdgeInsets.all(2),
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: const BorderRadius.all(
-                                                              Radius.circular(8)),
+                                                        padding:
+                                                            EdgeInsets.all(2),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          8)),
                                                           color: Colors.white,
                                                           boxShadow: [
                                                             BoxShadow(
-                                                              color: Colors.grey.withOpacity(0.3),
+                                                              color: Colors.grey
+                                                                  .withOpacity(
+                                                                      0.3),
                                                               spreadRadius: 2,
                                                               blurRadius: 2,
-                                                              offset: Offset(0, 1), // changes position of shadow
+                                                              offset: Offset(0,
+                                                                  1), // changes position of shadow
                                                             ),
                                                           ],
                                                         ),
                                                         child: GestureDetector(
                                                             child: Container(
-                                                              alignment: Alignment.center,
-                                                              padding: EdgeInsets.symmetric(vertical: 8),
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: const BorderRadius.all(
-                                                                    Radius.circular(8)),
-                                                                color: mainColor,
-                                                              ),
-                                                              child: Text("${NumberFormat.currency(locale: "vi_VI", symbol: "")
-                                                                  .format(
-                                                                  item["PriceInbound"]
-                                                              )} Đ",
-                                                                  style: TextStyle(
-                                                                      fontSize: 12,
-                                                                      fontWeight: FontWeight.w400,
-                                                                      color: Colors.amber)),
-                                                            )),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical: 8),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                const BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            8)),
+                                                            color: mainColor,
+                                                          ),
+                                                          child: Text(
+                                                              "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceInbound"])} Đ",
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  color: Colors
+                                                                      .amber)),
+                                                        )),
                                                       )
                                                     ],
                                                   )),
@@ -421,7 +477,10 @@ class _CosmeticState extends State<Cosmetic> {
                                                             const EdgeInsets
                                                                 .symmetric(
                                                                 horizontal: 8),
-                                                        margin: EdgeInsets.only(left: 5, right: 5, top: 8),
+                                                        margin: EdgeInsets.only(
+                                                            left: 5,
+                                                            right: 5,
+                                                            top: 8),
                                                         decoration: BoxDecoration(
                                                             borderRadius:
                                                                 const BorderRadius

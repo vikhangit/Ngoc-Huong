@@ -40,52 +40,59 @@ class _AllServiceScreenState extends State<AllServiceScreen>
     setState(() {
       widget.listTab.map((e) {
         if (e["GroupCode"] != "GDC") {
-          switch(e["GroupCode"]){
-            case "Điều trị da":{
-              listAction.add({
-                "img": "assets/images/dieu-tri.png",
-                "title": e["GroupCode"],
-                "code": e["GroupCode"]
-              });
-            }
-            case "Phun thêu thẩm mỹ":{
-              listAction.add({
-                "img": "assets/images/may.png",
-                "title": e["GroupCode"],
-                "code": e["GroupCode"]
-              });
-            }
-            case "Tắm trắng Face & Body":{
-              listAction.add({
-                "img": "assets/images/tam-trang.png",
-                "title": e["GroupCode"],
-                "code": e["GroupCode"]
-              });
-            }
-            case "Trẻ hóa & chăm sóc da":{
-              listAction.add({
-                "img": "assets/images/tre-hoa.png",
-                "title": e["GroupCode"],
-                "code": e["GroupCode"]
-              });
-            }
-            case "Triệt Lông":{
-              listAction.add({
-                "img": "assets/images/waxing.png",
-                "title": e["GroupCode"],
-                "code": e["GroupCode"]
-              });
-            }
-            case "Giảm Béo":{
-              listAction.add({
-                "img": "assets/images/giam-beo.png",
-                "title": e["GroupCode"],
-                "code": e["GroupCode"]
-              });
-            }
-            default: {
-              break;
-            }
+          switch (e["GroupCode"]) {
+            case "Điều trị da":
+              {
+                listAction.add({
+                  "img": "assets/images/dieu-tri.png",
+                  "title": e["GroupCode"],
+                  "code": e["GroupCode"]
+                });
+              }
+            case "Phun thêu thẩm mỹ":
+              {
+                listAction.add({
+                  "img": "assets/images/may.png",
+                  "title": e["GroupCode"],
+                  "code": e["GroupCode"]
+                });
+              }
+            case "Tắm trắng Face & Body":
+              {
+                listAction.add({
+                  "img": "assets/images/tam-trang.png",
+                  "title": e["GroupCode"],
+                  "code": e["GroupCode"]
+                });
+              }
+            case "Trẻ hóa & chăm sóc da":
+              {
+                listAction.add({
+                  "img": "assets/images/tre-hoa.png",
+                  "title": e["GroupCode"],
+                  "code": e["GroupCode"]
+                });
+              }
+            case "Triệt Lông":
+              {
+                listAction.add({
+                  "img": "assets/images/waxing.png",
+                  "title": e["GroupCode"],
+                  "code": e["GroupCode"]
+                });
+              }
+            case "Giảm Béo":
+              {
+                listAction.add({
+                  "img": "assets/images/giam-beo.png",
+                  "title": e["GroupCode"],
+                  "code": e["GroupCode"]
+                });
+              }
+            default:
+              {
+                break;
+              }
           }
         }
       }).toList();
@@ -141,7 +148,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: Wrap(
                   alignment: WrapAlignment.spaceBetween,
-                  spacing: 16,
+                  spacing: 8,
                   children: [
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 0),
@@ -203,7 +210,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                       ),
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * .75 - 17,
+                      width: MediaQuery.of(context).size.width * .75 - 14,
                       height: MediaQuery.of(context).size.height - 200,
                       child: ListView(
                         // crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,44 +235,58 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                               .size
                                                               .width *
                                                           .7 /
-                                                          2 - 10,
-                                                  margin: EdgeInsets.only(left: 5, right: 5, top: 8),
+                                                          2 -
+                                                      5,
+                                                  margin: EdgeInsets.only(
+                                                      left: 2,
+                                                      right: 2,
+                                                      top: 8),
                                                   height: 230,
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          horizontal: 6,
-                                                          vertical: 6),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 6,
+                                                      vertical: 6),
                                                   decoration: BoxDecoration(
-                                                    borderRadius: const BorderRadius.all(
-                                                        Radius.circular(15)),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                15)),
                                                     color: Colors.white,
                                                     boxShadow: [
                                                       BoxShadow(
-                                                        color: Colors.grey.withOpacity(0.3),
+                                                        color: Colors.grey
+                                                            .withOpacity(0.3),
                                                         spreadRadius: 2,
                                                         blurRadius: 2,
-                                                        offset: Offset(0, 1), // changes position of shadow
+                                                        offset: Offset(0,
+                                                            1), // changes position of shadow
                                                       ),
                                                     ],
                                                   ),
                                                   child: Column(
                                                     crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
                                                       Column(
                                                         children: [
                                                           ClipRRect(
-                                                            borderRadius: BorderRadius.circular(15),
-                                                            child: Image.network(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                            child:
+                                                                Image.network(
                                                               "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
                                                               fit: BoxFit.cover,
-                                                              width: MediaQuery.of(
-                                                                  context)
-                                                                  .size
-                                                                  .width,
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
                                                               height: 120,
                                                             ),
                                                           ),
@@ -275,34 +296,44 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                           Text(
                                                             "${item["Name"]}",
                                                             maxLines: 2,
-                                                            overflow: TextOverflow
-                                                                .ellipsis,
-                                                            textAlign: TextAlign.center,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: TextStyle(
                                                                 fontSize: 12,
-                                                                color: mainColor,
+                                                                color:
+                                                                    mainColor,
                                                                 fontWeight:
-                                                                FontWeight
-                                                                    .w600),
+                                                                    FontWeight
+                                                                        .w600),
                                                           ),
                                                           const SizedBox(
                                                             height: 2,
                                                           ),
                                                         ],
                                                       ),
-
                                                       Container(
-                                                        padding: EdgeInsets.all(4),
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: const BorderRadius.all(
-                                                              Radius.circular(8)),
+                                                        padding:
+                                                            EdgeInsets.all(4),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          8)),
                                                           color: Colors.white,
                                                           boxShadow: [
                                                             BoxShadow(
-                                                              color: Colors.grey.withOpacity(0.3),
+                                                              color: Colors.grey
+                                                                  .withOpacity(
+                                                                      0.3),
                                                               spreadRadius: 2,
                                                               blurRadius: 2,
-                                                              offset: Offset(0, 1), // changes position of shadow
+                                                              offset: Offset(0,
+                                                                  1), // changes position of shadow
                                                             ),
                                                           ],
                                                         ),
@@ -310,22 +341,38 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                             onTap: () {
                                                               setState(() {
                                                                 showIndex =
-                                                                item["Code"];
+                                                                    item[
+                                                                        "Code"];
                                                               });
                                                             },
                                                             child: Container(
-                                                              alignment: Alignment.center,
-                                                              padding: EdgeInsets.symmetric(vertical: 8),
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: const BorderRadius.all(
-                                                                    Radius.circular(8)),
-                                                                color: mainColor,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          8),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                        .all(
+                                                                        Radius.circular(
+                                                                            8)),
+                                                                color:
+                                                                    mainColor,
                                                               ),
-                                                              child: Text("Xem thêm",
+                                                              child: Text(
+                                                                  "Xem thêm",
                                                                   style: TextStyle(
-                                                                      fontSize: 12,
-                                                                      fontWeight: FontWeight.w400,
-                                                                      color: Colors.amber)),
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      color: Colors
+                                                                          .amber)),
                                                             )),
                                                       )
                                                     ],
@@ -338,7 +385,10 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                             const EdgeInsets
                                                                 .symmetric(
                                                                 horizontal: 8),
-                                                        margin: EdgeInsets.only(top: 8, left: 5, right: 5) ,
+                                                        margin: EdgeInsets.only(
+                                                            top: 8,
+                                                            left: 5,
+                                                            right: 5),
                                                         decoration: BoxDecoration(
                                                             borderRadius:
                                                                 const BorderRadius
@@ -419,73 +469,61 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                             GestureDetector(
                                                                 onTap: () {
                                                                   setState(() {
-                                                                    showIndex = "";
+                                                                    showIndex =
+                                                                        "";
                                                                   });
                                                                   if (storageToken
-                                                                      .getItem(
-                                                                      "customer_token") ==
+                                                                          .getItem(
+                                                                              "customer_token") ==
                                                                       null) {
                                                                     Navigator.push(
                                                                         context,
                                                                         MaterialPageRoute(
-                                                                            builder:
-                                                                                (context) =>
-                                                                            const LoginScreen()));
+                                                                            builder: (context) =>
+                                                                                const LoginScreen()));
                                                                   } else {
                                                                     Navigator.push(
                                                                         context,
                                                                         MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                BookingServices(
-                                                                                  dichvudachon:
-                                                                                  item,
+                                                                            builder: (context) => BookingServices(
+                                                                                  dichvudachon: item,
                                                                                 )));
                                                                   }
                                                                 },
-                                                                child: Container(
-                                                                    margin:
-                                                                    const EdgeInsets
-                                                                        .only(
-                                                                        top: 10),
-                                                                    padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        vertical: 6,
-                                                                        horizontal:
-                                                                        10),
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius:
-                                                                        const BorderRadius
-                                                                            .all(
-                                                                            Radius.circular(
+                                                                child:
+                                                                    Container(
+                                                                        margin: const EdgeInsets
+                                                                            .only(
+                                                                            top:
+                                                                                10),
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            vertical:
+                                                                                6,
+                                                                            horizontal:
+                                                                                10),
+                                                                        decoration: BoxDecoration(
+                                                                            borderRadius: const BorderRadius.all(Radius.circular(
                                                                                 4)),
-                                                                        color: Colors
-                                                                            .blue[
-                                                                        900]),
-                                                                    child: Row(
-                                                                      mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                      children: [
-                                                                        Image.asset(
-                                                                            "assets/images/calendar-solid-white.png",
-                                                                            width: 18,
-                                                                            height: 18),
-                                                                        const SizedBox(
-                                                                          width: 8,
-                                                                        ),
-                                                                        const Text(
-                                                                          "Đặt lịch",
-                                                                          style: TextStyle(
-                                                                              fontSize:
-                                                                              10,
-                                                                              color: Colors
-                                                                                  .white,
-                                                                              fontWeight:
-                                                                              FontWeight.w400),
-                                                                        )
-                                                                      ],
-                                                                    )))
-
+                                                                            color: Colors.blue[
+                                                                                900]),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Image.asset("assets/images/calendar-solid-white.png",
+                                                                                width: 18,
+                                                                                height: 18),
+                                                                            const SizedBox(
+                                                                              width: 8,
+                                                                            ),
+                                                                            const Text(
+                                                                              "Đặt lịch",
+                                                                              style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w400),
+                                                                            )
+                                                                          ],
+                                                                        )))
                                                           ],
                                                         )))
                                             ],

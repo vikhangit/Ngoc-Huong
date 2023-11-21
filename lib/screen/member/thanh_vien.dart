@@ -142,13 +142,13 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        _selectedIndex == 0
-                            ? silver(context)
-                            : _selectedIndex == 1
-                                ? gold(context)
-                                : _selectedIndex == 2
-                                    ? platinum(context)
-                                    : diamond(context),
+                        _selectedIndex == 1
+                            ? gold(context)
+                            : _selectedIndex == 2
+                                ? platinum(context)
+                                : _selectedIndex == 3
+                                    ? diamond(context)
+                                    : silver(context),
                         Positioned(
                             top: 0,
                             left: 0,
@@ -249,16 +249,16 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  _selectedIndex! < 3
-                                      ? Text(
-                                          "Cần sử dụng thêm ${_selectedIndex == 0 ? "10.000.000" : _selectedIndex == 1 ? "25.000.000" : "50.000.000"} nữa để lên hạng ${_selectedIndex == 0 ? "Vàng" : _selectedIndex == 1 ? "Bạch Kim" : "Kim Cương"}",
-                                          style: const TextStyle(
+                                  _selectedIndex == 3
+                                      ? const Text(
+                                          "Hiện tại bạn đang là khách hàng có quyền lợi cao nhất của chúng tôi",
+                                          style: TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w300),
                                         )
-                                      : const Text(
-                                          "Hiện tại bạn đang là khách hàng có quyền lợi cao nhất của chúng tôi",
-                                          style: TextStyle(
+                                      : Text(
+                                          "Cần sử dụng thêm ${_selectedIndex == 0 ? "10.000.000" : _selectedIndex == 1 ? "25.000.000" : "50.000.000"} nữa để lên hạng ${_selectedIndex == 0 ? "Vàng" : _selectedIndex == 1 ? "Bạch Kim" : "Kim Cương"}",
+                                          style: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w300),
                                         )
