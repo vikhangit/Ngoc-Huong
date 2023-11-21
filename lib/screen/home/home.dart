@@ -549,7 +549,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                       .withOpacity(0.3),
                                                   spreadRadius: 2,
                                                   blurRadius: 2,
-                                                  offset: Offset(0,
+                                                  offset: const Offset(0,
                                                       2), // changes position of shadow
                                                 ),
                                               ],
@@ -586,7 +586,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                             alignment: Alignment
                                                                 .center,
                                                             decoration:
-                                                                BoxDecoration(
+                                                                const BoxDecoration(
                                                                     shape: BoxShape
                                                                         .circle,
                                                                     color: Colors
@@ -597,15 +597,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                                       .center,
                                                               width: 10,
                                                               height: 10,
-                                                              margin: EdgeInsets
-                                                                  .all(1),
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .all(1),
                                                               decoration: BoxDecoration(
                                                                   shape: BoxShape
                                                                       .circle,
                                                                   color:
                                                                       mainColor),
-                                                              child: Text("1",
-                                                                  style: TextStyle(
+                                                              child: Text(
+                                                                  "${snapshot.data!.length}",
+                                                                  style: const TextStyle(
                                                                       fontSize:
                                                                           6,
                                                                       color: Colors

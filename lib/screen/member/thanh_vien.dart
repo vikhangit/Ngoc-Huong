@@ -104,33 +104,37 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            backgroundColor: Colors.white,
-            resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(active: -1),
-            appBar: AppBar(
-              leadingWidth: 45,
-              centerTitle: true,
-              leading: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 15),
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.white),
-                    child: const Icon(
-                      Icons.west,
-                      size: 16,
-                      color: Colors.black,
-                    ),
-                  )),
-              title: const Text("Hạng thành viên",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white)),
-            ),
-            body: ListView(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
+      bottomNavigationBar: const MyBottomMenu(active: -1),
+      appBar: AppBar(
+        leadingWidth: 45,
+        centerTitle: true,
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              margin: const EdgeInsets.only(left: 15),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.white),
+              child: const Icon(
+                Icons.west,
+                size: 16,
+                color: Colors.black,
+              ),
+            )),
+        title: const Text("Hạng thành viên",
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.white)),
+      ),
+      body: FutureBuilder(
+        future: profileModel.getProfile(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView(
               children: [
                 Container(
                     margin: const EdgeInsets.only(
@@ -138,12 +142,18 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        silver(context),
+                        _selectedIndex == 0
+                            ? silver(context)
+                            : _selectedIndex == 1
+                                ? gold(context)
+                                : _selectedIndex == 2
+                                    ? platinum(context)
+                                    : diamond(context),
                         Positioned(
                             top: 0,
                             left: 0,
                             width: MediaQuery.of(context).size.width - 30,
-                            height: 180,
+                            height: 190,
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 20),
@@ -152,44 +162,13 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                 // mainAxisAlignment:
                                 //     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  FutureBuilder(
-                                    future: profileModel.getProfile(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Text(
-                                          snapshot.data!["CustomerName"]
-                                              .toString()
-                                              .toUpperCase(),
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w300),
-                                        );
-                                      } else {
-                                        return const Center(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                width: 40,
-                                                height: 40,
-                                                child: LoadingIndicator(
-                                                  colors: kDefaultRainbowColors,
-                                                  indicatorType: Indicator
-                                                      .lineSpinFadeLoader,
-                                                  strokeWidth: 1,
-                                                  // pathBackgroundColor: Colors.black45,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text("Đang lấy dữ liệu")
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    },
+                                  Text(
+                                    snapshot.data!["CustomerName"]
+                                        .toString()
+                                        .toUpperCase(),
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w300),
                                   ),
                                   const SizedBox(
                                     height: 5,
@@ -205,9 +184,9 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      const Text(
-                                        "0",
-                                        style: TextStyle(
+                                      Text(
+                                        "${snapshot.data!["Point"] ?? 0}",
+                                        style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400),
                                       ),
@@ -241,11 +220,11 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                   const SizedBox(
                                     height: 5,
                                   ),
-                                  const Row(
+                                  Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      const Text(
                                         "0",
                                         style: TextStyle(
                                             fontSize: 13,
@@ -253,8 +232,14 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                             fontWeight: FontWeight.w400),
                                       ),
                                       Text(
-                                        "10.000.000",
-                                        style: TextStyle(
+                                        _selectedIndex == 0
+                                            ? "10.000.000"
+                                            : _selectedIndex == 1
+                                                ? "25.000.000"
+                                                : _selectedIndex == 2
+                                                    ? "50.000.000"
+                                                    : "100.000.000",
+                                        style: const TextStyle(
                                             fontSize: 13,
                                             color: Colors.white,
                                             fontWeight: FontWeight.w400),
@@ -264,12 +249,19 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  const Text(
-                                    "Cần sử dụng thêm 10.000.000 VND nữa để lên hạng Bạc",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300),
-                                  )
+                                  _selectedIndex! < 3
+                                      ? Text(
+                                          "Cần sử dụng thêm ${_selectedIndex == 0 ? "10.000.000" : _selectedIndex == 1 ? "25.000.000" : "50.000.000"} nữa để lên hạng ${_selectedIndex == 0 ? "Vàng" : _selectedIndex == 1 ? "Bạch Kim" : "Kim Cương"}",
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300),
+                                        )
+                                      : const Text(
+                                          "Hiện tại bạn đang là khách hàng có quyền lợi cao nhất của chúng tôi",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300),
+                                        )
                                 ],
                               ),
                             )),
@@ -292,6 +284,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                     controller: tabController,
                     // padding: EdgeInsets.zero,
                     // indicatorPadding: EdgeInsets.zero,
+                    tabAlignment: TabAlignment.start,
                     onTap: (tabIndex) {
                       setState(() {
                         _selectedIndex = tabIndex;
@@ -307,19 +300,19 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                         fontFamily: "LexendDeca"),
                     tabs: [
                       SizedBox(
-                        width: MediaQuery.of(context).size.width / 4,
+                        width: MediaQuery.of(context).size.width / 3 - 20,
                         child: const Tab(text: "Bạc"),
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width / 4,
+                        width: MediaQuery.of(context).size.width / 3 - 20,
                         child: const Tab(text: "Vàng"),
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width / 4,
+                        width: MediaQuery.of(context).size.width / 3 - 20,
                         child: const Tab(text: "Bạch Kim"),
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width / 4,
+                        width: MediaQuery.of(context).size.width / 4 - 20,
                         child: const Tab(
                           text: "Kim Cương",
                         ),
@@ -330,431 +323,483 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height / 2,
-                  child: TabBarView(
-                      controller: tabController,
-                      children: [
-                        FutureBuilder(future: memberModel.getRank("TV"), builder: (context, snapshot) {
-                          if(snapshot.hasData){
-                            print(snapshot.data);
-                            return ListView(children: [
+                  child: TabBarView(controller: tabController, children: [
+                    FutureBuilder(
+                      future: memberModel.getRank("TV"),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView(children: [
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 15),
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8)),
+                                  color: Colors.grey[300]),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${snapshot.data!["Promotion"]}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Column(children: [
                               Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                    color: Colors.grey[300]),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "${snapshot.data!["Promotion"]}",
-                                      style: const TextStyle(fontWeight: FontWeight.w300),
+                                    Image.asset(
+                                      "assets/images/Home/Services/uu-dai.png",
+                                      width: 25,
+                                      height: 25,
+                                      fit: BoxFit.contain,
                                     ),
-
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      "${snapshot.data!["Benfits"]}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                    ))
                                   ],
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              Column(
-                                  children: [
-                                    Container(
-                                      margin:
-                                      const EdgeInsets.symmetric(horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/Home/Services/uu-dai.png",
-                                            width: 25,
-                                            height: 25,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(child: Text(
-                                            "${snapshot.data!["Benfits"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
-                                          ))
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                          border: Border(
-                                              top: BorderSide(
-                                                  width: 0.5, color: Colors.grey))),
-                                      margin:
-                                      const EdgeInsets.symmetric(horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/Home/Services/uu-dai.png",
-                                            width: 25,
-                                            height: 25,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(child: Text(
-                                            "${snapshot.data!["Perks"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
-                                          ))
-                                        ],
-                                      ),
-                                    )
-                                  ])
-                            ]);
-                          }else{
-                            return const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: LoadingIndicator(
-                                    colors: kDefaultRainbowColors,
-                                    indicatorType: Indicator.lineSpinFadeLoader,
-                                    strokeWidth: 1,
-                                    // pathBackgroundColor: Colors.black45,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text("Đang lấy dữ liệu")
-                              ],
-                            );
-                          }
-                        },),
-                        FutureBuilder(future: memberModel.getRank("Gold"), builder: (context, snapshot) {
-                          if(snapshot.hasData){
-                            print(snapshot.data);
-                            return ListView(children: [
                               Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                    color: Colors.grey[300]),
+                                decoration: const BoxDecoration(
+                                    border: Border(
+                                        top: BorderSide(
+                                            width: 0.5, color: Colors.grey))),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "${snapshot.data!["Promotion"]}",
-                                      style: const TextStyle(fontWeight: FontWeight.w300),
+                                    Image.asset(
+                                      "assets/images/Home/Services/uu-dai.png",
+                                      width: 25,
+                                      height: 25,
+                                      fit: BoxFit.contain,
                                     ),
-
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      "${snapshot.data!["Perks"]}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                    ))
+                                  ],
+                                ),
+                              )
+                            ])
+                          ]);
+                        } else {
+                          return const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: LoadingIndicator(
+                                  colors: kDefaultRainbowColors,
+                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                  strokeWidth: 1,
+                                  // pathBackgroundColor: Colors.black45,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("Đang lấy dữ liệu")
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                    FutureBuilder(
+                      future: memberModel.getRank("Gold"),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView(children: [
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 15),
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8)),
+                                  color: Colors.grey[300]),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${snapshot.data!["Promotion"]}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Column(children: [
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/Home/Services/uu-dai.png",
+                                      width: 25,
+                                      height: 25,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      "${snapshot.data!["Benfits"]}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                    ))
                                   ],
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              Column(
-                                  children: [
-                                    Container(
-                                      margin:
-                                      const EdgeInsets.symmetric(horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/Home/Services/uu-dai.png",
-                                            width: 25,
-                                            height: 25,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(child: Text(
-                                            "${snapshot.data!["Benfits"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
-                                          ))
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                          border: Border(
-                                              top: BorderSide(
-                                                  width: 0.5, color: Colors.grey))),
-                                      margin:
-                                      const EdgeInsets.symmetric(horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/Home/Services/uu-dai.png",
-                                            width: 25,
-                                            height: 25,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(child: Text(
-                                            "${snapshot.data!["Perks"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
-                                          ))
-                                        ],
-                                      ),
-                                    )
-                                  ])
-                            ]);
-                          }else{
-                            return const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: LoadingIndicator(
-                                    colors: kDefaultRainbowColors,
-                                    indicatorType: Indicator.lineSpinFadeLoader,
-                                    strokeWidth: 1,
-                                    // pathBackgroundColor: Colors.black45,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text("Đang lấy dữ liệu")
-                              ],
-                            );
-                          }
-                        },),
-                        FutureBuilder(future: memberModel.getRank("Platinum"), builder: (context, snapshot) {
-                          if(snapshot.hasData){
-                            print(snapshot.data);
-                            return ListView(children: [
                               Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                    color: Colors.grey[300]),
+                                decoration: const BoxDecoration(
+                                    border: Border(
+                                        top: BorderSide(
+                                            width: 0.5, color: Colors.grey))),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "${snapshot.data!["Promotion"]}",
-                                      style: const TextStyle(fontWeight: FontWeight.w300),
+                                    Image.asset(
+                                      "assets/images/Home/Services/uu-dai.png",
+                                      width: 25,
+                                      height: 25,
+                                      fit: BoxFit.contain,
                                     ),
-
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      "${snapshot.data!["Perks"]}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                    ))
+                                  ],
+                                ),
+                              )
+                            ])
+                          ]);
+                        } else {
+                          return const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: LoadingIndicator(
+                                  colors: kDefaultRainbowColors,
+                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                  strokeWidth: 1,
+                                  // pathBackgroundColor: Colors.black45,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("Đang lấy dữ liệu")
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                    FutureBuilder(
+                      future: memberModel.getRank("Platinum"),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          print(snapshot.data);
+                          return ListView(children: [
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 15),
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8)),
+                                  color: Colors.grey[300]),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${snapshot.data!["Promotion"]}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Column(children: [
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/Home/Services/uu-dai.png",
+                                      width: 25,
+                                      height: 25,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      "${snapshot.data!["Benfits"]}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                    ))
                                   ],
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              Column(
-                                  children: [
-                                    Container(
-                                      margin:
-                                      const EdgeInsets.symmetric(horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/Home/Services/uu-dai.png",
-                                            width: 25,
-                                            height: 25,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(child: Text(
-                                            "${snapshot.data!["Benfits"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
-                                          ))
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                          border: Border(
-                                              top: BorderSide(
-                                                  width: 0.5, color: Colors.grey))),
-                                      margin:
-                                      const EdgeInsets.symmetric(horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/Home/Services/uu-dai.png",
-                                            width: 25,
-                                            height: 25,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(child: Text(
-                                            "${snapshot.data!["Perks"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
-                                          ))
-                                        ],
-                                      ),
-                                    )
-                                  ])
-                            ]);
-                          }else{
-                            return const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: LoadingIndicator(
-                                    colors: kDefaultRainbowColors,
-                                    indicatorType: Indicator.lineSpinFadeLoader,
-                                    strokeWidth: 1,
-                                    // pathBackgroundColor: Colors.black45,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text("Đang lấy dữ liệu")
-                              ],
-                            );
-                          }
-                        },),
-                        FutureBuilder(future: memberModel.getRank("Diamond"), builder: (context, snapshot) {
-                          if(snapshot.hasData){
-                            print(snapshot.data);
-                            return ListView(children: [
                               Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                    color: Colors.grey[300]),
+                                decoration: const BoxDecoration(
+                                    border: Border(
+                                        top: BorderSide(
+                                            width: 0.5, color: Colors.grey))),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "${snapshot.data!["Promotion"]}",
-                                      style: const TextStyle(fontWeight: FontWeight.w300),
+                                    Image.asset(
+                                      "assets/images/Home/Services/uu-dai.png",
+                                      width: 25,
+                                      height: 25,
+                                      fit: BoxFit.contain,
                                     ),
-
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      "${snapshot.data!["Perks"]}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                    ))
+                                  ],
+                                ),
+                              )
+                            ])
+                          ]);
+                        } else {
+                          return const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: LoadingIndicator(
+                                  colors: kDefaultRainbowColors,
+                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                  strokeWidth: 1,
+                                  // pathBackgroundColor: Colors.black45,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("Đang lấy dữ liệu")
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                    FutureBuilder(
+                      future: memberModel.getRank("Diamond"),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView(children: [
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 15),
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8)),
+                                  color: Colors.grey[300]),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${snapshot.data!["Promotion"]}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Column(children: [
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/Home/Services/uu-dai.png",
+                                      width: 25,
+                                      height: 25,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      "${snapshot.data!["Benfits"]}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                    ))
                                   ],
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              Column(
+                              Container(
+                                decoration: const BoxDecoration(
+                                    border: Border(
+                                        top: BorderSide(
+                                            width: 0.5, color: Colors.grey))),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Row(
                                   children: [
-                                    Container(
-                                      margin:
-                                      const EdgeInsets.symmetric(horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/Home/Services/uu-dai.png",
-                                            width: 25,
-                                            height: 25,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(child: Text(
-                                            "${snapshot.data!["Benfits"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
-                                          ))
-                                        ],
-                                      ),
+                                    Image.asset(
+                                      "assets/images/Home/Services/uu-dai.png",
+                                      width: 25,
+                                      height: 25,
+                                      fit: BoxFit.contain,
                                     ),
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                          border: Border(
-                                              top: BorderSide(
-                                                  width: 0.5, color: Colors.grey))),
-                                      margin:
-                                      const EdgeInsets.symmetric(horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(vertical: 20),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/Home/Services/uu-dai.png",
-                                            width: 25,
-                                            height: 25,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(child: Text(
-                                            "${snapshot.data!["Perks"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
-                                          ))
-                                        ],
-                                      ),
-                                    )
-                                  ])
-                            ]);
-                          }else{
-                            return const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: LoadingIndicator(
-                                    colors: kDefaultRainbowColors,
-                                    indicatorType: Indicator.lineSpinFadeLoader,
-                                    strokeWidth: 1,
-                                    // pathBackgroundColor: Colors.black45,
-                                  ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      "${snapshot.data!["Perks"]}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                    ))
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 10,
+                              )
+                            ])
+                          ]);
+                        } else {
+                          return const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: LoadingIndicator(
+                                  colors: kDefaultRainbowColors,
+                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                  strokeWidth: 1,
+                                  // pathBackgroundColor: Colors.black45,
                                 ),
-                                Text("Đang lấy dữ liệu")
-                              ],
-                            );
-                          }
-                        },),
-                      ]
-                  ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("Đang lấy dữ liệu")
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                  ]),
                 ),
                 const SizedBox(
                   height: 15,
                 )
               ],
-            )));
+            );
+          } else {
+            return const Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: LoadingIndicator(
+                      colors: kDefaultRainbowColors,
+                      indicatorType: Indicator.lineSpinFadeLoader,
+                      strokeWidth: 1,
+                      // pathBackgroundColor: Colors.black45,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text("Đang lấy dữ liệu")
+                ],
+              ),
+            );
+          }
+        },
+      ),
+    ));
   }
 }
 
-Widget bronze(BuildContext context) {
+Widget diamond(BuildContext context) {
   return Container(
-      height: 180,
+      height: 190,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(12),
@@ -769,17 +814,17 @@ Widget bronze(BuildContext context) {
             begin: Alignment(0.7658354043960571, 0.2429373413324356),
             end: Alignment(-0.24266093969345093, 0.25175198912620544),
             colors: [
-              Color.fromRGBO(135, 87, 79, 1),
-              Color.fromRGBO(195, 152, 118, 1),
-              Color.fromRGBO(149, 95, 68, 1),
-              Color.fromRGBO(146, 86, 68, 1)
+              Color.fromRGBO(107, 218, 207, 1),
+              Color.fromRGBO(208, 252, 255, 1),
+              Color.fromRGBO(171, 234, 247, 1),
+              Color.fromRGBO(126, 229, 232, 1)
             ]),
       ));
 }
 
 Widget silver(BuildContext context) {
   return Container(
-      height: 180,
+      height: 190,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(12),
@@ -804,7 +849,7 @@ Widget silver(BuildContext context) {
 
 Widget gold(BuildContext context) {
   return Container(
-      height: 180,
+      height: 190,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(12),
@@ -829,7 +874,7 @@ Widget gold(BuildContext context) {
 
 Widget platinum(BuildContext context) {
   return Container(
-      height: 180,
+      height: 190,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(
           Radius.circular(12),

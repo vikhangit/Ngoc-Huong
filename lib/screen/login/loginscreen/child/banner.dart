@@ -20,16 +20,11 @@ Widget bannerLogin(BuildContext context) {
         )),
     child: GestureDetector(
       onTap: () {
-        if(storageStart.getItem("start") != null) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                  storageBranch.getItem("branch") != null
-                      ? const HomeScreen()
-                      : const ChooseBrandScreen()));
+        if (storageStart.getItem("start") != null) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()));
           storageStart.deleteItem("start");
-        }else {
+        } else {
           Navigator.pop(context);
         }
       },

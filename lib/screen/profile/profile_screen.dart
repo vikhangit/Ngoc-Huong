@@ -161,14 +161,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Future.delayed(const Duration(seconds: 2), () {
           profileModel.setProfile(data).then((value) {
             EasyLoading.dismiss();
-            localStorageBranch.getItem("branch") != null
-                ? Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()))
-                : Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ChooseBrandScreen()));
-
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()));
             setState(() {
               ElegantNotification.success(
                 width: MediaQuery.of(context).size.width,
@@ -228,18 +222,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         "Thay đổi thông tin",
                                         "Bạn đã thay đổi thông tin bạn có chắc chắn bỏ qua?",
                                         () {
-                                      localStorageBranch.getItem("branch") !=
-                                              null
-                                          ? Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const HomeScreen()))
-                                          : Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const ChooseBrandScreen()));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HomeScreen()));
                                     }, () => Navigator.pop(context));
                                   } else {
                                     customModal.showAlertDialog(
@@ -248,18 +235,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         "Bỏ qua",
                                         "Bạn có chắc chắn không thay đổi thông tin?",
                                         () {
-                                      localStorageBranch.getItem("branch") !=
-                                              null
-                                          ? Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const HomeScreen()))
-                                          : Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const ChooseBrandScreen()));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HomeScreen()));
                                     }, () => Navigator.pop(context));
                                   }
                                 }

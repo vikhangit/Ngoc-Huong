@@ -38,16 +38,9 @@ class _StartScreenState extends State<StartScreen> {
     notificationService.requestNotificationPermission();
     Future.delayed(const Duration(seconds: 2), () {
       if (storageCustomer.getItem("customer_token") != null) {
-        if (storageBrand.getItem("branch") == null) {
-          localStorageStart.deleteItem("start");
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const ChooseBrandScreen()));
-        } else {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()));
-        }
+        localStorageStart.deleteItem("start");
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()));
       } else {
         localStorageStart.setItem("start", "start");
         Navigator.push(context,
