@@ -499,24 +499,22 @@ class _ProductDetailState extends State<ProductDetail>
                   data: mieuTa,
                   style: {
                     "*": Style(margin: Margins.only(left: 0)),
-                              "p": Style(
-                                  lineHeight: const LineHeight(1.8),
-                                  fontSize: FontSize(15),
-                                  fontWeight: FontWeight.w300,
-                                  textAlign: TextAlign.justify),
-                              "img": Style(
-                                margin:  Margins.only(top:5)
-                              )
+                    "p": Style(
+                        lineHeight: const LineHeight(1.8),
+                        fontSize: FontSize(15),
+                        fontWeight: FontWeight.w300,
+                        textAlign: TextAlign.justify),
+                    "img": Style(margin: Margins.only(top: 5))
                   },
                 )
               : SizedBox(
                   child: Text(
-                  "Chúng tôi đang nâng cấp tính năng này",
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black),
-                )
+                    "Chúng tôi đang nâng cấp tính năng này",
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.black),
+                  ),
 
                   // Column(
                   //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -586,7 +584,7 @@ class _ProductDetailState extends State<ProductDetail>
                   //     );
                   //   })
                   // ),
-                  ),
+                ),
         ),
       ],
     );

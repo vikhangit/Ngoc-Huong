@@ -291,7 +291,7 @@ class _BookingServicesState extends State<BookingServices>
     }
 
     return SafeArea(
-      bottom: false,
+        bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -319,18 +319,18 @@ class _BookingServicesState extends State<BookingServices>
                       color: Colors.white)),
             ),
             bottomNavigationBar: ScrollToHide(
-                        scrollController: scrollController,
-                        height: 100,
-                        child: const MyBottomMenu(
-                          active: 1,
-                        )),
+                scrollController: scrollController,
+                height: 100,
+                child: const MyBottomMenu(
+                  active: 1,
+                )),
             body: Column(
                 // reverse: true,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                       child: ListView(
-                      controller: scrollController,
+                    // controller: scrollController,
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     children: [
                       const SizedBox(

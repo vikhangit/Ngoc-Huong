@@ -157,7 +157,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                           return RefreshIndicator(
                                             onRefresh: refreshData,
                                             child: ListView.builder(
-                                              controller: scrollController,
+                                              // controller: scrollController,
                                               itemCount: list.length,
                                               itemBuilder: (context, index) {
                                                 return list[index]["DetailList"]

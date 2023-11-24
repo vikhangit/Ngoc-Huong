@@ -252,8 +252,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                   fontSize: FontSize(15),
                                   fontWeight: FontWeight.w300,
                                   textAlign: TextAlign.justify),
-                                 "img": Style(
-                                margin:  Margins.only(top:5))
+                              "img": Style(margin: Margins.only(top: 5))
                               //   "img": Style(
                               //     width: Width(MediaQuery.of(context).size.width * .85),
                               //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
@@ -266,8 +265,8 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                               child: Text(
                             "Chúng tôi đang nâng cấp tính năng này",
                             style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w300,
                                 color: Colors.black),
                           )),
                       ],
