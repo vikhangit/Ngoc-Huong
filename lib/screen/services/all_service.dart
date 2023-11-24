@@ -271,48 +271,80 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                         MainAxisAlignment
                                                             .spaceBetween,
                                                     children: [
-                                                      Column(
-                                                        children: [
-                                                          ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                            child:
-                                                                Image.network(
-                                                              "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                              fit: BoxFit.cover,
-                                                              width:
-                                                                  MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width,
-                                                              height: 120,
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          showModalBottomSheet<
+                                                                  void>(
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              clipBehavior: Clip
+                                                                  .antiAliasWithSaveLayer,
+                                                              context: context,
+                                                              isScrollControlled:
+                                                                  true,
+                                                              builder:
+                                                                  (BuildContext
+                                                                      context) {
+                                                                return Container(
+                                                                    padding: EdgeInsets.only(
+                                                                        bottom: MediaQuery.of(context)
+                                                                            .viewInsets
+                                                                            .bottom),
+                                                                    height: MediaQuery.of(context)
+                                                                            .size
+                                                                            .height *
+                                                                        0.85,
+                                                                    child:
+                                                                        ChiTietScreen(
+                                                                      detail:
+                                                                          item,
+                                                                    ));
+                                                              });
+                                                        },
+                                                        child: Column(
+                                                          children: [
+                                                            ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15),
+                                                              child:
+                                                                  Image.network(
+                                                                "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                                height: 120,
+                                                              ),
                                                             ),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          Text(
-                                                            "${item["Name"]}",
-                                                            maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                color:
-                                                                    mainColor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 2,
-                                                          ),
-                                                        ],
+                                                            const SizedBox(
+                                                              height: 5,
+                                                            ),
+                                                            Text(
+                                                              "${item["Name"]}",
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color:
+                                                                      mainColor,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 2,
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                       Container(
                                                         padding:
@@ -339,11 +371,25 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                         ),
                                                         child: GestureDetector(
                                                             onTap: () {
-                                                              setState(() {
-                                                                showIndex =
-                                                                    item[
-                                                                        "Code"];
-                                                              });
+                                                              if (storageToken
+                                                                      .getItem(
+                                                                          "customer_token") ==
+                                                                  null) {
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                const LoginScreen()));
+                                                              } else {
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (context) =>
+                                                                            BookingServices(
+                                                                              dichvudachon: item,
+                                                                            )));
+                                                              }
                                                             },
                                                             child: Container(
                                                               alignment:
@@ -364,7 +410,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                     mainColor,
                                                               ),
                                                               child: Text(
-                                                                  "Xem thêm",
+                                                                  "Đặt lịch",
                                                                   style: TextStyle(
                                                                       fontSize:
                                                                           12,
@@ -377,155 +423,6 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                       )
                                                     ],
                                                   )),
-                                              if (showIndex.isNotEmpty &&
-                                                  showIndex == item["Code"])
-                                                Positioned.fill(
-                                                    child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal: 8),
-                                                        margin: EdgeInsets.only(
-                                                            top: 8,
-                                                            left: 5,
-                                                            right: 5),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                const BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            15)),
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4)),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            GestureDetector(
-                                                                onTap: () {
-                                                                  setState(() {
-                                                                    showIndex =
-                                                                        "";
-                                                                  });
-                                                                  showModalBottomSheet<
-                                                                          void>(
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      clipBehavior:
-                                                                          Clip
-                                                                              .antiAliasWithSaveLayer,
-                                                                      context:
-                                                                          context,
-                                                                      isScrollControlled:
-                                                                          true,
-                                                                      builder:
-                                                                          (BuildContext
-                                                                              context) {
-                                                                        return Container(
-                                                                            padding:
-                                                                                EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                                                            height: MediaQuery.of(context).size.height * 0.85,
-                                                                            child: ChiTietScreen(
-                                                                              detail: item,
-                                                                            ));
-                                                                      });
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            vertical:
-                                                                                6,
-                                                                            horizontal:
-                                                                                10),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          color:
-                                                                              Colors.blue[500],
-                                                                          borderRadius: const BorderRadius
-                                                                              .all(
-                                                                              Radius.circular(4)),
-                                                                        ),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: [
-                                                                            Image.asset("assets/images/eye-white.png",
-                                                                                width: 18,
-                                                                                height: 18),
-                                                                            const SizedBox(
-                                                                              width: 8,
-                                                                            ),
-                                                                            const Text(
-                                                                              "Xem chi tiết",
-                                                                              style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w400),
-                                                                            )
-                                                                          ],
-                                                                        ))),
-                                                            GestureDetector(
-                                                                onTap: () {
-                                                                  setState(() {
-                                                                    showIndex =
-                                                                        "";
-                                                                  });
-                                                                  if (storageToken
-                                                                          .getItem(
-                                                                              "customer_token") ==
-                                                                      null) {
-                                                                    Navigator.push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                const LoginScreen()));
-                                                                  } else {
-                                                                    Navigator.push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                            builder: (context) => BookingServices(
-                                                                                  dichvudachon: item,
-                                                                                )));
-                                                                  }
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                        margin: const EdgeInsets
-                                                                            .only(
-                                                                            top:
-                                                                                10),
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            vertical:
-                                                                                6,
-                                                                            horizontal:
-                                                                                10),
-                                                                        decoration: BoxDecoration(
-                                                                            borderRadius: const BorderRadius.all(Radius.circular(
-                                                                                4)),
-                                                                            color: Colors.blue[
-                                                                                900]),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: [
-                                                                            Image.asset("assets/images/calendar-solid-white.png",
-                                                                                width: 18,
-                                                                                height: 18),
-                                                                            const SizedBox(
-                                                                              width: 8,
-                                                                            ),
-                                                                            const Text(
-                                                                              "Đặt lịch",
-                                                                              style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w400),
-                                                                            )
-                                                                          ],
-                                                                        )))
-                                                          ],
-                                                        )))
                                             ],
                                           ));
                                     }).toList());

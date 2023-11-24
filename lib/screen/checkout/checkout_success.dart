@@ -15,6 +15,7 @@ class CheckoutSuccess extends StatefulWidget {
 
 double circleSize = 140;
 double iconSize = 108;
+bool loading = true;
 
 class _CheckoutSuccessState extends State<CheckoutSuccess>
     with TickerProviderStateMixin {
@@ -31,6 +32,11 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        loading = false;
+      });
+    });
     scaleController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         checkController.forward();
@@ -43,6 +49,7 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
   void dispose() {
     scaleController.dispose();
     checkController.dispose();
+    loading = true;
     super.dispose();
   }
 
@@ -80,86 +87,81 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
             ),
             body: Container(
                 padding: const EdgeInsets.only(left: 30, right: 30, bottom: 15),
-                child: SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
                       children: [
-                        Expanded(
-                          child: ListView(
+                        const SizedBox(
+                          height: 60,
+                        ),
+                        Center(
+                          child: Stack(
                             children: [
-                              const SizedBox(
-                                height: 60,
-                              ),
-                              Center(
-                                child: Stack(
-                                  children: [
-                                    ScaleTransition(
-                                      scale: scaleAnimation,
-                                      child: Container(
-                                        height: circleSize,
-                                        width: circleSize,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .width)),
-                                            border: Border.all(
-                                                width: 3, color: Colors.green)),
-                                      ),
-                                    ),
-                                    SizeTransition(
-                                      sizeFactor: checkAnimation,
-                                      axis: Axis.horizontal,
-                                      axisAlignment: -1,
-                                      child: Container(
-                                        height: circleSize,
-                                        width: circleSize,
-                                        alignment: Alignment.center,
-                                        child: Icon(Icons.check,
-                                            color: Colors.green,
-                                            size: iconSize),
-                                      ),
-                                    ),
-                                  ],
+                              ScaleTransition(
+                                scale: scaleAnimation,
+                                child: Container(
+                                  height: circleSize,
+                                  width: circleSize,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(MediaQuery.of(context)
+                                              .size
+                                              .width)),
+                                      border: Border.all(
+                                          width: 3, color: Colors.green)),
                                 ),
                               ),
-                              const SizedBox(
-                                height: 40,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: const Text(
-                                  "Đặt hàng thành công!",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: const Text(
-                                  "Chúc mừng bạn đã đặt hàng thành công. Hãy đến với Ngọc Hường để có những trãi nghiệm tốt nhất",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w300),
+                              SizeTransition(
+                                sizeFactor: checkAnimation,
+                                axis: Axis.horizontal,
+                                axisAlignment: -1,
+                                child: Container(
+                                  height: circleSize,
+                                  width: circleSize,
+                                  alignment: Alignment.center,
+                                  child: Icon(Icons.check,
+                                      color: Colors.green, size: iconSize),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        FutureBuilder(future: orderModel.getOrderListByStatus("pending"), builder: (context, snapshot) {
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: const Text(
+                            "Đặt hàng thành công!",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          child: Text(
+                            "Chúc mừng bạn đã đặt hàng thành công. Hãy đến với Ngọc Hường để có những trãi nghiệm tốt nhất",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w300),
+                          ),
+                        ),
+                      ],
+                    ),
+                    FutureBuilder(
+                      future: orderModel.getOrderListByStatus("pending"),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
                           List list = snapshot.data!.toList();
-                          if(snapshot.hasData){
-                            return  FutureBuilder(future: orderModel.getStatusList(), builder: (context, snapshot) {
-                              if(snapshot.hasData){
-                            return    GestureDetector(
+                          return FutureBuilder(
+                            future: orderModel.getStatusList(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return GestureDetector(
                                     child: Container(
                                       width: MediaQuery.of(context).size.width,
                                       height: 50,
@@ -169,7 +171,8 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(15))),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           const Text("Xem chi tiết",
                                               style: TextStyle(
@@ -192,36 +195,39 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  BuyHistory(listTab: snapshot.data!)));
+                                              builder: (context) => BuyHistory(
+                                                  listTab: snapshot.data!)));
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  ModalChiTietBuy(product: list[list.length - 1], type: "")));
+                                                  ModalChiTietBuy(
+                                                      product:
+                                                          list[list.length - 1],
+                                                      type: "")));
                                     });
-                              }else{
+                              } else {
                                 return Container();
                               }
-                            },);
-                          }else{
-                            return const Center(
-                              child: SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: LoadingIndicator(
-                                  colors: kDefaultRainbowColors,
-                                  indicatorType:
-                                  Indicator.lineSpinFadeLoader,
-                                  strokeWidth: 1,
-                                  // pathBackgroundColor: Colors.black45,
-                                ),
+                            },
+                          );
+                        } else {
+                          return const Center(
+                            child: SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: LoadingIndicator(
+                                colors: kDefaultRainbowColors,
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                strokeWidth: 1,
+                                // pathBackgroundColor: Colors.black45,
                               ),
-                            );
-                          }
-                        },),
-
-                      ],
-                    )))));
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ))));
   }
 }

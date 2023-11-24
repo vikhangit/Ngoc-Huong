@@ -39,15 +39,15 @@ List menu = [
   // },
   {
     "icon": "assets/images/account/dat-lich.png",
-    "title": "Lịch sử làm đep",
+    "title": "Lịch sử làm đẹp",
   },
   {
     "icon": "assets/images/cart-black.png",
     "title": "Lịch sử đặt hàng",
   },
   //{
-    //"icon": "assets/images/account/dieu-khoan.png",
-    //"title": "Điều khoản sử dụng",
+  //"icon": "assets/images/account/dieu-khoan.png",
+  //"title": "Điều khoản sử dụng",
   //},
   {
     "icon": "assets/images/account/dia-chi.png",
@@ -55,8 +55,8 @@ List menu = [
   },
 
   //{
-    //"icon": "assets/images/account/ve-chung-toi.png",
-    //"title": "Về Ngọc Hường",
+  //"icon": "assets/images/account/ve-chung-toi.png",
+  //"title": "Về Ngọc Hường",
   //},
   {
     "icon": "assets/images/delete-black.png",
@@ -151,13 +151,13 @@ class _AccountScreenState extends State<AccountScreen> {
 
           break;
         //case 3:
-          //Navigator.push(context,
-             // MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
-          //break;
+        //Navigator.push(context,
+        // MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
+        //break;
         //case 4:
         //  Navigator.push(context,
-         //     MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
-          //break;
+        //     MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
+        //break;
         case 3:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));

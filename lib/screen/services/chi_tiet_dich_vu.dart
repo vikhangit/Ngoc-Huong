@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
@@ -49,7 +48,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
     setState(() {});
   }
 
-  void goToTab(int index){
+  void goToTab(int index) {
     setState(() {
       activeTab = index;
     });
@@ -122,7 +121,6 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                     child: Image.network(
                       "${detail["Image_Name"]}",
-                      height: 210,
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover,
                     ),
@@ -186,44 +184,54 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                     children: [
                       Expanded(
                           child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: activeTab == 1
-                                        ? BorderSide(
+                        height: 60,
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: activeTab == 1
+                                    ? BorderSide(
                                         width: 2,
-                                        color: Theme.of(context).colorScheme.primary)
-                                        : BorderSide.none)),
-                            child: TextButton(
-                              style: ButtonStyle(
-                                  padding:
-                                  MaterialStateProperty.all(const EdgeInsets.all(0))),
-                              onPressed: () => goToTab(1),
-                              child: Text("Chi tiết dịch vụ", style: TextStyle(
-                                  color: activeTab == 1 ? Theme.of(context).colorScheme.primary : Colors.black
-                              ),),
-                            ),
-                          )),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)
+                                    : BorderSide.none)),
+                        child: TextButton(
+                          style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.all(0))),
+                          onPressed: () => goToTab(1),
+                          child: Text(
+                            "Chi tiết dịch vụ",
+                            style: TextStyle(
+                                color: activeTab == 1
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.black),
+                          ),
+                        ),
+                      )),
                       Expanded(
                           child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: activeTab == 2
-                                        ? BorderSide(
+                        height: 60,
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: activeTab == 2
+                                    ? BorderSide(
                                         width: 2,
-                                        color: Theme.of(context).colorScheme.primary)
-                                        : BorderSide.none)),
-                            child: TextButton(
-                              style: ButtonStyle(
-                                  padding:
-                                  MaterialStateProperty.all(const EdgeInsets.all(0))),
-                              onPressed: () => goToTab(2),
-                              child: Text("Đánh giả dịch vụ", style: TextStyle(
-                                  color: activeTab == 2 ? Theme.of(context).colorScheme.primary : Colors.black
-                              )),
-                            ),
-                          ))
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary)
+                                    : BorderSide.none)),
+                        child: TextButton(
+                          style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.all(0))),
+                          onPressed: () => goToTab(2),
+                          child: Text("Đánh giá dịch vụ",
+                              style: TextStyle(
+                                  color: activeTab == 2
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.black)),
+                        ),
+                      ))
                     ],
                   ),
                 ),
@@ -231,99 +239,37 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                   height: 20,
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Column(
-                    children: [
-                      if(activeTab == 1) Html(
-                        data: detail["Description"] ?? "",
-                        style: {
-                          "*": Style(margin: Margins.only(left: 0)),
-                          "p": Style(
-                              lineHeight: const LineHeight(1.8),
-                              fontSize: FontSize(15),
-                              fontWeight: FontWeight.w300,
-                            textAlign: TextAlign.justify
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      children: [
+                        if (activeTab == 1)
+                          Html(
+                            data: detail["Description"] ?? "",
+                            style: {
+                              "*": Style(margin: Margins.only(left: 0)),
+                              "p": Style(
+                                  lineHeight: const LineHeight(1.8),
+                                  fontSize: FontSize(15),
+                                  fontWeight: FontWeight.w300,
+                                  textAlign: TextAlign.justify),
+                              //   "img": Style(
+                              //     width: Width(MediaQuery.of(context).size.width * .85),
+                              //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
+                              //     textAlign: TextAlign.center
+                              //   )
+                            },
                           ),
-                        //   "img": Style(
-                        //     width: Width(MediaQuery.of(context).size.width * .85),
-                        //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
-                        //     textAlign: TextAlign.center
-                        //   )
-                        },
-                      ),
-                      if(activeTab == 2) SizedBox(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(5, (index){
-                              return Container(
-                                padding: const EdgeInsets.only(bottom: 15, top: 15),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            width: 1, color: Color(0xFFEFEFEF)))),
-                                child: Column(children: [
-                                  const Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 36,
-                                        height: 36,
-                                        child: CircleAvatar(
-                                          backgroundImage: AssetImage(
-                                              "assets/images/avatar.png"),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text("Lê Mỹ Ngọc"),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  const Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          "Sản phẩm chất lượng, làn da được cải thiện một cách rõ ràng.",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(fontWeight: FontWeight.w300),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text("08:30",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.grey[500],
-                                              fontSize: 12)),
-                                      Container(
-                                        width: 1,
-                                        height: 12,
-                                        margin:
-                                        const EdgeInsets.symmetric(horizontal: 5),
-                                        color: Colors.grey,
-                                      ),
-                                      Text("23/03/2023",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.grey[500],
-                                              fontSize: 12))
-                                    ],
-                                  )
-                                ]),
-                              );
-                            })
-                        ),
-                      ),
-                    ],
-                  )
-                ),
+                        if (activeTab == 2)
+                          SizedBox(
+                              child: Text(
+                            "Chúng tôi đang nâng cấp tính năng này",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                          )),
+                      ],
+                    )),
                 const SizedBox(
                   height: 10,
                 ),

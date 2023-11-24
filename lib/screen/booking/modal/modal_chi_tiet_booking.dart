@@ -24,7 +24,8 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
   final BranchsModel branchsModel = BranchsModel();
   @override
   Widget build(BuildContext context) {
-    Map details = widget.history != null ? widget.details : widget.details["Data"];
+    Map details =
+        widget.history != null ? widget.details : widget.details["Data"];
     void cancleOrder() async {
       Map data = {"dien_giai": "Chờ trả"};
       await putBooking(details["_id"], data).then((value) => Navigator.push(
@@ -35,6 +36,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                   ))));
       widget.save!();
     }
+
     print("=============================");
     print("Detaoasdasad: ${details}");
     print("=============================");
@@ -51,7 +53,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
                 borderRadius:
-                const BorderRadius.vertical(bottom: Radius.circular(30))),
+                    const BorderRadius.vertical(bottom: Radius.circular(30))),
             child: Row(
               children: [
                 Expanded(
@@ -95,336 +97,399 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               children: [
-                widget.history == null ?
-                FutureBuilder(future: servicesModel.getAllServiceByGroup(), builder: (context, snapshot) {
-                  if(snapshot.hasData){
-                    Map detailProduct =  snapshot.data!.firstWhere((e) => e["Name"]
-                        .toString()
-                        .toLowerCase() == details["ServiceList"][0].toString().toLowerCase(), orElse: () => null);
-                    return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:  [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              child: Image.network(
-                                "${detailProduct["Image_Name"]}",
-                                // height: 210,
-                                width: MediaQuery.of(context).size.width,
-                              ),
-                            ),
-                          ),
-                          Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 15),
-                              child: Column(
+                widget.history == null
+                    ? FutureBuilder(
+                        future: servicesModel.getAllServiceByGroup(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            Map detailProduct = snapshot.data!.firstWhere(
+                                (e) =>
+                                    e["Name"].toString().toLowerCase() ==
+                                    details["ServiceList"][0]
+                                        .toString()
+                                        .toLowerCase(),
+                                orElse: () => null);
+                            return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const SizedBox(
-                                    height: 20,
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      child: Image.network(
+                                        "${detailProduct["Image_Name"]}",
+                                        // height: 210,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                      ),
+                                    ),
                                   ),
-                                  Text(
-                                    detailProduct["Name"],
-                                    style: const TextStyle(fontSize: 17),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  //   children: [
-                                  //     Text(
-                                  //       NumberFormat.currency(locale: "vi_VI", symbol: "đ")
-                                  //           .format(
-                                  //         detailProduct["PriceOutbound"],
-                                  //       ),
-                                  //       style: TextStyle(
-                                  //           fontSize: 16,
-                                  //           color: Theme.of(context).colorScheme.primary),
-                                  //     ),
-                                  //     // Row(
-                                  //     //   children: [
-                                  //     //     const Icon(
-                                  //     //       Icons.star,
-                                  //     //       size: 20,
-                                  //     //       color: Colors.orange,
-                                  //     //     ),
-                                  //     //     Container(
-                                  //     //       margin:
-                                  //     //       const EdgeInsets.symmetric(horizontal: 5),
-                                  //     //       child: const Text("4.8"),
-                                  //     //     ),
-                                  //     //     const Text(
-                                  //     //       "(130 đánh giá)",
-                                  //     //       style: TextStyle(fontWeight: FontWeight.w300),
-                                  //     //     )
-                                  //     //   ],
-                                  //     // )
-                                  //   ],
-                                  // ),
-                                  // const SizedBox(
-                                  //   height: 10,
-                                  // ),
-                                  const Text(
-                                    "Thông tin đặt lịch",
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                                  Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Text(
+                                            detailProduct["Name"],
+                                            style:
+                                                const TextStyle(fontSize: 17),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          // Row(
+                                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          //   children: [
+                                          //     Text(
+                                          //       NumberFormat.currency(locale: "vi_VI", symbol: "đ")
+                                          //           .format(
+                                          //         detailProduct["PriceOutbound"],
+                                          //       ),
+                                          //       style: TextStyle(
+                                          //           fontSize: 16,
+                                          //           color: Theme.of(context).colorScheme.primary),
+                                          //     ),
+                                          //     // Row(
+                                          //     //   children: [
+                                          //     //     const Icon(
+                                          //     //       Icons.star,
+                                          //     //       size: 20,
+                                          //     //       color: Colors.orange,
+                                          //     //     ),
+                                          //     //     Container(
+                                          //     //       margin:
+                                          //     //       const EdgeInsets.symmetric(horizontal: 5),
+                                          //     //       child: const Text("4.8"),
+                                          //     //     ),
+                                          //     //     const Text(
+                                          //     //       "(130 đánh giá)",
+                                          //     //       style: TextStyle(fontWeight: FontWeight.w300),
+                                          //     //     )
+                                          //     //   ],
+                                          //     // )
+                                          //   ],
+                                          // ),
+                                          // const SizedBox(
+                                          //   height: 10,
+                                          // ),
+                                          const Text(
+                                            "Thông tin đặt lịch",
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
                                                 children: [
-                                                  Text(
-                                                    "Tháng ${databook.month < 10 ? "0${databook.month}" : databook.month}, ${databook.year}",
-                                                    style: const TextStyle(
-                                                        color: Colors.black, fontSize: 20),
-                                                  ),
-                                                  Text(
-                                                    "${databook.day < 10 ? "0${databook.day}" : databook.day}",
-                                                    style: const TextStyle(
-                                                        color: Colors.black, fontSize: 80),
-                                                  )
-                                                ],
-                                              )),
-                                          Expanded(
-                                              child: Column(
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                  Expanded(
+                                                      child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
-                                                      Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            vertical: 4, horizontal: 15),
-                                                        decoration: BoxDecoration(
-                                                            color: Theme.of(context)
-                                                                .colorScheme
-                                                                .primary
-                                                                .withOpacity(0.2),
-                                                            borderRadius:
-                                                            const BorderRadius.all(
-                                                                Radius.circular(10))),
-                                                        child: Text(
-                                                          widget!.status == null ? "Sắp tới" : "${details["Status"]}",
-                                                          style: TextStyle(
-                                                              color: Theme.of(context)
-                                                                  .colorScheme
-                                                                  .primary,
-                                                              fontSize: 10,
-                                                              fontWeight: FontWeight.w300),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 15,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        "assets/images/time-solid-black.png",
-                                                        width: 20,
-                                                        height: 20,
-                                                        fit: BoxFit.contain,
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 5,
-                                                      ),
-                                                      Text("${databook.hour}:${databook.minute}",
+                                                      Text(
+                                                        "Tháng ${databook.month < 10 ? "0${databook.month}" : databook.month}, ${databook.year}",
                                                         style: const TextStyle(
                                                             color: Colors.black,
-                                                            fontWeight: FontWeight.w300),
+                                                            fontSize: 20),
+                                                      ),
+                                                      Text(
+                                                        "${databook.day < 10 ? "0${databook.day}" : databook.day}",
+                                                        style: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 80),
                                                       )
                                                     ],
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 15,
-                                                  ),
-                                                  Row(
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                  )),
+                                                  Expanded(
+                                                      child: Column(
                                                     children: [
-                                                      Image.asset(
-                                                        "assets/images/location-solid-black.png",
-                                                        width: 20,
-                                                        height: 20,
-                                                        fit: BoxFit.contain,
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    vertical: 4,
+                                                                    horizontal:
+                                                                        15),
+                                                            decoration: BoxDecoration(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .primary
+                                                                    .withOpacity(
+                                                                        0.2),
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                        .all(
+                                                                        Radius.circular(
+                                                                            10))),
+                                                            child: Text(
+                                                              widget!.status ==
+                                                                      null
+                                                                  ? "Sắp tới"
+                                                                  : "${details["Status"]}",
+                                                              style: TextStyle(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .primary,
+                                                                  fontSize: 10,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300),
+                                                            ),
+                                                          )
+                                                        ],
                                                       ),
                                                       const SizedBox(
-                                                        width: 5,
+                                                        height: 15,
                                                       ),
-                                                      Flexible(
-                                                          child: Text(
+                                                      Row(
+                                                        children: [
+                                                          Image.asset(
+                                                            "assets/images/time-solid-black.png",
+                                                            width: 20,
+                                                            height: 20,
+                                                            fit: BoxFit.contain,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          Text(
+                                                            "${databook.hour}:${databook.minute}",
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 15,
+                                                      ),
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Image.asset(
+                                                            "assets/images/location-solid-black.png",
+                                                            width: 20,
+                                                            height: 20,
+                                                            fit: BoxFit.contain,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          Flexible(
+                                                              child: Text(
                                                             "${details["BranchInfo"]["Address"]}",
                                                             style: const TextStyle(
-                                                                color: Colors.black,
+                                                                color: Colors
+                                                                    .black,
                                                                 fontSize: 14,
-                                                                fontWeight: FontWeight.w300),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300),
                                                           ))
+                                                        ],
+                                                      ),
                                                     ],
-                                                  ),
+                                                  ))
                                                 ],
-                                              ))
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )),
+                                ]);
+                          } else {
+                            return const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: LoadingIndicator(
+                                    colors: kDefaultRainbowColors,
+                                    indicatorType: Indicator.lineSpinFadeLoader,
+                                    strokeWidth: 1,
+                                    // pathBackgroundColor: Colors.black45,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text("Đang lấy dữ liệu")
+                              ],
+                            );
+                          }
+                        },
+                      )
+                    : FutureBuilder(
+                        future: servicesModel.getServiceByName(
+                            widget.details["serviceList"][0]["ServiceName"]),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            Map detailProduct = snapshot.data!;
+                            return Column(children: [
+                              Center(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  child: Image.network(
+                                    "${detailProduct["Image_Name"]}",
+                                    // height: 210,
+                                    width: MediaQuery.of(context).size.width,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        detailProduct["Name"],
+                                        style: const TextStyle(fontSize: 17),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          // Text(
+                                          //   NumberFormat.currency(locale: "vi_VI", symbol: "đ")
+                                          //       .format(
+                                          //     detailProduct["PriceOutbound"],
+                                          //   ),
+                                          //   style: TextStyle(
+                                          //       fontSize: 16,
+                                          //       color: Theme.of(context).colorScheme.primary),
+                                          // ),
+                                          // Row(
+                                          //   children: [
+                                          //     const Icon(
+                                          //       Icons.star,
+                                          //       size: 20,
+                                          //       color: Colors.orange,
+                                          //     ),
+                                          //     Container(
+                                          //       margin:
+                                          //       const EdgeInsets.symmetric(horizontal: 5),
+                                          //       child: const Text("4.8"),
+                                          //     ),
+                                          //     const Text(
+                                          //       "(130 đánh giá)",
+                                          //       style: TextStyle(fontWeight: FontWeight.w300),
+                                          //     )
+                                          //   ],
+                                          // )
                                         ],
                                       ),
-                                    ],
-                                  ),
-
-                                ],
-                              )),
-                        ]
-                    );
-                  }else{
-                    return const Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: LoadingIndicator(
-                            colors: kDefaultRainbowColors,
-                            indicatorType: Indicator.lineSpinFadeLoader,
-                            strokeWidth: 1,
-                            // pathBackgroundColor: Colors.black45,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text("Đang lấy dữ liệu")
-                      ],
-                    );
-                  }
-                },) :
-
-                FutureBuilder(future: servicesModel.getServiceByName(widget.details["serviceList"][0]["ServiceName"]), builder: (context, snapshot) {
-                  if(snapshot.hasData){
-                    Map detailProduct =  snapshot.data!;
-                    return Column(
-                        children:  [
-                          Center(
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              child: Image.network(
-                                "${detailProduct["Image_Name"]}",
-                                // height: 210,
-                                width: MediaQuery.of(context).size.width,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    detailProduct["Name"],
-                                    style: const TextStyle(fontSize: 17),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        NumberFormat.currency(locale: "vi_VI", symbol: "đ")
-                                            .format(
-                                          detailProduct["PriceOutbound"],
-                                        ),
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Theme.of(context).colorScheme.primary),
+                                      const SizedBox(
+                                        height: 10,
                                       ),
-                                      // Row(
-                                      //   children: [
-                                      //     const Icon(
-                                      //       Icons.star,
-                                      //       size: 20,
-                                      //       color: Colors.orange,
-                                      //     ),
-                                      //     Container(
-                                      //       margin:
-                                      //       const EdgeInsets.symmetric(horizontal: 5),
-                                      //       child: const Text("4.8"),
-                                      //     ),
-                                      //     const Text(
-                                      //       "(130 đánh giá)",
-                                      //       style: TextStyle(fontWeight: FontWeight.w300),
-                                      //     )
-                                      //   ],
-                                      // )
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  const Text(
-                                    "Thông tin đặt lịch",
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                                      const Text(
+                                        "Thông tin đặt lịch",
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     "Tháng ${databook.month < 10 ? "0${databook.month}" : databook.month}, ${databook.year}",
                                                     style: const TextStyle(
-                                                        color: Colors.black, fontSize: 20),
+                                                        color: Colors.black,
+                                                        fontSize: 20),
                                                   ),
                                                   Text(
                                                     "${databook.day < 10 ? "0${databook.day}" : databook.day}",
                                                     style: const TextStyle(
-                                                        color: Colors.black, fontSize: 80),
+                                                        color: Colors.black,
+                                                        fontSize: 80),
                                                   )
                                                 ],
                                               )),
-                                          Expanded(
-                                              child: Column(
+                                              Expanded(
+                                                  child: Column(
                                                 children: [
                                                   Row(
-                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
                                                     children: [
                                                       Container(
-                                                        padding: const EdgeInsets.symmetric(
-                                                            vertical: 4, horizontal: 15),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 4,
+                                                                horizontal: 15),
                                                         decoration: BoxDecoration(
-                                                            color: Theme.of(context)
+                                                            color: Theme.of(
+                                                                    context)
                                                                 .colorScheme
                                                                 .primary
-                                                                .withOpacity(0.2),
+                                                                .withOpacity(
+                                                                    0.2),
                                                             borderRadius:
-                                                            const BorderRadius.all(
-                                                                Radius.circular(10))),
+                                                                const BorderRadius
+                                                                    .all(
+                                                                    Radius.circular(
+                                                                        10))),
                                                         child: Text(
-                                                          widget!.status == null ? "Sắp tới" : "${widget.status}",
+                                                          widget!.status == null
+                                                              ? "Sắp tới"
+                                                              : "${widget.status}",
                                                           style: TextStyle(
-                                                              color: Theme.of(context)
+                                                              color: Theme.of(
+                                                                      context)
                                                                   .colorScheme
                                                                   .primary,
                                                               fontSize: 10,
-                                                              fontWeight: FontWeight.w300),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300),
                                                         ),
                                                       )
                                                     ],
@@ -443,10 +508,13 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                                       const SizedBox(
                                                         width: 5,
                                                       ),
-                                                      Text("${DateFormat("HH:mm").format(databook)}",
+                                                      Text(
+                                                        "${DateFormat("HH:mm").format(databook)}",
                                                         style: const TextStyle(
                                                             color: Colors.black,
-                                                            fontWeight: FontWeight.w300),
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w300),
                                                       )
                                                     ],
                                                   ),
@@ -455,7 +523,8 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                                   ),
                                                   Row(
                                                     crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Image.asset(
                                                         "assets/images/location-solid-black.png",
@@ -466,60 +535,76 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                                       const SizedBox(
                                                         width: 5,
                                                       ),
-                                                      FutureBuilder(future: branchsModel.getBranchs(), builder: (context, snapshot) {
-                                                        if(snapshot.hasData){
-                                                          Map address = snapshot.data!.firstWhere((e) => e["Name"]
-                                                              == details["BranchName"], orElse: () => null);
-                                                          print(address);
-                                                          return Flexible(
-                                                              child: Text(
-                                                                "${address["Address"]}",
-                                                                style: const TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 14,
-                                                                    fontWeight: FontWeight.w300),
-                                                              ));
-                                                        }else{
-                                                          return Container();
-                                                        }
-                                                      },)
+                                                      FutureBuilder(
+                                                        future: branchsModel
+                                                            .getBranchs(),
+                                                        builder: (context,
+                                                            snapshot) {
+                                                          if (snapshot
+                                                              .hasData) {
+                                                            Map address = snapshot
+                                                                .data!
+                                                                .firstWhere(
+                                                                    (e) =>
+                                                                        e["Name"] ==
+                                                                        details[
+                                                                            "BranchName"],
+                                                                    orElse: () =>
+                                                                        null);
+                                                            print(address);
+                                                            return Flexible(
+                                                                child: Text(
+                                                              "${address["Address"]}",
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300),
+                                                            ));
+                                                          } else {
+                                                            return Container();
+                                                          }
+                                                        },
+                                                      )
                                                     ],
                                                   ),
                                                 ],
                                               ))
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ],
-                                  ),
-
-                                ],
-                              )),
-
-                        ]
-                    );
-                  }else{
-                    return   Container( margin: const EdgeInsets.only(top: 60), child: const Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: LoadingIndicator(
-                            colors: kDefaultRainbowColors,
-                            indicatorType: Indicator.lineSpinFadeLoader,
-                            strokeWidth: 1,
-                            // pathBackgroundColor: Colors.black45,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text("Đang lấy dữ liệu")
-                      ],
-                    ));
-                  }
-                },)
+                                  )),
+                            ]);
+                          } else {
+                            return Container(
+                                margin: const EdgeInsets.only(top: 60),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Đang lấy dữ liệu")
+                                  ],
+                                ));
+                          }
+                        },
+                      )
               ],
             ),
           ),

@@ -135,12 +135,12 @@ class _BookingServicesState extends State<BookingServices>
     TimeOfDay? result = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
-     builder: (context, child) {
-       return MediaQuery(
-         data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-         child: child!,
-       );
-     },
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
     );
     if (result != null) {
       setState(() {
@@ -151,7 +151,9 @@ class _BookingServicesState extends State<BookingServices>
 
   @override
   Widget build(BuildContext context) {
-    Map branch = jsonDecode(storageBranch.getItem("branch"));
+    Map branch = storageBranch.getItem("branch") == null
+        ? {}
+        : jsonDecode(storageBranch.getItem("branch"));
     tz.TZDateTime nextInstanceOfTenAM() {
       tz.initializeTimeZones();
       late tz.TZDateTime now =
@@ -211,11 +213,18 @@ class _BookingServicesState extends State<BookingServices>
         }, () => Navigator.pop(context));
       } else if (activeTime == null) {
         customModal.showAlertDialog(
-            context, "error", "Lỗi Đặt Lịch", "Bạn chưa chọn giời đặt lịch",
-            () {
+            context, "error", "Lỗi Đặt Lịch", "Bạn chưa chọn giờ đặt lịch", () {
           Navigator.pop(context);
           selectTime();
         }, () => Navigator.pop(context));
+      } else if (branch.isEmpty) {
+        customModal.showAlertDialog(
+            context,
+            "error",
+            "Lỗi Đặt Lịch",
+            "Bạn chưa chọn chi nhánh",
+            () => Navigator.pop(context),
+            () => Navigator.pop(context));
       } else if (activeService.isEmpty) {
         customModal.showAlertDialog(
             context,
@@ -233,16 +242,11 @@ class _BookingServicesState extends State<BookingServices>
             activeDate!.year, activeDate!.month, activeDate!.day, 19, 0);
         DateTime now = DateTime.now();
         if (dateBook.isBefore(dateOpen) || dateBook.isAfter(dateClose)) {
-          customModal.showAlertDialog(
-              context,
-              "error",
-              "Lỗi Đặt Lịch",
-              "Bạn đã chọn đặt lịch vào thời gian Ngọc Hường chưa mở cửa",
-              (){
-                Navigator.pop(context);
-                selectTime();
-              },
-              () => Navigator.pop(context));
+          customModal.showAlertDialog(context, "error", "Lỗi Đặt Lịch",
+              "Bạn đã chọn đặt lịch vào thời gian Ngọc Hường chưa mở cửa", () {
+            Navigator.pop(context);
+            selectTime();
+          }, () => Navigator.pop(context));
         } else {
           if (dateBook.isAfter(now)) {
             Map data = {
@@ -276,7 +280,7 @@ class _BookingServicesState extends State<BookingServices>
                 context,
                 "error",
                 "Lỗi Đặt Lịch",
-                "Không thể đặt lịch với thời gian trong quá khứ. Xin qúy khách vui lòng kiểm tra lại",
+                "Không thể đặt lịch với thời gian trong quá khứ",
                 () => Navigator.pop(context),
                 () => Navigator.pop(context));
           }
@@ -433,7 +437,8 @@ class _BookingServicesState extends State<BookingServices>
                               TextField(
                                 readOnly: true,
                                 controller: TextEditingController(
-                                    text: "${branch["Name"]}"),
+                                    text:
+                                        "${branch["Name"] ?? "Chọn chi nhánh"}"),
                                 textAlignVertical: TextAlignVertical.center,
                                 onTap: () => showModalBottomSheet<void>(
                                     clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -549,149 +554,152 @@ class _BookingServicesState extends State<BookingServices>
                                                   chooseService.map((item) {
                                                 int index =
                                                     chooseService.indexOf(item);
-                                                return Container(
-                                                    margin: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 15),
-                                                    child: Column(
-                                                      children: [
-                                                        TextButton(
-                                                            onPressed: () {
-                                                              showServiceChoseService(
-                                                                  index);
-                                                            },
-                                                            style: ButtonStyle(
-                                                                padding: MaterialStateProperty.all(
-                                                                    const EdgeInsets
-                                                                        .symmetric(
-                                                                        vertical:
-                                                                            15,
-                                                                        horizontal:
-                                                                            20)),
-                                                                shape: MaterialStateProperty.all(
-                                                                    const RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.all(Radius.circular(10))))),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Text(
-                                                                  item["name"],
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .black
-                                                                          .withOpacity(
-                                                                              0.6),
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400),
-                                                                ),
-                                                                item["show"]
-                                                                    ? const Icon(
-                                                                        Icons
-                                                                            .keyboard_arrow_up,
+                                                if (item["name"] !=
+                                                    "Sản phẩm") {
+                                                  return Container(
+                                                      margin: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 15),
+                                                      child: Column(
+                                                        children: [
+                                                          TextButton(
+                                                              onPressed: () {
+                                                                showServiceChoseService(
+                                                                    index);
+                                                              },
+                                                              style: ButtonStyle(
+                                                                  padding: MaterialStateProperty.all(const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          15,
+                                                                      horizontal:
+                                                                          20)),
+                                                                  shape: MaterialStateProperty.all(
+                                                                      const RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.all(Radius.circular(10))))),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    item[
+                                                                        "name"],
+                                                                    style: TextStyle(
                                                                         color: Colors
-                                                                            .black)
-                                                                    : const Icon(
-                                                                        Icons
-                                                                            .keyboard_arrow_down,
-                                                                        color: Colors
-                                                                            .black)
-                                                              ],
-                                                            )),
-                                                        AnimatedCrossFade(
-                                                            firstChild:
-                                                                Container(),
-                                                            secondChild:
-                                                                FutureBuilder(
-                                                                    future: servicesModel
-                                                                        .getServiceByGroup(item[
-                                                                            "name"]),
-                                                                    builder:
-                                                                        (context,
-                                                                            snapshot) {
-                                                                      if (snapshot
-                                                                          .hasData) {
-                                                                        return Column(
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: snapshot.data!.map((abc) {
-                                                                              int index3 = snapshot.data!.indexOf(abc);
-                                                                              return Container(
-                                                                                margin: EdgeInsets.only(left: 15, right: 15, top: index3 == 0 ? 0 : 15),
-                                                                                child: TextButton(
-                                                                                    onPressed: () {
-                                                                                      chooseActiveService(abc);
-                                                                                    },
-                                                                                    style: ButtonStyle(padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 12, horizontal: 15)), shape: MaterialStateProperty.all(const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))))),
-                                                                                    child: Row(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                                      children: [
-                                                                                        Container(
-                                                                                          alignment: Alignment.center,
-                                                                                          width: 24,
-                                                                                          height: 24,
-                                                                                          decoration: BoxDecoration(color: activeService["Code"] == abc["Code"] ? Colors.green : Colors.white, border: Border.all(width: 1, color: activeService["Code"] == abc["Code"] ? Colors.green : Colors.black), borderRadius: const BorderRadius.all(Radius.circular(8))),
-                                                                                          child: GestureDetector(
-                                                                                              child: activeService["Code"] == abc["Code"]
-                                                                                                  ? const Icon(
-                                                                                                      Icons.check,
-                                                                                                      color: Colors.white,
-                                                                                                      size: 16,
-                                                                                                    )
-                                                                                                  : Container()),
-                                                                                        ),
-                                                                                        Expanded(
-                                                                                            child: Container(
-                                                                                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                                                                                          child: Text(
-                                                                                            "${abc["Name"][0].toString().toUpperCase()}${abc["Name"].toString().substring(1).toLowerCase()}",
-                                                                                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
+                                                                            .black
+                                                                            .withOpacity(
+                                                                                0.6),
+                                                                        fontWeight:
+                                                                            FontWeight.w400),
+                                                                  ),
+                                                                  item["show"]
+                                                                      ? const Icon(
+                                                                          Icons
+                                                                              .keyboard_arrow_up,
+                                                                          color: Colors
+                                                                              .black)
+                                                                      : const Icon(
+                                                                          Icons
+                                                                              .keyboard_arrow_down,
+                                                                          color:
+                                                                              Colors.black)
+                                                                ],
+                                                              )),
+                                                          AnimatedCrossFade(
+                                                              firstChild:
+                                                                  Container(),
+                                                              secondChild:
+                                                                  FutureBuilder(
+                                                                      future: servicesModel
+                                                                          .getServiceByGroup(item[
+                                                                              "name"]),
+                                                                      builder:
+                                                                          (context,
+                                                                              snapshot) {
+                                                                        if (snapshot
+                                                                            .hasData) {
+                                                                          return Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: snapshot.data!.map((abc) {
+                                                                                int index3 = snapshot.data!.indexOf(abc);
+                                                                                return Container(
+                                                                                  margin: EdgeInsets.only(left: 15, right: 15, top: index3 == 0 ? 0 : 15),
+                                                                                  child: TextButton(
+                                                                                      onPressed: () {
+                                                                                        chooseActiveService(abc);
+                                                                                      },
+                                                                                      style: ButtonStyle(padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 12, horizontal: 15)), shape: MaterialStateProperty.all(const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))))),
+                                                                                      child: Row(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                                        children: [
+                                                                                          Container(
+                                                                                            alignment: Alignment.center,
+                                                                                            width: 24,
+                                                                                            height: 24,
+                                                                                            decoration: BoxDecoration(color: activeService["Code"] == abc["Code"] ? Colors.green : Colors.white, border: Border.all(width: 1, color: activeService["Code"] == abc["Code"] ? Colors.green : Colors.black), borderRadius: const BorderRadius.all(Radius.circular(8))),
+                                                                                            child: GestureDetector(
+                                                                                                child: activeService["Code"] == abc["Code"]
+                                                                                                    ? const Icon(
+                                                                                                        Icons.check,
+                                                                                                        color: Colors.white,
+                                                                                                        size: 16,
+                                                                                                      )
+                                                                                                    : Container()),
                                                                                           ),
-                                                                                        )),
-                                                                                        // Text(
-                                                                                        //   NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(abc["PriceOutbound"]),
-                                                                                        //   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
-                                                                                        // )
-                                                                                      ],
-                                                                                    )),
-                                                                              );
-                                                                            }).toList());
-                                                                      } else {
-                                                                        return const Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: [
-                                                                            SizedBox(
-                                                                              width: 40,
-                                                                              height: 40,
-                                                                              child: LoadingIndicator(
-                                                                                colors: kDefaultRainbowColors,
-                                                                                indicatorType: Indicator.lineSpinFadeLoader,
-                                                                                strokeWidth: 1,
-                                                                                // pathBackgroundColor: Colors.black45,
+                                                                                          Expanded(
+                                                                                              child: Container(
+                                                                                            margin: const EdgeInsets.symmetric(horizontal: 12),
+                                                                                            child: Text(
+                                                                                              "${abc["Name"][0].toString().toUpperCase()}${abc["Name"].toString().substring(1).toLowerCase()}",
+                                                                                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
+                                                                                            ),
+                                                                                          )),
+                                                                                          // Text(
+                                                                                          //   NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(abc["PriceOutbound"]),
+                                                                                          //   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
+                                                                                          // )
+                                                                                        ],
+                                                                                      )),
+                                                                                );
+                                                                              }).toList());
+                                                                        } else {
+                                                                          return const Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              SizedBox(
+                                                                                width: 40,
+                                                                                height: 40,
+                                                                                child: LoadingIndicator(
+                                                                                  colors: kDefaultRainbowColors,
+                                                                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                                                                  strokeWidth: 1,
+                                                                                  // pathBackgroundColor: Colors.black45,
+                                                                                ),
                                                                               ),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 10,
-                                                                            ),
-                                                                            Text("Đang lấy dữ liệu")
-                                                                          ],
-                                                                        );
-                                                                      }
-                                                                    }),
-                                                            crossFadeState: item[
-                                                                    "show"]
-                                                                ? CrossFadeState
-                                                                    .showSecond
-                                                                : CrossFadeState
-                                                                    .showFirst,
-                                                            duration: 500.ms)
-                                                      ],
-                                                    ));
+                                                                              SizedBox(
+                                                                                width: 10,
+                                                                              ),
+                                                                              Text("Đang lấy dữ liệu")
+                                                                            ],
+                                                                          );
+                                                                        }
+                                                                      }),
+                                                              crossFadeState: item[
+                                                                      "show"]
+                                                                  ? CrossFadeState
+                                                                      .showSecond
+                                                                  : CrossFadeState
+                                                                      .showFirst,
+                                                              duration: 500.ms)
+                                                        ],
+                                                      ));
+                                                } else {
+                                                  return Container();
+                                                }
                                               }).toList())
                                           : const Row(
                                               mainAxisAlignment:

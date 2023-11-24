@@ -12,7 +12,7 @@ class ServicesModel {
     List result = [];
     try {
       Response response = await client.dio.get(
-        '${client.apiUrl}/Service/getGroupServiceByBranch?branchCode=${jsonDecode(localStorageBranchs.getItem("branch"))["Code"]}',
+        '${client.apiUrl}/Service/getGroupServiceByBranch?branchCode=001',
       );
       if (response.statusCode == 200) {
         return result = response.data["Data"];
@@ -46,7 +46,7 @@ class ServicesModel {
     List result = [];
     try {
       Response response = await client.dio.get(
-        '${client.apiUrl}/Home/getServiceByBranch?branchCode=${jsonDecode(localStorageBranchs.getItem("branch"))["Code"]}',
+        '${client.apiUrl}/Home/getServiceByBranch?branchCode=001',
       );
       if (response.statusCode == 200) {
         return result = response.data["Data"];
@@ -75,6 +75,7 @@ class ServicesModel {
     }
     return result;
   }
+
   Future<List> getAllServiceByGroup() async {
     List result = [];
     try {
@@ -91,15 +92,18 @@ class ServicesModel {
     }
     return result;
   }
+
   Future getServiceByName(String name) async {
     try {
       Response response = await client.dio.get(
         '${client.apiUrl}/Service/getServiceByGroup?groupServiceCode=',
       );
       if (response.statusCode == 200) {
-        return response.data["Data"].toList().firstWhere((e) => e["Name"]
-            .toString()
-            .toLowerCase() == name.toString().toLowerCase(), orElse: () => null);
+        return response.data["Data"].toList().firstWhere(
+            (e) =>
+                e["Name"].toString().toLowerCase() ==
+                name.toString().toLowerCase(),
+            orElse: () => null);
       } else {
         return;
       }

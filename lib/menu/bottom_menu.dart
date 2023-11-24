@@ -10,6 +10,7 @@ import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
+import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/services/all_service.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -68,7 +69,8 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
         switch (index) {
           case 0:
             {
-              Navigator.pushNamed(context, "home");
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
               break;
             }
           case 1:
@@ -132,12 +134,12 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                   //     left: index == 2 ? 60 : 0, right: index == 1 ? 30 : 0),
                   width: MediaQuery.of(context).size.width / 5,
                   alignment: Alignment.center,
-                  child: GestureDetector(
-                      // style: ButtonStyle(
-                      //     padding: MaterialStateProperty.all(
-                      //         const EdgeInsets.symmetric(
-                      //             vertical: 0.0, horizontal: 0.0))),
-                      onTap: () => onItemTapped(index),
+                  child: TextButton(
+                      style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.symmetric(
+                                  vertical: 0.0, horizontal: 0.0))),
+                      onPressed: () => onItemTapped(index),
                       child: Column(
                         children: [
                           FutureBuilder(
@@ -184,12 +186,12 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
               return Container(
                 width: MediaQuery.of(context).size.width / 5,
                 alignment: Alignment.center,
-                child: GestureDetector(
-                    // style: ButtonStyle(
-                    //     padding: MaterialStateProperty.all(
-                    //         const EdgeInsets.symmetric(
-                    //             vertical: 0.0, horizontal: 0.0))),
-                    onTap: () => onItemTapped(index),
+                child: TextButton(
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(
+                                vertical: 0.0, horizontal: 0.0))),
+                    onPressed: () => onItemTapped(index),
                     child: Column(
                       children: [
                         Image.asset(
