@@ -53,6 +53,7 @@ class CustomThemeData {
       highlightColor: Colors.white,
       floatingActionButtonTheme: dataCustom.floatingActionButtonThemeData,
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        elevation: 0,
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
           selectedItemColor: Color.fromARGB(255, 4, 194, 207),

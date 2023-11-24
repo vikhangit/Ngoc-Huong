@@ -19,6 +19,7 @@ import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class CheckOutCart extends StatefulWidget {
   final num total;
@@ -40,6 +41,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
   final ProductModel productModel = ProductModel();
   final AddressModel addressModel = AddressModel();
   final LocalStorage storageBranch = LocalStorage('branch');
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -55,6 +57,13 @@ class _CheckOutScreenState extends State<CheckOutCart> {
             selectAddress = "";
           }
         }));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
   }
 
   @override
@@ -96,7 +105,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                 "DetailList": [
                   {...listProductPayment[i], "IsDeleted": true}
                 ]
-              }).then((value) => setState((){}));
+              }).then((value) => setState(() {}));
             }
             orderModel.setOrder(data).then((value) {
               EasyLoading.dismiss();
@@ -117,6 +126,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
     }
 
     return SafeArea(
+      bottom: false,
         child: Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
@@ -143,13 +153,19 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                 fontWeight: FontWeight.w500,
                 color: Colors.white)),
       ),
-      bottomNavigationBar: const MyBottomMenu(active: -1),
+      bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: -1,
+                        )),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: ListView(
+              controller: scrollController,
               children: [
                 Container(
                   margin: const EdgeInsets.only(top: 10, left: 15, right: 15),

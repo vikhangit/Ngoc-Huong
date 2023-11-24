@@ -19,6 +19,7 @@ import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class InfomationAccount extends StatefulWidget {
   const InfomationAccount({super.key});
@@ -56,6 +57,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     // storage.deleteItem("userInfo");
@@ -87,6 +89,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
     phoneController.dispose();
     emailController.dispose();
     addressController.dispose();
+    scrollController.dispose();
     loading = true;
     super.dispose();
   }
@@ -185,10 +188,16 @@ class _InfomationAccountState extends State<InfomationAccount> {
         key: _formKey,
         child: Builder(
             builder: (context) => SafeArea(
+              bottom: false,
                   child: Scaffold(
                     backgroundColor: Colors.white,
                     resizeToAvoidBottomInset: true,
-                    bottomNavigationBar: const MyBottomMenu(active: 4),
+                    bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 4,
+                        )),
                     appBar: AppBar(
                       leadingWidth: 45,
                       centerTitle: true,
@@ -219,6 +228,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
                             children: [
                               Expanded(
                                 child: ListView(
+                                  controller: scrollController,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15),
                                   children: [

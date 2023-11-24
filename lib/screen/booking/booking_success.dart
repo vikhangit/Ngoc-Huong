@@ -4,6 +4,7 @@ import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_chi_tiet_booking.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class BookingSuccess extends StatefulWidget {
   final details;
@@ -18,7 +19,6 @@ double iconSize = 108;
 
 class _BookingSuccessState extends State<BookingSuccess>
     with TickerProviderStateMixin {
-
   LocalStorage storageAuth = LocalStorage("auth");
   late AnimationController scaleController = AnimationController(
       duration: const Duration(milliseconds: 800), vsync: this);
@@ -28,6 +28,7 @@ class _BookingSuccessState extends State<BookingSuccess>
       duration: const Duration(milliseconds: 600), vsync: this);
   late Animation<double> checkAnimation =
       CurvedAnimation(parent: checkController, curve: Curves.linear);
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _BookingSuccessState extends State<BookingSuccess>
   void dispose() {
     scaleController.dispose();
     checkController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -54,6 +56,7 @@ class _BookingSuccessState extends State<BookingSuccess>
   Widget build(BuildContext context) {
     var details = widget.details;
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -80,7 +83,12 @@ class _BookingSuccessState extends State<BookingSuccess>
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
             ),
-            bottomNavigationBar: const MyBottomMenu(active: 1),
+            bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 1,
+                        )),
             body: Container(
                 padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
                 child: SizedBox(
@@ -90,6 +98,7 @@ class _BookingSuccessState extends State<BookingSuccess>
                       children: [
                         Expanded(
                           child: ListView(
+                            controller: scrollController,
                             children: [
                               const SizedBox(
                                 height: 60,
@@ -149,33 +158,23 @@ class _BookingSuccessState extends State<BookingSuccess>
                         ),
                         GestureDetector(
                             child: Container(
-                              width: MediaQuery.of(
-                                  context)
-                                  .size
-                                  .width,
+                              width: MediaQuery.of(context).size.width,
                               height: 50,
                               margin: EdgeInsets.only(bottom: 10),
                               decoration: BoxDecoration(
-                                  borderRadius:
-                                  const BorderRadius.all(
+                                  borderRadius: const BorderRadius.all(
                                       Radius.circular(15)),
                                   color: Theme.of(context)
                                       .colorScheme
                                       .primary
                                       .withOpacity(0.2)),
                               child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment
-                                    .center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Text(
-                                      "Xem chi tiết",
-                                      style:
-                                      TextStyle(
+                                  const Text("Xem chi tiết",
+                                      style: TextStyle(
                                         fontSize: 14,
-                                        fontWeight:
-                                        FontWeight
-                                            .w400,
+                                        fontWeight: FontWeight.w400,
                                       )),
                                   const SizedBox(
                                     width: 15,
@@ -184,8 +183,7 @@ class _BookingSuccessState extends State<BookingSuccess>
                                     "assets/images/calendar-black.png",
                                     width: 24,
                                     height: 24,
-                                    fit: BoxFit
-                                        .contain,
+                                    fit: BoxFit.contain,
                                   ),
                                 ],
                               ),
@@ -194,36 +192,24 @@ class _BookingSuccessState extends State<BookingSuccess>
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder:
-                                          (context) =>
-                                      const BookingHistory()));
-                              showModalBottomSheet<
-                                  void>(
-                                  backgroundColor:
-                                  Colors.white,
-                                  clipBehavior: Clip
-                                      .antiAliasWithSaveLayer,
+                                      builder: (context) =>
+                                          const BookingHistory()));
+                              showModalBottomSheet<void>(
+                                  backgroundColor: Colors.white,
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
                                   context: context,
-                                  isScrollControlled:
-                                  true,
-                                  builder:
-                                      (BuildContext
-                                  context) {
+                                  isScrollControlled: true,
+                                  builder: (BuildContext context) {
                                     return Container(
                                         padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(
-                                                context)
+                                            bottom: MediaQuery.of(context)
                                                 .viewInsets
                                                 .bottom),
-                                        height: MediaQuery.of(
-                                            context)
-                                            .size
-                                            .height *
-                                            0.8,
-                                        child:
-                                        ModalChiTietBooking(
-                                          details:
-                                          details,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.8,
+                                        child: ModalChiTietBooking(
+                                          details: details,
                                         ));
                                   });
                             }),

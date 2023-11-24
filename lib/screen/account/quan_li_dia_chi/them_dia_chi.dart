@@ -13,6 +13,7 @@ import 'package:ngoc_huong/screen/account/setting/custom_switch.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class ThemDiaChi extends StatefulWidget {
   final List listAddress;
@@ -42,6 +43,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
   TextEditingController districtController = TextEditingController();
   TextEditingController wardController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -65,6 +67,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
     cityController.dispose();
     districtController.dispose();
     wardController.dispose();
+    scrollController.dispose();
     provinceId = "";
     activeCity = "";
     districtId = "";
@@ -132,6 +135,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
         borderRadius: BorderRadius.all(Radius.circular(10)),
         borderSide: BorderSide(width: 1, color: Colors.grey));
     return SafeArea(
+      bottom: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -158,7 +162,12 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          bottomNavigationBar: const MyBottomMenu(active: 4),
+          bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 4,
+                        )),
           body: SizedBox(
               child: FutureBuilder(
             future: profileModel.getProfile(),
@@ -171,6 +180,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
                       children: [
                         Expanded(
                           child: ListView(
+                            controller: scrollController,
                             padding: const EdgeInsets.only(
                                 left: 15, right: 15, bottom: 15),
                             children: [

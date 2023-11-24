@@ -6,6 +6,7 @@ import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class BuyHistory extends StatefulWidget {
   final List listTab;
@@ -24,6 +25,7 @@ List status = [];
 class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
   TabController? tabController;
   final OrderModel orderModel = OrderModel();
+  final ScrollController scrollController = ScrollController();
   void _getActiveTabIndex() {
     setState(() {
       selectedIndex = tabController?.index;
@@ -39,6 +41,13 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
     } else {
       tabController?.addListener(_getActiveTabIndex);
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
   }
 
   Future refreshData() async {
@@ -65,12 +74,16 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          bottomNavigationBar: const MyBottomMenu(
-            active: 4,
-          ),
+          bottomNavigationBar: ScrollToHide(
+              scrollController: scrollController,
+              height: 100,
+              child: const MyBottomMenu(
+                active: 4,
+              )),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
@@ -95,7 +108,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                     color: Colors.white)),
           ),
           body: widget.listTab.isNotEmpty
-              ? ListView(
+              ? Column(
                   children: [
                     const SizedBox(
                       height: 10,
@@ -130,7 +143,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                       ),
                     ),
                     SizedBox(
-                        height: MediaQuery.of(context).size.height - 250,
+                        height: MediaQuery.of(context).size.height - 295,
                         child: TabBarView(
                             controller: tabController,
                             children: widget.listTab
@@ -144,6 +157,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                           return RefreshIndicator(
                                             onRefresh: refreshData,
                                             child: ListView.builder(
+                                              controller: scrollController,
                                               itemCount: list.length,
                                               itemBuilder: (context, index) {
                                                 return list[index]["DetailList"]

@@ -9,6 +9,7 @@ import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class SpecialServiceScreen extends StatefulWidget {
   const SpecialServiceScreen({super.key});
@@ -22,8 +23,8 @@ String showIndex = "";
 
 class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
   final ServicesModel servicesModel = ServicesModel();
-
   final LocalStorage storageToken = LocalStorage("customer_token");
+  final ScrollController scrollController = ScrollController();
   @override
   initState() {
     super.initState();
@@ -36,6 +37,7 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
   void dispose() {
     super.dispose();
     showIndex = "";
+    scrollController.dispose();
   }
 
   Future refreshData() async {
@@ -46,10 +48,16 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(active: 0),
+            bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 0,
+                        )),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -81,6 +89,7 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                 if (snapshot.hasData) {
                   List list = snapshot.data!.toList();
                   return ListView(
+                    controller: scrollController,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 20),
                       children: [

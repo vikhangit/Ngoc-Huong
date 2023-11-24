@@ -5,6 +5,7 @@ import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/memberModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class ThanhVienScreen extends StatefulWidget {
   const ThanhVienScreen({super.key});
@@ -21,6 +22,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
 
   final ProfileModel profileModel = ProfileModel();
   final MemberModel memberModel = MemberModel();
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -32,6 +34,13 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
   void _getActiveTabIndex() {
     _selectedIndex = tabController?.index;
     debugPrint('CURRENT_PAGE $_selectedIndex');
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
   }
 
   Color checkColor(int index) {
@@ -103,10 +112,16 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
         child: Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      bottomNavigationBar: const MyBottomMenu(active: -1),
+      bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: -1,
+                        )),
       appBar: AppBar(
         leadingWidth: 45,
         centerTitle: true,

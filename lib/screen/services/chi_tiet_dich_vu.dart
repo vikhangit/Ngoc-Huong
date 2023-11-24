@@ -111,7 +111,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
             // margin: const EdgeInsets.only(bottom: 10),
             color: Colors.white,
             height: MediaQuery.of(context).size.height * 0.85 -
-                200 -
+                210 -
                 MediaQuery.of(context).viewInsets.bottom,
             child: ListView(
               children: [
@@ -252,6 +252,8 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                   fontSize: FontSize(15),
                                   fontWeight: FontWeight.w300,
                                   textAlign: TextAlign.justify),
+                                 "img": Style(
+                                margin:  Margins.only(top:5))
                               //   "img": Style(
                               //     width: Width(MediaQuery.of(context).size.width * .85),
                               //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
@@ -277,7 +279,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
+            margin: const EdgeInsets.only(bottom: 30, left: 15, right: 15),
             child: Column(
               children: [
                 Container(

@@ -12,6 +12,7 @@ import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class Cosmetic extends StatefulWidget {
   final List listTab;
@@ -30,7 +31,7 @@ class _CosmeticState extends State<Cosmetic> {
   final ProductModel productModel = ProductModel();
   final CustomModal customModal = CustomModal();
   final CartModel cartModel = CartModel();
-
+  final ScrollController scrollController = ScrollController();
   final LocalStorage storageToken = LocalStorage("customer_token");
 
   @override
@@ -110,6 +111,7 @@ class _CosmeticState extends State<Cosmetic> {
   void dispose() {
     super.dispose();
     showIndex = "";
+    scrollController.dispose();
   }
 
   void addToCart(Map item) async {
@@ -160,12 +162,17 @@ class _CosmeticState extends State<Cosmetic> {
 
   @override
   Widget build(BuildContext context) {
-    print(listAction);
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(active: 3),
+            bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 3,
+                        )),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -199,7 +206,7 @@ class _CosmeticState extends State<Cosmetic> {
                   children: [
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 0),
-                      height: MediaQuery.of(context).size.height - 200,
+                      height: MediaQuery.of(context).size.height - 250,
                       width: MediaQuery.of(context).size.width * .25,
                       child: ListView(
                         children: listAction.map((item) {
@@ -258,9 +265,10 @@ class _CosmeticState extends State<Cosmetic> {
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * .75 - 10,
-                      height: MediaQuery.of(context).size.height - 200,
+                      height: MediaQuery.of(context).size.height - 250,
                       child: ListView(
                         // crossAxisAlignment: CrossAxisAlignment.start,
+                        // controller: scrollController,
                         children: [
                           FutureBuilder(
                             future: productModel.getProductByGroup(activeCode),
@@ -272,9 +280,32 @@ class _CosmeticState extends State<Cosmetic> {
                                     alignment: WrapAlignment.spaceBetween,
                                     children: list.map((item) {
                                       return GestureDetector(
-                                          onTap: () => setState(() {
-                                                showIndex = item["Code"];
-                                              }),
+                                          onTap: () {
+                                            showModalBottomSheet<
+                                                                          void>(
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      clipBehavior:
+                                                                          Clip
+                                                                              .antiAliasWithSaveLayer,
+                                                                      context:
+                                                                          context,
+                                                                      isScrollControlled:
+                                                                          true,
+                                                                      builder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        return Container(
+                                                                            padding:
+                                                                                EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                                                            height: MediaQuery.of(context).size.height * 0.85,
+                                                                            child: ProductDetail(
+                                                                              details: item,
+                                                                            ));
+                                                                      });
+                                                                
+                                          },
                                           child: Stack(
                                             children: [
                                               Container(
@@ -469,152 +500,7 @@ class _CosmeticState extends State<Cosmetic> {
                                                       )
                                                     ],
                                                   )),
-                                              if (showIndex.isNotEmpty &&
-                                                  showIndex == item["Code"])
-                                                Positioned.fill(
-                                                    child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal: 8),
-                                                        margin: EdgeInsets.only(
-                                                            left: 5,
-                                                            right: 5,
-                                                            top: 8),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                const BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            15)),
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.4)),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            GestureDetector(
-                                                                onTap: () {
-                                                                  setState(() {
-                                                                    showIndex =
-                                                                        "";
-                                                                  });
-                                                                  showModalBottomSheet<
-                                                                          void>(
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      clipBehavior:
-                                                                          Clip
-                                                                              .antiAliasWithSaveLayer,
-                                                                      context:
-                                                                          context,
-                                                                      isScrollControlled:
-                                                                          true,
-                                                                      builder:
-                                                                          (BuildContext
-                                                                              context) {
-                                                                        return Container(
-                                                                            padding:
-                                                                                EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                                                            height: MediaQuery.of(context).size.height * 0.85,
-                                                                            child: ProductDetail(
-                                                                              details: item,
-                                                                            ));
-                                                                      });
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            vertical:
-                                                                                6,
-                                                                            horizontal:
-                                                                                10),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          color:
-                                                                              Colors.blue[500],
-                                                                          borderRadius: const BorderRadius
-                                                                              .all(
-                                                                              Radius.circular(4)),
-                                                                        ),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: [
-                                                                            Image.asset("assets/images/eye-white.png",
-                                                                                width: 18,
-                                                                                height: 18),
-                                                                            const SizedBox(
-                                                                              width: 8,
-                                                                            ),
-                                                                            const Text(
-                                                                              "Xem chi tiết",
-                                                                              style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w400),
-                                                                            )
-                                                                          ],
-                                                                        ))),
-                                                            GestureDetector(
-                                                                onTap: () {
-                                                                  setState(() {
-                                                                    showIndex =
-                                                                        "";
-                                                                  });
-                                                                  if (storageToken
-                                                                          .getItem(
-                                                                              "customer_token") ==
-                                                                      null) {
-                                                                    Navigator.push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                            builder: (context) =>
-                                                                                const LoginScreen()));
-                                                                  } else {
-                                                                    addToCart(
-                                                                        item);
-                                                                  }
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                        margin: const EdgeInsets
-                                                                            .only(
-                                                                            top:
-                                                                                10),
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            vertical:
-                                                                                6,
-                                                                            horizontal:
-                                                                                10),
-                                                                        decoration: BoxDecoration(
-                                                                            borderRadius: const BorderRadius.all(Radius.circular(
-                                                                                4)),
-                                                                            color: Colors.blue[
-                                                                                900]),
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                          children: [
-                                                                            Image.asset("assets/images/cart-solid-white.png",
-                                                                                width: 18,
-                                                                                height: 18),
-                                                                            const SizedBox(
-                                                                              width: 8,
-                                                                            ),
-                                                                            const Text(
-                                                                              "Mua hàng",
-                                                                              style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w400),
-                                                                            )
-                                                                          ],
-                                                                        )))
-                                                          ],
-                                                        )))
-                                            ],
+                                              ],
                                           ));
                                     }).toList());
                               } else {

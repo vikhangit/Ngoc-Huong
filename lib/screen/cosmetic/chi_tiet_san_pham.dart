@@ -190,7 +190,7 @@ class _ProductDetailState extends State<ProductDetail>
             margin: const EdgeInsets.only(bottom: 5),
             color: Colors.white,
             height: MediaQuery.of(context).size.height * 0.85 -
-                195 -
+                210 -
                 MediaQuery.of(context).viewInsets.bottom,
             child: ListView(
               children: [
@@ -309,7 +309,7 @@ class _ProductDetailState extends State<ProductDetail>
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(bottom: 15, left: 15, right: 15),
+            margin: const EdgeInsets.only(bottom: 30, left: 15, right: 15),
             color: Colors.white,
             child: Column(
               children: [
@@ -498,10 +498,15 @@ class _ProductDetailState extends State<ProductDetail>
               ? Html(
                   data: mieuTa,
                   style: {
-                    "p": Style(
-                        lineHeight: const LineHeight(1.5),
-                        fontSize: FontSize(15),
-                        fontWeight: FontWeight.w300)
+                    "*": Style(margin: Margins.only(left: 0)),
+                              "p": Style(
+                                  lineHeight: const LineHeight(1.8),
+                                  fontSize: FontSize(15),
+                                  fontWeight: FontWeight.w300,
+                                  textAlign: TextAlign.justify),
+                              "img": Style(
+                                margin:  Margins.only(top:5)
+                              )
                   },
                 )
               : SizedBox(

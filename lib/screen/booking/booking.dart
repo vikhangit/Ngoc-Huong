@@ -17,13 +17,13 @@ import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/notification_services.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
 class BookingServices extends StatefulWidget {
   final Map? dichvudachon;
   const BookingServices({super.key, this.dichvudachon});
-
   @override
   State<BookingServices> createState() => _BookingServicesState();
 }
@@ -49,6 +49,7 @@ class _BookingServicesState extends State<BookingServices>
   final BookingModel bookingModel = BookingModel();
   late AnimationController _animationController;
   final LocalStorage storageBranch = LocalStorage('branch');
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -98,6 +99,7 @@ class _BookingServicesState extends State<BookingServices>
     _animationController.dispose();
     activeService = {};
     chooseService.clear();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -289,6 +291,7 @@ class _BookingServicesState extends State<BookingServices>
     }
 
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -315,13 +318,19 @@ class _BookingServicesState extends State<BookingServices>
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
             ),
-            bottomNavigationBar: const MyBottomMenu(active: 1),
+            bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 1,
+                        )),
             body: Column(
                 // reverse: true,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                       child: ListView(
+                      controller: scrollController,
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     children: [
                       const SizedBox(

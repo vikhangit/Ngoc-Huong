@@ -12,6 +12,7 @@ import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -33,6 +34,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   final CartModel cartModel = CartModel();
   final ProductModel productModel = ProductModel();
   TabController? tabController;
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -42,9 +44,11 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       listCheckout = [];
     });
   }
+
   @override
   void dispose() {
     listCheckout = [];
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -127,10 +131,16 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     //   const
     // }
     return SafeArea(
+      bottom: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          bottomNavigationBar: const MyBottomMenu(active: -1),
+          bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: -1,
+                        )),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
@@ -154,8 +164,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          body: SingleChildScrollView(
-            child:  FutureBuilder(
+          body: SizedBox(
+              child: FutureBuilder(
             future: cartModel.getProductCartList(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -167,6 +177,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                       SizedBox(
                           height: MediaQuery.of(context).size.height - 375,
                           child: ListView(
+                            controller: scrollController,
                             children: allCart.map((ele) {
                               int index = allCart.toList().indexOf(ele);
                               return Container(
@@ -558,8 +569,10 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                     width: 40,
                                                     height: 40,
                                                     child: LoadingIndicator(
-                                                      colors: kDefaultRainbowColors,
-                                                      indicatorType: Indicator.lineSpinFadeLoader,
+                                                      colors:
+                                                          kDefaultRainbowColors,
+                                                      indicatorType: Indicator
+                                                          .lineSpinFadeLoader,
                                                       strokeWidth: 1,
                                                       // pathBackgroundColor: Colors.black45,
                                                     ),
@@ -622,8 +635,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                               ],
                             ),
                             Container(
-                                margin:
-                                    const EdgeInsets.only(top: 20),
+                                margin: const EdgeInsets.only(top: 20),
                                 child: TextButton(
                                     style: ButtonStyle(
                                         padding: MaterialStateProperty.all(
@@ -736,8 +748,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                 );
               }
             },
-          )
-          )),
+          ))),
     );
   }
 }

@@ -210,13 +210,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     print(storageCustomerToken.getItem("customer_token"));
     print("---------------------------------------");
     return SafeArea(
+      bottom: false,
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: true,
         bottomNavigationBar: ScrollToHide(
             scrollController: scrollController,
-            height: 70,
+            height: 100,
             child: const MyBottomMenu(
               active: 0,
             )),
@@ -224,6 +225,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         body: RefreshIndicator(
           onRefresh: () => refreshData(),
           child: ListView(
+            padding: EdgeInsets.only(bottom: 20),
             controller: scrollController,
             children: [
               listView(context, (context, index) => goToService(context, index),

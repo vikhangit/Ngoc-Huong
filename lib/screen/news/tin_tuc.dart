@@ -7,6 +7,7 @@ import 'package:ngoc_huong/models/newsModel.dart';
 import 'package:ngoc_huong/screen/news/chi_tiet_tin_tuc.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class TinTucScreen extends StatefulWidget {
   const TinTucScreen({super.key});
@@ -17,14 +18,28 @@ class TinTucScreen extends StatefulWidget {
 
 class _TinTucScreenState extends State<TinTucScreen> {
   final NewsModel newsModel = NewsModel();
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(active: 0),
+            bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 0,
+                        )),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,
@@ -50,6 +65,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
             ),
             body: SingleChildScrollView(
                 // reverse: true,
+                controller: scrollController,
                 child: Container(
                     margin: const EdgeInsets.only(
                         top: 10, left: 15, right: 15, bottom: 15),

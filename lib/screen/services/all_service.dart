@@ -10,6 +10,7 @@ import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class AllServiceScreen extends StatefulWidget {
   final List listTab;
@@ -29,6 +30,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
     with TickerProviderStateMixin {
   final ServicesModel servicesModel = ServicesModel();
   final LocalStorage storageToken = LocalStorage("customer_token");
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -104,6 +106,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
   void dispose() {
     super.dispose();
     showIndex = "";
+    scrollController.dispose();
   }
 
   void goToAction(String code) {
@@ -115,10 +118,16 @@ class _AllServiceScreenState extends State<AllServiceScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(active: 1),
+            bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 1,
+                        )),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -152,7 +161,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                   children: [
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 0),
-                      height: MediaQuery.of(context).size.height - 200,
+                      height: MediaQuery.of(context).size.height - 250,
                       width: MediaQuery.of(context).size.width * .25,
                       child: ListView(
                         children: listAction.map((item) {
@@ -211,9 +220,10 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                     ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * .75 - 14,
-                      height: MediaQuery.of(context).size.height - 200,
+                      height: MediaQuery.of(context).size.height - 220,
                       child: ListView(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        // crossAxisAlignment: CrossAxisAlignment.start,s
+                        // controller: scrollController,
                         children: [
                           FutureBuilder(
                             future: servicesModel.getServiceByGroup(activeCode),

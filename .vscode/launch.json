@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "Flutter (lib/screen/checkout/products/checkout_cart.dart)",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/screen/checkout/products/checkout_cart.dart"
+        }
+    ]
+}

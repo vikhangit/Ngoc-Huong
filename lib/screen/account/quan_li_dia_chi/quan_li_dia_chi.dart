@@ -10,6 +10,7 @@ import 'package:ngoc_huong/screen/account/quan_li_dia_chi/them_dia_chi.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class QuanLiDiaChi extends StatefulWidget {
   const QuanLiDiaChi({super.key});
@@ -21,6 +22,7 @@ class QuanLiDiaChi extends StatefulWidget {
 class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
   final AddressModel addressModel = AddressModel();
   final CustomModal customModal = CustomModal();
+  final ScrollController scrollController = ScrollController();
 
   Future refreshData() async {
     await Future.delayed(const Duration(seconds: 3));
@@ -32,12 +34,25 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          bottomNavigationBar: const MyBottomMenu(active: 4),
+          bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 4,
+                        )),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
@@ -79,6 +94,7 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                         return RefreshIndicator(
                           onRefresh: () => refreshData(),
                           child: ListView(
+                            controller: scrollController,
                               children: list.map((item) {
                             int index = list.indexOf(item);
                             return Container(
@@ -115,15 +131,28 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                                             )),
                                         TextButton(
                                             onPressed: () {
-                                              customModal.showAlertDialog(context, "error", "Xóa địa chỉ", "Bạn có chắc chắn xóa địa chỉ này?", (){
-                                                EasyLoading.show(status: "Vui lòng chờ");
+                                              customModal.showAlertDialog(
+                                                  context,
+                                                  "error",
+                                                  "Xóa địa chỉ",
+                                                  "Bạn có chắc chắn xóa địa chỉ này?",
+                                                  () {
+                                                EasyLoading.show(
+                                                    status: "Vui lòng chờ");
                                                 Navigator.pop(context);
-                                                Future.delayed(const Duration(seconds: 2), (){
-                                                  addressModel.deleteCustomerAddress(item["Id"]).then((value) => setState((){
-                                                    EasyLoading.dismiss();
-                                                  }));
+                                                Future.delayed(
+                                                    const Duration(seconds: 2),
+                                                    () {
+                                                  addressModel
+                                                      .deleteCustomerAddress(
+                                                          item["Id"])
+                                                      .then((value) =>
+                                                          setState(() {
+                                                            EasyLoading
+                                                                .dismiss();
+                                                          }));
                                                 });
-                                              }, ()=> Navigator.pop(context));
+                                              }, () => Navigator.pop(context));
                                             },
                                             child: const Text(
                                               "Xóa",
@@ -174,7 +203,7 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                       }
                     } else {
                       return const Center(
-                        child:  Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(

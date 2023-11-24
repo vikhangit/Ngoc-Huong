@@ -21,13 +21,14 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     Map newsDetail = widget.detail;
     return SafeArea(
+      bottom: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           bottomNavigationBar: ScrollToHide(
               scrollController: scrollController,
-              height: 70,
+              height: 100,
               child: const MyBottomMenu(
                 active: 0,
               )),

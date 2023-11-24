@@ -5,6 +5,7 @@ import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class CheckoutSuccess extends StatefulWidget {
   const CheckoutSuccess({super.key});
@@ -28,6 +29,7 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
       duration: const Duration(milliseconds: 600), vsync: this);
   late Animation<double> checkAnimation =
       CurvedAnimation(parent: checkController, curve: Curves.linear);
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -49,6 +51,7 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
   void dispose() {
     scaleController.dispose();
     checkController.dispose();
+    scrollController.dispose();
     loading = true;
     super.dispose();
   }
@@ -56,12 +59,16 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(
-              active: -1,
-            ),
+            bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: -1,
+                        )),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,

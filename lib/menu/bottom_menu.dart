@@ -121,7 +121,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
               offset: Offset(0.0, 0.75))
         ],
       ),
-      height: 70,
+      height: 100,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,

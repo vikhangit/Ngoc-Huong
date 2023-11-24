@@ -21,6 +21,7 @@ import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:open_file/open_file.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -73,6 +74,7 @@ class _AccountScreenState extends State<AccountScreen> {
   final ProfileModel profileModel = ProfileModel();
   final OrderModel orderModel = OrderModel();
   final CustomModal customModal = CustomModal();
+  final ScrollController scrollController = ScrollController();
   void _openFile(PlatformFile file) {
     print(file.path);
     OpenFile.open(file.path);
@@ -108,6 +110,13 @@ class _AccountScreenState extends State<AccountScreen> {
         });
       });
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.dispose();
   }
 
   void handleLogout() {
@@ -188,13 +197,18 @@ class _AccountScreenState extends State<AccountScreen> {
     }
 
     return SafeArea(
+      bottom: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          bottomNavigationBar: const MyBottomMenu(
-            active: 4,
-          ),
+           bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 4,
+                        )),
           body: ListView(
+            controller: scrollController,
             padding: const EdgeInsets.symmetric(vertical: 25),
             children: [
               Container(

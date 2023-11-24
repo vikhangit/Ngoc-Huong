@@ -12,6 +12,7 @@ import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class SpecialCosmeticScreen extends StatefulWidget {
   const SpecialCosmeticScreen({super.key});
@@ -26,6 +27,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
   final ProductModel productModel = ProductModel();
   final CustomModal customModal = CustomModal();
   final CartModel cartModel = CartModel();
+  final ScrollController scrollController = ScrollController();
 
   final LocalStorage storageToken = LocalStorage("customer_token");
 
@@ -41,6 +43,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
   void dispose() {
     super.dispose();
     showIndex = "";
+    scrollController.dispose();
   }
 
   void addToCart(Map item) async {
@@ -103,10 +106,16 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: const MyBottomMenu(active: 0),
+            bottomNavigationBar: ScrollToHide(
+                        scrollController: scrollController,
+                        height: 100,
+                        child: const MyBottomMenu(
+                          active: 0,
+                        )),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -138,6 +147,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                 if (snapshot.hasData) {
                   List list = snapshot.data!.toList();
                   return ListView(
+                    controller: scrollController,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 20),
                       children: [
@@ -146,160 +156,8 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                             alignment: WrapAlignment.spaceBetween,
                             children: list.map((item) {
                               return GestureDetector(
-                                  onTap: () => setState(() {
-                                        showIndex = item["Code"];
-                                      }),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  2 -
-                                              22.5,
-                                          height: 280,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 6, vertical: 6),
-                                          decoration: BoxDecoration(
-                                            borderRadius: const BorderRadius.all(
-                                                Radius.circular(15)),
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey.withOpacity(0.3),
-                                                spreadRadius: 2,
-                                                blurRadius: 2,
-                                                offset: Offset(0, 1), // changes position of shadow
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                      width:
-                                                      MediaQuery.of(context).size.width,
-                                                      height: 140,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: const BorderRadius.all(
-                                                            Radius.circular(15)),
-                                                        color: Colors.white,
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.grey.withOpacity(0.3),
-                                                            spreadRadius: 2,
-                                                            blurRadius: 2,
-                                                            offset: Offset(0, 1), // changes position of shadow
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      child:
-                                                      ClipRRect(
-                                                        borderRadius: BorderRadius.circular(15),
-                                                        child: Image.network(
-                                                          "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                      )
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Text(
-                                                    "${item["Name"]}",
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textAlign: TextAlign.center ,
-                                                    style:  TextStyle(
-                                                        fontSize: 13,
-                                                        color: mainColor,
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                                  ),
-                                                  SizedBox(height: 5,),
-                                                  Text(
-                                                    "${item["CategoryCode"]}",
-                                                    maxLines: 2,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 11,
-                                                        height: 1.2,
-                                                        color: mainColor,
-                                                        fontStyle: FontStyle.italic,
-                                                        fontWeight: FontWeight.w400),
-                                                  ),
-                                                  SizedBox(height: 5,),
-                                                ],
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.all(2),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: const BorderRadius.all(
-                                                      Radius.circular(8)),
-                                                  color: Colors.white,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey.withOpacity(0.3),
-                                                      spreadRadius: 2,
-                                                      blurRadius: 2,
-                                                      offset: Offset(0, 1), // changes position of shadow
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: GestureDetector(
-                                                    child: Container(
-                                                      alignment: Alignment.center,
-                                                      padding: EdgeInsets.symmetric(vertical: 8),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: const BorderRadius.all(
-                                                            Radius.circular(8)),
-                                                        color: mainColor,
-                                                      ),
-                                                      child: Text("${NumberFormat.currency(locale: "vi_VI", symbol: "")
-                                                          .format(
-                                                          item["PriceInbound"]
-                                                      )} Đ",
-                                                          style: TextStyle(
-                                                              fontSize: 11,
-                                                              fontWeight: FontWeight.w400,
-                                                              color: Colors.amber)),
-                                                    )),
-                                              )
-                                            ],
-                                          )),
-                                      if (showIndex.isNotEmpty &&
-                                          showIndex == item["Code"])
-                                        Positioned.fill(
-                                            child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 15),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(15)),
-                                                    color: Colors.black
-                                                        .withOpacity(0.4)),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    GestureDetector(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            showIndex = "";
-                                                          });
-                                                          showModalBottomSheet<
-                                                                  void>(
+                                  onTap: () => {
+                                    showModalBottomSheet<void>(
                                                               backgroundColor:
                                                                   Colors.white,
                                                               clipBehavior: Clip
@@ -324,155 +182,159 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                                       details:
                                                                           item,
                                                                     ));
-                                                              });
-                                                        },
-                                                        child: Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    vertical: 6,
-                                                                    horizontal:
-                                                                        10),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors
-                                                                  .blue[500],
-                                                              borderRadius:
-                                                                  const BorderRadius
-                                                                      .all(
-                                                                      Radius.circular(
-                                                                          4)),
-                                                            ),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Image.asset(
-                                                                    "assets/images/eye-white.png",
-                                                                    width: 24,
-                                                                    height: 24),
-                                                                const SizedBox(
-                                                                  width: 8,
-                                                                ),
-                                                                const Text(
-                                                                  "Xem chi tiết",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          13,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400),
-                                                                )
-                                                              ],
-                                                            ))),
-                                                    FutureBuilder(
-                                                      future: cartModel
-                                                          .getDetailCartByCode(
-                                                              item["Code"]
-                                                                  .toString()),
-                                                      builder:
-                                                          (context, snapshot) {
-                                                        if (snapshot.hasData) {
-                                                          return GestureDetector(
-                                                              onTap: () {
-                                                                setState(() {
-                                                                  showIndex =
-                                                                      "";
-                                                                });
-                                                                if (storageToken
-                                                                        .getItem(
-                                                                            "customer_token") !=
-                                                                    null) {
-                                                                  if (snapshot
-                                                                      .data!
-                                                                      .isNotEmpty) {
-                                                                    updateCart(
-                                                                        snapshot
-                                                                            .data!);
-                                                                  } else {
-                                                                    addToCart(
-                                                                        item);
-                                                                  }
-                                                                } else {
-                                                                  Navigator.push(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              const LoginScreen()));
-                                                                }
-                                                              },
-                                                              child: Container(
-                                                                  margin:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          top:
-                                                                              10),
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      vertical:
-                                                                          6,
-                                                                      horizontal:
-                                                                          10),
-                                                                  decoration: BoxDecoration(
-                                                                      borderRadius: const BorderRadius
-                                                                          .all(
-                                                                          Radius.circular(
-                                                                              4)),
-                                                                      color: Colors
-                                                                              .blue[
-                                                                          900]),
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Image.asset(
-                                                                          "assets/images/cart-solid-white.png",
-                                                                          width:
-                                                                              24,
-                                                                          height:
-                                                                              24),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            8,
-                                                                      ),
-                                                                      const Text(
-                                                                        "Mua hàng",
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                13,
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontWeight: FontWeight.w400),
-                                                                      )
-                                                                    ],
-                                                                  )));
-                                                        } else {
-                                                          return const Center(
-                                                            child: SizedBox(
-                                                              width: 40,
-                                                              height: 40,
-                                                              child:
-                                                                  LoadingIndicator(
-                                                                colors:
-                                                                    kDefaultRainbowColors,
-                                                                indicatorType:
-                                                                    Indicator
-                                                                        .lineSpinFadeLoader,
-                                                                strokeWidth: 1,
-                                                                // pathBackgroundColor: Colors.black45,
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }
-                                                      },
+                                                              })
+                                                        
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                          width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2 -
+                                              22.5,
+                                          height: 280,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 6, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(15)),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.3),
+                                                spreadRadius: 2,
+                                                blurRadius: 2,
+                                                offset: Offset(0,
+                                                    1), // changes position of shadow
+                                              ),
+                                            ],
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      height: 140,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    15)),
+                                                        color: Colors.white,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.3),
+                                                            spreadRadius: 2,
+                                                            blurRadius: 2,
+                                                            offset: Offset(0,
+                                                                1), // changes position of shadow
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15),
+                                                        child: Image.network(
+                                                          "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                          fit: BoxFit.contain,
+                                                        ),
+                                                      )),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    "${item["Name"]}",
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: mainColor,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    "${item["CategoryCode"]}",
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: 11,
+                                                        height: 1.2,
+                                                        color: mainColor,
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                ],
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.all(2),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(8)),
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 2,
+                                                      offset: Offset(0,
+                                                          1), // changes position of shadow
                                                     ),
                                                   ],
-                                                )))
-                                    ],
+                                                ),
+                                                child: GestureDetector(
+                                                    child: Container(
+                                                  alignment: Alignment.center,
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 8),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(8)),
+                                                    color: mainColor,
+                                                  ),
+                                                  child: Text(
+                                                      "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceInbound"])} Đ",
+                                                      style: TextStyle(
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Colors.amber)),
+                                                )),
+                                              )
+                                            ],
+                                          )),
+                                       ],
                                   ));
                             }).toList())
                       ]);
