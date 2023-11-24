@@ -480,7 +480,7 @@ class _ProductDetailState extends State<ProductDetail>
                       padding:
                           MaterialStateProperty.all(const EdgeInsets.all(0))),
                   onPressed: () => goToTab(2),
-                  child: Text("Đánh giả sản phẩm",
+                  child: Text("Đánh giá sản phẩm",
                       style: TextStyle(
                           color: activeTab == 2
                               ? Theme.of(context).colorScheme.primary

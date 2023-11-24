@@ -309,375 +309,508 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0, vertical: 10),
-                            decoration: const BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        width: 0.5, color: Colors.black38))),
-                            child: storageCustomerToken
-                                        .getItem("customer_token") !=
-                                    null
-                                ? FutureBuilder(
-                                    future: profileModel.getProfile(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        Map profile = snapshot.data!;
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    await showDialog(
-                                                      context: context,
-                                                      builder: (_) => Dialog(
-                                                        backgroundColor:
-                                                            Colors.black,
-                                                        insetPadding:
-                                                            const EdgeInsets
-                                                                .all(20),
-                                                        child: Container(
-                                                          width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width,
-                                                          height: 350,
-                                                          decoration: BoxDecoration(
-                                                              image: DecorationImage(
-                                                                  image: NetworkImage(
-                                                                      "${profile["CustomerImage"]}"),
-                                                                  fit: BoxFit
-                                                                      .cover)),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 10),
+                              decoration: const BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          width: 0.5, color: Colors.black38))),
+                              child: storageCustomerToken
+                                          .getItem("customer_token") !=
+                                      null
+                                  ? FutureBuilder(
+                                      future: profileModel.getProfile(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          Map profile = snapshot.data!;
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      await showDialog(
+                                                        context: context,
+                                                        builder: (_) => Dialog(
+                                                          backgroundColor:
+                                                              Colors.black,
+                                                          insetPadding:
+                                                              const EdgeInsets
+                                                                  .all(20),
+                                                          child: Container(
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            height: 350,
+                                                            decoration: BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        "${profile["CustomerImage"]}"),
+                                                                    fit: BoxFit
+                                                                        .cover)),
+                                                          ),
                                                         ),
+                                                      );
+                                                    },
+                                                    child: SizedBox(
+                                                      width: 35,
+                                                      height: 35,
+                                                      child: CircleAvatar(
+                                                        backgroundColor:
+                                                            const Color(
+                                                                0xff00A3FF),
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                                "${profile["CustomerImage"]}"),
+                                                        radius: 35.0,
                                                       ),
-                                                    );
-                                                  },
-                                                  child: SizedBox(
-                                                    width: 35,
-                                                    height: 35,
-                                                    child: CircleAvatar(
-                                                      backgroundColor:
-                                                          const Color(
-                                                              0xff00A3FF),
-                                                      backgroundImage: NetworkImage(
-                                                          "${profile["CustomerImage"]}"),
-                                                      radius: 35.0,
                                                     ),
                                                   ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 6,
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "Hi, ${profile["CustomerName"]}",
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: mainColor),
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () => Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  const ThanhVienScreen())),
-                                                      child: Container(
-                                                        margin: const EdgeInsets
-                                                            .only(top: 4),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal: 5,
-                                                                vertical: 2),
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius.circular(
-                                                                      99999)),
-                                                          color: Color.fromRGBO(
-                                                              223, 223, 223, 1),
-                                                        ),
-                                                        child: const Text(
-                                                          "Thành viên bạc >",
-                                                          style: TextStyle(
-                                                              fontSize: 9,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
+                                                  const SizedBox(
+                                                    width: 6,
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "Hi, ${profile["CustomerName"]}",
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: mainColor),
                                                       ),
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "${profile["Point"] ?? 0} điểm",
-                                                  style: TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: mainColor),
-                                                ),
-                                                SizedBox(
-                                                  width: 8,
-                                                ),
-                                                FutureBuilder(
-                                                  future: cartModel
-                                                      .getProductCartList(),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot.hasData) {
-                                                      return Container(
-                                                        margin: const EdgeInsets
-                                                            .only(right: 5),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal: 3,
-                                                                vertical: 1),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.white,
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8)),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                      0.3),
-                                                              spreadRadius: 2,
-                                                              blurRadius: 2,
-                                                              offset: Offset(0,
-                                                                  2), // changes position of shadow
-                                                            ),
-                                                          ],
+                                                      GestureDetector(
+                                                        onTap: () => Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const ThanhVienScreen())),
+                                                        child: Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .only(top: 4),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal: 5,
+                                                                  vertical: 2),
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius.circular(
+                                                                        99999)),
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    223,
+                                                                    223,
+                                                                    223,
+                                                                    1),
+                                                          ),
+                                                          child: const Text(
+                                                            "Thành viên bạc >",
+                                                            style: TextStyle(
+                                                                fontSize: 9,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
                                                         ),
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            if (storageCustomerToken
-                                                                    .getItem(
-                                                                        "customer_token") !=
-                                                                null) {
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "${profile["Point"] ?? 0} điểm",
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: mainColor),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  FutureBuilder(
+                                                    future: cartModel
+                                                        .getProductCartList(),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      if (snapshot.hasData) {
+                                                        return Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  right: 5),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal: 3,
+                                                                  vertical: 1),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                const BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            8)),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.3),
+                                                                spreadRadius: 2,
+                                                                blurRadius: 2,
+                                                                offset: Offset(
+                                                                    0,
+                                                                    2), // changes position of shadow
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
                                                               Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
                                                                       builder:
                                                                           (contex) =>
                                                                               CartScreen()));
-                                                            } else {
-                                                              Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              const LoginScreen()));
-                                                            }
-                                                          },
-                                                          child: Image.asset(
-                                                            "assets/images/icon/cart.png",
-                                                            width: 24,
-                                                            height: 24,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    } else {
-                                                      return const SizedBox(
-                                                        width: 24,
-                                                        height: 24,
-                                                        child: LoadingIndicator(
-                                                          colors:
-                                                              kDefaultRainbowColors,
-                                                          indicatorType: Indicator
-                                                              .lineSpinFadeLoader,
-                                                          strokeWidth: 1,
-                                                          // pathBackgroundColor: Colors.black45,
-                                                        ),
-                                                      );
-                                                    }
-                                                  },
-                                                ),
-                                                FutureBuilder(
-                                                  future: bookingModel
-                                                      .getNotifications(),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot.hasData) {
-                                                      return Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal: 3,
-                                                                vertical: 1),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.white,
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8)),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                      0.3),
-                                                              spreadRadius: 2,
-                                                              blurRadius: 2,
-                                                              offset: const Offset(
-                                                                  0,
-                                                                  2), // changes position of shadow
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: GestureDetector(
-                                                            onTap: () {
-                                                              if (storageCustomerToken
-                                                                      .getItem(
-                                                                          "customer_token") !=
-                                                                  null) {
-                                                                Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) =>
-                                                                                const NotificationScreen()));
-                                                              } else {
-                                                                Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) =>
-                                                                                const LoginScreen()));
-                                                              }
                                                             },
-                                                            child: Stack(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .notifications,
-                                                                  color:
-                                                                      mainColor,
-                                                                ),
-                                                                Positioned(
-                                                                    right: 0,
-                                                                    top: 4,
-                                                                    child: Container(
-                                                                        alignment: Alignment.center,
-                                                                        decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                                                                        child: Container(
-                                                                          alignment:
-                                                                              Alignment.center,
-                                                                          width:
-                                                                              10,
-                                                                          height:
-                                                                              10,
-                                                                          margin: const EdgeInsets
-                                                                              .all(
-                                                                              1),
-                                                                          decoration: BoxDecoration(
-                                                                              shape: BoxShape.circle,
-                                                                              color: mainColor),
-                                                                          child: Text(
-                                                                              "${snapshot.data!.length}",
-                                                                              style: const TextStyle(fontSize: 6, color: Colors.white, fontWeight: FontWeight.w400)),
-                                                                        )))
-                                                              ],
-                                                            )),
-                                                      );
+                                                            child: Image.asset(
+                                                              "assets/images/icon/cart.png",
+                                                              width: 24,
+                                                              height: 24,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        return const SizedBox(
+                                                          width: 24,
+                                                          height: 24,
+                                                          child:
+                                                              LoadingIndicator(
+                                                            colors:
+                                                                kDefaultRainbowColors,
+                                                            indicatorType: Indicator
+                                                                .lineSpinFadeLoader,
+                                                            strokeWidth: 1,
+                                                            // pathBackgroundColor: Colors.black45,
+                                                          ),
+                                                        );
+                                                      }
+                                                    },
+                                                  ),
+                                                  FutureBuilder(
+                                                    future: bookingModel
+                                                        .getNotifications(),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      if (snapshot.hasData) {
+                                                        return Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal: 3,
+                                                                  vertical: 1),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius:
+                                                                const BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            8)),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.3),
+                                                                spreadRadius: 2,
+                                                                blurRadius: 2,
+                                                                offset: const Offset(
+                                                                    0,
+                                                                    2), // changes position of shadow
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          child:
+                                                              GestureDetector(
+                                                                  onTap: () {
+                                                                    if (storageCustomerToken
+                                                                            .getItem("customer_token") !=
+                                                                        null) {
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => const NotificationScreen()));
+                                                                    } else {
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => const LoginScreen()));
+                                                                    }
+                                                                  },
+                                                                  child: Stack(
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons
+                                                                            .notifications,
+                                                                        color:
+                                                                            mainColor,
+                                                                      ),
+                                                                      Positioned(
+                                                                          right:
+                                                                              0,
+                                                                          top:
+                                                                              4,
+                                                                          child: Container(
+                                                                              alignment: Alignment.center,
+                                                                              decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                                                                              child: Container(
+                                                                                alignment: Alignment.center,
+                                                                                width: 10,
+                                                                                height: 10,
+                                                                                margin: const EdgeInsets.all(1),
+                                                                                decoration: BoxDecoration(shape: BoxShape.circle, color: mainColor),
+                                                                                child: Text("${snapshot.data!.length}", style: const TextStyle(fontSize: 6, color: Colors.white, fontWeight: FontWeight.w400)),
+                                                                              )))
+                                                                    ],
+                                                                  )),
+                                                        );
+                                                      } else {
+                                                        return const SizedBox(
+                                                          width: 24,
+                                                          height: 24,
+                                                          child:
+                                                              LoadingIndicator(
+                                                            colors:
+                                                                kDefaultRainbowColors,
+                                                            indicatorType: Indicator
+                                                                .lineSpinFadeLoader,
+                                                            strokeWidth: 1,
+                                                            // pathBackgroundColor: Colors.black45,
+                                                          ),
+                                                        );
+                                                      }
+                                                    },
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          );
+                                        } else {
+                                          return const SizedBox(
+                                            width: 30,
+                                            height: 30,
+                                            child: LoadingIndicator(
+                                              colors: kDefaultRainbowColors,
+                                              indicatorType:
+                                                  Indicator.lineSpinFadeLoader,
+                                              strokeWidth: 1,
+                                              // pathBackgroundColor: Colors.black45,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    )
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(right: 15),
+                                          decoration: BoxDecoration(
+                                            color: mainColor,
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(20)),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.5),
+                                                spreadRadius: 5,
+                                                blurRadius: 7,
+                                                offset: const Offset(0,
+                                                    3), // changes position of shadow
+                                              ),
+                                            ],
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 5),
+                                          child: GestureDetector(
+                                              onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const LoginScreen())),
+                                              child: const Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons
+                                                        .account_circle_outlined,
+                                                    color: Colors.white,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 2,
+                                                  ),
+                                                  Text(
+                                                    "Đăng nhập",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  )
+                                                ],
+                                              )),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  right: 5),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 3,
+                                                      vertical: 1),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(8)),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.3),
+                                                    spreadRadius: 2,
+                                                    blurRadius: 2,
+                                                    offset: Offset(0,
+                                                        2), // changes position of shadow
+                                                  ),
+                                                ],
+                                              ),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (contex) =>
+                                                              LoginScreen()));
+                                                },
+                                                child: Image.asset(
+                                                  "assets/images/icon/cart.png",
+                                                  width: 24,
+                                                  height: 24,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 3,
+                                                      vertical: 1),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(8)),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.3),
+                                                    spreadRadius: 2,
+                                                    blurRadius: 2,
+                                                    offset: const Offset(0,
+                                                        2), // changes position of shadow
+                                                  ),
+                                                ],
+                                              ),
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    if (storageCustomerToken
+                                                            .getItem(
+                                                                "customer_token") !=
+                                                        null) {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const NotificationScreen()));
                                                     } else {
-                                                      return const SizedBox(
-                                                        width: 24,
-                                                        height: 24,
-                                                        child: LoadingIndicator(
-                                                          colors:
-                                                              kDefaultRainbowColors,
-                                                          indicatorType: Indicator
-                                                              .lineSpinFadeLoader,
-                                                          strokeWidth: 1,
-                                                          // pathBackgroundColor: Colors.black45,
-                                                        ),
-                                                      );
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const LoginScreen()));
                                                     }
                                                   },
-                                                ),
-                                              ],
-                                            )
+                                                  child: Stack(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.notifications,
+                                                        color: mainColor,
+                                                      ),
+                                                      Positioned(
+                                                          right: 0,
+                                                          top: 4,
+                                                          child: Container(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              decoration: const BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .white),
+                                                              child: Container(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                width: 10,
+                                                                height: 10,
+                                                                margin:
+                                                                    const EdgeInsets
+                                                                        .all(1),
+                                                                decoration: BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color:
+                                                                        mainColor),
+                                                                child: const Text(
+                                                                    "0",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            6,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontWeight:
+                                                                            FontWeight.w400)),
+                                                              )))
+                                                    ],
+                                                  )),
+                                            ),
                                           ],
-                                        );
-                                      } else {
-                                        return const SizedBox(
-                                          width: 30,
-                                          height: 30,
-                                          child: LoadingIndicator(
-                                            colors: kDefaultRainbowColors,
-                                            indicatorType:
-                                                Indicator.lineSpinFadeLoader,
-                                            strokeWidth: 1,
-                                            // pathBackgroundColor: Colors.black45,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  )
-                                : Container(
-                                    margin: const EdgeInsets.only(right: 15),
-                                    decoration: BoxDecoration(
-                                      color: mainColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(20)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.5),
-                                          spreadRadius: 5,
-                                          blurRadius: 7,
-                                          offset: const Offset(0,
-                                              3), // changes position of shadow
                                         ),
                                       ],
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 5),
-                                    child: GestureDetector(
-                                        onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const LoginScreen())),
-                                        child: const Row(
-                                          children: [
-                                            Icon(
-                                              Icons.account_circle_outlined,
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(
-                                              width: 2,
-                                            ),
-                                            Text(
-                                              "Đăng nhập",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400),
-                                            )
-                                          ],
-                                        )),
-                                  ),
-                          ),
+                                    )),
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 10),
