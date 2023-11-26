@@ -63,7 +63,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // storage.deleteItem("userInfo");
     super.initState();
-    super.initState();
     profileModel.getProfile().then((value) => setState(() {
           nameController = TextEditingController(text: value["CustomerName"]);
           phoneController = TextEditingController(text: value["Phone"]);
@@ -98,7 +97,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void changeGender(int index) {
     setState(() {
-      genderValue = index;
+      if (index == genderValue) {
+        genderValue = -1;
+      } else {
+        genderValue = index;
+      }
     });
   }
 
@@ -107,24 +110,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
       name = value;
     });
   }
-
+  void clearBirthDay (){
+    setState((){
+      birthDay = null;
+    });
+  }
   void selectBirthDay(BuildContext context) async {
     DateTime now = DateTime.now();
     DatePickerBdaya.showDatePicker(context,
-        showTitleActions: true,
+        // showTitleActions: true,
         minTime: DateTime(1900, 3, 5),
         maxTime: DateTime(2008, now.month, now.day),
         theme: const DatePickerThemeBdaya(
           itemStyle: TextStyle(
               color: Colors.black, fontWeight: FontWeight.w400, fontSize: 16),
           doneStyle: TextStyle(fontSize: 14),
-        ), onChanged: (date) {
-      debugPrint('change $date in time zone ${date.timeZoneOffset.inHours}');
-    }, onConfirm: (date) {
-      setState(() {
-        birthDay = date;
-      });
-    }, currentTime: DateTime.now(), locale: LocaleType.vi);
+        ),
+        onChanged: (date) {
+          debugPrint(
+              'change $date in time zone ${date.timeZoneOffset.inHours}');
+        },
+        onConfirm: (date) {
+          setState(() {
+            birthDay = date;
+          });
+        },
+        currentTime: DateTime.now(),
+        locale: LocaleType.vi,
+        onCancel: () {
+          setState(() {
+            birthDay = null;
+          });
+        });
   }
 
   void changeEmail(String value) {
@@ -208,40 +225,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 30,
                           child: GestureDetector(
                               onTap: () {
-                                final isValid =
-                                    _formKey.currentState!.validate();
-                                if (!isValid) {
-                                  return;
+                                if (name.isNotEmpty ||
+                                    email.isNotEmpty ||
+                                    address.isNotEmpty) {
+                                  customModal.showAlertDialog(
+                                      context,
+                                      "error",
+                                      "Thay đổi thông tin",
+                                      "Bạn đã thay đổi thông tin bạn có chắc chắn bỏ qua?",
+                                      () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const HomeScreen()));
+                                  }, () => Navigator.pop(context));
                                 } else {
-                                  if (name.isNotEmpty ||
-                                      email.isNotEmpty ||
-                                      address.isNotEmpty) {
-                                    customModal.showAlertDialog(
+                                  customModal.showAlertDialog(
+                                      context,
+                                      "error",
+                                      "Bỏ qua",
+                                      "Bạn có chắc chắn không thay đổi thông tin?",
+                                      () {
+                                    Navigator.push(
                                         context,
-                                        "error",
-                                        "Thay đổi thông tin",
-                                        "Bạn đã thay đổi thông tin bạn có chắc chắn bỏ qua?",
-                                        () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const HomeScreen()));
-                                    }, () => Navigator.pop(context));
-                                  } else {
-                                    customModal.showAlertDialog(
-                                        context,
-                                        "error",
-                                        "Bỏ qua",
-                                        "Bạn có chắc chắn không thay đổi thông tin?",
-                                        () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const HomeScreen()));
-                                    }, () => Navigator.pop(context));
-                                  }
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const HomeScreen()));
+                                  }, () => Navigator.pop(context));
                                 }
                               },
                               child: Align(
@@ -298,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     fieldBirthDay(
                                         context,
                                         (context) => selectBirthDay(context),
-                                        birthDay),
+                                        birthDay, () => clearBirthDay()),
                                     fieldEmail(
                                         context,
                                         (value) => changeEmail(value),

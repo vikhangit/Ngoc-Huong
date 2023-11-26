@@ -96,13 +96,23 @@ class _InfomationAccountState extends State<InfomationAccount> {
 
   void changeGender(int index) {
     setState(() {
-      genderValue = index;
+      if (index == genderValue) {
+        genderValue = -1;
+      } else {
+        genderValue = index;
+      }
     });
   }
 
   void changeName(String value) {
     setState(() {
       name = value;
+    });
+  }
+
+  void clearBirthDay (){
+    setState((){
+      birthDay = null;
     });
   }
 
@@ -251,7 +261,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
                                     fieldBirthDay(
                                         context,
                                         (context) => selectBirthDay(context),
-                                        birthDay),
+                                        birthDay, () => clearBirthDay()),
                                     fieldEmail(
                                         context,
                                         (value) => changeEmail(value),

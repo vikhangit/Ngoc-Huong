@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 Widget fieldBirthDay(BuildContext context,
-    Function(BuildContext context) selectBirthDay, DateTime? birthday) {
+    Function(BuildContext context) selectBirthDay, DateTime? birthday, Function() clearData) {
   final DataCustom theme = DataCustom();
   return Column(
     children: [
@@ -41,14 +41,20 @@ Widget fieldBirthDay(BuildContext context,
         style: const TextStyle(
             fontSize: 14, color: Colors.black, fontWeight: FontWeight.w400),
         decoration: InputDecoration(
-          suffixIcon: Transform.scale(
-            scale: 0.6,
-            child: Image.asset(
-              "assets/images/calendar-black.png",
-              width: 20,
-              height: 20,
-            ),
-          ),
+          suffixIcon: birthday != null
+              ? GestureDetector(
+                  onTap: () {
+                    clearData();
+                  },
+                  child: const Icon(Icons.highlight_off))
+              : Transform.scale(
+                  scale: 0.6,
+                  child: Image.asset(
+                    "assets/images/calendar-black.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                ),
           prefix: const Padding(padding: EdgeInsets.only(left: 10)),
           focusedBorder: theme.border,
           enabledBorder: theme.border,

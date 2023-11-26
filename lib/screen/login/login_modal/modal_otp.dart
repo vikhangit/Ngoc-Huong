@@ -88,9 +88,9 @@ class _ModalOTPState extends State<ModalOTP> {
       status: 'Đăng nhập...',
       maskType: EasyLoadingMaskType.black,
     );
-    if (widget.phone.toString() == "0917753714" && otp == "326621") {
+    if (widget.phone.toString() == "0917753714" && otp == "336622") {
       localStorageCustomerToken.setItem("customer_token",
-          "Q1grTmdDZ0RVYldpRlpTNmRZYTZGUEYvQWVWVUhvTHBDa0NxL25qc3JDY3FScXV0ZFhpYkRRPT0=");
+          "Kyt1ZnNhTmlMRVVDK2JDY1Q3b3BUdkYvQWVWVUhvTHBmenVjaUZoc1E2UXFScXV0ZFhpYkRRPT0=");
       EasyLoading.dismiss();
       storageStart.deleteItem("start");
       Navigator.push(

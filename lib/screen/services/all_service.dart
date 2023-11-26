@@ -43,6 +43,14 @@ class _AllServiceScreenState extends State<AllServiceScreen>
       widget.listTab.map((e) {
         if (e["GroupCode"] != "GDC") {
           switch (e["GroupCode"]) {
+             case "Phun thêu thẩm mỹ":
+              {
+                listAction.insert(0, {
+                  "img": "assets/images/may.png",
+                  "title": e["GroupCode"],
+                  "code": e["GroupCode"]
+                });
+              }
             case "Điều trị da":
               {
                 listAction.add({
@@ -51,22 +59,14 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                   "code": e["GroupCode"]
                 });
               }
-            case "Phun thêu thẩm mỹ":
-              {
-                listAction.add({
-                  "img": "assets/images/may.png",
-                  "title": e["GroupCode"],
-                  "code": e["GroupCode"]
-                });
-              }
-            case "Tắm trắng Face & Body":
-              {
-                listAction.add({
-                  "img": "assets/images/tam-trang.png",
-                  "title": e["GroupCode"],
-                  "code": e["GroupCode"]
-                });
-              }
+          //  case "Tắm trắng Face & Body":
+          //     {
+          //       listAction.add({
+          //         "img": "assets/images/tam-trang.png",
+          //         "title": e["GroupCode"],
+          //         "code": e["GroupCode"]
+          //       });
+          //     }
             case "Trẻ hóa & chăm sóc da":
               {
                 listAction.add({
@@ -83,14 +83,14 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                   "code": e["GroupCode"]
                 });
               }
-            case "Giảm Béo":
-              {
-                listAction.add({
-                  "img": "assets/images/giam-beo.png",
-                  "title": e["GroupCode"],
-                  "code": e["GroupCode"]
-                });
-              }
+            // case "Giảm Béo":
+            //   {
+            //     listAction.add({
+            //       "img": "assets/images/giam-beo.png",
+            //       "title": e["GroupCode"],
+            //       "code": e["GroupCode"]
+            //     });
+            //   }
             default:
               {
                 break;
@@ -173,7 +173,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                             width: 3, color: Colors.red)
                                         : BorderSide.none)),
                             width: MediaQuery.of(context).size.width,
-                            height: 150,
+                            height:  MediaQuery.of(context).size.height / 4 - 60,
                             child: TextButton(
                               style: ButtonStyle(
                                   padding: MaterialStateProperty.all(

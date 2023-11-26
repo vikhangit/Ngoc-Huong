@@ -218,7 +218,7 @@ class _CosmeticState extends State<Cosmetic> {
                                             width: 3, color: Colors.red)
                                         : BorderSide.none)),
                             width: MediaQuery.of(context).size.width,
-                            height: 120,
+                            height: MediaQuery.of(context).size.height / 4 - 60,
                             child: TextButton(
                               style: ButtonStyle(
                                   padding: MaterialStateProperty.all(
@@ -241,8 +241,8 @@ class _CosmeticState extends State<Cosmetic> {
                                 children: [
                                   Image.asset(
                                     item["img"],
-                                    width: 35,
-                                    height: 35,
+                                    width: 50,
+                                    height: 50,
                                     fit: BoxFit.contain,
                                   ),
                                   const SizedBox(
