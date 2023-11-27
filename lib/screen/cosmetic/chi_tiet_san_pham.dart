@@ -586,6 +586,9 @@ class _ProductDetailState extends State<ProductDetail>
                   // ),
                 ),
         ),
+        const SizedBox(
+          height: 15,
+        )
       ],
     );
   }

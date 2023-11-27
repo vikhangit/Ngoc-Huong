@@ -43,7 +43,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
       widget.listTab.map((e) {
         if (e["GroupCode"] != "GDC") {
           switch (e["GroupCode"]) {
-             case "Phun thêu thẩm mỹ":
+            case "Phun thêu thẩm mỹ":
               {
                 listAction.insert(0, {
                   "img": "assets/images/may.png",
@@ -59,14 +59,14 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                   "code": e["GroupCode"]
                 });
               }
-          //  case "Tắm trắng Face & Body":
-          //     {
-          //       listAction.add({
-          //         "img": "assets/images/tam-trang.png",
-          //         "title": e["GroupCode"],
-          //         "code": e["GroupCode"]
-          //       });
-          //     }
+            //  case "Tắm trắng Face & Body":
+            //     {
+            //       listAction.add({
+            //         "img": "assets/images/tam-trang.png",
+            //         "title": e["GroupCode"],
+            //         "code": e["GroupCode"]
+            //       });
+            //     }
             case "Trẻ hóa & chăm sóc da":
               {
                 listAction.add({
@@ -118,16 +118,16 @@ class _AllServiceScreenState extends State<AllServiceScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: false,
+        bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
             bottomNavigationBar: ScrollToHide(
-                        scrollController: scrollController,
-                        height: 100,
-                        child: const MyBottomMenu(
-                          active: 1,
-                        )),
+                scrollController: scrollController,
+                height: 100,
+                child: const MyBottomMenu(
+                  active: 1,
+                )),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -165,7 +165,11 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                       width: MediaQuery.of(context).size.width * .25,
                       child: ListView(
                         children: listAction.map((item) {
+                          int index = listAction.indexOf(item);
                           return Container(
+                            // margin: EdgeInsets.only(
+                            //     bottom:
+                            //         index == listAction.length - 1 ? 10 : 0),
                             decoration: BoxDecoration(
                                 border: Border(
                                     left: activeCode == item["code"]
@@ -173,7 +177,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                             width: 3, color: Colors.red)
                                         : BorderSide.none)),
                             width: MediaQuery.of(context).size.width,
-                            height:  MediaQuery.of(context).size.height / 4 - 60,
+                            height: MediaQuery.of(context).size.height / 4 - 60,
                             child: TextButton(
                               style: ButtonStyle(
                                   padding: MaterialStateProperty.all(
@@ -468,7 +472,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                             },
                           ),
                           const SizedBox(
-                            height: 50,
+                            height: 20,
                           )
                         ],
                       ),

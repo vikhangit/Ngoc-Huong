@@ -44,66 +44,67 @@ class _CosmeticState extends State<Cosmetic> {
     setState(() {
       widget.listTab.map((e) {
         if (e["GroupCode"] != "GDC") {
-          if (e["GroupCode"].toString().contains("làm trắng")) {
-            listAction.add({
-              "img": "assets/images/Services/MyPham/Icon/lam-trang.png",
-              "title": "Làm trắng",
-              "code": e["GroupCode"]
-            });
-          } else if (e["GroupCode"].toString().contains("dinh dưỡng cho da")) {
-            listAction.add({
-              "img": "assets/images/Services/MyPham/Icon/dinh-duong-da.png",
-              "title": "Dinh dưỡng cho da",
-              "code": e["GroupCode"]
-            });
-          } else if (e["GroupCode"].toString().contains("nâng cơ")) {
-            listAction.add({
-              "img": "assets/images/Services/MyPham/Icon/nang-co.png",
-              "title": "Nâng cơ - Giảm nhăn",
-              "code": e["GroupCode"]
-            });
-          } else if (e["GroupCode"].toString().contains("dành cho mắt")) {
-            listAction.add({
-              "img": "assets/images/Services/MyPham/Icon/danh-cho-mat.png",
-              "title": "Dành cho mắt",
-              "code": e["GroupCode"]
-            });
-          } else if (e["GroupCode"]
-              .toString()
-              .contains("nuôi dưỡng và phục hồi da")) {
-            listAction.add({
-              "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
-              "title": "Nuôi dưỡng và phục hồi",
-              "code": e["GroupCode"]
-            });
-          } else if (e["GroupCode"].toString().contains("dành cho da mụn")) {
-            listAction.add({
-              "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
-              "title": "Nuôi dưỡng và phục hồi",
-              "code": e["GroupCode"]
-            });
-          } else if (e["GroupCode"].toString().contains("dành cho da mụn")) {
-            listAction.add({
-              "img": "assets/images/Services/MyPham/Icon/da-mun.png",
-              "title": "Dành cho da mụn",
-              "code": e["GroupCode"]
-            });
-          } else if (e["GroupCode"].toString().contains("dành cho dưỡng môi")) {
-            listAction.add({
-              "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
-              "title": "Dưỡng môi",
-              "code": e["GroupCode"]
-            });
-          } else if (e["GroupCode"].toString().contains("dành cho dưỡng môi")) {
-            listAction.add({
-              "img": "assets/images/Services/MyPham/Icon/lam-sach.png",
-              "title": "Làm sạch",
-              "code": e["GroupCode"]
-            });
-          }
+          // if (e["GroupCode"].toString().contains("làm trắng")) {
+          //   listAction.add({
+          //     "img": "assets/images/Services/MyPham/Icon/lam-trang.png",
+          //     "title": "Làm trắng",
+          //     "code": e["GroupCode"]
+          //   });
+          // } else if (e["GroupCode"].toString().contains("dinh dưỡng cho da")) {
+          //   listAction.add({
+          //     "img": "assets/images/Services/MyPham/Icon/dinh-duong-da.png",
+          //     "title": "Dinh dưỡng cho da",
+          //     "code": e["GroupCode"]
+          //   });
+          // } else if (e["GroupCode"].toString().contains("nâng cơ")) {
+          //   listAction.add({
+          //     "img": "assets/images/Services/MyPham/Icon/nang-co.png",
+          //     "title": "Nâng cơ - Giảm nhăn",
+          //     "code": e["GroupCode"]
+          //   });
+          // } else if (e["GroupCode"].toString().contains("dành cho mắt")) {
+          //   listAction.add({
+          //     "img": "assets/images/Services/MyPham/Icon/danh-cho-mat.png",
+          //     "title": "Dành cho mắt",
+          //     "code": e["GroupCode"]
+          //   });
+          // } else if (e["GroupCode"]
+          //     .toString()
+          //     .contains("nuôi dưỡng và phục hồi da")) {
+          //   listAction.add({
+          //     "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
+          //     "title": "Nuôi dưỡng và phục hồi",
+          //     "code": e["GroupCode"]
+          //   });
+          // } else if (e["GroupCode"].toString().contains("dành cho da mụn")) {
+          //   listAction.add({
+          //     "img": "assets/images/Services/MyPham/Icon/nuoi-duong.png",
+          //     "title": "Nuôi dưỡng và phục hồi",
+          //     "code": e["GroupCode"]
+          //   });
+          // } else if (e["GroupCode"].toString().contains("dành cho da mụn")) {
+          //   listAction.add({
+          //     "img": "assets/images/Services/MyPham/Icon/da-mun.png",
+          //     "title": "Dành cho da mụn",
+          //     "code": e["GroupCode"]
+          //   });
+          // } else if (e["GroupCode"].toString().contains("dành cho dưỡng môi")) {
+          //   listAction.add({
+          //     "img": "assets/images/Services/MyPham/Icon/duong-moi.png",
+          //     "title": "Dưỡng môi",
+          //     "code": e["GroupCode"]
+          //   });
+          // } else if (e["GroupCode"].toString().contains("dành cho dưỡng môi")) {
+          //   listAction.add({
+          //     "img": "assets/images/Services/MyPham/Icon/lam-sach.png",
+          //     "title": "Làm sạch",
+          //     "code": e["GroupCode"]
+          //   });
+          // }
+          listAction.add(e);
         }
       }).toList();
-      activeCode = listAction[0]["code"];
+      activeCode = listAction[0]["GroupCode"];
     });
   }
 
@@ -163,16 +164,16 @@ class _CosmeticState extends State<Cosmetic> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: false,
+        bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
             bottomNavigationBar: ScrollToHide(
-                        scrollController: scrollController,
-                        height: 100,
-                        child: const MyBottomMenu(
-                          active: 3,
-                        )),
+                scrollController: scrollController,
+                height: 100,
+                child: const MyBottomMenu(
+                  active: 3,
+                )),
             appBar: AppBar(
               primary: false,
               elevation: 0.0,
@@ -210,22 +211,30 @@ class _CosmeticState extends State<Cosmetic> {
                       width: MediaQuery.of(context).size.width * .25,
                       child: ListView(
                         children: listAction.map((item) {
+                          int index = listAction.indexOf(item);
                           return Container(
+                            // margin: EdgeInsets.only(
+                            //     bottom:
+                            //         index == listAction.length - 1 ? 15 : 0),
                             decoration: BoxDecoration(
                                 border: Border(
-                                    left: activeCode == item["code"]
+                                    left: activeCode == item["GroupCode"]
                                         ? const BorderSide(
                                             width: 3, color: Colors.red)
                                         : BorderSide.none)),
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height / 4 - 60,
+                            height: MediaQuery.of(context).size.height / 4 -
+                                (item["GroupCode"] ==
+                                        "KEM DƯỠNG NÂNG CẤP CHẤT LƯỢNG DA"
+                                    ? 40
+                                    : 80),
                             child: TextButton(
                               style: ButtonStyle(
                                   padding: MaterialStateProperty.all(
                                       const EdgeInsets.symmetric(
                                           vertical: 18, horizontal: 10)),
                                   backgroundColor: MaterialStateProperty.all(
-                                      activeCode == item["code"]
+                                      activeCode == item["GroupCode"]
                                           ? Colors.red[100]
                                           : Colors.blue[100]),
                                   shape: MaterialStateProperty.all(
@@ -233,16 +242,16 @@ class _CosmeticState extends State<Cosmetic> {
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(0))))),
                               onPressed: () {
-                                goToAction(item["code"]);
+                                goToAction(item["GroupCode"]);
                               },
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
-                                    item["img"],
-                                    width: 50,
-                                    height: 50,
+                                    "assets/images/icon/my-pham.png",
+                                    width: 40,
+                                    height: 40,
                                     fit: BoxFit.contain,
                                   ),
                                   const SizedBox(
@@ -250,10 +259,10 @@ class _CosmeticState extends State<Cosmetic> {
                                   ),
                                   Flexible(
                                       child: Text(
-                                    item["title"],
+                                    item["GroupName"],
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 10,
                                         fontWeight: FontWeight.w400),
                                   ))
                                 ],
@@ -281,30 +290,29 @@ class _CosmeticState extends State<Cosmetic> {
                                     children: list.map((item) {
                                       return GestureDetector(
                                           onTap: () {
-                                            showModalBottomSheet<
-                                                                          void>(
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      clipBehavior:
-                                                                          Clip
-                                                                              .antiAliasWithSaveLayer,
-                                                                      context:
-                                                                          context,
-                                                                      isScrollControlled:
-                                                                          true,
-                                                                      builder:
-                                                                          (BuildContext
-                                                                              context) {
-                                                                        return Container(
-                                                                            padding:
-                                                                                EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                                                            height: MediaQuery.of(context).size.height * 0.85,
-                                                                            child: ProductDetail(
-                                                                              details: item,
-                                                                            ));
-                                                                      });
-                                                                
+                                            showModalBottomSheet<void>(
+                                                backgroundColor: Colors.white,
+                                                clipBehavior:
+                                                    Clip.antiAliasWithSaveLayer,
+                                                context: context,
+                                                isScrollControlled: true,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Container(
+                                                      padding: EdgeInsets.only(
+                                                          bottom: MediaQuery.of(
+                                                                  context)
+                                                              .viewInsets
+                                                              .bottom),
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.85,
+                                                      child: ProductDetail(
+                                                        details: item,
+                                                      ));
+                                                });
                                           },
                                           child: Stack(
                                             children: [
@@ -500,7 +508,7 @@ class _CosmeticState extends State<Cosmetic> {
                                                       )
                                                     ],
                                                   )),
-                                              ],
+                                            ],
                                           ));
                                     }).toList());
                               } else {
@@ -535,7 +543,7 @@ class _CosmeticState extends State<Cosmetic> {
                             },
                           ),
                           const SizedBox(
-                            height: 50,
+                            height: 20,
                           )
                         ],
                       ),

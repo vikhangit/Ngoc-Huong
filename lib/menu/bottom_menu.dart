@@ -88,11 +88,13 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
           case 3:
             {
               productModel.getGroupProduct().then((value) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Cosmetic(
-                            listTab: value,
-                          ))));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Cosmetic(
+                                listTab: value,
+                              )))
+                  // print(value)
+                  );
               break;
             }
           case 2:
