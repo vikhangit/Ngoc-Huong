@@ -21,6 +21,7 @@ class ProductModel {
     }
     return result;
   }
+
   Future<List> getGroupProduct() async {
     List result = [];
     try {
@@ -59,17 +60,39 @@ class ProductModel {
     Map result = {};
     try {
       Response response =
-      await client.dio.get('${client.apiUrl}/Product/getAllProduct',
-          options: Options(headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization':
-            '${localStorageCustomerToken.getItem("customer_token")}',
-          })
+          await client.dio.get('${client.apiUrl}/Product/getAllProduct',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"].toList().firstWhere(
+            (e) =>
+                e["Code"].toString().toLowerCase() ==
+                code.toString().toLowerCase(),
+            orElse: () => null);
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
+    Future<Map> getProductByGroupAndCode(String groupCode, String code) async {
+    Map result = {};
+    try {
+      Response response = await client.dio.get(
+        '${client.apiUrl}/Product/getProductByGroup?groupCode=$groupCode',
       );
       if (response.statusCode == 200) {
-        return result = response.data["Data"].toList().firstWhere((e) => e["Code"]
-            .toString()
-            .toLowerCase() == code.toString().toLowerCase(), orElse: () => null);
+        return result = response.data["Data"].toList().firstWhere(
+            (e) =>
+                e["Code"].toString().toLowerCase() ==
+                code.toString().toLowerCase(),
+            orElse: () => null);
       } else {
         return result;
       }

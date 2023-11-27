@@ -510,177 +510,206 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                       .getProductCode(item["ProductCode"]),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      Map detail = snapshot.data!;
-                                      return TextButton(
-                                        onPressed: () {
-                                          showModalBottomSheet<void>(
-                                              backgroundColor: Colors.white,
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              context: context,
-                                              isScrollControlled: true,
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                  padding: EdgeInsets.only(
-                                                      bottom:
-                                                          MediaQuery.of(context)
-                                                              .viewInsets
-                                                              .bottom),
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.95,
-                                                  child: ProductDetail(
-                                                    details: detail,
+                                      Map pra = snapshot.data!;
+                                      return FutureBuilder(
+                                        future: productModel
+                                            .getProductByGroupAndCode(
+                                                pra["CategoryCode"],
+                                                pra["Code"]),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            Map detail = snapshot.data!;
+                                            return TextButton(
+                                              onPressed: () {
+                                                showModalBottomSheet<void>(
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    clipBehavior: Clip
+                                                        .antiAliasWithSaveLayer,
+                                                    context: context,
+                                                    isScrollControlled: true,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return Container(
+                                                        padding: EdgeInsets.only(
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.85,
+                                                        child: ProductDetail(
+                                                          details: detail,
+                                                        ),
+                                                      );
+                                                    });
+                                              },
+                                              style: ButtonStyle(
+                                                padding:
+                                                    MaterialStateProperty.all(
+                                                        const EdgeInsets
+                                                            .symmetric(
+                                                            vertical: 12,
+                                                            horizontal: 8)),
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.white),
+                                                shape: MaterialStateProperty.all(
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10)))),
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      ClipRRect(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10)),
+                                                          child: Image.network(
+                                                            "${detail["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                            width: 90,
+                                                            height: 90,
+                                                            fit: BoxFit.cover,
+                                                          )),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Expanded(
+                                                          child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Wrap(
+                                                            children: [
+                                                              Text(
+                                                                item[
+                                                                    "ProductName"],
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color: Colors
+                                                                        .black),
+                                                              ),
+                                                              Container(
+                                                                margin: const EdgeInsets
+                                                                    .symmetric(
+                                                                    vertical:
+                                                                        4),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Text(
+                                                                      NumberFormat.currency(
+                                                                              locale: "vi_VI",
+                                                                              symbol: "đ")
+                                                                          .format(item["Price"]),
+                                                                      style: TextStyle(
+                                                                          color: Theme.of(context)
+                                                                              .colorScheme
+                                                                              .primary),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ))
+                                                    ],
                                                   ),
-                                                );
-                                              });
-                                        },
-                                        style: ButtonStyle(
-                                          padding: MaterialStateProperty.all(
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 12, horizontal: 8)),
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Colors.white),
-                                          shape: MaterialStateProperty.all(
-                                              const RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              10)))),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                ClipRRect(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                10)),
-                                                    child: Image.network(
-                                                      "${detail["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                      width: 90,
-                                                      height: 90,
-                                                      fit: BoxFit.cover,
-                                                    )),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                    child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Wrap(
+                                                  Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 10),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 5),
+                                                    decoration: BoxDecoration(
+                                                        border: BorderDirectional(
+                                                            top: BorderSide(
+                                                                width: 1,
+                                                                color:
+                                                                    Colors.grey[
+                                                                        400]!),
+                                                            bottom: BorderSide(
+                                                                width: 1,
+                                                                color: Colors
+                                                                        .grey[
+                                                                    400]!))),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         Text(
-                                                          item["ProductName"],
+                                                          "${item["Quantity"]} sản phẩm",
                                                           style:
                                                               const TextStyle(
                                                                   fontSize: 12,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .w400,
+                                                                          .w300,
                                                                   color: Colors
                                                                       .black),
                                                         ),
-                                                        Container(
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical: 4),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                NumberFormat.currency(
-                                                                        locale:
-                                                                            "vi_VI",
-                                                                        symbol:
-                                                                            "đ")
-                                                                    .format(item[
-                                                                        "Price"]),
-                                                                style: TextStyle(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary),
+                                                        Row(
+                                                          children: [
+                                                            const Text(
+                                                              "Thành tiền:",
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300,
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 3,
+                                                            ),
+                                                            Text(
+                                                              NumberFormat.currency(
+                                                                      locale:
+                                                                          "vi_VI",
+                                                                      symbol:
+                                                                          "đ")
+                                                                  .format(item[
+                                                                      "Amount"]),
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
                                                               ),
-                                                            ],
-                                                          ),
-                                                        ),
+                                                            )
+                                                          ],
+                                                        )
                                                       ],
                                                     ),
-                                                  ],
-                                                ))
-                                              ],
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  top: 10),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5),
-                                              decoration: BoxDecoration(
-                                                  border: BorderDirectional(
-                                                      top: BorderSide(
-                                                          width: 1,
-                                                          color: Colors
-                                                              .grey[400]!),
-                                                      bottom: BorderSide(
-                                                          width: 1,
-                                                          color: Colors
-                                                              .grey[400]!))),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "${item["Quantity"]} sản phẩm",
-                                                    style: const TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        color: Colors.black),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      const Text(
-                                                        "Thành tiền:",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 3,
-                                                      ),
-                                                      Text(
-                                                        NumberFormat.currency(
-                                                                locale: "vi_VI",
-                                                                symbol: "đ")
-                                                            .format(
-                                                                item["Amount"]),
-                                                        style: const TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                      )
-                                                    ],
                                                   )
                                                 ],
                                               ),
-                                            )
-                                          ],
-                                        ),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        },
                                       );
                                     } else {
                                       return const Center(

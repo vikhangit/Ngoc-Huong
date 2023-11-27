@@ -181,6 +181,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                                         ProductDetail(
                                                                       details:
                                                                           item,
+                                                                          detailPage: true,
                                                                     ));
                                                               })
                                                         

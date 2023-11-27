@@ -136,11 +136,11 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           bottomNavigationBar: ScrollToHide(
-                        scrollController: scrollController,
-                        height: 100,
-                        child: const MyBottomMenu(
-                          active: -1,
-                        )),
+              scrollController: scrollController,
+              height: 100,
+              child: const MyBottomMenu(
+                active: -1,
+              )),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
@@ -251,317 +251,281 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                 ele["ProductCode"]),
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData) {
-                                                Map detail = snapshot.data!;
-                                                return TextButton(
-                                                  onPressed: () {
-                                                    showModalBottomSheet<void>(
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        clipBehavior: Clip
-                                                            .antiAliasWithSaveLayer,
-                                                        context: context,
-                                                        isScrollControlled:
-                                                            true,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return Container(
-                                                            padding: EdgeInsets.only(
-                                                                bottom: MediaQuery.of(
-                                                                        context)
-                                                                    .viewInsets
-                                                                    .bottom),
-                                                            height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height *
-                                                                0.95,
-                                                            child:
-                                                                ProductDetail(
-                                                              details: detail,
+                                                Map pra = snapshot.data!;
+                                                return FutureBuilder(
+                                                  future: productModel
+                                                      .getProductByGroupAndCode(
+                                                          pra["CategoryCode"],
+                                                          pra["Code"]),
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      Map detail =
+                                                          snapshot.data!;
+                                                      return TextButton(
+                                                        onPressed: () {
+                                                          showModalBottomSheet<
+                                                                  void>(
+                                                              backgroundColor:
+                                                                  Colors.white,
+                                                              clipBehavior: Clip
+                                                                  .antiAliasWithSaveLayer,
+                                                              context: context,
+                                                              isScrollControlled:
+                                                                  true,
+                                                              builder:
+                                                                  (BuildContext
+                                                                      context) {
+                                                                return Container(
+                                                                  padding: EdgeInsets.only(
+                                                                      bottom: MediaQuery.of(
+                                                                              context)
+                                                                          .viewInsets
+                                                                          .bottom),
+                                                                  height: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .height *
+                                                                      0.85,
+                                                                  child:
+                                                                      ProductDetail(
+                                                                    details:
+                                                                        detail,
+                                                                  ),
+                                                                );
+                                                              });
+                                                        },
+                                                        style: ButtonStyle(
+                                                          padding: MaterialStateProperty
+                                                              .all(const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 12,
+                                                                  horizontal:
+                                                                      8)),
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all(Colors
+                                                                      .white),
+                                                          shape: MaterialStateProperty.all(
+                                                              const RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              10)))),
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            ClipRRect(
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                        .all(
+                                                                        Radius.circular(
+                                                                            10)),
+                                                                child: Image
+                                                                    .network(
+                                                                  "${detail["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                                  width: 90,
+                                                                  height: 110,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                )),
+                                                            const SizedBox(
+                                                              width: 10,
                                                             ),
-                                                          );
-                                                        });
-                                                  },
-                                                  style: ButtonStyle(
-                                                    padding:
-                                                        MaterialStateProperty
-                                                            .all(
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    vertical:
-                                                                        12,
-                                                                    horizontal:
-                                                                        8)),
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all(Colors.white),
-                                                    shape: MaterialStateProperty.all(
-                                                        const RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        10)))),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      ClipRRect(
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          10)),
-                                                          child: Image.network(
-                                                            "${detail["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                            width: 90,
-                                                            height: 110,
-                                                            fit: BoxFit.cover,
-                                                          )),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Expanded(
-                                                          child: Column(
-                                                        children: [
-                                                          Text(
-                                                            "${ele["ProductName"]}",
-                                                            style: const TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                color: Colors
-                                                                    .black),
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    vertical:
-                                                                        4),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
+                                                            Expanded(
+                                                                child: Column(
                                                               children: [
                                                                 Text(
-                                                                  NumberFormat.currency(
-                                                                          locale:
-                                                                              "vi_VI",
-                                                                          symbol:
-                                                                              "đ")
-                                                                      .format(ele[
-                                                                          "Price"]),
-                                                                  style: TextStyle(
-                                                                      color: Theme.of(
-                                                                              context)
-                                                                          .colorScheme
-                                                                          .primary),
+                                                                  "${ele["ProductName"]}",
+                                                                  maxLines: 2,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      color: Colors
+                                                                          .black),
                                                                 ),
-                                                                Row(
-                                                                  children: [
-                                                                    GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        EasyLoading.show(
-                                                                            status:
-                                                                                "Đang xử lý...");
-                                                                        Future.delayed(
-                                                                            const Duration(seconds: 1),
-                                                                            () {
-                                                                          Map data =
-                                                                              {
-                                                                            "DetailList":
-                                                                                [
-                                                                              {
-                                                                                ...ele,
-                                                                                "Quantity": ele["Quantity"] - 1
-                                                                              }
-                                                                            ]
-                                                                          };
-                                                                          cartModel
-                                                                              .updateProductInCart(data)
-                                                                              .then((value) {
-                                                                            if (listCheckout.isNotEmpty) {
-                                                                              int idx = listCheckout.indexWhere((item) => item["Id"] == allCart[index]["Id"]);
-                                                                              if (idx < 0) {
-                                                                                setState(() {});
-                                                                              } else {
-                                                                                setState(() {
-                                                                                  listCheckout[idx]["Quantity"]--;
+                                                                Container(
+                                                                  margin: const EdgeInsets
+                                                                      .symmetric(
+                                                                      vertical:
+                                                                          4),
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      Text(
+                                                                        NumberFormat.currency(
+                                                                                locale: "vi_VI",
+                                                                                symbol: "đ")
+                                                                            .format(ele["Price"]),
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Theme.of(context).colorScheme.primary),
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          GestureDetector(
+                                                                            onTap:
+                                                                                () {
+                                                                              EasyLoading.show(status: "Đang xử lý...");
+                                                                              Future.delayed(const Duration(seconds: 1), () {
+                                                                                Map data = {
+                                                                                  "DetailList": [
+                                                                                    {
+                                                                                      ...ele,
+                                                                                      "Quantity": ele["Quantity"] - 1
+                                                                                    }
+                                                                                  ]
+                                                                                };
+                                                                                cartModel.updateProductInCart(data).then((value) {
+                                                                                  if (listCheckout.isNotEmpty) {
+                                                                                    int idx = listCheckout.indexWhere((item) => item["Id"] == allCart[index]["Id"]);
+                                                                                    if (idx < 0) {
+                                                                                      setState(() {});
+                                                                                    } else {
+                                                                                      setState(() {
+                                                                                        listCheckout[idx]["Quantity"]--;
+                                                                                      });
+                                                                                    }
+                                                                                  } else {
+                                                                                    setState(() {});
+                                                                                  }
+                                                                                  EasyLoading.dismiss();
                                                                                 });
-                                                                              }
-                                                                            } else {
-                                                                              setState(() {});
-                                                                            }
-                                                                            EasyLoading.dismiss();
-                                                                          });
-                                                                        });
-                                                                      },
-                                                                      child:
+                                                                              });
+                                                                            },
+                                                                            child:
+                                                                                Container(
+                                                                              width: 25,
+                                                                              height: 25,
+                                                                              decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.orange), shape: BoxShape.circle),
+                                                                              alignment: Alignment.center,
+                                                                              child: const Icon(
+                                                                                Icons.remove,
+                                                                                size: 16,
+                                                                                color: Colors.orange,
+                                                                              ),
+                                                                            ),
+                                                                          ),
                                                                           Container(
-                                                                        width:
-                                                                            25,
-                                                                        height:
-                                                                            25,
-                                                                        decoration: BoxDecoration(
-                                                                            border:
-                                                                                Border.all(width: 1, color: Colors.orange),
-                                                                            shape: BoxShape.circle),
-                                                                        alignment:
-                                                                            Alignment.center,
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .remove,
-                                                                          size:
-                                                                              16,
-                                                                          color:
-                                                                              Colors.orange,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    Container(
-                                                                      margin: const EdgeInsets
-                                                                          .symmetric(
-                                                                          horizontal:
-                                                                              10),
-                                                                      child:
-                                                                          Text(
-                                                                        "${ele["Quantity"]}",
-                                                                        style: const TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.w300),
-                                                                      ),
-                                                                    ),
-                                                                    GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        EasyLoading.show(
-                                                                            status:
-                                                                                "Đang xử lý...");
-                                                                        Future.delayed(
-                                                                            const Duration(seconds: 1),
-                                                                            () {
-                                                                          cartModel
-                                                                              .updateProductInCart({
-                                                                            "DetailList":
-                                                                                [
-                                                                              {
-                                                                                ...ele,
-                                                                                "Quantity": ele["Quantity"] + 1
-                                                                              }
-                                                                            ]
-                                                                          }).then((value) {
-                                                                            if (listCheckout.isNotEmpty) {
-                                                                              int idx = listCheckout.indexWhere((item) => item["Id"] == allCart[index]["Id"]);
-                                                                              if (idx < 0) {
-                                                                                setState(() {});
-                                                                              } else {
-                                                                                setState(() {
-                                                                                  listCheckout[idx]["Quantity"]++;
+                                                                            margin:
+                                                                                const EdgeInsets.symmetric(horizontal: 10),
+                                                                            child:
+                                                                                Text(
+                                                                              "${ele["Quantity"]}",
+                                                                              style: const TextStyle(fontWeight: FontWeight.w300),
+                                                                            ),
+                                                                          ),
+                                                                          GestureDetector(
+                                                                            onTap:
+                                                                                () {
+                                                                              EasyLoading.show(status: "Đang xử lý...");
+                                                                              Future.delayed(const Duration(seconds: 1), () {
+                                                                                cartModel.updateProductInCart({
+                                                                                  "DetailList": [
+                                                                                    {
+                                                                                      ...ele,
+                                                                                      "Quantity": ele["Quantity"] + 1
+                                                                                    }
+                                                                                  ]
+                                                                                }).then((value) {
+                                                                                  if (listCheckout.isNotEmpty) {
+                                                                                    int idx = listCheckout.indexWhere((item) => item["Id"] == allCart[index]["Id"]);
+                                                                                    if (idx < 0) {
+                                                                                      setState(() {});
+                                                                                    } else {
+                                                                                      setState(() {
+                                                                                        listCheckout[idx]["Quantity"]++;
+                                                                                      });
+                                                                                    }
+                                                                                  } else {
+                                                                                    setState(() {});
+                                                                                  }
+                                                                                  EasyLoading.dismiss();
                                                                                 });
-                                                                              }
-                                                                            } else {
-                                                                              setState(() {});
-                                                                            }
-                                                                            EasyLoading.dismiss();
-                                                                          });
-                                                                        });
-                                                                      },
-                                                                      child:
-                                                                          Container(
-                                                                        width:
-                                                                            25,
-                                                                        height:
-                                                                            25,
-                                                                        decoration: BoxDecoration(
-                                                                            border:
-                                                                                Border.all(width: 1, color: Colors.orange),
-                                                                            shape: BoxShape.circle),
-                                                                        alignment:
-                                                                            Alignment.center,
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .add,
-                                                                          size:
-                                                                              16,
-                                                                          color:
-                                                                              Colors.orange,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
+                                                                              });
+                                                                            },
+                                                                            child:
+                                                                                Container(
+                                                                              width: 25,
+                                                                              height: 25,
+                                                                              decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.orange), shape: BoxShape.circle),
+                                                                              alignment: Alignment.center,
+                                                                              child: const Icon(
+                                                                                Icons.add,
+                                                                                size: 16,
+                                                                                color: Colors.orange,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                  child:
+                                                                      GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            customModal.showAlertDialog(
+                                                                                context,
+                                                                                "error",
+                                                                                "Xóa sản phẩm",
+                                                                                "Bạn có chắc chắn xóa sản phẩm này?",
+                                                                                () {
+                                                                              Navigator.pop(context);
+                                                                              EasyLoading.show(status: "Đang xử lý...");
+                                                                              Future.delayed(const Duration(seconds: 1), () {
+                                                                                cartModel.updateProductInCart({
+                                                                                  "DetailList": [
+                                                                                    {
+                                                                                      ...ele,
+                                                                                      "IsDeleted": true
+                                                                                    }
+                                                                                  ]
+                                                                                }).then((value) {
+                                                                                  setState(() {
+                                                                                    listCheckout.removeWhere((element) => element["Id"] == listCheckout[index]["id"]);
+                                                                                    EasyLoading.dismiss();
+                                                                                  });
+                                                                                });
+                                                                              });
+                                                                            }, () => Navigator.pop(context));
+                                                                          },
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Image.asset(
+                                                                                "assets/images/delete-red.png",
+                                                                                width: 16,
+                                                                                height: 16,
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                width: 5,
+                                                                              ),
+                                                                              Text(
+                                                                                "Xóa",
+                                                                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.primary),
+                                                                              )
+                                                                            ],
+                                                                          )),
                                                                 )
                                                               ],
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            child:
-                                                                GestureDetector(
-                                                                    onTap: () {
-                                                                      customModal.showAlertDialog(
-                                                                          context,
-                                                                          "error",
-                                                                          "Xóa sản phẩm",
-                                                                          "Bạn có chắc chắn xóa sản phẩm này?",
-                                                                          () {
-                                                                        Navigator.pop(
-                                                                            context);
-                                                                        EasyLoading.show(
-                                                                            status:
-                                                                                "Đang xử lý...");
-                                                                        Future.delayed(
-                                                                            const Duration(seconds: 1),
-                                                                            () {
-                                                                          cartModel
-                                                                              .updateProductInCart({
-                                                                            "DetailList":
-                                                                                [
-                                                                              {
-                                                                                ...ele,
-                                                                                "IsDeleted": true
-                                                                              }
-                                                                            ]
-                                                                          }).then((value) {
-                                                                            setState(() {
-                                                                              listCheckout.removeWhere((element) => element["Id"] == listCheckout[index]["id"]);
-                                                                              EasyLoading.dismiss();
-                                                                            });
-                                                                          });
-                                                                        });
-                                                                      },
-                                                                          () =>
-                                                                              Navigator.pop(context));
-                                                                    },
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Image
-                                                                            .asset(
-                                                                          "assets/images/delete-red.png",
-                                                                          width:
-                                                                              16,
-                                                                          height:
-                                                                              16,
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          width:
-                                                                              5,
-                                                                        ),
-                                                                        Text(
-                                                                          "Xóa",
-                                                                          style: TextStyle(
-                                                                              fontSize: 13,
-                                                                              fontWeight: FontWeight.w300,
-                                                                              color: Theme.of(context).colorScheme.primary),
-                                                                        )
-                                                                      ],
-                                                                    )),
-                                                          )
-                                                        ],
-                                                      ))
-                                                    ],
-                                                  ),
+                                                            ))
+                                                          ],
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return Container();
+                                                    }
+                                                  },
                                                 );
                                               } else {
                                                 return const Center(

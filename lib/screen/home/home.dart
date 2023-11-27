@@ -1571,6 +1571,7 @@ class _ProductPageState extends State<ProductPage> {
                                               0.85,
                                       child: ProductDetail(
                                         details: list[i],
+                                        detailPage: true,
                                       ));
                                 }),
                             child: Container(

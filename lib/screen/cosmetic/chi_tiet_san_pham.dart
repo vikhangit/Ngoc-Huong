@@ -12,11 +12,9 @@ import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 
 class ProductDetail extends StatefulWidget {
+  final bool? detailPage;
   final Map details;
-  const ProductDetail({
-    super.key,
-    required this.details,
-  });
+  const ProductDetail({super.key, required this.details, this.detailPage});
 
   @override
   State<ProductDetail> createState() => _ProductDetailState();
@@ -135,7 +133,6 @@ class _ProductDetailState extends State<ProductDetail>
         });
       }, () => Navigator.pop(context));
     }
-
     return Container(
       color: Colors.white,
       child: Column(
@@ -190,8 +187,8 @@ class _ProductDetailState extends State<ProductDetail>
             margin: const EdgeInsets.only(bottom: 5),
             color: Colors.white,
             height: MediaQuery.of(context).size.height * 0.85 -
-                210 -
-                MediaQuery.of(context).viewInsets.bottom,
+                (widget.detailPage != null ? (210 -
+                MediaQuery.of(context).viewInsets.bottom) : 80),
             child: ListView(
               children: [
                 Container(
@@ -242,7 +239,7 @@ class _ProductDetailState extends State<ProductDetail>
                           )
                         ],
                       ),
-                      Row(
+                      if(widget.detailPage != null) Row(
                         children: [
                           GestureDetector(
                             onTap: () {
@@ -308,7 +305,7 @@ class _ProductDetailState extends State<ProductDetail>
               ],
             ),
           ),
-          Container(
+          if(widget.detailPage != null) Container(
             margin: const EdgeInsets.only(bottom: 30, left: 15, right: 15),
             color: Colors.white,
             child: Column(

@@ -3,8 +3,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/order.dart';
+import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
+import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
@@ -28,6 +30,7 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy> {
   final CustomModal customModal = CustomModal();
   final ScrollController scrollController = ScrollController();
   final ProfileModel profileModel = ProfileModel();
+  final ProductModel productModel = ProductModel();
 
   @override
   void dispose() {
@@ -490,89 +493,165 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy> {
                           Column(
                               children: list.map((item) {
                             int index = list.indexOf(item);
-                            return Container(
-                              margin: EdgeInsets.only(top: index != 0 ? 10 : 0),
-                              padding:
-                                  EdgeInsets.only(top: index != 0 ? 10 : 0),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      top: index != 0
-                                          ? const BorderSide(
-                                              width: 1, color: Colors.grey)
-                                          : BorderSide.none)),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    child: Image.network(
-                                      "${item["Image_Name"]}",
-                                      // width: 110,
-                                      height: 60,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                      child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Wrap(
-                                        children: [
-                                          Text(
-                                            "${item["ProductName"]}",
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: const TextStyle(
-                                                color: Colors.black),
-                                          ),
-                                          const SizedBox(
-                                            height: 30,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text("${item["Quantity"] ?? 1}",
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary)),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
-                                              Text("x",
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary)),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
-                                              Text(
-                                                NumberFormat.currency(
-                                                        locale: "vi_VI",
-                                                        symbol: "đ")
-                                                    .format(
-                                                  item["Price"],
+                            return FutureBuilder(
+                              future: productModel
+                                  .getProductCode(item["ProductCode"]),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  Map pra = snapshot.data!;
+                                  return FutureBuilder(
+                                    future:
+                                        productModel.getProductByGroupAndCode(
+                                            pra["CategoryCode"], pra["Code"]),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        Map detail = snapshot.data!;
+                                        return GestureDetector(
+                                          onTap: () {
+                                            showModalBottomSheet<void>(
+                                                backgroundColor: Colors.white,
+                                                clipBehavior:
+                                                    Clip.antiAliasWithSaveLayer,
+                                                context: context,
+                                                isScrollControlled: true,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Container(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: MediaQuery.of(
+                                                                context)
+                                                            .viewInsets
+                                                            .bottom),
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.85,
+                                                    child: ProductDetail(
+                                                        details: detail),
+                                                  );
+                                                });
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.only(
+                                                top: index != 0 ? 10 : 0),
+                                            padding: EdgeInsets.only(
+                                                top: index != 0 ? 10 : 0),
+                                            decoration: BoxDecoration(
+                                                border: Border(
+                                                    top: index != 0
+                                                        ? const BorderSide(
+                                                            width: 1,
+                                                            color: Colors.grey)
+                                                        : BorderSide.none)),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(10)),
+                                                  child: Image.network(
+                                                    "${item["Image_Name"]}",
+                                                    // width: 110,
+                                                    height: 60,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
-                                              )
-                                            ],
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                    child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Wrap(
+                                                      children: [
+                                                        Text(
+                                                          "${item["ProductName"]}",
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          maxLines: 1,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 30,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                                "${item["Quantity"] ?? 1}",
+                                                                style: TextStyle(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .primary)),
+                                                            const SizedBox(
+                                                              width: 3,
+                                                            ),
+                                                            Text("x",
+                                                                style: TextStyle(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .primary)),
+                                                            const SizedBox(
+                                                              width: 3,
+                                                            ),
+                                                            Text(
+                                                              NumberFormat.currency(
+                                                                      locale:
+                                                                          "vi_VI",
+                                                                      symbol:
+                                                                          "đ")
+                                                                  .format(
+                                                                item["Price"],
+                                                              ),
+                                                              style: TextStyle(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .primary),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ))
+                                              ],
+                                            ),
                                           ),
-                                        ],
-                                      )
-                                    ],
-                                  ))
-                                ],
-                              ),
+                                        );
+                                      } else {
+                                        return Container();
+                                      }
+                                    },
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
                             );
                           }).toList()),
                           Container(

@@ -311,6 +311,7 @@ class _CosmeticState extends State<Cosmetic> {
                                                               0.85,
                                                       child: ProductDetail(
                                                         details: item,
+                                                        detailPage: true,
                                                       ));
                                                 });
                                           },
