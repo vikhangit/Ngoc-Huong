@@ -57,7 +57,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                       color: Colors.black,
                     ),
                   )),
-              title: const Text("Khuyến mãi hot",
+              title: const Text("Khuyến mãi và tin làm đẹp",
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
