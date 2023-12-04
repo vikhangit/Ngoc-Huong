@@ -5,6 +5,7 @@ import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/memberModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class ThanhVienScreen extends StatefulWidget {
@@ -32,7 +33,9 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
   }
 
   void _getActiveTabIndex() {
-    _selectedIndex = tabController?.index;
+    setState(() {
+      _selectedIndex = tabController?.index;
+    });
     debugPrint('CURRENT_PAGE $_selectedIndex');
   }
 
@@ -379,11 +382,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                         vertical: 20),
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          "assets/images/Home/Services/uu-dai.png",
-                                          width: 25,
-                                          height: 25,
-                                          fit: BoxFit.contain,
+                                        Icon(
+                                          Icons.card_giftcard,
+                                          size: 25,
+                                          color: mainColor,
                                         ),
                                         const SizedBox(
                                           width: 10,
@@ -409,11 +411,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                         vertical: 20),
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          "assets/images/Home/Services/uu-dai.png",
-                                          width: 25,
-                                          height: 25,
-                                          fit: BoxFit.contain,
+                                        Icon(
+                                          Icons.card_giftcard,
+                                          size: 25,
+                                          color: mainColor,
                                         ),
                                         const SizedBox(
                                           width: 10,
@@ -490,11 +491,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                         vertical: 20),
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          "assets/images/Home/Services/uu-dai.png",
-                                          width: 25,
-                                          height: 25,
-                                          fit: BoxFit.contain,
+                                        Icon(
+                                          Icons.card_giftcard,
+                                          size: 25,
+                                          color: mainColor,
                                         ),
                                         const SizedBox(
                                           width: 10,
@@ -520,11 +520,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                         vertical: 20),
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          "assets/images/Home/Services/uu-dai.png",
-                                          width: 25,
-                                          height: 25,
-                                          fit: BoxFit.contain,
+                                        Icon(
+                                          Icons.card_giftcard,
+                                          size: 25,
+                                          color: mainColor,
                                         ),
                                         const SizedBox(
                                           width: 10,
@@ -602,11 +601,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                         vertical: 20),
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          "assets/images/Home/Services/uu-dai.png",
-                                          width: 25,
-                                          height: 25,
-                                          fit: BoxFit.contain,
+                                        Icon(
+                                          Icons.card_giftcard,
+                                          size: 25,
+                                          color: mainColor,
                                         ),
                                         const SizedBox(
                                           width: 10,
@@ -632,11 +630,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                         vertical: 20),
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          "assets/images/Home/Services/uu-dai.png",
-                                          width: 25,
-                                          height: 25,
-                                          fit: BoxFit.contain,
+                                        Icon(
+                                          Icons.card_giftcard,
+                                          size: 25,
+                                          color: mainColor,
                                         ),
                                         const SizedBox(
                                           width: 10,
@@ -713,11 +710,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                         vertical: 20),
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          "assets/images/Home/Services/uu-dai.png",
-                                          width: 25,
-                                          height: 25,
-                                          fit: BoxFit.contain,
+                                        Icon(
+                                          Icons.card_giftcard,
+                                          size: 25,
+                                          color: mainColor,
                                         ),
                                         const SizedBox(
                                           width: 10,
@@ -743,11 +739,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                         vertical: 20),
                                     child: Row(
                                       children: [
-                                        Image.asset(
-                                          "assets/images/Home/Services/uu-dai.png",
-                                          width: 25,
-                                          height: 25,
-                                          fit: BoxFit.contain,
+                                        Icon(
+                                          Icons.card_giftcard,
+                                          size: 25,
+                                          color: mainColor,
                                         ),
                                         const SizedBox(
                                           width: 10,

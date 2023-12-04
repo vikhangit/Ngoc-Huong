@@ -131,7 +131,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
             Container(
               margin: const EdgeInsets.only(left: 10, right: 10),
               child: SizedBox(
-                height: MediaQuery.of(context).size.height - 350,
+                height: MediaQuery.of(context).size.height - 390,
                 child: ListView(
                   controller: scrollController,
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -419,6 +419,9 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                             ),
                           )
                         : Container(),
+                const SizedBox(
+                  height: 20,
+                )
               ],
             )
           ],
