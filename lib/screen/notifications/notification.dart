@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
+import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
@@ -30,15 +32,24 @@ class _NotificationScreenState extends State<NotificationScreen> {
     scrollController.dispose();
   }
 
-  void readNotify(id) {
-    Map data = {"status": true};
-    readNotifications(id, data).then((value) => setState(() {}));
+  void readNotify(int id) {
+    EasyLoading.show(status: "Vui lòng chờ");
+    bookingModel.readNotifications(id).then((value) => {
+          setState(() {
+            EasyLoading.dismiss();
+          })
+        });
   }
 
   void readAll(List list) {
-    Map data = {"status": true};
     for (var i = 0; i < list.length; i++) {
-      readNotifications(list[i]["_id"], data).then((value) => setState(() {}));
+      // readNotifications(list[i]["_id"]).then((value) => setState(() {}));
+      EasyLoading.show(status: "Vui lòng chờ");
+      bookingModel.readNotifications(list[i]["Id"]).then((value) => {
+            setState(() {
+              EasyLoading.dismiss();
+            })
+          });
     }
   }
 
@@ -50,17 +61,20 @@ class _NotificationScreenState extends State<NotificationScreen> {
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           bottomNavigationBar: ScrollToHide(
-                        scrollController: scrollController,
-                        height: 100,
-                        child: const MyBottomMenu(
-                          active: -1,
-                        )),
+              scrollController: scrollController,
+              height: 100,
+              child: const MyBottomMenu(
+                active: -1,
+              )),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()));
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -82,7 +96,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               padding: MaterialStateProperty.all(
                                   const EdgeInsets.symmetric(horizontal: 5))),
                           onPressed: () {
-                            // readAll(snapshot.data!.toList());
+                            readAll(snapshot.data!.toList());
                           },
                           icon: const Icon(
                             Icons.done_all,
@@ -152,19 +166,22 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               ),
                               child: TextButton(
                                 style: ButtonStyle(
+                                    shape: MaterialStateProperty.all(
+                                        const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)))),
                                     padding: MaterialStateProperty.all(
                                         const EdgeInsets.symmetric(
                                             vertical: 15, horizontal: 5))),
                                 onPressed: () {
-                                  // readNotify(listNotify[index]["_id"]);
+                                  readNotify(listNotify[index]["Id"]);
                                 },
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Image.asset(listNotify[index]
-                                                    ["IsDeleted"] ==
+                                    Image.asset(listNotify[index]["IsRead"] ==
                                                 null ||
-                                            !listNotify[index]["IsDeleted"]
+                                            !listNotify[index]["IsRead"]
                                         ? "assets/images/Notifications/bell2.png"
                                         : "assets/images/Notifications/bell1.png"),
                                     const SizedBox(
@@ -185,10 +202,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                 "${listNotify[index]["ListService"]}",
                                                 style: TextStyle(
                                                     color: listNotify[index][
-                                                                    "IsDeleted"] ==
+                                                                    "IsRead"] ==
                                                                 null ||
                                                             !listNotify[index]
-                                                                ["IsDeleted"]
+                                                                ["IsRead"]
                                                         ? Colors.black
                                                         : Colors.black38,
                                                     fontWeight:
@@ -198,10 +215,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                 "Bạn có lịch hẹn ${listNotify[index]["ListService"].toString().toLowerCase()} vào lúc ${DateFormat("HH:mm").format(DateTime.parse(listNotify[index]["StartDate"]))} ngày ${DateFormat("dd/MM/yyyy").format(DateTime.parse(listNotify[index]["StartDate"]))}",
                                                 style: TextStyle(
                                                     color: listNotify[index][
-                                                                    "IsDeleted"] ==
+                                                                    "IsRead"] ==
                                                                 null ||
                                                             !listNotify[index]
-                                                                ["IsDeleted"]
+                                                                ["IsRead"]
                                                         ? Colors.black
                                                         : Colors.black38,
                                                     fontSize: 14,
@@ -211,9 +228,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                             ],
                                           ),
                                         ),
-                                        if (listNotify[index]["IsDeleted"] ==
+                                        if (listNotify[index]["IsRead"] ==
                                                 null ||
-                                            !listNotify[index]["IsDeleted"])
+                                            !listNotify[index]["IsRead"])
                                           Container(
                                             width: 10,
                                             height: 10,

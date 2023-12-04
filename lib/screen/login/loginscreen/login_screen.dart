@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localstorage/localstorage.dart';
@@ -9,6 +8,7 @@ import 'package:ngoc_huong/screen/login/loginscreen/child/buttom_login.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/child/intro.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/child/phone_field.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:upgrader/upgrader.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -78,21 +78,29 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Builder(
             builder: (BuildContext context) => SafeArea(
                   child: Scaffold(
-                    backgroundColor: Colors.white,
-                    resizeToAvoidBottomInset: true,
-                    body: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                            child: ListView(children: [
-                          bannerLogin(context),
-                          introLogin(context),
-                          phoneField((value) => changePhone(value)),
-                        ])),
-                        loginButton(context, _onSubmit, _loading)
-                      ],
-                    ),
-                  ),
+                      backgroundColor: Colors.white,
+                      resizeToAvoidBottomInset: true,
+                      body: UpgradeAlert(
+                        upgrader: Upgrader(
+                          dialogStyle: UpgradeDialogStyle.cupertino,
+                          canDismissDialog: false,
+                          showLater: false,
+                          showIgnore: false,
+                          showReleaseNotes: false,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                child: ListView(children: [
+                              bannerLogin(context),
+                              introLogin(context),
+                              phoneField((value) => changePhone(value)),
+                            ])),
+                            loginButton(context, _onSubmit, _loading)
+                          ],
+                        ),
+                      )),
                 )));
   }
 }

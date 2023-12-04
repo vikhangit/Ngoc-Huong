@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/branchsModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
@@ -22,24 +23,23 @@ class ModalChiTietBooking extends StatefulWidget {
 class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
   final ServicesModel servicesModel = ServicesModel();
   final BranchsModel branchsModel = BranchsModel();
+  final BookingModel bookingModel = BookingModel();
   @override
   Widget build(BuildContext context) {
     Map details =
         widget.history != null ? widget.details : widget.details["Data"];
     void cancleOrder() async {
       Map data = {"dien_giai": "Chờ trả"};
-      await putBooking(details["_id"], data).then((value) => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const BookingHistory(
-                    ac: 2,
-                  ))));
+      await putBooking(details["_id"], data).then((value) => bookingModel
+          .getListBookinfStatus()
+          .then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      BookingHistory(ac: 0, listAction: value)))));
       widget.save!();
     }
 
-    print("=============================");
-    print("Detaoasdasad: ${details}");
-    print("=============================");
     DateTime databook = DateTime.parse(details["StartDate"]);
     return Container(
       color: Colors.white,

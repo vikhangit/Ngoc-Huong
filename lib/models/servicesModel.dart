@@ -111,4 +111,23 @@ class ServicesModel {
       print(e);
     }
   }
+
+  Future getServiceByCode(String code) async {
+    try {
+      Response response = await client.dio.get(
+        '${client.apiUrl}/Service/getServiceByGroup?groupServiceCode=',
+      );
+      if (response.statusCode == 200) {
+        return response.data["Data"].toList().firstWhere(
+            (e) =>
+                e["Code"].toString().toLowerCase() ==
+                code.toString().toLowerCase(),
+            orElse: () => null);
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 }

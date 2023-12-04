@@ -78,28 +78,32 @@ class _BookingServicesState extends State<BookingServices>
     });
     servicesModel.getGroupServiceByBranch().then((value) {
       for (var i = 0; i < value.length; i++) {
-          setState(() {
-        if(value[i]["GroupCode"] == "Phun thêu thẩm mỹ"){
-          chooseService.insert(0, {
-            "show": widget.dichvudachon == null
-                ? false
-                : value[i]["GroupCode"] == widget.dichvudachon!["CategoryCode"]
-                    ? true
-                    : false,
-            "name": value[i]["GroupName"],
-            "code": value[i]["GroupCode"],
-          });
-        }else if(value[i]["GroupCode"] == "Điều trị da"  || value[i]["GroupCode"] == "Trẻ hóa & chăm sóc da" || value[i]["GroupCode"] == "Triệt Lông"){
-          chooseService.add({
-            "show": widget.dichvudachon == null
-                ? false
-                : value[i]["GroupCode"] == widget.dichvudachon!["CategoryCode"]
-                    ? true
-                    : false,
-            "name": value[i]["GroupName"],
-            "code": value[i]["GroupCode"],
-          });
-        }
+        setState(() {
+          if (value[i]["GroupCode"] == "Phun thêu thẩm mỹ") {
+            chooseService.insert(0, {
+              "show": widget.dichvudachon == null
+                  ? false
+                  : value[i]["GroupCode"] ==
+                          widget.dichvudachon!["CategoryCode"]
+                      ? true
+                      : false,
+              "name": value[i]["GroupName"],
+              "code": value[i]["GroupCode"],
+            });
+          } else if (value[i]["GroupCode"] == "Điều trị da" ||
+              value[i]["GroupCode"] == "Trẻ hóa & chăm sóc da" ||
+              value[i]["GroupCode"] == "Triệt Lông") {
+            chooseService.add({
+              "show": widget.dichvudachon == null
+                  ? false
+                  : value[i]["GroupCode"] ==
+                          widget.dichvudachon!["CategoryCode"]
+                      ? true
+                      : false,
+              "name": value[i]["GroupName"],
+              "code": value[i]["GroupCode"],
+            });
+          }
         });
       }
     });

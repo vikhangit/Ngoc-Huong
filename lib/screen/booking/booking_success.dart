@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_chi_tiet_booking.dart';
 import 'package:ngoc_huong/utils/callapi.dart';
@@ -30,6 +31,8 @@ class _BookingSuccessState extends State<BookingSuccess>
       CurvedAnimation(parent: checkController, curve: Curves.linear);
   final ScrollController scrollController = ScrollController();
 
+  final BookingModel bookingModel = BookingModel();
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +59,7 @@ class _BookingSuccessState extends State<BookingSuccess>
   Widget build(BuildContext context) {
     var details = widget.details;
     return SafeArea(
-      bottom: false,
+        bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -84,11 +87,11 @@ class _BookingSuccessState extends State<BookingSuccess>
                       color: Colors.white)),
             ),
             bottomNavigationBar: ScrollToHide(
-                        scrollController: scrollController,
-                        height: 100,
-                        child: const MyBottomMenu(
-                          active: 1,
-                        )),
+                scrollController: scrollController,
+                height: 100,
+                child: const MyBottomMenu(
+                  active: 1,
+                )),
             body: Container(
                 padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
                 child: SizedBox(
@@ -189,11 +192,6 @@ class _BookingSuccessState extends State<BookingSuccess>
                               ),
                             ),
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const BookingHistory()));
                               showModalBottomSheet<void>(
                                   backgroundColor: Colors.white,
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -212,6 +210,12 @@ class _BookingSuccessState extends State<BookingSuccess>
                                           details: details,
                                         ));
                                   });
+                              // bookingModel.getListBookinfStatus().then(
+                              //     (value) => Navigator.push(
+                              //         context,
+                              //         MaterialPageRoute(
+                              //             builder: (context) => BookingHistory(
+                              //                 ac: 0, listAction: value))));
                             }),
                       ],
                     )))));

@@ -11,20 +11,21 @@ import 'package:ngoc_huong/screen/account/setting/setting.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
+import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/notifications/notification.dart';
 import 'package:ngoc_huong/screen/member/thanh_vien.dart';
 import 'package:ngoc_huong/screen/news/tin_tuc.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:upgrader/upgrader.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // to initialize the notificationservice.
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Upgrader.clearSavedSettings();
   // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
 }
@@ -54,9 +55,10 @@ mixin AppLocale {
 }
 
 class _MyAppState extends State<MyApp> {
-  LocalStorage storage = LocalStorage("auth");
+  final LocalStorage storageCustomer = LocalStorage('customer_token');
   final CustomThemeData _customThemeData = CustomThemeData();
   final FlutterLocalization localization = FlutterLocalization.instance;
+  final LocalStorage localStorageSlash = LocalStorage("slash");
   Future<void> launchInBrowser(String link) async {
     Uri url = Uri.parse(link);
     if (!await launchUrl(
@@ -66,6 +68,7 @@ class _MyAppState extends State<MyApp> {
       throw Exception('Could not launch $url');
     }
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -105,7 +108,20 @@ class _MyAppState extends State<MyApp> {
         "informationAccount": (context) => const InfomationAccount()
       },
       theme: _customThemeData.themeData,
-      home: const StartScreen(),
+      home: UpgradeAlert(
+        upgrader: Upgrader(
+          dialogStyle: UpgradeDialogStyle.cupertino,
+          canDismissDialog: false,
+          showLater: false,
+          showIgnore: false,
+          showReleaseNotes: false,
+        ),
+        child: localStorageSlash.getItem("slash") == null
+            ? const StartScreen()
+            : storageCustomer.getItem("customer_token") != null
+                ? const HomeScreen()
+                : const LoginScreen(),
+      ),
       builder: EasyLoading.init(),
       debugShowCheckedModeBanner: false,
     );

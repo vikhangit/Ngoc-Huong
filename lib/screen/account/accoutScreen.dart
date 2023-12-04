@@ -8,6 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
@@ -17,6 +18,8 @@ import 'package:ngoc_huong/screen/account/gioi_thieu_ban_be/gioi_thieu_ban_be.da
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/tran_history/tran_history.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
+import 'package:ngoc_huong/screen/member/thanh_vien.dart';
+import 'package:ngoc_huong/screen/news/tin_tuc.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
@@ -46,23 +49,27 @@ List menu = [
     "icon": "assets/images/cart-black.png",
     "title": "Lịch sử đặt hàng",
   },
-  //{
-  //"icon": "assets/images/account/dieu-khoan.png",
-  //"title": "Điều khoản sử dụng",
-  //},
+  {
+    "icon": "assets/images/account/dieu-khoan.png",
+    "title": "Điều khoản sử dụng",
+  },
+  {
+    "icon": "assets/images/account/gioi-thieu.png",
+    "title": "Giới thiệu bạn bè",
+  },
   {
     "icon": "assets/images/account/dia-chi.png",
     "title": "Quản lý địa chỉ",
   },
 
-  //{
-  //"icon": "assets/images/account/ve-chung-toi.png",
-  //"title": "Về Ngọc Hường",
-  //},
   {
-    "icon": "assets/images/delete-black.png",
-    "title": "Xóa tài khoản",
+    "icon": "assets/images/account/ve-chung-toi.png",
+    "title": "Về Ngọc Hường",
   },
+  // {
+  //   "icon": "assets/images/delete-black.png",
+  //   "title": "Xóa tài khoản",
+  // },
   {
     "icon": "assets/images/account/dang-xuat.png",
     "title": "Đăng xuất",
@@ -74,6 +81,7 @@ class _AccountScreenState extends State<AccountScreen> {
   final ProfileModel profileModel = ProfileModel();
   final OrderModel orderModel = OrderModel();
   final CustomModal customModal = CustomModal();
+  final BookingModel bookingModel = BookingModel();
   final ScrollController scrollController = ScrollController();
   void _openFile(PlatformFile file) {
     print(file.path);
@@ -147,8 +155,10 @@ class _AccountScreenState extends State<AccountScreen> {
         //       MaterialPageRoute(builder: (context) => const TranHistory()));
         //   break;
         case 1:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const BookingHistory()));
+          bookingModel.getListBookinfStatus().then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BookingHistory(listAction: value))));
           break;
         case 2:
           orderModel.getStatusList().then((value) => Navigator.push(
@@ -159,41 +169,55 @@ class _AccountScreenState extends State<AccountScreen> {
                       ))));
 
           break;
-        //case 3:
-        //Navigator.push(context,
-        // MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
-        //break;
-        //case 4:
-        //  Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
-        //break;
         case 3:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
+          break;
+        case 4:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
+          break;
+        case 5:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
-        case 4:
-          {
-            customModal.showAlertDialog(context, "error", "Xóa tài khoản",
-                "Bạn có chắc chắn muốn xóa tài khoản không?", () {
-              EasyLoading.show(status: "Đang xử lý...");
-              storageCustomerToken.deleteItem("customer_token");
-              Future.delayed(const Duration(seconds: 1), () {
-                EasyLoading.dismiss();
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
-              });
-            }, () => Navigator.pop(context));
+        // case 6:
+        //   {
+        //     customModal.showAlertDialog(context, "error", "Xóa tài khoản",
+        //         "Bạn có chắc chắn muốn xóa tài khoản không?", () {
+        //       EasyLoading.show(status: "Đang xử lý...");
+        //       storageCustomerToken.deleteItem("customer_token");
+        //       Future.delayed(const Duration(seconds: 1), () {
+        //         EasyLoading.dismiss();
+        //         Navigator.pop(context);
+        //         Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //                 builder: (context) => const HomeScreen()));
+        //       });
+        //     }, () => Navigator.pop(context));
 
-            break;
-          }
-        case 5:
+        //     break;
+        //   }
+
+        case 6:
           handleLogout();
           break;
         default:
       }
+    }
+
+    String checkRank(int point) {
+      if (point == 0 && point < 100) {
+        return "Bạc";
+      } else if (point >= 100 && point < 200) {
+        return "Vàng";
+      } else if (point >= 200 && point < 500) {
+        return "Bạch kim";
+      } else if (point >= 500) {
+        return "Kim cương";
+      }
+      return "Bạc";
     }
 
     return SafeArea(
@@ -201,309 +225,393 @@ class _AccountScreenState extends State<AccountScreen> {
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-           bottomNavigationBar: ScrollToHide(
-                        scrollController: scrollController,
-                        height: 100,
-                        child: const MyBottomMenu(
-                          active: 4,
-                        )),
-          body: ListView(
-            controller: scrollController,
-            padding: const EdgeInsets.symmetric(vertical: 25),
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                          onTap: () {
-                            makingPhoneCall();
-                          },
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                "assets/images/call-black.png",
-                                width: 25,
-                                height: 25,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Text("Hỗ trợ",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400))
-                            ],
-                          )),
-                    ),
-                    Expanded(
-                        child: FutureBuilder(
-                            future: profileModel.getProfile(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return Center(
-                                    child: Stack(children: [
-                                  GestureDetector(
-                                    onTap: () async {
-                                      await showDialog(
-                                        context: context,
-                                        builder: (_) => Dialog(
-                                          backgroundColor: Colors.black,
-                                          insetPadding:
-                                              const EdgeInsets.all(20),
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: 350,
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        "${snapshot.data["CustomerImage"]}"),
-                                                    fit: BoxFit.cover)),
+          bottomNavigationBar: ScrollToHide(
+              scrollController: scrollController,
+              height: 100,
+              child: const MyBottomMenu(
+                active: 4,
+              )),
+          body: Container(
+              height: MediaQuery.of(context).size.height - 100,
+              child: ListView(
+                controller: scrollController,
+                padding: const EdgeInsets.symmetric(vertical: 25),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                              onTap: () {
+                                makingPhoneCall();
+                              },
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/call-black.png",
+                                    width: 25,
+                                    height: 25,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Text("Hỗ trợ",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400))
+                                ],
+                              )),
+                        ),
+                        Expanded(
+                            child: FutureBuilder(
+                                future: profileModel.getProfile(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Center(
+                                        child: Stack(children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (_) => Dialog(
+                                              backgroundColor: Colors.black,
+                                              insetPadding:
+                                                  const EdgeInsets.all(20),
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: 350,
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            "${snapshot.data["CustomerImage"]}"),
+                                                        fit: BoxFit.cover)),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: SizedBox(
+                                          width: 100,
+                                          height: 100,
+                                          child: CircleAvatar(
+                                            backgroundColor:
+                                                const Color(0xff00A3FF),
+                                            backgroundImage: NetworkImage(
+                                                "${snapshot.data["CustomerImage"]}"),
+                                            radius: 35.0,
                                           ),
                                         ),
-                                      );
+                                      ),
+                                      Positioned(
+                                        right: 0,
+                                        bottom: 0,
+                                        child: Container(
+                                            padding: const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(90.0),
+                                                color: Colors.blue[100]),
+                                            child: GestureDetector(
+                                                onTap: () {
+                                                  _pickFile();
+                                                },
+                                                child: Icon(
+                                                  Icons.linked_camera,
+                                                  size: 16,
+                                                  color: Colors.blue[600],
+                                                ))),
+                                      )
+                                    ]));
+                                  } else {
+                                    return const Center(
+                                      child: SizedBox(
+                                        width: 40,
+                                        height: 40,
+                                        child: LoadingIndicator(
+                                          colors: kDefaultRainbowColors,
+                                          indicatorType:
+                                              Indicator.lineSpinFadeLoader,
+                                          strokeWidth: 1,
+                                          // pathBackgroundColor: Colors.black45,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                })),
+                        Expanded(
+                            child: Align(
+                                alignment: Alignment.topRight,
+                                child: FutureBuilder(
+                                    future: profileModel.getProfile(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        return Container(
+                                          width: 55,
+                                          padding: const EdgeInsets.all(2),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(20)),
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                                  .withOpacity(0.4)),
+                                          child: GestureDetector(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons
+                                                      .monetization_on_outlined,
+                                                  color: Colors.yellow[300],
+                                                  size: 28,
+                                                ),
+                                                const SizedBox(
+                                                  width: 3,
+                                                ),
+                                                Text(
+                                                  "${snapshot.data!["Point"] ?? "0"}",
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: SizedBox(
+                                            width: 40,
+                                            height: 40,
+                                            child: LoadingIndicator(
+                                              colors: kDefaultRainbowColors,
+                                              indicatorType:
+                                                  Indicator.lineSpinFadeLoader,
+                                              strokeWidth: 1,
+                                              // pathBackgroundColor: Colors.black45,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    })))
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  FutureBuilder(
+                    future: profileModel.getProfile(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        Map profile = snapshot.data!;
+                        return Column(
+                          children: [
+                            Text(profile["CustomerName"].toString(),
+                                style: const TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.w400)),
+                            Text(profile["Phone"].toString(),
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w300))
+                          ],
+                        );
+                      } else {
+                        return const Center(
+                          child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: LoadingIndicator(
+                              colors: kDefaultRainbowColors,
+                              indicatorType: Indicator.lineSpinFadeLoader,
+                              strokeWidth: 1,
+                              // pathBackgroundColor: Colors.black45,
+                            ),
+                          ),
+                          // SizedBox(
+                          //   width: 10,
+                          // ),
+                          // Text("Đang lấy dữ liệu")
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                          flex: 47,
+                          child: FutureBuilder(
+                              future: profileModel.getProfile(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ThanhVienScreen()));
                                     },
-                                    child: SizedBox(
-                                      width: 100,
-                                      height: 100,
-                                      child: CircleAvatar(
-                                        backgroundColor:
-                                            const Color(0xff00A3FF),
-                                        backgroundImage: NetworkImage(
-                                            "${snapshot.data["CustomerImage"]}"),
-                                        radius: 35.0,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(left: 15),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(6)),
+                                          border: Border.all(
+                                              width: 1, color: Colors.grey)),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                    .withOpacity(0.2),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(8))),
+                                            child: Image.network(
+                                              "https://cdn-icons-png.flaticon.com/512/2385/2385865.png",
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  checkRank(int.parse(
+                                                      snapshot.data!["Point"] ??
+                                                          "0")),
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                              Text("Nâng hạng",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300))
+                                            ],
+                                          )
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    child: Container(
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(90.0),
-                                            color: Colors.blue[100]),
-                                        child: GestureDetector(
-                                            onTap: () {
-                                              _pickFile();
-                                            },
-                                            child: Icon(
-                                              Icons.linked_camera,
-                                              size: 16,
-                                              color: Colors.blue[600],
-                                            ))),
-                                  )
-                                ]));
-                              } else {
-                                return const Center(
-                                  child: SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: LoadingIndicator(
-                                      colors: kDefaultRainbowColors,
-                                      indicatorType:
-                                          Indicator.lineSpinFadeLoader,
-                                      strokeWidth: 1,
-                                      // pathBackgroundColor: Colors.black45,
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }
-                            })),
-                    Expanded(
-                        child: Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                        width: 55,
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20)),
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.4)),
-                        child: GestureDetector(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.monetization_on_outlined,
-                                color: Colors.yellow[300],
-                                size: 28,
-                              ),
-                              const SizedBox(
-                                width: 3,
-                              ),
-                              const Text(
-                                "0",
-                                style: TextStyle(fontWeight: FontWeight.w400),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ))
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              FutureBuilder(
-                future: profileModel.getProfile(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    Map profile = snapshot.data!;
-                    return Column(
-                      children: [
-                        Text(profile["CustomerName"].toString(),
-                            style: const TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.w400)),
-                        Text(profile["Phone"].toString(),
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w300))
-                      ],
-                    );
-                  } else {
-                    return const Center(
-                      child: SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: LoadingIndicator(
-                          colors: kDefaultRainbowColors,
-                          indicatorType: Indicator.lineSpinFadeLoader,
-                          strokeWidth: 1,
-                          // pathBackgroundColor: Colors.black45,
-                        ),
-                      ),
-                      // SizedBox(
-                      //   width: 10,
-                      // ),
-                      // Text("Đang lấy dữ liệu")
-                    );
-                  }
-                },
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                      flex: 47,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, "hangthanhvien");
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 15),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 10),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(6)),
-                              border: Border.all(width: 1, color: Colors.grey)),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.2),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(8))),
-                                child: Image.network(
-                                  "https://cdn-icons-png.flaticon.com/512/2385/2385865.png",
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Bạc",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500)),
-                                  Text("Nâng hạng",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w300))
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )),
-                  Expanded(flex: 6, child: Container()),
-                  Expanded(
-                      flex: 47,
-                      child: GestureDetector(
-                        onTap: () {
-                          // showAlertDialog(context,
-                          //     "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 15),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 10),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(6)),
-                              border: Border.all(width: 1, color: Colors.grey)),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.2),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(8))),
-                                child: Image.network(
-                                  "https://cdn-icons-png.flaticon.com/512/3702/3702999.png",
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Ưu đãi",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500)),
-                                  Text("Dùng ngay",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w300))
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )),
-                ],
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 20),
-                height: 420,
-                child: ListView(
-                  physics: const BouncingScrollPhysics(),
-                  children: [
-                    Column(
+                                  );
+                                }
+                              })),
+                      Expanded(flex: 6, child: Container()),
+                      Expanded(
+                          flex: 47,
+                          child: FutureBuilder(
+                              future: profileModel.getProfile(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      // showAlertDialog(context,
+                                      //     "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TinTucScreen()));
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(right: 15),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(6)),
+                                          border: Border.all(
+                                              width: 1, color: Colors.grey)),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 40,
+                                            height: 40,
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                    .withOpacity(0.2),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(8))),
+                                            child: Image.network(
+                                              "https://cdn-icons-png.flaticon.com/512/3702/3702999.png",
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Ưu đãi",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                              Text("Dùng ngay",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300))
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              })),
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: Column(
                       children: menu.map((element) {
                         int index = menu.indexOf(element);
                         return SizedBox(
@@ -565,15 +673,10 @@ class _AccountScreenState extends State<AccountScreen> {
                               )),
                         );
                       }).toList(),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                height: 25,
-              )
-            ],
-          )),
+                    ),
+                  ),
+                ],
+              ))),
     );
   }
 }

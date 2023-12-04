@@ -7,6 +7,7 @@ import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 Widget bannerLogin(BuildContext context) {
   final LocalStorage storageBranch = LocalStorage("branch");
   final LocalStorage storageStart = LocalStorage("start");
+  print(storageStart.getItem("start"));
   return Container(
     height: MediaQuery.of(context).size.height - 325,
     width: MediaQuery.of(context).size.width,
