@@ -200,7 +200,7 @@ class _AccountScreenState extends State<AccountScreen> {
         //     break;
         //   }
 
-        case 6:
+        case 7:
           handleLogout();
           break;
         default:
