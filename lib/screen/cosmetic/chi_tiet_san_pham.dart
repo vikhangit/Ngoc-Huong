@@ -194,7 +194,7 @@ class _ProductDetailState extends State<ProductDetail>
                         margin: const EdgeInsets.only(bottom: 5),
                         color: Colors.white,
                         height: MediaQuery.of(context).size.height -
-                            (widget.detailPage != null ? (260) : 120),
+                            (widget.detailPage != null ? (280) : 135),
                         child: ListView(
                           children: [
                             Column(

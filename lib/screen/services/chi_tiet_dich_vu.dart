@@ -116,8 +116,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                       // margin: const EdgeInsets.only(bottom: 10),
                       color: Colors.white,
                       height: MediaQuery.of(context).size.height -
-                          270 -
-                          MediaQuery.of(context).viewInsets.bottom,
+                          274,
                       child: ListView(
                         children: [
                           Container(
