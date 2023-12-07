@@ -20,6 +20,7 @@ import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
+import 'package:upgrader/upgrader.dart';
 
 class InfomationAccount extends StatefulWidget {
   const InfomationAccount({super.key});
@@ -62,6 +63,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
   void initState() {
     // storage.deleteItem("userInfo");
     super.initState();
+    Upgrader.clearSavedSettings();
     profileModel.getProfile().then((value) => setState(() {
           nameController = TextEditingController(text: value["CustomerName"]);
           phoneController = TextEditingController(text: value["Phone"]);
@@ -110,8 +112,8 @@ class _InfomationAccountState extends State<InfomationAccount> {
     });
   }
 
-  void clearBirthDay (){
-    setState((){
+  void clearBirthDay() {
+    setState(() {
       birthDay = null;
     });
   }
@@ -198,106 +200,118 @@ class _InfomationAccountState extends State<InfomationAccount> {
         key: _formKey,
         child: Builder(
             builder: (context) => SafeArea(
-              bottom: false,
+                  bottom: false,
                   child: Scaffold(
-                    backgroundColor: Colors.white,
-                    resizeToAvoidBottomInset: true,
-                    bottomNavigationBar: ScrollToHide(
-                        scrollController: scrollController,
-                        height: 100,
-                        child: const MyBottomMenu(
-                          active: 4,
-                        )),
-                    appBar: AppBar(
-                      leadingWidth: 45,
-                      centerTitle: true,
-                      leading: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 15),
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.white),
-                            child: const Icon(
-                              Icons.west,
-                              size: 16,
-                              color: Colors.black,
-                            ),
+                      backgroundColor: Colors.white,
+                      resizeToAvoidBottomInset: true,
+                      bottomNavigationBar: ScrollToHide(
+                          scrollController: scrollController,
+                          height: 100,
+                          child: const MyBottomMenu(
+                            active: 4,
                           )),
-                      title: const Text("Thông tin tài khoản",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white)),
-                    ),
-                    body: !loading
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: ListView(
-                                  controller: scrollController,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  children: [
-                                    const SizedBox(
-                                      height: 30,
+                      appBar: AppBar(
+                        leadingWidth: 45,
+                        centerTitle: true,
+                        leading: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 15),
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle, color: Colors.white),
+                              child: const Icon(
+                                Icons.west,
+                                size: 16,
+                                color: Colors.black,
+                              ),
+                            )),
+                        title: const Text("Thông tin tài khoản",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white)),
+                      ),
+                      body: UpgradeAlert(
+                        upgrader: Upgrader(
+                          dialogStyle: UpgradeDialogStyle.cupertino,
+                          canDismissDialog: false,
+                          showLater: false,
+                          showIgnore: false,
+                          showReleaseNotes: false,
+                        ),
+                        child: !loading
+                            ? Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: ListView(
+                                      controller: scrollController,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      children: [
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                        fieldName(
+                                            context,
+                                            (name) => changeName(name),
+                                            nameController),
+                                        fieldPhone(
+                                            context,
+                                            (name) => changeName(name),
+                                            phoneController),
+                                        gender(
+                                            context,
+                                            (index) => changeGender(index),
+                                            genderValue,
+                                            genderList),
+                                        fieldBirthDay(
+                                            context,
+                                            (context) =>
+                                                selectBirthDay(context),
+                                            birthDay,
+                                            () => clearBirthDay()),
+                                        fieldEmail(
+                                            context,
+                                            (value) => changeEmail(value),
+                                            emailController),
+                                        fieldAddress(
+                                            context,
+                                            (value) => changeAddress(value),
+                                            addressController)
+                                      ],
                                     ),
-                                    fieldName(
-                                        context,
-                                        (name) => changeName(name),
-                                        nameController),
-                                    fieldPhone(
-                                        context,
-                                        (name) => changeName(name),
-                                        phoneController),
-                                    gender(
-                                        context,
-                                        (index) => changeGender(index),
-                                        genderValue,
-                                        genderList),
-                                    fieldBirthDay(
-                                        context,
-                                        (context) => selectBirthDay(context),
-                                        birthDay, () => clearBirthDay()),
-                                    fieldEmail(
-                                        context,
-                                        (value) => changeEmail(value),
-                                        emailController),
-                                    fieldAddress(
-                                        context,
-                                        (value) => changeAddress(value),
-                                        addressController)
+                                  ),
+                                  buttonConfirm(context, saveUserInfo)
+                                ],
+                              )
+                            : const Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Đang lấy dữ liệu")
                                   ],
                                 ),
                               ),
-                              buttonConfirm(context, saveUserInfo)
-                            ],
-                          )
-                        : const Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: LoadingIndicator(
-                                    colors: kDefaultRainbowColors,
-                                    indicatorType: Indicator.lineSpinFadeLoader,
-                                    strokeWidth: 1,
-                                    // pathBackgroundColor: Colors.black45,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text("Đang lấy dữ liệu")
-                              ],
-                            ),
-                          ),
-                  ),
+                      )),
                 )));
   }
 }

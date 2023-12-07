@@ -6,7 +6,6 @@ import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_phuong_xa.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_quan_huyen.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/them_dia_chi.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalThanhPho extends StatefulWidget {
   final Function saveAddress;
@@ -108,43 +107,43 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
             future: addressModel.getProvinceApi(valueSearch),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Expanded(child:  ListView(
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    children: snapshot.data!.map((item) {
-                      return Container(
-                        margin: const EdgeInsets.only(left: 10, right: 10),
-                        height: 50,
-                        child: TextButton(
-                          onPressed: () {
-                            changeAddress(
-                                item["Id"], item["Name"]);
-                          },
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 10))),
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "${item["Name"]}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 16,
-                                    color: Colors.black),
+                return Expanded(
+                    child: ListView(
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        children: snapshot.data!.map((item) {
+                          return Container(
+                            margin: const EdgeInsets.only(left: 10, right: 10),
+                            height: 50,
+                            child: TextButton(
+                              onPressed: () {
+                                changeAddress(item["Id"], item["Name"]);
+                              },
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      const EdgeInsets.symmetric(
+                                          vertical: 0, horizontal: 10))),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${item["Name"]}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 16,
+                                        color: Colors.black),
+                                  ),
+                                  if (provinceId == item["Id"])
+                                    const Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    )
+                                ],
                               ),
-                              if (provinceId == item["Id"])
-                                const Icon(
-                                  Icons.check,
-                                  color: Colors.green,
-                                )
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList()));
+                            ),
+                          );
+                        }).toList()));
               } else {
                 return const Row(
                   mainAxisAlignment: MainAxisAlignment.center,

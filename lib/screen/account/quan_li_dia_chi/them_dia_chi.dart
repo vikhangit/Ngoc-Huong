@@ -12,8 +12,8 @@ import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/setting/custom_switch.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
+import 'package:upgrader/upgrader.dart';
 
 class ThemDiaChi extends StatefulWidget {
   final List listAddress;
@@ -48,6 +48,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
   @override
   void initState() {
     super.initState();
+    Upgrader.clearSavedSettings();
     cityController = TextEditingController(text: activeCity);
     districtController = TextEditingController(text: activeDistrict);
     wardController = TextEditingController(text: activeWard);
@@ -163,581 +164,629 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
                     color: Colors.white)),
           ),
           bottomNavigationBar: ScrollToHide(
-                        scrollController: scrollController,
-                        height: 100,
-                        child: const MyBottomMenu(
-                          active: 4,
-                        )),
-          body: SizedBox(
-              child: FutureBuilder(
-            future: profileModel.getProfile(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Expanded(
-                          child: ListView(
-                            controller: scrollController,
-                            padding: const EdgeInsets.only(
-                                left: 15, right: 15, bottom: 15),
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 7),
-                                      child: const Text(
-                                        "Loại địa chỉ",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14),
-                                      ),
+              scrollController: scrollController,
+              height: 100,
+              child: const MyBottomMenu(
+                active: 4,
+              )),
+          body: UpgradeAlert(
+              upgrader: Upgrader(
+                dialogStyle: UpgradeDialogStyle.cupertino,
+                canDismissDialog: false,
+                showLater: false,
+                showIgnore: false,
+                showReleaseNotes: false,
+              ),
+              child: SizedBox(
+                  child: FutureBuilder(
+                future: profileModel.getProfile(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: ListView(
+                                controller: scrollController,
+                                padding: const EdgeInsets.only(
+                                    left: 15, right: 15, bottom: 15),
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 7),
+                                          child: const Text(
+                                            "Loại địa chỉ",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                          ),
+                                        ),
+                                        TextFormField(
+                                          textAlignVertical:
+                                              TextAlignVertical.center,
+                                          readOnly: true,
+                                          decoration: InputDecoration(
+                                            focusedBorder: border,
+                                            errorBorder: border,
+                                            focusedErrorBorder: border,
+                                            enabledBorder: border2,
+                                            contentPadding:
+                                                const EdgeInsets.only(
+                                                    left: 5,
+                                                    right: 15,
+                                                    top: 18,
+                                                    bottom: 18),
+                                            suffixIcon: DropdownButtonFormField(
+                                              dropdownColor: Colors.white,
+                                              value: typeAdress,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500),
+                                              onChanged: (newValue) {
+                                                setState(() {
+                                                  typeAdress = newValue!;
+                                                });
+                                              },
+                                              decoration: const InputDecoration(
+                                                  enabledBorder:
+                                                      UnderlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide(
+                                                                  color: Colors
+                                                                      .white)),
+                                                  focusedBorder:
+                                                      UnderlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide(
+                                                                  color: Colors
+                                                                      .white))),
+                                              items: items.map<
+                                                      DropdownMenuItem<String>>(
+                                                  (String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                    TextFormField(
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      readOnly: true,
-                                      decoration: InputDecoration(
-                                        focusedBorder: border,
-                                        errorBorder: border,
-                                        focusedErrorBorder: border,
-                                        enabledBorder: border2,
-                                        contentPadding: const EdgeInsets.only(
-                                            left: 5,
-                                            right: 15,
-                                            top: 18,
-                                            bottom: 18),
-                                        suffixIcon: DropdownButtonFormField(
-                                          dropdownColor: Colors.white,
-                                          value: typeAdress,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 7),
+                                          child: const Text(
+                                            "Họ Tên",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                          ),
+                                        ),
+                                        TextFormField(
+                                          textAlignVertical:
+                                              TextAlignVertical.center,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Vui lòng nhập tên';
+                                            }
+                                            return null;
+                                          },
+                                          readOnly: true,
+                                          controller: TextEditingController(
+                                              text: snapshot
+                                                  .data!["CustomerName"]),
                                           style: const TextStyle(
                                               fontSize: 14,
                                               color: Colors.black,
                                               fontWeight: FontWeight.w500),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              typeAdress = newValue!;
-                                            });
-                                          },
-                                          decoration: const InputDecoration(
-                                              enabledBorder:
-                                                  UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.white)),
-                                              focusedBorder:
-                                                  UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Colors.white))),
-                                          items: items
-                                              .map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.grey[300],
+                                            focusedBorder: border,
+                                            errorBorder: border,
+                                            focusedErrorBorder: border,
+                                            enabledBorder: border2,
+                                            contentPadding:
+                                                const EdgeInsets.only(
+                                                    left: 5,
+                                                    right: 15,
+                                                    top: 18,
+                                                    bottom: 18),
+                                            prefix: const Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 15.0)),
+                                            hintStyle: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black
+                                                    .withOpacity(0.3),
+                                                fontWeight: FontWeight.w400),
+                                            hintText: 'Nhập tên',
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 7),
+                                          child: const Text(
+                                            "Số điện thoại",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 7),
-                                      child: const Text(
-                                        "Họ Tên",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14),
-                                      ),
+                                        TextFormField(
+                                          textAlignVertical:
+                                              TextAlignVertical.center,
+                                          readOnly: true,
+                                          controller: TextEditingController(
+                                              text: snapshot.data!["Phone"]),
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                          decoration: InputDecoration(
+                                            focusedBorder: border,
+                                            errorBorder: border,
+                                            focusedErrorBorder: border,
+                                            enabledBorder: border2,
+                                            filled: true,
+                                            fillColor: Colors.grey[300],
+                                            contentPadding:
+                                                const EdgeInsets.only(
+                                                    left: 5,
+                                                    right: 15,
+                                                    top: 18,
+                                                    bottom: 18),
+                                            prefix: const Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 15.0)),
+                                            hintStyle: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black
+                                                    .withOpacity(0.3),
+                                                fontWeight: FontWeight.w400),
+                                            hintText: 'Nhập số điện thoại',
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                    TextFormField(
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Vui lòng nhập tên';
-                                        }
-                                        return null;
-                                      },
-                                      readOnly: true,
-                                      controller: TextEditingController(
-                                          text: snapshot.data!["CustomerName"]),
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500),
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Colors.grey[300],
-                                        focusedBorder: border,
-                                        errorBorder: border,
-                                        focusedErrorBorder: border,
-                                        enabledBorder: border2,
-                                        contentPadding: const EdgeInsets.only(
-                                            left: 5,
-                                            right: 15,
-                                            top: 18,
-                                            bottom: 18),
-                                        prefix: const Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 15.0)),
-                                        hintStyle: TextStyle(
-                                            fontSize: 14,
-                                            color:
-                                                Colors.black.withOpacity(0.3),
-                                            fontWeight: FontWeight.w400),
-                                        hintText: 'Nhập tên',
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 7),
-                                      child: const Text(
-                                        "Số điện thoại",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14),
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      readOnly: true,
-                                      controller: TextEditingController(
-                                          text: snapshot.data!["Phone"]),
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500),
-                                      decoration: InputDecoration(
-                                        focusedBorder: border,
-                                        errorBorder: border,
-                                        focusedErrorBorder: border,
-                                        enabledBorder: border2,
-                                        filled: true,
-                                        fillColor: Colors.grey[300],
-                                        contentPadding: const EdgeInsets.only(
-                                            left: 5,
-                                            right: 15,
-                                            top: 18,
-                                            bottom: 18),
-                                        prefix: const Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 15.0)),
-                                        hintStyle: TextStyle(
-                                            fontSize: 14,
-                                            color:
-                                                Colors.black.withOpacity(0.3),
-                                            fontWeight: FontWeight.w400),
-                                        hintText: 'Nhập số điện thoại',
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 7),
-                                      child: const Text(
-                                        "Tỉnh/Thành Phố",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14),
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500),
-                                      readOnly: true,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return "Vui lòng chọn tỉnh/thành phố";
-                                        }
-                                        return null;
-                                      },
-                                      controller: TextEditingController(
-                                          text: activeCity),
-                                      onTap: () {
-                                        showModalBottomSheet<void>(
-                                            backgroundColor: Colors.white,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.vertical(
-                                                top: Radius.circular(15.0),
-                                              ),
-                                            ),
-                                            clipBehavior:
-                                                Clip.antiAliasWithSaveLayer,
-                                            context: context,
-                                            isScrollControlled: true,
-                                            builder: (BuildContext context) {
-                                              return Container(
-                                                  padding: EdgeInsets.only(
-                                                      bottom:
-                                                          MediaQuery.of(context)
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 7),
+                                          child: const Text(
+                                            "Tỉnh/Thành Phố",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                          ),
+                                        ),
+                                        TextFormField(
+                                          textAlignVertical:
+                                              TextAlignVertical.center,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                          readOnly: true,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "Vui lòng chọn tỉnh/thành phố";
+                                            }
+                                            return null;
+                                          },
+                                          controller: TextEditingController(
+                                              text: activeCity),
+                                          onTap: () {
+                                            showModalBottomSheet<void>(
+                                                backgroundColor: Colors.white,
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.vertical(
+                                                    top: Radius.circular(15.0),
+                                                  ),
+                                                ),
+                                                clipBehavior:
+                                                    Clip.antiAliasWithSaveLayer,
+                                                context: context,
+                                                isScrollControlled: true,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Container(
+                                                      padding: EdgeInsets.only(
+                                                          bottom: MediaQuery.of(
+                                                                  context)
                                                               .viewInsets
                                                               .bottom),
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.8,
-                                                  child: ModalThanhPho(
-                                                    saveAddress: saveAddress,
-                                                  ));
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.8,
+                                                      child: ModalThanhPho(
+                                                        saveAddress:
+                                                            saveAddress,
+                                                      ));
+                                                });
+                                          },
+                                          decoration: InputDecoration(
+                                            suffixIcon: const Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Colors.black,
+                                            ),
+                                            focusedBorder: border,
+                                            errorBorder: border,
+                                            focusedErrorBorder: border,
+                                            enabledBorder: border2,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 7),
+                                          child: const Text(
+                                            "Quận/Huyện",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                          ),
+                                        ),
+                                        TextFormField(
+                                          textAlignVertical:
+                                              TextAlignVertical.center,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                          readOnly: true,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "Vui lòng chọn quận/huyện";
+                                            }
+                                            return null;
+                                          },
+                                          controller: TextEditingController(
+                                              text: activeDistrict),
+                                          onTap: () {
+                                            if (activeCity.isNotEmpty &&
+                                                provinceId.isNotEmpty) {
+                                              showModalBottomSheet<void>(
+                                                  backgroundColor: Colors.white,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                      top:
+                                                          Radius.circular(15.0),
+                                                    ),
+                                                  ),
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                        padding: EdgeInsets.only(
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.8,
+                                                        child: ModalQuanHuyen(
+                                                          saveAddress:
+                                                              saveAddress,
+                                                        ));
+                                                  });
+                                            } else {
+                                              customModal.showAlertDialog(
+                                                  context,
+                                                  "error",
+                                                  "Lỗi",
+                                                  "Vui lòng chọn tỉnh/thành phố trước",
+                                                  () => Navigator.pop(context),
+                                                  () => Navigator.pop(context));
+                                            }
+                                          },
+                                          decoration: InputDecoration(
+                                            suffixIcon: const Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Colors.black,
+                                            ),
+                                            focusedBorder: border,
+                                            errorBorder: border,
+                                            focusedErrorBorder: border,
+                                            enabledBorder: border2,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 7),
+                                          child: const Text(
+                                            "Phường/Xã",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                          ),
+                                        ),
+                                        TextFormField(
+                                          textAlignVertical:
+                                              TextAlignVertical.center,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                          readOnly: true,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "Vui lòng chọn phường/xã";
+                                            }
+                                            return null;
+                                          },
+                                          controller: TextEditingController(
+                                              text: activeWard),
+                                          onTap: () {
+                                            if (activeCity.isNotEmpty &&
+                                                provinceId.isNotEmpty &&
+                                                activeDistrict.isNotEmpty &&
+                                                districtId.isNotEmpty) {
+                                              showModalBottomSheet<void>(
+                                                  backgroundColor: Colors.white,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                      top:
+                                                          Radius.circular(15.0),
+                                                    ),
+                                                  ),
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                        padding: EdgeInsets.only(
+                                                            bottom:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.8,
+                                                        child: ModalPhuongXa(
+                                                          saveAddress:
+                                                              saveAddress,
+                                                        ));
+                                                  });
+                                            } else {
+                                              customModal.showAlertDialog(
+                                                  context,
+                                                  "error",
+                                                  "Lỗi",
+                                                  "Vui lòng chọn tỉnh/thành phố và phường/xã trước",
+                                                  () => Navigator.pop(context),
+                                                  () => Navigator.pop(context));
+                                            }
+                                          },
+                                          decoration: InputDecoration(
+                                            suffixIcon: const Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Colors.black,
+                                            ),
+                                            focusedBorder: border,
+                                            errorBorder: border,
+                                            focusedErrorBorder: border,
+                                            enabledBorder: border2,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 7),
+                                          child: const Text(
+                                            "Địa chỉ cụ thể",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14),
+                                          ),
+                                        ),
+                                        TextFormField(
+                                          textAlignVertical:
+                                              TextAlignVertical.center,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return 'Vui lòng địa chỉ cụ thể';
+                                            }
+                                            return null;
+                                          },
+                                          onChanged: (value) {
+                                            setState(() {
+                                              address = value;
                                             });
-                                      },
-                                      decoration: InputDecoration(
-                                        suffixIcon: const Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: Colors.black,
+                                          },
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                          decoration: InputDecoration(
+                                            focusedBorder: border,
+                                            errorBorder: border,
+                                            focusedErrorBorder: border,
+                                            enabledBorder: border2,
+                                            contentPadding:
+                                                const EdgeInsets.only(
+                                                    left: 5,
+                                                    right: 15,
+                                                    top: 18,
+                                                    bottom: 18),
+                                            prefix: const Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 15.0)),
+                                            hintStyle: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black
+                                                    .withOpacity(0.3),
+                                                fontWeight: FontWeight.w400),
+                                            hintText: '',
+                                          ),
                                         ),
-                                        focusedBorder: border,
-                                        errorBorder: border,
-                                        focusedErrorBorder: border,
-                                        enabledBorder: border2,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 7),
-                                      child: const Text(
-                                        "Quận/Huyện",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14),
-                                      ),
+                                      ],
                                     ),
-                                    TextFormField(
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500),
-                                      readOnly: true,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return "Vui lòng chọn quận/huyện";
-                                        }
-                                        return null;
-                                      },
-                                      controller: TextEditingController(
-                                          text: activeDistrict),
-                                      onTap: () {
-                                        if (activeCity.isNotEmpty &&
-                                            provinceId.isNotEmpty) {
-                                          showModalBottomSheet<void>(
-                                              backgroundColor: Colors.white,
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.vertical(
-                                                  top: Radius.circular(15.0),
-                                                ),
-                                              ),
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              context: context,
-                                              isScrollControlled: true,
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                    padding: EdgeInsets.only(
-                                                        bottom: MediaQuery.of(
-                                                                context)
-                                                            .viewInsets
-                                                            .bottom),
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.8,
-                                                    child: ModalQuanHuyen(
-                                                      saveAddress: saveAddress,
-                                                    ));
-                                              });
-                                        } else {
-                                          customModal.showAlertDialog(
-                                              context,
-                                              "error",
-                                              "Lỗi",
-                                              "Vui lòng chọn tỉnh/thành phố trước",
-                                              () => Navigator.pop(context),
-                                              () => Navigator.pop(context));
-                                        }
-                                      },
-                                      decoration: InputDecoration(
-                                        suffixIcon: const Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: Colors.black,
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 25),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Đặt làm mặc định",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
                                         ),
-                                        focusedBorder: border,
-                                        errorBorder: border,
-                                        focusedErrorBorder: border,
-                                        enabledBorder: border2,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 7),
-                                      child: const Text(
-                                        "Phường/Xã",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14),
-                                      ),
+                                        CustomSwitch(
+                                          value: isDefault,
+                                          onChanged: (bool val) {
+                                            setState(() {
+                                              isDefault = val;
+                                            });
+                                          },
+                                        )
+                                      ],
                                     ),
-                                    TextFormField(
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500),
-                                      readOnly: true,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return "Vui lòng chọn phường/xã";
-                                        }
-                                        return null;
-                                      },
-                                      controller: TextEditingController(
-                                          text: activeWard),
-                                      onTap: () {
-                                        if (activeCity.isNotEmpty &&
-                                            provinceId.isNotEmpty &&
-                                            activeDistrict.isNotEmpty &&
-                                            districtId.isNotEmpty) {
-                                          showModalBottomSheet<void>(
-                                              backgroundColor: Colors.white,
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.vertical(
-                                                  top: Radius.circular(15.0),
-                                                ),
-                                              ),
-                                              clipBehavior:
-                                                  Clip.antiAliasWithSaveLayer,
-                                              context: context,
-                                              isScrollControlled: true,
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                    padding: EdgeInsets.only(
-                                                        bottom: MediaQuery.of(
-                                                                context)
-                                                            .viewInsets
-                                                            .bottom),
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.8,
-                                                    child: ModalPhuongXa(
-                                                      saveAddress: saveAddress,
-                                                    ));
-                                              });
-                                        } else {
-                                          customModal.showAlertDialog(
-                                              context,
-                                              "error",
-                                              "Lỗi",
-                                              "Vui lòng chọn tỉnh/thành phố và phường/xã trước",
-                                              () => Navigator.pop(context),
-                                              () => Navigator.pop(context));
-                                        }
-                                      },
-                                      decoration: InputDecoration(
-                                        suffixIcon: const Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: Colors.black,
-                                        ),
-                                        focusedBorder: border,
-                                        errorBorder: border,
-                                        focusedErrorBorder: border,
-                                        enabledBorder: border2,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 15),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(bottom: 7),
-                                      child: const Text(
-                                        "Địa chỉ cụ thể",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14),
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Vui lòng địa chỉ cụ thể';
-                                        }
-                                        return null;
-                                      },
-                                      onChanged: (value) {
-                                        setState(() {
-                                          address = value;
-                                        });
-                                      },
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500),
-                                      decoration: InputDecoration(
-                                        focusedBorder: border,
-                                        errorBorder: border,
-                                        focusedErrorBorder: border,
-                                        enabledBorder: border2,
-                                        contentPadding: const EdgeInsets.only(
-                                            left: 5,
-                                            right: 15,
-                                            top: 18,
-                                            bottom: 18),
-                                        prefix: const Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 15.0)),
-                                        hintStyle: TextStyle(
-                                            fontSize: 14,
-                                            color:
-                                                Colors.black.withOpacity(0.3),
-                                            fontWeight: FontWeight.w400),
-                                        hintText: '',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 25),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      "Đặt làm mặc định",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                    ),
-                                    CustomSwitch(
-                                      value: isDefault,
-                                      onChanged: (bool val) {
-                                        setState(() {
-                                          isDefault = val;
-                                        });
-                                      },
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.all(15),
-                          child: TextButton(
-                            onPressed: () {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                              addAddress();
-                            },
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)))),
-                                backgroundColor: MaterialStateProperty.all(
-                                    Theme.of(context).colorScheme.primary),
-                                padding: MaterialStateProperty.all(
-                                    const EdgeInsets.symmetric(
-                                        vertical: 14, horizontal: 20))),
-                            child: const Center(
-                              child: Text(
-                                "Lưu địa chỉ",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white),
+                                  )
+                                ],
                               ),
                             ),
-                          ),
-                        )
-                      ],
-                    ));
-              } else {
-                return const Center(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: LoadingIndicator(
-                              colors: kDefaultRainbowColors,
-                              indicatorType: Indicator.lineSpinFadeLoader,
-                              strokeWidth: 1,
-                            )),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text("Đang lấy dữ liệu")
-                      ]),
-                );
-              }
-            },
-          ))),
+                            Container(
+                              margin: const EdgeInsets.all(15),
+                              child: TextButton(
+                                onPressed: () {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  addAddress();
+                                },
+                                style: ButtonStyle(
+                                    shape: MaterialStateProperty.all(
+                                        const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)))),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Theme.of(context).colorScheme.primary),
+                                    padding: MaterialStateProperty.all(
+                                        const EdgeInsets.symmetric(
+                                            vertical: 14, horizontal: 20))),
+                                child: const Center(
+                                  child: Text(
+                                    "Lưu địa chỉ",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ));
+                  } else {
+                    return const Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: LoadingIndicator(
+                                  colors: kDefaultRainbowColors,
+                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                  strokeWidth: 1,
+                                )),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Đang lấy dữ liệu")
+                          ]),
+                    );
+                  }
+                },
+              )))),
     );
   }
 }

@@ -6,7 +6,6 @@ import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_phuong_xa.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_thanh_pho.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/them_dia_chi.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalQuanHuyen extends StatefulWidget {
   final Function saveAddress;
@@ -129,8 +128,7 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
                                     const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 10))),
                             child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   "${item["Name"]}",

@@ -26,6 +26,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final DataCustom customTheme = DataCustom();
   final Login login = Login();
   LocalStorage storageAuth = LocalStorage("auth");
+
+  @override
+  void initState() {
+    super.initState();
+    Upgrader.clearSavedSettings();
+  }
+
   void changePhone(String value) {
     setState(() {
       if (value.indexOf("0") == 0) {

@@ -75,26 +75,13 @@ class _ProductPageState extends State<ProductPage> {
                   List<Widget> pages = List<Widget>.generate(
                       list.length,
                       (i) => GestureDetector(
-                            onTap: () => showModalBottomSheet<void>(
-                                backgroundColor: Colors.white,
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (BuildContext context) {
-                                  return Container(
-                                      color: Colors.white,
-                                      padding: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context)
-                                              .viewInsets
-                                              .bottom),
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.85,
-                                      child: ProductDetail(
-                                        details: list[i],
-                                        detailPage: true,
-                                      ));
-                                }),
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductDetail(
+                                          details: list[i],
+                                          detailPage: true,
+                                        ))),
                             child: Container(
                               margin: EdgeInsets.only(
                                   left: 5, top: 5, bottom: 5, right: 5),

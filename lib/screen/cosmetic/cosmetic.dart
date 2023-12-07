@@ -13,6 +13,7 @@ import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
+import 'package:upgrader/upgrader.dart';
 
 class Cosmetic extends StatefulWidget {
   final List listTab;
@@ -37,6 +38,7 @@ class _CosmeticState extends State<Cosmetic> {
   @override
   void initState() {
     super.initState();
+    Upgrader.clearSavedSettings();
     setState(() {
       showIndex = "";
       listAction.clear();
@@ -199,166 +201,189 @@ class _CosmeticState extends State<Cosmetic> {
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
             ),
-            body: Container(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                child: Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  spacing: 5,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 0),
-                      height: MediaQuery.of(context).size.height - 250,
-                      width: MediaQuery.of(context).size.width * .25,
-                      child: ListView(
-                        children: listAction.map((item) {
-                          int index = listAction.indexOf(item);
-                          return Container(
-                            // margin: EdgeInsets.only(
-                            //     bottom:
-                            //         index == listAction.length - 1 ? 15 : 0),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    left: activeCode == item["GroupCode"]
-                                        ? const BorderSide(
-                                            width: 3, color: Colors.red)
-                                        : BorderSide.none)),
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height / 4 -
-                                (item["GroupCode"] ==
-                                        "KEM DƯỠNG NÂNG CẤP CHẤT LƯỢNG DA"
-                                    ? 40
-                                    : 80),
-                            child: TextButton(
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                          vertical: 18, horizontal: 10)),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      activeCode == item["GroupCode"]
-                                          ? Colors.red[100]
-                                          : Colors.blue[100]),
-                                  shape: MaterialStateProperty.all(
-                                      const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(0))))),
-                              onPressed: () {
-                                goToAction(item["GroupCode"]);
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    "assets/images/icon/my-pham.png",
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.contain,
+            body: UpgradeAlert(
+                upgrader: Upgrader(
+                  dialogStyle: UpgradeDialogStyle.cupertino,
+                  canDismissDialog: false,
+                  showLater: false,
+                  showIgnore: false,
+                  showReleaseNotes: false,
+                ),
+                child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      spacing: 5,
+                      children: [
+                        Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 0),
+                            width: MediaQuery.of(context).size.width * .3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "DANH MỤC",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: mainColor),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height - 250,
+                                  child: ListView(
+                                    children: [
+                                      Column(
+                                        children: listAction.map((item) {
+                                          return Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 2),
+                                            decoration: BoxDecoration(
+                                                border: Border(
+                                                    left: activeCode ==
+                                                            item["GroupCode"]
+                                                        ? const BorderSide(
+                                                            width: 3,
+                                                            color: Colors.red)
+                                                        : BorderSide.none)),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 45,
+                                            child: TextButton(
+                                              style: ButtonStyle(
+                                                  padding:
+                                                      MaterialStateProperty.all(
+                                                          const EdgeInsets.symmetric(
+                                                              vertical: 0,
+                                                              horizontal: 2)),
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          activeCode == item["GroupCode"]
+                                                              ? Colors.white
+                                                              : Colors
+                                                                  .red[100]),
+                                                  shape: MaterialStateProperty.all(
+                                                      const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius.circular(0))))),
+                                              onPressed: () {
+                                                goToAction(item["GroupCode"]);
+                                              },
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Flexible(
+                                                      child: Text(
+                                                    "${item["GroupName"].toString()[0].toUpperCase()}${item["GroupName"].toString().substring(1).toLowerCase()}",
+                                                    style: const TextStyle(
+                                                        fontSize: 9,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  )),
+                                                  const Icon(
+                                                    Icons.keyboard_arrow_right,
+                                                    size: 18,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                      Column(
+                                        children: List.generate(
+                                          5,
+                                          (index) => Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 2),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            decoration: BoxDecoration(
+                                                color: Colors.red[100]),
+                                            height: 45,
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Flexible(
-                                      child: Text(
-                                    item["GroupName"],
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400),
-                                  ))
-                                ],
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .75 - 10,
-                      height: MediaQuery.of(context).size.height - 250,
-                      child: ListView(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
-                        // controller: scrollController,
-                        children: [
-                          FutureBuilder(
-                            future: productModel.getProductByGroup(activeCode),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                List list = snapshot.data!.toList();
-                                return Wrap(
-                                    // runSpacing: 8,
-                                    alignment: WrapAlignment.spaceBetween,
-                                    children: list.map((item) {
-                                      return GestureDetector(
-                                          onTap: () {
-                                            showModalBottomSheet<void>(
-                                                backgroundColor: Colors.white,
-                                                clipBehavior:
-                                                    Clip.antiAliasWithSaveLayer,
-                                                context: context,
-                                                isScrollControlled: true,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return Container(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: MediaQuery.of(
-                                                                  context)
-                                                              .viewInsets
-                                                              .bottom),
-                                                      height:
+                                ),
+                              ],
+                            )),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .7 - 10,
+                          height: MediaQuery.of(context).size.height - 250,
+                          child: ListView(
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            // controller: scrollController,
+                            children: [
+                              FutureBuilder(
+                                future:
+                                    productModel.getProductByGroup(activeCode),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    List list = snapshot.data!.toList();
+                                    return Wrap(
+                                        // runSpacing: 8,
+                                        alignment: WrapAlignment.spaceBetween,
+                                        children: list.map((item) {
+                                          return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProductDetail(
+                                                              details: item,
+                                                              detailPage: true,
+                                                            )));
+                                              },
+                                              child: Stack(
+                                                children: [
+                                                  Container(
+                                                      width:
                                                           MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.85,
-                                                      child: ProductDetail(
-                                                        details: item,
-                                                        detailPage: true,
-                                                      ));
-                                                });
-                                          },
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                  width: MediaQuery.of(context)
-                                                              .size
-                                                              .width *
-                                                          .7 /
-                                                          2 -
-                                                      5,
-                                                  height: 260,
-                                                  margin: EdgeInsets.only(
-                                                      left: 2,
-                                                      right: 2,
-                                                      top: 8),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                15)),
-                                                    color: Colors.white,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.3),
-                                                        spreadRadius: 2,
-                                                        blurRadius: 2,
-                                                        offset: Offset(0,
-                                                            1), // changes position of shadow
+                                                                      .size
+                                                                      .width *
+                                                                  .7 /
+                                                                  2 -
+                                                              10,
+                                                      height: 230,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 2,
+                                                              right: 2,
+                                                              top: 8),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    15)),
+                                                        color: Colors.white,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.3),
+                                                            spreadRadius: 2,
+                                                            blurRadius: 2,
+                                                            offset: Offset(0,
+                                                                1), // changes position of shadow
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 6,
-                                                      vertical: 6),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Column(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 6,
+                                                          vertical: 6),
+                                                      child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
                                                                 .center,
@@ -366,190 +391,186 @@ class _CosmeticState extends State<Cosmetic> {
                                                             MainAxisAlignment
                                                                 .spaceBetween,
                                                         children: [
-                                                          Container(
-                                                              width:
-                                                                  MediaQuery.of(
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Container(
+                                                                  width: MediaQuery.of(
                                                                           context)
                                                                       .size
                                                                       .width,
-                                                              height: 120,
+                                                                  height: 120,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        const BorderRadius
+                                                                            .all(
+                                                                            Radius.circular(15)),
+                                                                    color: Colors
+                                                                        .white,
+                                                                    boxShadow: [
+                                                                      BoxShadow(
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .withOpacity(0.3),
+                                                                        spreadRadius:
+                                                                            2,
+                                                                        blurRadius:
+                                                                            2,
+                                                                        offset: Offset(
+                                                                            0,
+                                                                            1), // changes position of shadow
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            15),
+                                                                    child: Image
+                                                                        .network(
+                                                                      "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                    ),
+                                                                  )),
+                                                              const SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                "${item["Name"]}",
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    color:
+                                                                        mainColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 5,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    2),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  const BorderRadius
+                                                                      .all(
+                                                                      Radius.circular(
+                                                                          8)),
+                                                              color:
+                                                                  Colors.white,
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .withOpacity(
+                                                                          0.3),
+                                                                  spreadRadius:
+                                                                      2,
+                                                                  blurRadius: 2,
+                                                                  offset: Offset(
+                                                                      0,
+                                                                      1), // changes position of shadow
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            child:
+                                                                GestureDetector(
+                                                                    child:
+                                                                        Container(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          8),
                                                               decoration:
                                                                   BoxDecoration(
                                                                 borderRadius:
                                                                     const BorderRadius
                                                                         .all(
                                                                         Radius.circular(
-                                                                            15)),
-                                                                color: Colors
-                                                                    .white,
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .withOpacity(
-                                                                            0.3),
-                                                                    spreadRadius:
-                                                                        2,
-                                                                    blurRadius:
-                                                                        2,
-                                                                    offset: Offset(
-                                                                        0,
-                                                                        1), // changes position of shadow
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            15),
-                                                                child: Image
-                                                                    .network(
-                                                                  "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                                  fit: BoxFit
-                                                                      .contain,
-                                                                ),
-                                                              )),
-                                                          const SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          Text(
-                                                            "${item["Name"]}",
-                                                            maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                color:
-                                                                    mainColor,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          Text(
-                                                            "${item["CategoryCode"]}",
-                                                            maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                                fontSize: 10,
-                                                                height: 1.2,
-                                                                color:
-                                                                    mainColor,
-                                                                fontStyle:
-                                                                    FontStyle
-                                                                        .italic,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Container(
-                                                        padding:
-                                                            EdgeInsets.all(2),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8)),
-                                                          color: Colors.white,
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                      0.3),
-                                                              spreadRadius: 2,
-                                                              blurRadius: 2,
-                                                              offset: Offset(0,
-                                                                  1), // changes position of shadow
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: GestureDetector(
-                                                            child: Container(
-                                                          alignment:
-                                                              Alignment.center,
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical: 8),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                const BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
                                                                             8)),
-                                                            color: mainColor,
-                                                          ),
-                                                          child: Text(
-                                                              "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceInbound"])} Đ",
-                                                              style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color: Colors
-                                                                      .amber)),
-                                                        )),
-                                                      )
-                                                    ],
-                                                  )),
-                                            ],
-                                          ));
-                                    }).toList());
-                              } else {
-                                return Container(
-                                    alignment: Alignment.center,
-                                    height: MediaQuery.of(context).size.height -
-                                        250,
-                                    child: const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 40,
-                                          height: 40,
-                                          child: LoadingIndicator(
-                                            colors: kDefaultRainbowColors,
-                                            indicatorType:
-                                                Indicator.lineSpinFadeLoader,
-                                            strokeWidth: 1,
-                                            // pathBackgroundColor: Colors.black45,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text("Đang lấy dữ liệu")
-                                      ],
-                                    ));
-                              }
-                            },
+                                                                color:
+                                                                    mainColor,
+                                                              ),
+                                                              child: Text(
+                                                                  "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceInbound"])} Đ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      color: Colors
+                                                                          .amber)),
+                                                            )),
+                                                          )
+                                                        ],
+                                                      )),
+                                                ],
+                                              ));
+                                        }).toList());
+                                  } else {
+                                    return Container(
+                                        alignment: Alignment.center,
+                                        height:
+                                            MediaQuery.of(context).size.height -
+                                                250,
+                                        child: const Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 40,
+                                              height: 40,
+                                              child: LoadingIndicator(
+                                                colors: kDefaultRainbowColors,
+                                                indicatorType: Indicator
+                                                    .lineSpinFadeLoader,
+                                                strokeWidth: 1,
+                                                // pathBackgroundColor: Colors.black45,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text("Đang lấy dữ liệu")
+                                          ],
+                                        ));
+                                  }
+                                },
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              )
+                            ],
                           ),
-                          const SizedBox(
-                            height: 20,
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ))));
+                        )
+                      ],
+                    )))));
   }
 }

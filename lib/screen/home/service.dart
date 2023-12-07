@@ -76,24 +76,11 @@ class _ServicesPageState extends State<ServicesPage> {
                   List<Widget> pages = List<Widget>.generate(
                       list.length,
                       (i) => GestureDetector(
-                          onTap: () => showModalBottomSheet<void>(
-                              backgroundColor: Colors.white,
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (BuildContext context) {
-                                return Container(
-                                    color: Colors.white,
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.85,
-                                    child: ChiTietScreen(
-                                      detail: list[i],
-                                    ));
-                              }),
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChiTietScreen(detail: list[i]))),
                           child: Container(
                             margin: const EdgeInsets.only(
                               left: 5,
@@ -168,27 +155,12 @@ class _ServicesPageState extends State<ServicesPage> {
                                   ),
                                   child: GestureDetector(
                                       onTap: () {
-                                        showModalBottomSheet<void>(
-                                            backgroundColor: Colors.white,
-                                            clipBehavior:
-                                                Clip.antiAliasWithSaveLayer,
-                                            context: context,
-                                            isScrollControlled: true,
-                                            builder: (BuildContext context) {
-                                              return Container(
-                                                  padding: EdgeInsets.only(
-                                                      bottom:
-                                                          MediaQuery.of(context)
-                                                              .viewInsets
-                                                              .bottom),
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.85,
-                                                  child: ChiTietScreen(
-                                                    detail: list[i],
-                                                  ));
-                                            });
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ChiTietScreen(
+                                                        detail: list[i])));
                                       },
                                       child: Container(
                                         alignment: Alignment.center,

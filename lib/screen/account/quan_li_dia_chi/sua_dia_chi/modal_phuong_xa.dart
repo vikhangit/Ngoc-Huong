@@ -5,7 +5,6 @@ import 'package:ngoc_huong/models/addressModel.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_quan_huyen.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/sua_dia_chi.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalPhuongXa extends StatefulWidget {
   final Function saveAddress;
@@ -129,16 +128,14 @@ class _ModalDiaDiemState extends State<ModalPhuongXa> {
                           height: 50,
                           child: TextButton(
                             onPressed: () {
-                              changeAddress(
-                                  item["Id"], item["Name"]);
+                              changeAddress(item["Id"], item["Name"]);
                             },
                             style: ButtonStyle(
                                 padding: MaterialStateProperty.all(
                                     const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 10))),
                             child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   "${item["Name"]}",

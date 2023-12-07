@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:upgrader/upgrader.dart';
 
 class AddCartSuccess extends StatefulWidget {
   const AddCartSuccess({super.key});
@@ -26,6 +27,7 @@ class _AddCartSuccessState extends State<AddCartSuccess>
   @override
   void initState() {
     super.initState();
+    Upgrader.clearSavedSettings();
     scaleController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         checkController.forward();
@@ -53,7 +55,7 @@ class _AddCartSuccessState extends State<AddCartSuccess>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: false,
+        bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -83,112 +85,122 @@ class _AddCartSuccessState extends State<AddCartSuccess>
                       fontWeight: FontWeight.w500,
                       color: Colors.white)),
             ),
-            body: Container(
-                padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                child: SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: ListView(
-                            children: [
-                              const SizedBox(
-                                height: 60,
-                              ),
-                              Center(
-                                child: Stack(
-                                  children: [
-                                    ScaleTransition(
-                                      scale: scaleAnimation,
-                                      child: Container(
-                                        height: circleSize,
-                                        width: circleSize,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .width)),
-                                            border: Border.all(
-                                                width: 3, color: Colors.green)),
-                                      ),
-                                    ),
-                                    SizeTransition(
-                                      sizeFactor: checkAnimation,
-                                      axis: Axis.horizontal,
-                                      axisAlignment: -1,
-                                      child: Container(
-                                        height: circleSize,
-                                        width: circleSize,
-                                        alignment: Alignment.center,
-                                        child: Icon(Icons.check,
-                                            color: Colors.green,
-                                            size: iconSize),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 40,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                child: const Text(
-                                  "Bạn đã thêm sản phẩm vào giỏ hàng thành công!",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              // const Text(
-                              //   "Bạn đã thêm sản phẩm vào giỏ hàng thành công",
-                              //   textAlign: TextAlign.center,
-                              //   style: TextStyle(
-                              //     fontSize: 14,
-                              //     fontWeight: FontWeight.w300,
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  color: mainColor.withOpacity(0.3),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(15))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+            body: UpgradeAlert(
+                upgrader: Upgrader(
+                  dialogStyle: UpgradeDialogStyle.cupertino,
+                  canDismissDialog: false,
+                  showLater: false,
+                  showIgnore: false,
+                  showReleaseNotes: false,
+                ),
+                child: Container(
+                    padding:
+                        const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                    child: SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: ListView(
                                 children: [
-                                  const Text("Xem giỏ hàng",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      )),
                                   const SizedBox(
-                                    width: 15,
+                                    height: 60,
                                   ),
-                                  Image.asset(
-                                    "assets/images/cart-black.png",
-                                    width: 24,
-                                    height: 24,
-                                    fit: BoxFit.contain,
+                                  Center(
+                                    child: Stack(
+                                      children: [
+                                        ScaleTransition(
+                                          scale: scaleAnimation,
+                                          child: Container(
+                                            height: circleSize,
+                                            width: circleSize,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width)),
+                                                border: Border.all(
+                                                    width: 3,
+                                                    color: Colors.green)),
+                                          ),
+                                        ),
+                                        SizeTransition(
+                                          sizeFactor: checkAnimation,
+                                          axis: Axis.horizontal,
+                                          axisAlignment: -1,
+                                          child: Container(
+                                            height: circleSize,
+                                            width: circleSize,
+                                            alignment: Alignment.center,
+                                            child: Icon(Icons.check,
+                                                color: Colors.green,
+                                                size: iconSize),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
+                                  const SizedBox(
+                                    height: 40,
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: const Text(
+                                      "Bạn đã thêm sản phẩm vào giỏ hàng thành công!",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  // const Text(
+                                  //   "Bạn đã thêm sản phẩm vào giỏ hàng thành công",
+                                  //   textAlign: TextAlign.center,
+                                  //   style: TextStyle(
+                                  //     fontSize: 14,
+                                  //     fontWeight: FontWeight.w300,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
-                            onTap: () {
-                              Navigator.pushNamed(context, "cart");
-                            }),
-                      ],
-                    )))));
+                            GestureDetector(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      color: mainColor.withOpacity(0.3),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(15))),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text("Xem giỏ hàng",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                          )),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      Image.asset(
+                                        "assets/images/cart-black.png",
+                                        width: 24,
+                                        height: 24,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.pushNamed(context, "cart");
+                                }),
+                          ],
+                        ))))));
   }
 }

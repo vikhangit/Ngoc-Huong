@@ -1,3 +1,5 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
@@ -9,7 +11,9 @@ import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/cart/cart_success.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
+import 'package:upgrader/upgrader.dart';
 
 class ProductDetail extends StatefulWidget {
   final bool? detailPage;
@@ -41,6 +45,7 @@ class _ProductDetailState extends State<ProductDetail>
   @override
   void initState() {
     super.initState();
+    Upgrader.clearSavedSettings();
     setState(() {
       quantity = 1;
       activeTab = 1;
@@ -78,6 +83,7 @@ class _ProductDetailState extends State<ProductDetail>
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldKey = GlobalKey<ScaffoldState>();
     Map productDetail = widget.details;
     void addToCart() async {
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
@@ -133,303 +139,321 @@ class _ProductDetailState extends State<ProductDetail>
         });
       }, () => Navigator.pop(context));
     }
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            height: 60,
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius:
-                    const BorderRadius.vertical(bottom: Radius.circular(30))),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 8,
-                  child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                            color: Colors.white, shape: BoxShape.circle),
-                        width: 36,
-                        height: 36,
-                        child: const Icon(
-                          Icons.west,
-                          size: 16,
-                          color: Colors.black,
-                        ),
-                      )),
-                ),
-                const Expanded(
-                  flex: 84,
-                  child: Center(
-                    child: Text(
-                      "Chi tiết sản phẩm",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 8,
-                  child: Container(),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            margin: const EdgeInsets.only(bottom: 5),
-            color: Colors.white,
-            height: MediaQuery.of(context).size.height * 0.85 -
-                (widget.detailPage != null ? (210 -
-                MediaQuery.of(context).viewInsets.bottom) : 80),
-            child: ListView(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                      // color: checkColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Image.network(
-                    "${productDetail["Image_Name"]}",
-                    // height: 150,
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Text(
-                    "${productDetail["Name"]}",
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
 
-                  Row(
+    return SafeArea(
+        bottom: false,
+        child: Scaffold(
+            key: scaffoldKey,
+            backgroundColor: Colors.white,
+            resizeToAvoidBottomInset: true,
+            // bottomNavigationBar: ScrollToHide(
+            //     scrollController: scrollController,
+            //     height: 100,
+            //     child: const MyBottomMenu(
+            //       active: 0,
+            //     )),
+            appBar: AppBar(
+              leadingWidth: 45,
+              centerTitle: true,
+              leading: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.white),
+                    child: const Icon(
+                      Icons.west,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  )),
+              title: const Text("Chi tiết sản phẩm",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white)),
+            ),
+            body: UpgradeAlert(
+                upgrader: Upgrader(
+                  dialogStyle: UpgradeDialogStyle.cupertino,
+                  canDismissDialog: false,
+                  showLater: false,
+                  showIgnore: false,
+                  showReleaseNotes: false,
+                ),
+                child: Container(
+                  color: Colors.white,
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            NumberFormat.currency(locale: "vi_VI", symbol: "")
-                                .format(
-                              productDetail["PriceInbound"],
-                            ),
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Theme.of(context).colorScheme.primary),
-                          ),
-                          Text(
-                            "đ",
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontSize: 15,
-                              decoration: TextDecoration.underline,
-                            ),
-                          )
-                        ],
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 15),
+                        margin: const EdgeInsets.only(bottom: 5),
+                        color: Colors.white,
+                        height: MediaQuery.of(context).size.height -
+                            (widget.detailPage != null ? (260) : 120),
+                        child: ListView(
+                          children: [
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ImageDetail(
+                                    item: productDetail,
+                                  ),
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  Text(
+                                    "${productDetail["Name"]}",
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            NumberFormat.currency(
+                                                    locale: "vi_VI", symbol: "")
+                                                .format(
+                                              productDetail["PriceInbound"],
+                                            ),
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                          ),
+                                          Text(
+                                            "đ",
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontSize: 15,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      if (widget.detailPage != null)
+                                        Row(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  quantity--;
+                                                });
+                                              },
+                                              child: Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: Colors.orange),
+                                                    shape: BoxShape.circle),
+                                                alignment: Alignment.center,
+                                                child: const Icon(
+                                                  Icons.remove,
+                                                  size: 20,
+                                                  color: Colors.orange,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                              child: Text(
+                                                "$quantity",
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  quantity++;
+                                                });
+                                              },
+                                              child: Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: Colors.orange),
+                                                    shape: BoxShape.circle),
+                                                alignment: Alignment.center,
+                                                child: const Icon(
+                                                  Icons.add,
+                                                  size: 20,
+                                                  color: Colors.orange,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  // infomation()
+                                ]),
+                            infomation(productDetail["Description"] ?? "",
+                                (index) => goToTab(index), activeTab),
+                          ],
+                        ),
                       ),
-                      if(widget.detailPage != null) Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                quantity--;
-                              });
-                            },
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1, color: Colors.orange),
-                                  shape: BoxShape.circle),
-                              alignment: Alignment.center,
-                              child: const Icon(
-                                Icons.remove,
-                                size: 20,
-                                color: Colors.orange,
+                      if (widget.detailPage != null)
+                        Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 30, left: 15, right: 15),
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 50,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15))),
+                                child: TextButton(
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 20)),
+                                    ),
+                                    onPressed: () {
+                                      makingPhoneCall();
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          "Điện thoại nhận tư vấn",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        const SizedBox(
+                                          width: 15,
+                                        ),
+                                        Image.asset(
+                                          "assets/images/call-black.png",
+                                          width: 24,
+                                          height: 24,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ],
+                                    )),
                               ),
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                              "$quantity",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w300),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                quantity++;
-                              });
-                            },
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1, color: Colors.orange),
-                                  shape: BoxShape.circle),
-                              alignment: Alignment.center,
-                              child: const Icon(
-                                Icons.add,
-                                size: 20,
-                                color: Colors.orange,
+                              Container(
+                                height: 50,
+                                width: MediaQuery.of(context).size.width,
+                                margin: const EdgeInsets.only(top: 15),
+                                color: Colors.white,
+                                child: FutureBuilder(
+                                  future: cartModel.getDetailCartByCode(
+                                      productDetail["Code"].toString()),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return TextButton(
+                                          style: ButtonStyle(
+                                              padding: MaterialStateProperty.all(
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20)),
+                                              shape: MaterialStateProperty.all(
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  15)))),
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .primary
+                                                          .withOpacity(0.4))),
+                                          onPressed: () {
+                                            if (storageCustomerToken.getItem(
+                                                    "customer_token") !=
+                                                null) {
+                                              if (snapshot.data!.isNotEmpty) {
+                                                updateCart(snapshot.data!);
+                                              } else {
+                                                addToCart();
+                                              }
+                                            } else {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const LoginScreen()));
+                                            }
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Text(
+                                                "Thêm vào giỏ hàng",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                              const SizedBox(width: 15),
+                                              Image.asset(
+                                                "assets/images/cart-black.png",
+                                                width: 24,
+                                                height: 24,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ],
+                                          ));
+                                    } else {
+                                      return const Center(
+                                        child: SizedBox(
+                                          width: 40,
+                                          height: 40,
+                                          child: LoadingIndicator(
+                                            colors: kDefaultRainbowColors,
+                                            indicatorType:
+                                                Indicator.lineSpinFadeLoader,
+                                            strokeWidth: 1,
+                                            // pathBackgroundColor: Colors.black45,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      )
+                        )
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  // infomation()
-                ]),
-                infomation(productDetail["Description"] ?? "",
-                    (index) => goToTab(index), activeTab),
-              ],
-            ),
-          ),
-          if(widget.detailPage != null) Container(
-            margin: const EdgeInsets.only(bottom: 30, left: 15, right: 15),
-            color: Colors.white,
-            child: Column(
-              children: [
-                Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(width: 1, color: Colors.grey),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(15))),
-                  child: TextButton(
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all(
-                            const EdgeInsets.symmetric(horizontal: 20)),
-                      ),
-                      onPressed: () {
-                        makingPhoneCall();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Điện thoại nhận tư vấn",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400),
-                          ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          Image.asset(
-                            "assets/images/call-black.png",
-                            width: 24,
-                            height: 24,
-                            fit: BoxFit.contain,
-                          ),
-                        ],
-                      )),
-                ),
-                Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(top: 15),
-                  color: Colors.white,
-                  child: FutureBuilder(
-                    future: cartModel
-                        .getDetailCartByCode(productDetail["Code"].toString()),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return TextButton(
-                            style: ButtonStyle(
-                                padding: MaterialStateProperty.all(
-                                    const EdgeInsets.symmetric(horizontal: 20)),
-                                shape: MaterialStateProperty.all(
-                                    const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)))),
-                                backgroundColor: MaterialStateProperty.all(
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.4))),
-                            onPressed: () {
-                              if (storageCustomerToken
-                                      .getItem("customer_token") !=
-                                  null) {
-                                if (snapshot.data!.isNotEmpty) {
-                                  updateCart(snapshot.data!);
-                                } else {
-                                  addToCart();
-                                }
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginScreen()));
-                              }
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Thêm vào giỏ hàng",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                const SizedBox(width: 15),
-                                Image.asset(
-                                  "assets/images/cart-black.png",
-                                  width: 24,
-                                  height: 24,
-                                  fit: BoxFit.contain,
-                                ),
-                              ],
-                            ));
-                      } else {
-                        return const Center(
-                          child: SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: LoadingIndicator(
-                              colors: kDefaultRainbowColors,
-                              indicatorType: Indicator.lineSpinFadeLoader,
-                              strokeWidth: 1,
-                              // pathBackgroundColor: Colors.black45,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
+                ))));
   }
 
   Widget infomation(String mieuTa, Function(int index) goToTab, int activeTab) {
@@ -587,6 +611,95 @@ class _ProductDetailState extends State<ProductDetail>
           height: 15,
         )
       ],
+    );
+  }
+}
+
+class ImageDetail extends StatefulWidget {
+  final Map item;
+  const ImageDetail({super.key, required this.item});
+
+  @override
+  State<ImageDetail> createState() => _ImageDetailState();
+}
+
+int currentIndex = 0;
+
+class _ImageDetailState extends State<ImageDetail> {
+  final CarouselController carouselController = CarouselController();
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> imgList = List<Widget>.generate(
+      3,
+      (index) => Container(
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+            // color: checkColor,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: Image.network(
+          "${widget.item["Image_Name"]}",
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.fitHeight,
+        ),
+      ),
+    );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          CarouselSlider.builder(
+              carouselController: carouselController,
+              options: CarouselOptions(
+                aspectRatio: 2,
+                height: 380,
+                enlargeCenterPage: false,
+                viewportFraction: 1,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                },
+              ),
+              itemCount: imgList.length,
+              itemBuilder: (context, index, realIndex) => imgList[index]),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: imgList.map((e) {
+              int index = imgList.indexOf(e);
+              return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      currentIndex = index;
+                      carouselController.animateToPage(index,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.linear);
+                    });
+                  },
+                  child: Container(
+                    margin:
+                        EdgeInsets.symmetric(horizontal: index == 1 ? 5 : 0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1,
+                          color:
+                              currentIndex == index ? mainColor : Colors.white),
+                    ),
+                    child: Image.network(
+                      "${widget.item["Image_Name"]}",
+                      width: 80,
+                      height: 80,
+                    ),
+                  ));
+            }).toList(),
+          )
+        ],
+      ),
     );
   }
 }

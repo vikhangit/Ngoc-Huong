@@ -7,6 +7,7 @@ import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
+import 'package:upgrader/upgrader.dart';
 
 class BuyHistory extends StatefulWidget {
   final List listTab;
@@ -35,6 +36,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    Upgrader.clearSavedSettings();
     tabController = TabController(length: widget.listTab.length, vsync: this);
     if (widget.ac != null) {
       tabController?.animateTo(widget.ac!);
@@ -107,332 +109,328 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          body: widget.listTab.isNotEmpty
-              ? Column(
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      height: 50,
-                      child: TabBar(
-                        tabAlignment: TabAlignment.start,
-                        controller: tabController,
-                        isScrollable: true,
-                        labelColor: Theme.of(context).colorScheme.primary,
-                        unselectedLabelColor: Colors.black,
-                        indicatorColor: Theme.of(context).colorScheme.primary,
-                        labelStyle: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            fontFamily: "LexendDeca"),
-                        onTap: (tabIndex) {
-                          setState(() {
-                            selectedIndex = tabIndex;
-                          });
-                        },
-                        tabs: widget.listTab
-                            .map((e) => SizedBox(
-                                  width: MediaQuery.of(context).size.width / 3 -
-                                      10,
-                                  child: Tab(
-                                    text: "${e["GroupName"]}",
-                                  ),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height - 295,
-                        child: TabBarView(
+          body: UpgradeAlert(
+              upgrader: Upgrader(
+                dialogStyle: UpgradeDialogStyle.cupertino,
+                canDismissDialog: false,
+                showLater: false,
+                showIgnore: false,
+                showReleaseNotes: false,
+              ),
+              child: widget.listTab.isNotEmpty
+                  ? Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          height: 50,
+                          child: TabBar(
+                            tabAlignment: TabAlignment.start,
                             controller: tabController,
-                            children: widget.listTab
-                                .map((e) => FutureBuilder(
-                                    future: orderModel
-                                        .getOrderListByStatus(e["GroupCode"]),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        if (snapshot.data!.isNotEmpty) {
-                                          List list = snapshot.data!;
-                                          return RefreshIndicator(
-                                            onRefresh: refreshData,
-                                            child: ListView.builder(
-                                              // controller: scrollController,
-                                              itemCount: list.length,
-                                              itemBuilder: (context, index) {
-                                                return list[index]["DetailList"]
-                                                        .isNotEmpty
-                                                    ? Container(
-                                                        margin: EdgeInsets.only(
-                                                            left: 15,
-                                                            right: 15,
-                                                            top: index != 0
-                                                                ? 20
-                                                                : 30,
-                                                            bottom: index ==
-                                                                    list.length -
-                                                                        1
-                                                                ? 20
-                                                                : 0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.white,
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                      0.5),
-                                                              spreadRadius: 1,
-                                                              blurRadius: 8,
-                                                              offset: const Offset(
-                                                                  4,
-                                                                  4), // changes position of shadow
+                            isScrollable: true,
+                            labelColor: Theme.of(context).colorScheme.primary,
+                            unselectedLabelColor: Colors.black,
+                            indicatorColor:
+                                Theme.of(context).colorScheme.primary,
+                            labelStyle: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                fontFamily: "LexendDeca"),
+                            onTap: (tabIndex) {
+                              setState(() {
+                                selectedIndex = tabIndex;
+                              });
+                            },
+                            tabs: widget.listTab
+                                .map((e) => SizedBox(
+                                      width: MediaQuery.of(context).size.width /
+                                              3 -
+                                          10,
+                                      child: Tab(
+                                        text: "${e["GroupName"]}",
+                                      ),
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height - 295,
+                            child: TabBarView(
+                                controller: tabController,
+                                children: widget.listTab
+                                    .map((e) => FutureBuilder(
+                                        future: orderModel.getOrderListByStatus(
+                                            e["GroupCode"]),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            if (snapshot.data!.isNotEmpty) {
+                                              List list = snapshot.data!;
+                                              return RefreshIndicator(
+                                                onRefresh: refreshData,
+                                                child: ListView.builder(
+                                                  // controller: scrollController,
+                                                  itemCount: list.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return list[index]
+                                                                ["DetailList"]
+                                                            .isNotEmpty
+                                                        ? Container(
+                                                            margin: EdgeInsets.only(
+                                                                left: 15,
+                                                                right: 15,
+                                                                top: index != 0
+                                                                    ? 20
+                                                                    : 30,
+                                                                bottom: index ==
+                                                                        list.length -
+                                                                            1
+                                                                    ? 20
+                                                                    : 0),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .withOpacity(
+                                                                          0.5),
+                                                                  spreadRadius:
+                                                                      1,
+                                                                  blurRadius: 8,
+                                                                  offset: const Offset(
+                                                                      4,
+                                                                      4), // changes position of shadow
+                                                                ),
+                                                              ],
                                                             ),
-                                                          ],
-                                                        ),
-                                                        // height: 135,
-                                                        child: TextButton(
-                                                            onPressed: () {
-                                                              Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder: (context) =>
-                                                                          ModalChiTietBuy(
-                                                                            product:
-                                                                                list[index],
-                                                                            type:
-                                                                                "",
-                                                                            save:
-                                                                                save,
-                                                                          )));
-                                                            },
-                                                            style: ButtonStyle(
-                                                              padding: MaterialStateProperty.all(
-                                                                  const EdgeInsets
+                                                            // height: 135,
+                                                            child: TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) => ModalChiTietBuy(
+                                                                                product: list[index],
+                                                                                type: "",
+                                                                                save: save,
+                                                                              )));
+                                                                },
+                                                                style:
+                                                                    ButtonStyle(
+                                                                  padding: MaterialStateProperty.all(const EdgeInsets
                                                                       .symmetric(
                                                                       vertical:
                                                                           12,
                                                                       horizontal:
                                                                           8)),
-                                                              backgroundColor:
-                                                                  MaterialStateProperty
-                                                                      .all(Colors
-                                                                          .white),
-                                                              shape: MaterialStateProperty.all(
-                                                                  const RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.all(
-                                                                              Radius.circular(10)))),
-                                                            ),
-                                                            child: Column(
-                                                              children: [
-                                                                Row(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
+                                                                  backgroundColor:
+                                                                      MaterialStateProperty.all(
+                                                                          Colors
+                                                                              .white),
+                                                                  shape: MaterialStateProperty.all(
+                                                                      const RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.all(Radius.circular(10)))),
+                                                                ),
+                                                                child: Column(
                                                                   children: [
-                                                                    ClipRRect(
-                                                                      borderRadius: const BorderRadius
-                                                                          .all(
-                                                                          Radius.circular(
-                                                                              10)),
-                                                                      child: Image
-                                                                          .network(
-                                                                        "${list[index]["DetailList"][0]["Image_Name"]}",
-                                                                        // width: 110,
-                                                                        height:
-                                                                            60,
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                      ),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      width: 10,
-                                                                    ),
-                                                                    Expanded(
-                                                                        child:
-                                                                            Column(
+                                                                    Row(
                                                                       crossAxisAlignment:
                                                                           CrossAxisAlignment
                                                                               .start,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
                                                                       children: [
-                                                                        Wrap(
+                                                                        ClipRRect(
+                                                                          borderRadius: const BorderRadius
+                                                                              .all(
+                                                                              Radius.circular(10)),
+                                                                          child:
+                                                                              Image.network(
+                                                                            "${list[index]["DetailList"][0]["Image_Name"]}",
+                                                                            // width: 110,
+                                                                            height:
+                                                                                60,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              10,
+                                                                        ),
+                                                                        Expanded(
+                                                                            child:
+                                                                                Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
                                                                           children: [
-                                                                            Text(
-                                                                              "${list[index]["DetailList"][0]["ProductName"]}",
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              maxLines: 1,
-                                                                              style: const TextStyle(color: Colors.black),
-                                                                            ),
-                                                                            const SizedBox(
-                                                                              height: 30,
-                                                                            ),
-                                                                            Row(
+                                                                            Wrap(
                                                                               children: [
                                                                                 Text(
-                                                                                  "${list[index]["DetailList"][0]["Quantity"] ?? 1}",
+                                                                                  "${list[index]["DetailList"][0]["ProductName"]}",
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  maxLines: 1,
+                                                                                  style: const TextStyle(color: Colors.black),
                                                                                 ),
                                                                                 const SizedBox(
-                                                                                  width: 3,
+                                                                                  height: 30,
                                                                                 ),
-                                                                                const Text("x"),
-                                                                                const SizedBox(
-                                                                                  width: 3,
+                                                                                Row(
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      "${list[index]["DetailList"][0]["Quantity"] ?? 1}",
+                                                                                    ),
+                                                                                    const SizedBox(
+                                                                                      width: 3,
+                                                                                    ),
+                                                                                    const Text("x"),
+                                                                                    const SizedBox(
+                                                                                      width: 3,
+                                                                                    ),
+                                                                                    Text(
+                                                                                      NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[index]["DetailList"][0]["Price"]),
+                                                                                      style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                                                                                    )
+                                                                                  ],
                                                                                 ),
-                                                                                Text(
-                                                                                  NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[index]["DetailList"][0]["Price"]),
-                                                                                  style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                                                                                )
                                                                               ],
-                                                                            ),
+                                                                            )
                                                                           ],
-                                                                        )
+                                                                        ))
                                                                       ],
-                                                                    ))
-                                                                  ],
-                                                                ),
-                                                                Container(
-                                                                  margin:
-                                                                      const EdgeInsets
+                                                                    ),
+                                                                    Container(
+                                                                      margin: const EdgeInsets
                                                                           .only(
                                                                           top:
                                                                               15),
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      vertical:
-                                                                          10),
-                                                                  decoration: BoxDecoration(
-                                                                      border: BorderDirectional(
-                                                                          top: BorderSide(
-                                                                              width:
-                                                                                  1,
-                                                                              color: Colors.grey[
-                                                                                  400]!),
-                                                                          bottom: BorderSide(
-                                                                              width: 1,
-                                                                              color: Colors.grey[400]!))),
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      Text(
-                                                                        "${list[index]["DetailList"].length} sản phẩm",
-                                                                        style: const TextStyle(
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.w300,
-                                                                            color: Colors.black),
-                                                                      ),
-                                                                      Row(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          vertical:
+                                                                              10),
+                                                                      decoration: BoxDecoration(
+                                                                          border: BorderDirectional(
+                                                                              top: BorderSide(width: 1, color: Colors.grey[400]!),
+                                                                              bottom: BorderSide(width: 1, color: Colors.grey[400]!))),
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
                                                                         children: [
-                                                                          const Text(
-                                                                            "Thành tiền:",
-                                                                            style: TextStyle(
-                                                                                fontSize: 14,
+                                                                          Text(
+                                                                            "${list[index]["DetailList"].length} sản phẩm",
+                                                                            style: const TextStyle(
+                                                                                fontSize: 12,
                                                                                 fontWeight: FontWeight.w300,
                                                                                 color: Colors.black),
                                                                           ),
-                                                                          const SizedBox(
-                                                                            width:
-                                                                                3,
-                                                                          ),
-                                                                          Text(
-                                                                            NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[index]["TotalAmount"] == 0
-                                                                                ? totalBooking(list[index]["DetailList"])
-                                                                                : list[index]["TotalAmount"]),
-                                                                            style:
-                                                                                const TextStyle(
-                                                                              fontSize: 12,
-                                                                              fontWeight: FontWeight.w400,
-                                                                            ),
+                                                                          Row(
+                                                                            children: [
+                                                                              const Text(
+                                                                                "Thành tiền:",
+                                                                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: Colors.black),
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                width: 3,
+                                                                              ),
+                                                                              Text(
+                                                                                NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[index]["TotalAmount"] == 0 ? totalBooking(list[index]["DetailList"]) : list[index]["TotalAmount"]),
+                                                                                style: const TextStyle(
+                                                                                  fontSize: 12,
+                                                                                  fontWeight: FontWeight.w400,
+                                                                                ),
+                                                                              )
+                                                                            ],
                                                                           )
                                                                         ],
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            )))
-                                                    : Container();
-                                              },
-                                            ),
-                                          );
-                                        } else {
-                                          return Column(
-                                            children: [
-                                              Container(
-                                                margin: const EdgeInsets.only(
-                                                    top: 40, bottom: 15),
-                                                child: Image.asset(
-                                                    "assets/images/account/img.webp"),
-                                              ),
-                                              Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 20),
-                                                child: const Text(
-                                                  "Chưa có đơn hàng",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w300),
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                )))
+                                                        : Container();
+                                                  },
                                                 ),
-                                              )
-                                            ],
-                                          );
-                                        }
-                                      } else {
-                                        return const Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: 40,
-                                              height: 40,
-                                              child: LoadingIndicator(
-                                                colors: kDefaultRainbowColors,
-                                                indicatorType: Indicator
-                                                    .lineSpinFadeLoader,
-                                                strokeWidth: 1,
-                                                // pathBackgroundColor: Colors.black45,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text("Đang lấy dữ liệu")
-                                          ],
-                                        );
-                                      }
-                                    }))
-                                .toList()))
-                  ],
-                )
-              : const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: LoadingIndicator(
-                        colors: kDefaultRainbowColors,
-                        indicatorType: Indicator.lineSpinFadeLoader,
-                        strokeWidth: 1,
-                        // pathBackgroundColor: Colors.black45,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text("Đang lấy dữ liệu")
-                  ],
-                )),
+                                              );
+                                            } else {
+                                              return Column(
+                                                children: [
+                                                  Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 40,
+                                                            bottom: 15),
+                                                    child: Image.asset(
+                                                        "assets/images/account/img.webp"),
+                                                  ),
+                                                  Container(
+                                                    margin: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 20),
+                                                    child: const Text(
+                                                      "Chưa có đơn hàng",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w300),
+                                                    ),
+                                                  )
+                                                ],
+                                              );
+                                            }
+                                          } else {
+                                            return const Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: 40,
+                                                  height: 40,
+                                                  child: LoadingIndicator(
+                                                    colors:
+                                                        kDefaultRainbowColors,
+                                                    indicatorType: Indicator
+                                                        .lineSpinFadeLoader,
+                                                    strokeWidth: 1,
+                                                    // pathBackgroundColor: Colors.black45,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text("Đang lấy dữ liệu")
+                                              ],
+                                            );
+                                          }
+                                        }))
+                                    .toList()))
+                      ],
+                    )
+                  : const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: LoadingIndicator(
+                            colors: kDefaultRainbowColors,
+                            indicatorType: Indicator.lineSpinFadeLoader,
+                            strokeWidth: 1,
+                            // pathBackgroundColor: Colors.black45,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text("Đang lấy dữ liệu")
+                      ],
+                    ))),
     );
   }
 }

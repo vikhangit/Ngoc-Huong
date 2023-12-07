@@ -5,8 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
 import 'package:timezone/timezone.dart';
 
 @pragma('vm:entry-point')
@@ -117,18 +115,7 @@ class NotificationService {
       setupFlutterNotifications();
       if (Platform.isAndroid) {
         initLocalNotifications(context, message);
-        showNotification(message, scheduledDate).then((value) {
-          LocalStorage storageAuth = LocalStorage("auth");
-          Map data = {
-            "title": message.notification?.title ?? "",
-            "email_receiver": storageAuth.getItem("phone"),
-            "exfields": {
-              "content": message.notification?.body ?? "",
-              "id_app": idApp
-            }
-          };
-          postNotifications(data);
-        });
+        showNotification(message, scheduledDate).then((value) {});
       } else {
         showNotification(message, scheduledDate);
       }

@@ -120,19 +120,12 @@ class _FlashSaleState extends State<FlashSale> {
     var pages = list
         .map((e) => GestureDetector(
               onTap: () {
-                showModalBottomSheet<void>(
-                    backgroundColor: Colors.white,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (BuildContext context) {
-                      return Container(
-                          color: Colors.white,
-                          padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          height: MediaQuery.of(context).size.height * 0.85,
-                          child: FlashSaleDetail(detail: e));
-                    });
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FlashSaleDetail(
+                              detail: e,
+                            )));
               },
               child: Container(
                   padding: const EdgeInsets.all(5),

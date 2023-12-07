@@ -98,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         tokenfirebase = value;
       });
     });
+    Upgrader.clearSavedSettings();
   }
 
   @override

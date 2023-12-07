@@ -108,20 +108,11 @@ class _MyAppState extends State<MyApp> {
         "informationAccount": (context) => const InfomationAccount()
       },
       theme: _customThemeData.themeData,
-      home: UpgradeAlert(
-        upgrader: Upgrader(
-          dialogStyle: UpgradeDialogStyle.cupertino,
-          canDismissDialog: false,
-          showLater: false,
-          showIgnore: false,
-          showReleaseNotes: false,
-        ),
-        child: localStorageSlash.getItem("slash") == null
-            ? const StartScreen()
-            : storageCustomer.getItem("customer_token") != null
-                ? const HomeScreen()
-                : const LoginScreen(),
-      ),
+      home: localStorageSlash.getItem("slash") == null
+          ? const StartScreen()
+          : storageCustomer.getItem("customer_token") != null
+              ? const HomeScreen()
+              : const LoginScreen(),
       builder: EasyLoading.init(),
       debugShowCheckedModeBanner: false,
     );

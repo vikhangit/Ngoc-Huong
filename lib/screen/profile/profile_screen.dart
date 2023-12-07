@@ -20,6 +20,7 @@ import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
+import 'package:upgrader/upgrader.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String? phone;
@@ -63,6 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // storage.deleteItem("userInfo");
     super.initState();
+    Upgrader.clearSavedSettings();
     profileModel.getProfile().then((value) => setState(() {
           nameController = TextEditingController(text: value["CustomerName"]);
           phoneController = TextEditingController(text: value["Phone"]);
@@ -110,11 +112,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       name = value;
     });
   }
-  void clearBirthDay (){
-    setState((){
+
+  void clearBirthDay() {
+    setState(() {
       birthDay = null;
     });
   }
+
   void selectBirthDay(BuildContext context) async {
     DateTime now = DateTime.now();
     DatePickerBdaya.showDatePicker(context,
@@ -208,144 +212,156 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Builder(
             builder: (context) => SafeArea(
                   child: Scaffold(
-                    backgroundColor: Colors.white,
-                    resizeToAvoidBottomInset: true,
-                    appBar: AppBar(
-                      leadingWidth: 45,
-                      centerTitle: true,
-                      automaticallyImplyLeading: false,
-                      title: const Text("Thông tin tài khoản",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white)),
-                      actions: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 15),
-                          height: 30,
-                          child: GestureDetector(
-                              onTap: () {
-                                if (name.isNotEmpty ||
-                                    email.isNotEmpty ||
-                                    address.isNotEmpty) {
-                                  customModal.showAlertDialog(
-                                      context,
-                                      "error",
-                                      "Thay đổi thông tin",
-                                      "Bạn đã thay đổi thông tin bạn có chắc chắn bỏ qua?",
-                                      () {
-                                    Navigator.push(
+                      backgroundColor: Colors.white,
+                      resizeToAvoidBottomInset: true,
+                      appBar: AppBar(
+                        leadingWidth: 45,
+                        centerTitle: true,
+                        automaticallyImplyLeading: false,
+                        title: const Text("Thông tin tài khoản",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white)),
+                        actions: [
+                          Container(
+                            margin: const EdgeInsets.only(right: 15),
+                            height: 30,
+                            child: GestureDetector(
+                                onTap: () {
+                                  if (name.isNotEmpty ||
+                                      email.isNotEmpty ||
+                                      address.isNotEmpty) {
+                                    customModal.showAlertDialog(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const HomeScreen()));
-                                  }, () => Navigator.pop(context));
-                                } else {
-                                  customModal.showAlertDialog(
-                                      context,
-                                      "error",
-                                      "Bỏ qua",
-                                      "Bạn có chắc chắn không thay đổi thông tin?",
-                                      () {
-                                    Navigator.push(
+                                        "error",
+                                        "Thay đổi thông tin",
+                                        "Bạn đã thay đổi thông tin bạn có chắc chắn bỏ qua?",
+                                        () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HomeScreen()));
+                                    }, () => Navigator.pop(context));
+                                  } else {
+                                    customModal.showAlertDialog(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const HomeScreen()));
-                                  }, () => Navigator.pop(context));
-                                }
-                              },
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Container(
+                                        "error",
+                                        "Bỏ qua",
+                                        "Bạn có chắc chắn không thay đổi thông tin?",
+                                        () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HomeScreen()));
+                                    }, () => Navigator.pop(context));
+                                  }
+                                },
+                                child: Align(
                                   alignment: Alignment.center,
-                                  height: 30,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12),
-                                  decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(15)),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          width: 1, color: Colors.white)),
-                                  child: Text(
-                                    "Bỏ qua",
-                                    style: TextStyle(
-                                        color: mainColor,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ),
-                              )),
-                        )
-                      ],
-                    ),
-                    body: !loading
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: ListView(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  children: [
-                                    const SizedBox(
-                                      height: 30,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 30,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(15)),
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            width: 1, color: Colors.white)),
+                                    child: Text(
+                                      "Bỏ qua",
+                                      style: TextStyle(
+                                          color: mainColor,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400),
                                     ),
-                                    fieldName(
-                                        context,
-                                        (name) => changeName(name),
-                                        nameController),
-                                    fieldPhone(
-                                        context,
-                                        (name) => changeName(name),
-                                        phoneController),
-                                    gender(
-                                        context,
-                                        (index) => changeGender(index),
-                                        genderValue,
-                                        genderList),
-                                    fieldBirthDay(
-                                        context,
-                                        (context) => selectBirthDay(context),
-                                        birthDay, () => clearBirthDay()),
-                                    fieldEmail(
-                                        context,
-                                        (value) => changeEmail(value),
-                                        emailController),
-                                    fieldAddress(
-                                        context,
-                                        (value) => changeAddress(value),
-                                        addressController)
+                                  ),
+                                )),
+                          )
+                        ],
+                      ),
+                      body: UpgradeAlert(
+                        upgrader: Upgrader(
+                          dialogStyle: UpgradeDialogStyle.cupertino,
+                          canDismissDialog: false,
+                          showLater: false,
+                          showIgnore: false,
+                          showReleaseNotes: false,
+                        ),
+                        child: !loading
+                            ? Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: ListView(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15),
+                                      children: [
+                                        const SizedBox(
+                                          height: 30,
+                                        ),
+                                        fieldName(
+                                            context,
+                                            (name) => changeName(name),
+                                            nameController),
+                                        fieldPhone(
+                                            context,
+                                            (name) => changeName(name),
+                                            phoneController),
+                                        gender(
+                                            context,
+                                            (index) => changeGender(index),
+                                            genderValue,
+                                            genderList),
+                                        fieldBirthDay(
+                                            context,
+                                            (context) =>
+                                                selectBirthDay(context),
+                                            birthDay,
+                                            () => clearBirthDay()),
+                                        fieldEmail(
+                                            context,
+                                            (value) => changeEmail(value),
+                                            emailController),
+                                        fieldAddress(
+                                            context,
+                                            (value) => changeAddress(value),
+                                            addressController)
+                                      ],
+                                    ),
+                                  ),
+                                  buttonConfirm(context, saveUserInfo)
+                                ],
+                              )
+                            : const Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text("Đang lấy dữ liệu")
                                   ],
                                 ),
                               ),
-                              buttonConfirm(context, saveUserInfo)
-                            ],
-                          )
-                        : const Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: LoadingIndicator(
-                                    colors: kDefaultRainbowColors,
-                                    indicatorType: Indicator.lineSpinFadeLoader,
-                                    strokeWidth: 1,
-                                    // pathBackgroundColor: Colors.black45,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text("Đang lấy dữ liệu")
-                              ],
-                            ),
-                          ),
-                  ),
+                      )),
                 )));
   }
 }

@@ -6,18 +6,15 @@ import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_phuo
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/modal_thanh_pho.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/sua_dia_chi/sua_dia_chi.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
-import 'package:ngoc_huong/utils/callapi.dart';
 
 class ModalQuanHuyen extends StatefulWidget {
   final Function saveAddress;
   // final String districtId;
-  const ModalQuanHuyen(
-      {super.key, required this.saveAddress});
+  const ModalQuanHuyen({super.key, required this.saveAddress});
 
   @override
   State<ModalQuanHuyen> createState() => _ModalDiaDiemState();
 }
-
 
 String valueSearch = "";
 
@@ -118,16 +115,14 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
                           height: 50,
                           child: TextButton(
                             onPressed: () {
-                              changeAddress(
-                                  item["Id"], item["Name"]);
+                              changeAddress(item["Id"], item["Name"]);
                             },
                             style: ButtonStyle(
                                 padding: MaterialStateProperty.all(
                                     const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 10))),
                             child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   "${item["Name"]}",

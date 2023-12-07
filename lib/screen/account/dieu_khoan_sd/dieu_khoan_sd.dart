@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:upgrader/upgrader.dart';
 
 class DieuKhoanSudung extends StatefulWidget {
   const DieuKhoanSudung({super.key});
@@ -9,6 +10,13 @@ class DieuKhoanSudung extends StatefulWidget {
 }
 
 class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Upgrader.clearSavedSettings();
+  }
+
   @override
   Widget build(BuildContext context) {
     void showAlertDialog(BuildContext context, String err) {
@@ -73,76 +81,85 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                     color: Colors.white)),
           ),
           bottomNavigationBar: const MyBottomMenu(active: 4),
-          body: SizedBox(
-            child: ListView(
-              children: [
-                TextButton(
-                    onPressed: () {
-                      showAlertDialog(context,
-                          "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
-                    },
-                    style: ButtonStyle(
-                        padding: MaterialStateProperty.all(
-                            const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 20))),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Điều khoản sử dụng",
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.black),
-                        ),
-                        Icon(Icons.keyboard_arrow_right, color: Colors.black)
-                      ],
-                    )),
-                TextButton(
-                    onPressed: () {
-                      showAlertDialog(context,
-                          "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
-                    },
-                    style: ButtonStyle(
-                        padding: MaterialStateProperty.all(
-                            const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 20))),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Chính sách thành viên",
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.black),
-                        ),
-                        Icon(Icons.keyboard_arrow_right, color: Colors.black)
-                      ],
-                    )),
-                TextButton(
-                    onPressed: () {
-                      showAlertDialog(context,
-                          "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
-                    },
-                    style: ButtonStyle(
-                        padding: MaterialStateProperty.all(
-                            const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 20))),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Bảo mật thành viên",
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.black),
-                        ),
-                        Icon(Icons.keyboard_arrow_right, color: Colors.black)
-                      ],
-                    ))
-              ],
+          body: UpgradeAlert(
+            upgrader: Upgrader(
+              dialogStyle: UpgradeDialogStyle.cupertino,
+              canDismissDialog: false,
+              showLater: false,
+              showIgnore: false,
+              showReleaseNotes: false,
+            ),
+            child: SizedBox(
+              child: ListView(
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        showAlertDialog(context,
+                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                      },
+                      style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 20))),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Điều khoản sử dụng",
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black),
+                          ),
+                          Icon(Icons.keyboard_arrow_right, color: Colors.black)
+                        ],
+                      )),
+                  TextButton(
+                      onPressed: () {
+                        showAlertDialog(context,
+                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                      },
+                      style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 20))),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Chính sách thành viên",
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black),
+                          ),
+                          Icon(Icons.keyboard_arrow_right, color: Colors.black)
+                        ],
+                      )),
+                  TextButton(
+                      onPressed: () {
+                        showAlertDialog(context,
+                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                      },
+                      style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 20))),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Bảo mật thành viên",
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black),
+                          ),
+                          Icon(Icons.keyboard_arrow_right, color: Colors.black)
+                        ],
+                      ))
+                ],
+              ),
             ),
           )),
     );

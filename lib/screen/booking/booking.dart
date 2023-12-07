@@ -9,6 +9,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
+import 'package:ngoc_huong/models/branchsModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/booking/booking_success.dart';
@@ -20,6 +21,7 @@ import 'package:ngoc_huong/utils/notification_services.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:upgrader/upgrader.dart';
 
 class BookingServices extends StatefulWidget {
   final Map? dichvudachon;
@@ -31,11 +33,13 @@ class BookingServices extends StatefulWidget {
 bool showService = true;
 bool showDay = false;
 bool showTime = false;
+bool showBranch = false;
 DateTime now = DateTime.now();
 DateTime? activeDate;
 TimeOfDay? activeTime;
 String tenkh = "";
 String tokenfirebase = "";
+Map activeBranch = {};
 Map activeService = {};
 List chooseService = [];
 
@@ -48,6 +52,8 @@ class _BookingServicesState extends State<BookingServices>
   final CustomModal customModal = CustomModal();
   final BookingModel bookingModel = BookingModel();
   late AnimationController _animationController;
+  late AnimationController _animationController1;
+  final BranchsModel branchsModel = BranchsModel();
   final LocalStorage storageBranch = LocalStorage('branch');
   final ScrollController scrollController = ScrollController();
 
@@ -58,6 +64,11 @@ class _BookingServicesState extends State<BookingServices>
         duration: const Duration(milliseconds: 500),
         upperBound: 0.5);
     _animationController.reverse();
+    _animationController1 = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 500),
+        upperBound: 0.5);
+    _animationController1.reverse();
     notificationService.requestNotificationPermission();
     notificationService.setupFlutterNotifications();
     notificationService.setupInteractMessage(context);
@@ -107,6 +118,14 @@ class _BookingServicesState extends State<BookingServices>
         });
       }
     });
+
+    Map active = storageBranch.getItem("branch") != null
+        ? jsonDecode(storageBranch.getItem("branch"))
+        : {};
+    setState(() {
+      activeBranch = active;
+    });
+    Upgrader.clearSavedSettings();
     super.initState();
   }
 
@@ -235,7 +254,7 @@ class _BookingServicesState extends State<BookingServices>
           Navigator.pop(context);
           selectTime();
         }, () => Navigator.pop(context));
-      } else if (branch.isEmpty) {
+      } else if (activeBranch.isEmpty) {
         customModal.showAlertDialog(
             context,
             "error",
@@ -268,7 +287,7 @@ class _BookingServicesState extends State<BookingServices>
         } else {
           if (dateBook.isAfter(now)) {
             Map data = {
-              "branchCode": jsonDecode(storageBranch.getItem("branch"))["Code"],
+              "branchCode": activeBranch["Code"],
               "StartDate": "$dateBook",
               "DueDate": "",
               "Note": "",
@@ -340,472 +359,606 @@ class _BookingServicesState extends State<BookingServices>
                 child: const MyBottomMenu(
                   active: 1,
                 )),
-            body: Column(
-                // reverse: true,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: ListView(
-                    // controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+            body: UpgradeAlert(
+                upgrader: Upgrader(
+                  dialogStyle: UpgradeDialogStyle.cupertino,
+                  canDismissDialog: false,
+                  showLater: false,
+                  showIgnore: false,
+                  showReleaseNotes: false,
+                ),
+                child: Column(
+                    // reverse: true,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(bottom: 7),
-                                child: const Text(
-                                  "Ngày đặt lịch",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 48,
-                                    child: TextField(
-                                      readOnly: true,
-                                      controller: TextEditingController(
-                                          text: activeDate != null
-                                              ? DateFormat("dd/MM/yyyy")
-                                                  .format(activeDate!)
-                                              : ""),
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      onTap: () => selectDate(),
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w300),
-                                      decoration: InputDecoration(
-                                        focusedBorder: dataCustom.border,
-                                        enabledBorder: dataCustom.border,
-                                        suffixIcon: const Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: Colors.black,
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 18),
-                                        hintStyle: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w300),
-                                        hintText: 'Chọn ngày',
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(flex: 4, child: Container()),
-                                  Expanded(
-                                      flex: 48,
-                                      child: TextField(
-                                        readOnly: true,
-                                        controller: TextEditingController(
-                                            text: activeTime == null
-                                                ? ""
-                                                : DateFormat("HH:mm").format(
-                                                    DateTime(
-                                                        now.year,
-                                                        now.month,
-                                                        now.day,
-                                                        activeTime!.hour,
-                                                        activeTime!.minute))),
-                                        textAlignVertical:
-                                            TextAlignVertical.center,
-                                        onTap: () => selectTime(),
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w300),
-                                        decoration: InputDecoration(
-                                          focusedBorder: dataCustom.border,
-                                          enabledBorder: dataCustom.border,
-                                          suffixIcon: const Icon(
-                                            Icons.keyboard_arrow_down,
-                                            color: Colors.black,
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 15, vertical: 18),
-                                          hintStyle: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w300),
-                                          hintText: 'Chọn giờ',
-                                        ),
-                                      ))
-                                ],
-                              ),
-                            ],
-                          )),
-                      Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(bottom: 7),
-                                child: const Text(
-                                  "Đặt lịch tại",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14),
-                                ),
-                              ),
-                              TextField(
-                                readOnly: true,
-                                controller: TextEditingController(
-                                    text:
-                                        "${branch["Name"] ?? "Chọn chi nhánh"}"),
-                                textAlignVertical: TextAlignVertical.center,
-                                onTap: () => showModalBottomSheet<void>(
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (BuildContext context) {
-                                      return Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .96,
-                                        child: ModalDiaChi(
-                                          saveCN: saveCN,
-                                        ),
-                                      );
-                                    }),
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w300),
-                                decoration: InputDecoration(
-                                  focusedBorder: dataCustom.border,
-                                  enabledBorder: dataCustom.border,
-                                  suffixIcon: const Icon(
-                                    Icons.keyboard_arrow_down,
-                                    color: Colors.black,
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 18),
-                                ),
-                              ),
-                            ],
-                          )),
-                      Container(
-                        margin: const EdgeInsets.only(top: 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 7),
-                              child: const Text(
-                                "Dịch vụ",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 14),
-                              ),
-                            ),
-                            Container(
-                              // padding: const EdgeInsets.only(bottom: 10),
-
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border:
-                                    Border.all(width: 1, color: Colors.grey),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                              ),
+                      Expanded(
+                          child: ListView(
+                        // controller: scrollController,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        children: [
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(top: 15),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          if (showService) {
-                                            _animationController.reverse(
-                                                from: 0.5);
-                                          } else {
-                                            _animationController.forward(
-                                                from: 0.0);
-                                          }
-                                          showService = !showService;
-                                        });
-                                      },
-                                      style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.symmetric(
-                                                vertical: 16, horizontal: 15)),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              activeService.isNotEmpty
-                                                  ? "${activeService["Name"][0].toString().toUpperCase()}${activeService["Name"].toString().substring(1).toLowerCase()}"
-                                                  : "Chọn dịch vụ",
-                                              style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w300),
-                                            ),
-                                          ),
-                                          RotationTransition(
-                                            turns: Tween(begin: 0.0, end: 1.0)
-                                                .animate(_animationController),
-                                            child: const Icon(
+                                  Container(
+                                    margin: const EdgeInsets.only(bottom: 7),
+                                    child: const Text(
+                                      "Ngày đặt lịch",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 48,
+                                        child: TextField(
+                                          readOnly: true,
+                                          controller: TextEditingController(
+                                              text: activeDate != null
+                                                  ? DateFormat("dd/MM/yyyy")
+                                                      .format(activeDate!)
+                                                  : ""),
+                                          textAlignVertical:
+                                              TextAlignVertical.center,
+                                          onTap: () => selectDate(),
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w300),
+                                          decoration: InputDecoration(
+                                            focusedBorder: dataCustom.border,
+                                            enabledBorder: dataCustom.border,
+                                            suffixIcon: const Icon(
                                               Icons.keyboard_arrow_down,
                                               color: Colors.black,
                                             ),
-                                          )
-                                        ],
-                                      )),
-                                  AnimatedCrossFade(
-                                      firstChild: Container(),
-                                      secondChild: chooseService.isNotEmpty
-                                          ? Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children:
-                                                  chooseService.map((item) {
-                                                int index =
-                                                    chooseService.indexOf(item);
-                                                if (item["name"] !=
-                                                    "Sản phẩm") {
-                                                  return Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 15),
-                                                      child: Column(
-                                                        children: [
-                                                          TextButton(
-                                                              onPressed: () {
-                                                                showServiceChoseService(
-                                                                    index);
-                                                              },
-                                                              style: ButtonStyle(
-                                                                  padding: MaterialStateProperty.all(const EdgeInsets
-                                                                      .symmetric(
-                                                                      vertical:
-                                                                          15,
-                                                                      horizontal:
-                                                                          20)),
-                                                                  shape: MaterialStateProperty.all(
-                                                                      const RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.all(Radius.circular(10))))),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                    item[
-                                                                        "name"],
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(
-                                                                                0.6),
-                                                                        fontWeight:
-                                                                            FontWeight.w400),
-                                                                  ),
-                                                                  item["show"]
-                                                                      ? const Icon(
-                                                                          Icons
-                                                                              .keyboard_arrow_up,
-                                                                          color: Colors
-                                                                              .black)
-                                                                      : const Icon(
-                                                                          Icons
-                                                                              .keyboard_arrow_down,
-                                                                          color:
-                                                                              Colors.black)
-                                                                ],
-                                                              )),
-                                                          AnimatedCrossFade(
-                                                              firstChild:
-                                                                  Container(),
-                                                              secondChild:
-                                                                  FutureBuilder(
-                                                                      future: servicesModel
-                                                                          .getServiceByGroup(item[
-                                                                              "name"]),
-                                                                      builder:
-                                                                          (context,
-                                                                              snapshot) {
-                                                                        if (snapshot
-                                                                            .hasData) {
-                                                                          return Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: snapshot.data!.map((abc) {
-                                                                                int index3 = snapshot.data!.indexOf(abc);
-                                                                                return Container(
-                                                                                  margin: EdgeInsets.only(left: 15, right: 15, top: index3 == 0 ? 0 : 15),
-                                                                                  child: TextButton(
-                                                                                      onPressed: () {
-                                                                                        chooseActiveService(abc);
-                                                                                      },
-                                                                                      style: ButtonStyle(padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 12, horizontal: 15)), shape: MaterialStateProperty.all(const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))))),
-                                                                                      child: Row(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                                        children: [
-                                                                                          Container(
-                                                                                            alignment: Alignment.center,
-                                                                                            width: 24,
-                                                                                            height: 24,
-                                                                                            decoration: BoxDecoration(color: activeService["Code"] == abc["Code"] ? Colors.green : Colors.white, border: Border.all(width: 1, color: activeService["Code"] == abc["Code"] ? Colors.green : Colors.black), borderRadius: const BorderRadius.all(Radius.circular(8))),
-                                                                                            child: GestureDetector(
-                                                                                                child: activeService["Code"] == abc["Code"]
-                                                                                                    ? const Icon(
-                                                                                                        Icons.check,
-                                                                                                        color: Colors.white,
-                                                                                                        size: 16,
-                                                                                                      )
-                                                                                                    : Container()),
-                                                                                          ),
-                                                                                          Expanded(
-                                                                                              child: Container(
-                                                                                            margin: const EdgeInsets.symmetric(horizontal: 12),
-                                                                                            child: Text(
-                                                                                              "${abc["Name"][0].toString().toUpperCase()}${abc["Name"].toString().substring(1).toLowerCase()}",
-                                                                                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
-                                                                                            ),
-                                                                                          )),
-                                                                                          // Text(
-                                                                                          //   NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(abc["PriceOutbound"]),
-                                                                                          //   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
-                                                                                          // )
-                                                                                        ],
-                                                                                      )),
-                                                                                );
-                                                                              }).toList());
-                                                                        } else {
-                                                                          return const Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            children: [
-                                                                              SizedBox(
-                                                                                width: 40,
-                                                                                height: 40,
-                                                                                child: LoadingIndicator(
-                                                                                  colors: kDefaultRainbowColors,
-                                                                                  indicatorType: Indicator.lineSpinFadeLoader,
-                                                                                  strokeWidth: 1,
-                                                                                  // pathBackgroundColor: Colors.black45,
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: 10,
-                                                                              ),
-                                                                              Text("Đang lấy dữ liệu")
-                                                                            ],
-                                                                          );
-                                                                        }
-                                                                      }),
-                                                              crossFadeState: item[
-                                                                      "show"]
-                                                                  ? CrossFadeState
-                                                                      .showSecond
-                                                                  : CrossFadeState
-                                                                      .showFirst,
-                                                              duration: 500.ms)
-                                                        ],
-                                                      ));
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 15,
+                                                    vertical: 18),
+                                            hintStyle: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w300),
+                                            hintText: 'Chọn ngày',
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(flex: 4, child: Container()),
+                                      Expanded(
+                                          flex: 48,
+                                          child: TextField(
+                                            readOnly: true,
+                                            controller: TextEditingController(
+                                                text: activeTime == null
+                                                    ? ""
+                                                    : DateFormat("HH:mm")
+                                                        .format(DateTime(
+                                                            now.year,
+                                                            now.month,
+                                                            now.day,
+                                                            activeTime!.hour,
+                                                            activeTime!
+                                                                .minute))),
+                                            textAlignVertical:
+                                                TextAlignVertical.center,
+                                            onTap: () => selectTime(),
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w300),
+                                            decoration: InputDecoration(
+                                              focusedBorder: dataCustom.border,
+                                              enabledBorder: dataCustom.border,
+                                              suffixIcon: const Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: Colors.black,
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 15,
+                                                      vertical: 18),
+                                              hintStyle: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w300),
+                                              hintText: 'Chọn giờ',
+                                            ),
+                                          ))
+                                    ],
+                                  ),
+                                ],
+                              )),
+                          Container(
+                              margin: const EdgeInsets.only(top: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(bottom: 7),
+                                    child: const Text(
+                                      "Đặt lịch tại",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14),
+                                    ),
+                                  ),
+                                  Container(
+                                    // padding: const EdgeInsets.only(bottom: 10),
+
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 1, color: Colors.grey),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                if (showBranch) {
+                                                  _animationController1.reverse(
+                                                      from: 0.5);
                                                 } else {
-                                                  return Container();
+                                                  _animationController1.forward(
+                                                      from: 0.0);
                                                 }
-                                              }).toList())
-                                          : const Row(
+                                                showBranch = !showBranch;
+                                              });
+                                            },
+                                            style: ButtonStyle(
+                                              padding:
+                                                  MaterialStateProperty.all(
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 16,
+                                                          horizontal: 15)),
+                                            ),
+                                            child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                SizedBox(
-                                                  width: 40,
-                                                  height: 40,
-                                                  child: LoadingIndicator(
-                                                    colors:
-                                                        kDefaultRainbowColors,
-                                                    indicatorType: Indicator
-                                                        .lineSpinFadeLoader,
-                                                    strokeWidth: 1,
-                                                    // pathBackgroundColor: Colors.black45,
+                                                Expanded(
+                                                  child: Text(
+                                                    activeBranch.isNotEmpty
+                                                        ? "${activeBranch["Name"]}"
+                                                        : "Chọn chi nhánh",
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w300),
                                                   ),
                                                 ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text("Đang lấy dữ liệu")
+                                                RotationTransition(
+                                                  turns: Tween(
+                                                          begin: 0.0, end: 1.0)
+                                                      .animate(
+                                                          _animationController1),
+                                                  child: const Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    color: Colors.black,
+                                                  ),
+                                                )
                                               ],
-                                            ),
-                                      crossFadeState: showService == true
-                                          ? CrossFadeState.showSecond
-                                          : CrossFadeState.showFirst,
-                                      duration: 500.ms)
+                                            )),
+                                        AnimatedCrossFade(
+                                            firstChild: Container(),
+                                            secondChild: FutureBuilder(
+                                                future:
+                                                    branchsModel.getBranchs(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    return Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: snapshot.data!
+                                                            .map((item) {
+                                                          int index = snapshot
+                                                              .data!
+                                                              .indexOf(item);
+                                                          print(item);
+                                                          if (item["Name"] ==
+                                                              "Kho miền bắc") {
+                                                            return Container();
+                                                          } else {
+                                                            return TextButton(
+                                                                onPressed: () {
+                                                                  setState(() {
+                                                                    activeBranch =
+                                                                        item;
+                                                                  });
+                                                                },
+                                                                style: ButtonStyle(
+                                                                    padding: MaterialStateProperty.all(const EdgeInsets
+                                                                        .symmetric(
+                                                                        vertical:
+                                                                            15,
+                                                                        horizontal:
+                                                                            20)),
+                                                                    shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.all(Radius.circular(10))))),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Text(
+                                                                      item[
+                                                                          "Name"],
+                                                                      style: TextStyle(
+                                                                          color: Colors.black.withOpacity(
+                                                                              0.6),
+                                                                          fontWeight:
+                                                                              FontWeight.w400),
+                                                                    ),
+                                                                    activeBranch["Code"] ==
+                                                                            item["Code"]
+                                                                        ? const Icon(
+                                                                            Icons.check,
+                                                                            size:
+                                                                                20,
+                                                                            color:
+                                                                                Colors.green,
+                                                                          )
+                                                                        : Container()
+                                                                  ],
+                                                                ));
+                                                          }
+                                                        }).toList());
+                                                  } else {
+                                                    return const Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 40,
+                                                          height: 40,
+                                                          child:
+                                                              LoadingIndicator(
+                                                            colors:
+                                                                kDefaultRainbowColors,
+                                                            indicatorType: Indicator
+                                                                .lineSpinFadeLoader,
+                                                            strokeWidth: 1,
+                                                            // pathBackgroundColor: Colors.black45,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text("Đang lấy dữ liệu")
+                                                      ],
+                                                    );
+                                                  }
+                                                }),
+                                            crossFadeState: showBranch
+                                                ? CrossFadeState.showSecond
+                                                : CrossFadeState.showFirst,
+                                            duration: 500.ms)
+                                      ],
+                                    ),
+                                  ),
                                 ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  )),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 50,
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
-                    child: TextButton(
-                        style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(horizontal: 20)),
-                            shape: MaterialStateProperty.all(
-                                const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15)))),
-                            backgroundColor: MaterialStateProperty.all(
-                                Theme.of(context).colorScheme.primary)),
-                        onPressed: () {
-                          addBookingService();
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(flex: 1, child: Container()),
-                            const Expanded(
-                              flex: 8,
-                              child: Center(
-                                child: Text(
-                                  "Đặt lịch ngay",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400),
+                              )),
+                          Container(
+                            margin: const EdgeInsets.only(top: 15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 7),
+                                  child: const Text(
+                                    "Dịch vụ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14),
+                                  ),
                                 ),
-                              ),
+                                Container(
+                                  // padding: const EdgeInsets.only(bottom: 10),
+
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              if (showService) {
+                                                _animationController.reverse(
+                                                    from: 0.5);
+                                              } else {
+                                                _animationController.forward(
+                                                    from: 0.0);
+                                              }
+                                              showService = !showService;
+                                            });
+                                          },
+                                          style: ButtonStyle(
+                                            padding: MaterialStateProperty.all(
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 16,
+                                                    horizontal: 15)),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  activeService.isNotEmpty
+                                                      ? "${activeService["Name"][0].toString().toUpperCase()}${activeService["Name"].toString().substring(1).toLowerCase()}"
+                                                      : "Chọn dịch vụ",
+                                                  style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w300),
+                                                ),
+                                              ),
+                                              RotationTransition(
+                                                turns: Tween(
+                                                        begin: 0.0, end: 1.0)
+                                                    .animate(
+                                                        _animationController),
+                                                child: const Icon(
+                                                  Icons.keyboard_arrow_down,
+                                                  color: Colors.black,
+                                                ),
+                                              )
+                                            ],
+                                          )),
+                                      AnimatedCrossFade(
+                                          firstChild: Container(),
+                                          secondChild: chooseService.isNotEmpty
+                                              ? Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children:
+                                                      chooseService.map((item) {
+                                                    int index = chooseService
+                                                        .indexOf(item);
+                                                    if (item["name"] !=
+                                                        "Sản phẩm") {
+                                                      return Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      15),
+                                                          child: Column(
+                                                            children: [
+                                                              TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    showServiceChoseService(
+                                                                        index);
+                                                                  },
+                                                                  style: ButtonStyle(
+                                                                      padding: MaterialStateProperty.all(const EdgeInsets
+                                                                          .symmetric(
+                                                                          vertical:
+                                                                              15,
+                                                                          horizontal:
+                                                                              20)),
+                                                                      shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.all(Radius.circular(10))))),
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      Text(
+                                                                        item[
+                                                                            "name"],
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.black.withOpacity(0.6),
+                                                                            fontWeight: FontWeight.w400),
+                                                                      ),
+                                                                      item["show"]
+                                                                          ? const Icon(Icons.keyboard_arrow_up,
+                                                                              color: Colors
+                                                                                  .black)
+                                                                          : const Icon(
+                                                                              Icons.keyboard_arrow_down,
+                                                                              color: Colors.black)
+                                                                    ],
+                                                                  )),
+                                                              AnimatedCrossFade(
+                                                                  firstChild:
+                                                                      Container(),
+                                                                  secondChild:
+                                                                      FutureBuilder(
+                                                                          future: servicesModel.getServiceByGroup(item[
+                                                                              "code"]),
+                                                                          builder: (context,
+                                                                              snapshot) {
+                                                                            if (snapshot.hasData) {
+                                                                              return Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: snapshot.data!.map((abc) {
+                                                                                    int index3 = snapshot.data!.indexOf(abc);
+                                                                                    return Container(
+                                                                                      margin: EdgeInsets.only(left: 15, right: 15, top: index3 == 0 ? 0 : 15),
+                                                                                      child: TextButton(
+                                                                                          onPressed: () {
+                                                                                            chooseActiveService(abc);
+                                                                                          },
+                                                                                          style: ButtonStyle(padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 12, horizontal: 15)), shape: MaterialStateProperty.all(const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))))),
+                                                                                          child: Row(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                                            children: [
+                                                                                              Container(
+                                                                                                alignment: Alignment.center,
+                                                                                                width: 24,
+                                                                                                height: 24,
+                                                                                                decoration: BoxDecoration(color: activeService["Code"] == abc["Code"] ? Colors.green : Colors.white, border: Border.all(width: 1, color: activeService["Code"] == abc["Code"] ? Colors.green : Colors.black), borderRadius: const BorderRadius.all(Radius.circular(8))),
+                                                                                                child: GestureDetector(
+                                                                                                    child: activeService["Code"] == abc["Code"]
+                                                                                                        ? const Icon(
+                                                                                                            Icons.check,
+                                                                                                            color: Colors.white,
+                                                                                                            size: 16,
+                                                                                                          )
+                                                                                                        : Container()),
+                                                                                              ),
+                                                                                              Expanded(
+                                                                                                  child: Container(
+                                                                                                margin: const EdgeInsets.symmetric(horizontal: 12),
+                                                                                                child: Text(
+                                                                                                  "${abc["Name"][0].toString().toUpperCase()}${abc["Name"].toString().substring(1).toLowerCase()}",
+                                                                                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
+                                                                                                ),
+                                                                                              )),
+                                                                                              // Text(
+                                                                                              //   NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(abc["PriceOutbound"]),
+                                                                                              //   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
+                                                                                              // )
+                                                                                            ],
+                                                                                          )),
+                                                                                    );
+                                                                                  }).toList());
+                                                                            } else {
+                                                                              return const Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  SizedBox(
+                                                                                    width: 40,
+                                                                                    height: 40,
+                                                                                    child: LoadingIndicator(
+                                                                                      colors: kDefaultRainbowColors,
+                                                                                      indicatorType: Indicator.lineSpinFadeLoader,
+                                                                                      strokeWidth: 1,
+                                                                                      // pathBackgroundColor: Colors.black45,
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width: 10,
+                                                                                  ),
+                                                                                  Text("Đang lấy dữ liệu")
+                                                                                ],
+                                                                              );
+                                                                            }
+                                                                          }),
+                                                                  crossFadeState: item[
+                                                                          "show"]
+                                                                      ? CrossFadeState
+                                                                          .showSecond
+                                                                      : CrossFadeState
+                                                                          .showFirst,
+                                                                  duration:
+                                                                      500.ms)
+                                                            ],
+                                                          ));
+                                                    } else {
+                                                      return Container();
+                                                    }
+                                                  }).toList())
+                                              : const Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 40,
+                                                      height: 40,
+                                                      child: LoadingIndicator(
+                                                        colors:
+                                                            kDefaultRainbowColors,
+                                                        indicatorType: Indicator
+                                                            .lineSpinFadeLoader,
+                                                        strokeWidth: 1,
+                                                        // pathBackgroundColor: Colors.black45,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text("Đang lấy dữ liệu")
+                                                  ],
+                                                ),
+                                          crossFadeState: showService == true
+                                              ? CrossFadeState.showSecond
+                                              : CrossFadeState.showFirst,
+                                          duration: 500.ms)
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Image.asset(
-                                "assets/images/calendar-white.png",
-                                width: 28,
-                                height: 28,
-                                fit: BoxFit.contain,
-                              ),
-                            )
-                          ],
-                        )),
-                  )
-                ])));
+                          )
+                        ],
+                      )),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 15),
+                        child: TextButton(
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    const EdgeInsets.symmetric(horizontal: 20)),
+                                shape: MaterialStateProperty.all(
+                                    const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15)))),
+                                backgroundColor: MaterialStateProperty.all(
+                                    Theme.of(context).colorScheme.primary)),
+                            onPressed: () {
+                              addBookingService();
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(flex: 1, child: Container()),
+                                const Expanded(
+                                  flex: 8,
+                                  child: Center(
+                                    child: Text(
+                                      "Đặt lịch ngay",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Image.asset(
+                                    "assets/images/calendar-white.png",
+                                    width: 28,
+                                    height: 28,
+                                    fit: BoxFit.contain,
+                                  ),
+                                )
+                              ],
+                            )),
+                      )
+                    ]))));
   }
 }
