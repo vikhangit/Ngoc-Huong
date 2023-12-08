@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
@@ -121,10 +122,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
   @override
   Widget build(BuildContext context) {
     List rank = [
-      {"card": silver(context), "rank": "Bạc", "point": "10.000.000"},
-      {"card": gold(context), "rank": "Vàng", "point": "25.000.000"},
-      {"card": platinum(context), "rank": "Bạch kim", "point": "50.000.000"},
-      {"card": diamond(context), "rank": "Kim cương", "point": "Max"},
+      {"card": silver(context), "rank": "Bạc", "point": 10000000},
+      {"card": gold(context), "rank": "Vàng", "point": 25000000},
+      {"card": platinum(context), "rank": "Bạch kim", "point": 50000000},
+      {"card": diamond(context), "rank": "Kim cương", "point": 100000000},
     ];
     return SafeArea(
         bottom: false,
@@ -289,8 +290,16 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                             .width,
                                                     height: 3,
                                                     child:
-                                                        const LinearProgressIndicator(
-                                                      value: 0,
+                                                        LinearProgressIndicator(
+                                                      value: snapshot.data[
+                                                                  "Point"] ==
+                                                              null
+                                                          ? 0
+                                                          : (snapshot.data[
+                                                                      "Point"] *
+                                                                  100000) /
+                                                              rank[index]
+                                                                  ["point"],
                                                       backgroundColor:
                                                           Colors.white,
                                                     ),
@@ -303,9 +312,21 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                         MainAxisAlignment
                                                             .spaceBetween,
                                                     children: [
-                                                      const Text(
-                                                        "0",
-                                                        style: TextStyle(
+                                                      Text(
+                                                        snapshot.data[
+                                                                    "Point"] ==
+                                                                null
+                                                            ? "0"
+                                                            : NumberFormat.currency(
+                                                                    locale:
+                                                                        "vi_VI",
+                                                                    symbol: "")
+                                                                .format(
+                                                                snapshot.data[
+                                                                        "Point"] *
+                                                                    100000,
+                                                              ),
+                                                        style: const TextStyle(
                                                             fontSize: 13,
                                                             color: Colors.white,
                                                             fontWeight:
@@ -313,7 +334,12 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                                     .w400),
                                                       ),
                                                       Text(
-                                                        rank[index]["point"],
+                                                        NumberFormat.currency(
+                                                                locale: "vi_VI",
+                                                                symbol: "")
+                                                            .format(
+                                                          rank[index]["point"],
+                                                        ),
                                                         style: const TextStyle(
                                                             fontSize: 13,
                                                             color: Colors.white,
@@ -328,7 +354,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                   ),
                                                   index == 3
                                                       ? const Text(
-                                                          "Hiện tại bạn đang là khách hàng có quyền lợi cao nhất của chúng tôi",
+                                                          "Hãy thăng hạng kim cương để có thể hưởng thụ nhiều ưu đãi tuyệt vời nhất",
                                                           style: TextStyle(
                                                               fontSize: 12,
                                                               fontWeight:
@@ -336,7 +362,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                                       .w300),
                                                         )
                                                       : Text(
-                                                          "Cần sử dụng thêm ${rank[index]["point"]} nữa để lên hạng ${rank[index + 1]["rank"]}",
+                                                          "Cần sử dụng thêm ${NumberFormat.currency(locale: "vi_VI", symbol: "").format(snapshot.data!["Point"] != null ? rank[index]["point"] - (snapshot.data!["Point"] * 100000) : rank[index]["point"])} nữa để lên hạng ${rank[index + 1]["rank"]}",
                                                           style: const TextStyle(
                                                               fontSize: 12,
                                                               fontWeight:
