@@ -519,10 +519,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                      checkRank(int.parse(
-                                                          snapshot.data![
-                                                                  "Point"] ??
-                                                              "0")),
+                                                      checkRank(snapshot
+                                                              .data!["Point"] ??
+                                                          0),
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w500)),

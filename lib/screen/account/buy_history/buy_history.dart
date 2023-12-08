@@ -164,7 +164,14 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                             e["GroupCode"]),
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
-                                            if (snapshot.data!.isNotEmpty) {
+                                            if (snapshot.data!.isNotEmpty &&
+                                                snapshot.data![0]["DetailList"]
+                                                        .indexWhere((e) =>
+                                                            e["ProductCode"]
+                                                                .toString()
+                                                                .contains(
+                                                                    "DV")) <
+                                                    0) {
                                               List list = snapshot.data!;
                                               return RefreshIndicator(
                                                 onRefresh: refreshData,
@@ -173,9 +180,14 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                                   itemCount: list.length,
                                                   itemBuilder:
                                                       (context, index) {
-                                                    return list[index]
-                                                                ["DetailList"]
-                                                            .isNotEmpty
+                                                    return list[index]["DetailList"]
+                                                                .isNotEmpty &&
+                                                            list[index]["DetailList"].indexWhere((e) => e[
+                                                                        "ProductCode"]
+                                                                    .toString()
+                                                                    .contains(
+                                                                        "DV")) <
+                                                                0
                                                         ? Container(
                                                             margin: EdgeInsets.only(
                                                                 left: 15,
@@ -219,8 +231,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                                                                                 save: save,
                                                                               )));
                                                                 },
-                                                                style:
-                                                                    ButtonStyle(
+                                                                style: ButtonStyle(
                                                                   padding: MaterialStateProperty.all(const EdgeInsets
                                                                       .symmetric(
                                                                       vertical:

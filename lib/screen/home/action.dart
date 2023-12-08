@@ -274,6 +274,7 @@ class _ActionHomeState extends State<ActionHome> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               Map profile = snapshot.data!;
+                              print(profile);
                               return Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -334,8 +335,8 @@ class _ActionHomeState extends State<ActionHome> {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           const ThanhVienScreen())),
-                                              child: checkRank(int.parse(
-                                                  profile["Point"] ?? "0")))
+                                              child: checkRank(
+                                                  profile["Point"] ?? 0))
                                         ],
                                       )
                                     ],
