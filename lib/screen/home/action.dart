@@ -24,9 +24,9 @@ class ActionHome extends StatefulWidget {
 
 List toolServices = [
   {"icon": "assets/images/icon/icon1.png", "title": "Đặt lịch"},
-  {"icon": "assets/images/icon/icon3.png", "title": "Lịch sử làm đẹp"},
-  {"icon": "assets/images/location-to.png", "title": "Chi nhánh gần nhất"},
-  {"icon": "assets/images/icon/icon4.png", "title": "Hạng thành viên"},
+  {"icon": "assets/images/icon/icon-vi-tri.jpg", "title": "Chi nhánh gần nhất"},
+  {"icon": "assets/images/icon/QR-fanpage.png", "title": "Check In nhận quà"},
+  {"icon": "assets/images/icon/gift.png", "title": "Shop Quà Tặng"},
   {"icon": "assets/images/icon/icon5.png", "title": "Ưu đãi tháng"},
   // {"icon": "assets/images/Home/Icon/dich-vu.png", "title": "Dịch vụ"},
   // {"icon": "assets/images/Home/Icon/vi.png", "title": "Điểm"},
@@ -52,15 +52,6 @@ class _ActionHomeState extends State<ActionHome> {
           }
         case 1:
           {
-            bookingModel.getListBookinfStatus().then((value) => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        BookingHistory(ac: 0, listAction: value))));
-            break;
-          }
-        case 2:
-          {
             // Navigator.push(
             //     context,
             //     MaterialPageRoute(
@@ -80,14 +71,6 @@ class _ActionHomeState extends State<ActionHome> {
                       height: MediaQuery.of(context).size.height * .95,
                       child: ModalDiaChi(saveCN: () => setState(() {})));
                 });
-            break;
-          }
-        case 3:
-          {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ThanhVienScreen()));
             break;
           }
 
@@ -274,7 +257,6 @@ class _ActionHomeState extends State<ActionHome> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               Map profile = snapshot.data!;
-                              print(profile);
                               return Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -342,15 +324,42 @@ class _ActionHomeState extends State<ActionHome> {
                                     ],
                                   ),
                                   Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "${profile["Point"] ?? 0} điểm",
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w600,
-                                            color: mainColor),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            "${profile["Point"] ?? 0} điểm",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color: mainColor),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "150 xu",
+                                                style: TextStyle(
+                                                    fontSize: 9,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: mainColor),
+                                              ),
+                                              const SizedBox(
+                                                width: 4,
+                                              ),
+                                              Image.asset(
+                                                "assets/images/icon/Xu.png",
+                                                width: 12,
+                                                height: 12,
+                                              )
+                                            ],
+                                          )
+                                        ],
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 8,
                                       ),
                                       FutureBuilder(
@@ -375,7 +384,7 @@ class _ActionHomeState extends State<ActionHome> {
                                                         .withOpacity(0.3),
                                                     spreadRadius: 2,
                                                     blurRadius: 2,
-                                                    offset: Offset(0,
+                                                    offset: const Offset(0,
                                                         2), // changes position of shadow
                                                   ),
                                                 ],
@@ -599,7 +608,7 @@ class _ActionHomeState extends State<ActionHome> {
                                         color: Colors.grey.withOpacity(0.3),
                                         spreadRadius: 2,
                                         blurRadius: 2,
-                                        offset: Offset(
+                                        offset: const Offset(
                                             0, 2), // changes position of shadow
                                       ),
                                     ],
@@ -610,7 +619,7 @@ class _ActionHomeState extends State<ActionHome> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (contex) =>
-                                                  LoginScreen()));
+                                                  const LoginScreen()));
                                     },
                                     child: Image.asset(
                                       "assets/images/icon/cart.png",
@@ -715,18 +724,16 @@ class _ActionHomeState extends State<ActionHome> {
                         },
                         child: Column(
                           children: [
-                            index == 2
-                                ? Container(
-                                    margin: const EdgeInsets.only(bottom: 10),
+                            index == 1
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
                                     child: Image.asset(
                                       width: 48,
                                       height: 48,
                                       "${item["icon"]}",
-                                      fit: BoxFit.fill,
                                     ),
                                   )
                                 : Container(
-                                    margin: const EdgeInsets.only(bottom: 10),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
                                       color: Colors.white,
@@ -735,20 +742,22 @@ class _ActionHomeState extends State<ActionHome> {
                                           color: Colors.grey.withOpacity(0.3),
                                           spreadRadius: 2,
                                           blurRadius: 2,
-                                          offset: Offset(0,
+                                          offset: const Offset(0,
                                               2), // changes position of shadow
                                         ),
                                       ],
                                     ),
-                                    padding: const EdgeInsets.symmetric(
+                                    padding: EdgeInsets.symmetric(
                                         horizontal: 6, vertical: 6),
                                     child: Image.asset(
                                       width: 35,
                                       height: 35,
                                       "${item["icon"]}",
-                                      fit: BoxFit.contain,
                                     ),
                                   ),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             Text(
                               "${item["title"]}",
                               textAlign: TextAlign.center,

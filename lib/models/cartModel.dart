@@ -32,14 +32,15 @@ class CartModel {
     List result = [];
     try {
       Response response =
-      await client.dio.get('${client.apiUrl}/ShoppingCart/getAddToCart',
-          options: Options(headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization':
-            '${localStorageCustomerToken.getItem("customer_token")}',
-          }));
+          await client.dio.get('${client.apiUrl}/ShoppingCart/getAddToCart',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
       if (response.statusCode == 200) {
-        print("<ee>=============================================================================<ee>");
+        print(
+            "<ee>=============================================================================<ee>");
         print(localStorageCustomerToken.getItem("customer_token"));
         return result = response.data["Data"];
       } else {
@@ -53,12 +54,12 @@ class CartModel {
 
   Future getDetailCart(int cartId) async {
     try {
-      Response response =
-      await client.dio.get('${client.apiUrl}//ShoppingCart/getDetailAddToCart?ShoppingCartId=$cartId',
+      Response response = await client.dio.get(
+          '${client.apiUrl}//ShoppingCart/getDetailAddToCart?ShoppingCartId=$cartId',
           options: Options(headers: {
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization':
-            '${localStorageCustomerToken.getItem("customer_token")}',
+                '${localStorageCustomerToken.getItem("customer_token")}',
           }));
       if (response.statusCode == 200) {
         return response.data["Data"];
@@ -69,20 +70,23 @@ class CartModel {
       print(e);
     }
   }
+
   Future<Map> getDetailCartByCode(String code) async {
-     Map result = {};
+    Map result = {};
     try {
       Response response =
-      await client.dio.get('${client.apiUrl}/ShoppingCart/getAddToCart',
-          options: Options(headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization':
-            '${localStorageCustomerToken.getItem("customer_token")}',
-          }));
+          await client.dio.get('${client.apiUrl}/ShoppingCart/getAddToCart',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
       if (response.statusCode == 200) {
-        return result = response.data["Data"].toList().firstWhere((e) => e["ProductCode"]
-            .toString()
-            .toLowerCase() == code.toString().toLowerCase(), orElse: () => null);
+        return result = response.data["Data"].toList().firstWhere(
+            (e) =>
+                e["ProductCode"].toString().toLowerCase() ==
+                code.toString().toLowerCase(),
+            orElse: () => null);
       } else {
         return result;
       }
@@ -91,18 +95,20 @@ class CartModel {
     }
     return result;
   }
+
   Future addToCart(Map data) async {
     try {
       Response response =
-      await client.dio.post('${client.apiUrl}/ShoppingCart/AddToCart',
-          options: Options(headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization':
-            '${localStorageCustomerToken.getItem("customer_token")}',
-          }),
-          data: data);
+          await client.dio.post('${client.apiUrl}/ShoppingCart/AddToCart',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }),
+              data: data);
       if (response.statusCode == 200) {
-        print("<ee>=============================================================================<ee>");
+        print(
+            "<ee>=============================================================================<ee>");
         print(response);
         return response.data["Data"];
       } else {
@@ -116,13 +122,13 @@ class CartModel {
   Future updateProductInCart(Map data) async {
     try {
       Response response =
-      await client.dio.put('${client.apiUrl}/ShoppingCart/putShoppingCart',
-          options: Options(headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization':
-            '${localStorageCustomerToken.getItem("customer_token")}',
-          }),
-          data: data);
+          await client.dio.put('${client.apiUrl}/ShoppingCart/putShoppingCart',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }),
+              data: data);
       if (response.statusCode == 200) {
         print(response);
         return response.data["Data"];
@@ -134,18 +140,16 @@ class CartModel {
     }
   }
 
-
   Future updateProductToCart(Map product) async {
-
     try {
       Response response =
-      await client.dio.post('${client.apiUrl}/ShoppingCart/putShoppingCart',
-          options: Options(headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization':
-            '${localStorageCustomerToken.getItem("customer_token")}',
-          }),
-          data: product);
+          await client.dio.post('${client.apiUrl}/ShoppingCart/putShoppingCart',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }),
+              data: product);
       if (response.statusCode == 200) {
         print(response);
         return response.data;
@@ -160,13 +164,13 @@ class CartModel {
   Future setOrder(Map data) async {
     try {
       Response response =
-      await client.dio.post('${client.apiUrl}/ProductInvoice/setOrder',
-          options: Options(headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization':
-            '${localStorageCustomerToken.getItem("customer_token")}',
-          }),
-          data: data);
+          await client.dio.post('${client.apiUrl}/ProductInvoice/setOrder',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }),
+              data: data);
       if (response.statusCode == 200) {
         print(response);
         return response.data;

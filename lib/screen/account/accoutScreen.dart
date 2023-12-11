@@ -48,7 +48,7 @@ List menu = [
   },
   {
     "icon": "assets/images/cart-black.png",
-    "title": "Lịch sử đặt hàng",
+    "title": "Lịch sử mua hàng",
   },
   {
     "icon": "assets/images/account/dieu-khoan.png",

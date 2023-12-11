@@ -5,6 +5,7 @@ import 'package:ngoc_huong/screen/choose_brand/chooseBrand.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/utils/notification_services.dart';
+import 'package:video_player/video_player.dart';
 // import 'package:localstorage/localstorage.dart';
 
 class StartScreen extends StatefulWidget {
@@ -31,12 +32,21 @@ class _StartScreenState extends State<StartScreen> {
   final LocalStorage localStorageCustomerCart = LocalStorage("customer_cart");
   final LocalStorage localStorageStart = LocalStorage("start");
   late TextEditingController controller;
+  late VideoPlayerController videoController;
 
   @override
   void initState() {
     super.initState();
+    videoController = VideoPlayerController.asset("assets/intro/intro.MP4");
+    videoController.addListener(() {
+      setState(() {});
+    });
+    videoController.setLooping(true);
+    videoController.initialize().then((_) => setState(() {}));
+    videoController.play();
     notificationService.requestNotificationPermission();
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(milliseconds: 6000), () {
+      videoController.pause();
       if (storageCustomer.getItem("customer_token") != null) {
         localStorageStart.deleteItem("start");
         Navigator.push(context,
@@ -55,59 +65,27 @@ class _StartScreenState extends State<StartScreen> {
   @override
   void dispose() {
     super.dispose();
+    videoController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.black,
-      body: SizedBox(
-          child: Image.asset(
-        "assets/images/start/start.gif",
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-      )
-          // Column(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Text(
-          //       "Chào mừng bạn đến với hệ thống thẩm mỹ Ngọc Hường",
-          //       style: TextStyle(fontSize: 18),
-          //       textAlign: TextAlign.center,
-          //     ),
-          //     SizedBox(
-          //       height: 20,
-          //     ),
-          //     Stack(
-          //       children: [
-          //         const SizedBox(
-          //           width: 110,
-          //           height: 110,
-          //           child: LoadingIndicator(
-          //             colors: kDefaultRainbowColors,
-          //             indicatorType: Indicator.ballRotateChase,
-          //             strokeWidth: 3,
-          //             // pathBackgroundColor: Colors.black45,
-          //           ),
-          //         ),
-          //         Positioned.fill(
-          //             // top: 0,
-          //             //   left: 0,
-          //             child: Container(
-          //           alignment: Alignment.center,
-          //           child: Image.asset(
-          //             "assets/images/logo.png",
-          //             width: 60,
-          //             height: 60,
-          //           ),
-          //         ))
-          //       ],
-          //     )
-
-          //   ],
-          // ),
-          ),
-    ));
+            backgroundColor: Colors.white,
+            body: SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: AspectRatio(
+                  aspectRatio: videoController.value.aspectRatio,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: <Widget>[
+                      VideoPlayer(videoController),
+                    ],
+                  ),
+                ),
+              ),
+            )));
   }
 }

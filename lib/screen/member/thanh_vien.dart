@@ -122,10 +122,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
   @override
   Widget build(BuildContext context) {
     List rank = [
-      {"card": silver(context), "rank": "Bạc", "point": 10000000},
-      {"card": gold(context), "rank": "Vàng", "point": 25000000},
-      {"card": platinum(context), "rank": "Bạch kim", "point": 50000000},
-      {"card": diamond(context), "rank": "Kim cương", "point": 100000000},
+      {"card": silver(context), "rank": "Bạc", "point": 100},
+      {"card": gold(context), "rank": "Vàng", "point": 250},
+      {"card": platinum(context), "rank": "Bạch kim", "point": 500},
+      {"card": diamond(context), "rank": "Kim cương", "point": 1000},
     ];
     return SafeArea(
         bottom: false,
@@ -296,10 +296,9 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                               null
                                                           ? 0
                                                           : (snapshot.data[
-                                                                      "Point"] *
-                                                                  100000) /
+                                                                  "Point"] /
                                                               rank[index]
-                                                                  ["point"],
+                                                                  ["point"]),
                                                       backgroundColor:
                                                           Colors.white,
                                                     ),
@@ -313,19 +312,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        snapshot.data[
-                                                                    "Point"] ==
-                                                                null
-                                                            ? "0"
-                                                            : NumberFormat.currency(
-                                                                    locale:
-                                                                        "vi_VI",
-                                                                    symbol: "")
-                                                                .format(
-                                                                snapshot.data[
-                                                                        "Point"] *
-                                                                    100000,
-                                                              ),
+                                                        "${snapshot.data["Point"] ?? 0}",
                                                         style: const TextStyle(
                                                             fontSize: 13,
                                                             color: Colors.white,
@@ -334,12 +321,8 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                                     .w400),
                                                       ),
                                                       Text(
-                                                        NumberFormat.currency(
-                                                                locale: "vi_VI",
-                                                                symbol: "")
-                                                            .format(
-                                                          rank[index]["point"],
-                                                        ),
+                                                        rank[index]["point"]
+                                                            .toString(),
                                                         style: const TextStyle(
                                                             fontSize: 13,
                                                             color: Colors.white,
@@ -362,7 +345,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                                       .w300),
                                                         )
                                                       : Text(
-                                                          "Cần sử dụng thêm ${NumberFormat.currency(locale: "vi_VI", symbol: "").format(snapshot.data!["Point"] != null ? rank[index]["point"] - (snapshot.data!["Point"] * 100000) : rank[index]["point"])} nữa để lên hạng ${rank[index + 1]["rank"]}",
+                                                          "Cần sử dụng thêm ${snapshot.data!["Point"] != null ? rank[index]["point"] - snapshot.data!["Point"] : rank[index]["point"]} điểm nữa để lên hạng ${rank[index + 1]["rank"]}",
                                                           style: const TextStyle(
                                                               fontSize: 12,
                                                               fontWeight:

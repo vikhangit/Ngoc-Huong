@@ -224,7 +224,7 @@ class _CosmeticState extends State<Cosmetic> {
                                 Text(
                                   "DANH MỤC",
                                   style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w600,
                                       color: mainColor),
                                 ),
@@ -249,7 +249,15 @@ class _CosmeticState extends State<Cosmetic> {
                                             width: MediaQuery.of(context)
                                                 .size
                                                 .width,
-                                            height: 45,
+                                            height:
+                                                // item["GroupName"]
+                                                //         .toString()
+                                                //         .toLowerCase()
+                                                //         .contains(
+                                                //             "nâng cấp chất lượng da")
+                                                //     ? 65
+                                                //     :
+                                                50,
                                             child: TextButton(
                                               style: ButtonStyle(
                                                   padding:
@@ -281,8 +289,11 @@ class _CosmeticState extends State<Cosmetic> {
                                                   Flexible(
                                                       child: Text(
                                                     "${item["GroupName"].toString()[0].toUpperCase()}${item["GroupName"].toString().substring(1).toLowerCase()}",
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     style: const TextStyle(
-                                                        fontSize: 9,
+                                                        fontSize: 12,
                                                         fontWeight:
                                                             FontWeight.w400),
                                                   )),
