@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/order.dart';
+import 'package:ngoc_huong/screen/account/buy_history/beauty_profile.dart';
 import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
+import 'package:ngoc_huong/screen/account/buy_history/order_history.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
@@ -18,7 +20,7 @@ class BuyHistory extends StatefulWidget {
 }
 
 int? selectedIndex;
-int selectedParent = 1;
+int selectedParent = 0;
 int length = 0;
 String activeTab = "";
 List status = [];
@@ -35,12 +37,6 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
   TabController? tabController1;
   final OrderModel orderModel = OrderModel();
   final ScrollController scrollController = ScrollController();
-  void _getActiveTabIndex() {
-    setState(() {
-      selectedIndex = tabController?.index;
-    });
-  }
-
   void _getActiveParentTabIndex() {
     setState(() {
       selectedParent = tabController1!.index;
@@ -51,19 +47,12 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     Upgrader.clearSavedSettings();
-    tabController = TabController(length: widget.listTab.length, vsync: this);
     tabController1 = TabController(length: typeHistory.length, vsync: this);
     tabController1?.addListener(_getActiveParentTabIndex);
-    if (widget.ac != null) {
-      tabController?.animateTo(widget.ac!);
-    } else {
-      tabController?.addListener(_getActiveTabIndex);
-    }
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     scrollController.dispose();
   }
@@ -75,18 +64,6 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
 
   void save() {
     setState(() {});
-  }
-
-  num totalBooking(List list) {
-    num total = 0;
-    for (var i = 0; i < list.length; i++) {
-      num total = 0;
-      for (var i = 0; i < list.length; i++) {
-        total += list[i]["Amount"];
-      }
-      return total;
-    }
-    return total;
   }
 
   @override
@@ -141,371 +118,72 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                   SizedBox(
                     child: TabBar(
                       tabAlignment: TabAlignment.start,
-                      controller: tabController,
+                      controller: tabController1,
                       isScrollable: true,
-                      labelColor: Theme.of(context).colorScheme.primary,
+                      labelColor: Colors.white,
                       unselectedLabelColor: Colors.black,
-                      indicatorColor: Theme.of(context).colorScheme.primary,
-                      labelStyle: const TextStyle(
-                          fontWeight: FontWeight.w500,
+                      indicatorColor: Colors.transparent,
+                      labelStyle: TextStyle(
                           fontSize: 14,
-                          fontFamily: "Quicksand"),
+                          fontFamily: "Quicksand",
+                          color: Theme.of(context).colorScheme.primary),
                       onTap: (tabIndex) {
                         setState(() {
                           selectedParent = tabIndex;
                         });
                       },
-                      tabs: typeHistory
-                          .map((e) => SizedBox(
-                                // width:
-                                //     MediaQuery.of(context).size.width / 2 - 40,
-                                child: Tab(
-                                  text: "${e["title"]}",
-                                ),
-                              ))
-                          .toList(),
+                      tabs: typeHistory.map((e) {
+                        int index = typeHistory.indexOf(e);
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 10, top: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: selectedParent == index
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.8)
+                                : Colors.white,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: const Offset(
+                                    0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          // width:
+                          //     MediaQuery.of(context).size.width / 2 - 40,
+                          child: Tab(
+                            text: "${e["title"]}",
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
-                  SizedBox(
+                  Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       height: MediaQuery.of(context).size.height - 295,
-                      child: TabBarView(
-                          controller: tabController1,
-                          children: typeHistory.map((e) {
-                            if (widget.listTab.isNotEmpty) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 40, bottom: 15),
-                                    child: Image.asset(
-                                        "assets/images/account/img.webp"),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: const Text(
-                                      "Chưa có đơn hàng",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                  )
-                                ],
-                              );
-
-                              // return Column(
-                              //   children: [
-                              //     SizedBox(
-                              //       height: 50,
-                              //       child: TabBar(
-                              //         tabAlignment: TabAlignment.start,
-                              //         controller: tabController,
-                              //         isScrollable: true,
-                              //         labelColor:
-                              //             Theme.of(context).colorScheme.primary,
-                              //         unselectedLabelColor: Colors.black,
-                              //         indicatorColor:
-                              //             Theme.of(context).colorScheme.primary,
-                              //         labelStyle: const TextStyle(
-                              //             fontWeight: FontWeight.w500,
-                              //             fontSize: 14,
-                              //             fontFamily: "LexendDeca"),
-                              //         onTap: (tabIndex) {
-                              //           setState(() {
-                              //             selectedIndex = tabIndex;
-                              //           });
-                              //         },
-                              //         tabs: widget.listTab
-                              //             .map((e) => SizedBox(
-                              //                   width: MediaQuery.of(context)
-                              //                               .size
-                              //                               .width /
-                              //                           3 -
-                              //                       10,
-                              //                   child: Tab(
-                              //                     text: "${e["GroupName"]}",
-                              //                   ),
-                              //                 ))
-                              //             .toList(),
-                              //       ),
-                              //     ),
-                              //     SizedBox(
-                              //         height:
-                              //             MediaQuery.of(context).size.height -
-                              //                 400,
-                              //         child: TabBarView(
-                              //             controller: tabController,
-                              //             children: widget.listTab
-                              //                 .map((e) => FutureBuilder(
-                              //                     future: orderModel
-                              //                         .getOrderListByStatus(
-                              //                             e["GroupCode"]),
-                              //                     builder: (context, snapshot) {
-                              //                       if (snapshot.hasData) {
-                              //                         if (snapshot.data!
-                              //                                 .isNotEmpty &&
-                              //                             snapshot.data![0][
-                              //                                         "DetailList"]
-                              //                                     .indexWhere((e) => e[
-                              //                                             "ProductCode"]
-                              //                                         .toString()
-                              //                                         .contains(
-                              //                                             "DV")) <
-                              //                                 0) {
-                              //                           List list =
-                              //                               snapshot.data!;
-                              //                           return RefreshIndicator(
-                              //                             onRefresh:
-                              //                                 refreshData,
-                              //                             child:
-                              //                                 ListView.builder(
-                              //                               // controller: scrollController,
-                              //                               itemCount:
-                              //                                   list.length,
-                              //                               itemBuilder:
-                              //                                   (context,
-                              //                                       index) {
-                              //                                 return list[index]
-                              //                                                 [
-                              //                                                 "DetailList"]
-                              //                                             .isNotEmpty &&
-                              //                                         list[index]["DetailList"].indexWhere((e) => e["ProductCode"].toString().contains("DV")) <
-                              //                                             0
-                              //                                     ? Container(
-                              //                                         margin: EdgeInsets.only(
-                              //                                             left:
-                              //                                                 15,
-                              //                                             right:
-                              //                                                 15,
-                              //                                             top: index != 0
-                              //                                                 ? 20
-                              //                                                 : 30,
-                              //                                             bottom: index == list.length - 1
-                              //                                                 ? 20
-                              //                                                 : 0),
-                              //                                         decoration:
-                              //                                             BoxDecoration(
-                              //                                           color: Colors
-                              //                                               .white,
-                              //                                           boxShadow: [
-                              //                                             BoxShadow(
-                              //                                               color:
-                              //                                                   Colors.grey.withOpacity(0.5),
-                              //                                               spreadRadius:
-                              //                                                   1,
-                              //                                               blurRadius:
-                              //                                                   8,
-                              //                                               offset:
-                              //                                                   const Offset(4, 4), // changes position of shadow
-                              //                                             ),
-                              //                                           ],
-                              //                                         ),
-                              //                                         // height: 135,
-                              //                                         child: TextButton(
-                              //                                             onPressed: () {
-                              //                                               Navigator.push(
-                              //                                                   context,
-                              //                                                   MaterialPageRoute(
-                              //                                                       builder: (context) => ModalChiTietBuy(
-                              //                                                             product: list[index],
-                              //                                                             type: "",
-                              //                                                             save: save,
-                              //                                                           )));
-                              //                                             },
-                              //                                             style: ButtonStyle(
-                              //                                               padding:
-                              //                                                   MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 12, horizontal: 8)),
-                              //                                               backgroundColor:
-                              //                                                   MaterialStateProperty.all(Colors.white),
-                              //                                               shape:
-                              //                                                   MaterialStateProperty.all(const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
-                              //                                             ),
-                              //                                             child: Column(
-                              //                                               children: [
-                              //                                                 Row(
-                              //                                                   crossAxisAlignment: CrossAxisAlignment.start,
-                              //                                                   children: [
-                              //                                                     ClipRRect(
-                              //                                                       borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              //                                                       child: Image.network(
-                              //                                                         "${list[index]["DetailList"][0]["Image_Name"]}",
-                              //                                                         // width: 110,
-                              //                                                         height: 60,
-                              //                                                         fit: BoxFit.cover,
-                              //                                                       ),
-                              //                                                     ),
-                              //                                                     const SizedBox(
-                              //                                                       width: 10,
-                              //                                                     ),
-                              //                                                     Expanded(
-                              //                                                         child: Column(
-                              //                                                       crossAxisAlignment: CrossAxisAlignment.start,
-                              //                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //                                                       children: [
-                              //                                                         Wrap(
-                              //                                                           children: [
-                              //                                                             Text(
-                              //                                                               "${list[index]["DetailList"][0]["ProductName"]}",
-                              //                                                               overflow: TextOverflow.ellipsis,
-                              //                                                               maxLines: 1,
-                              //                                                               style: const TextStyle(color: Colors.black),
-                              //                                                             ),
-                              //                                                             const SizedBox(
-                              //                                                               height: 30,
-                              //                                                             ),
-                              //                                                             Row(
-                              //                                                               children: [
-                              //                                                                 Text(
-                              //                                                                   "${list[index]["DetailList"][0]["Quantity"] ?? 1}",
-                              //                                                                 ),
-                              //                                                                 const SizedBox(
-                              //                                                                   width: 3,
-                              //                                                                 ),
-                              //                                                                 const Text("x"),
-                              //                                                                 const SizedBox(
-                              //                                                                   width: 3,
-                              //                                                                 ),
-                              //                                                                 Text(
-                              //                                                                   NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[index]["DetailList"][0]["Price"]),
-                              //                                                                   style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                              //                                                                 )
-                              //                                                               ],
-                              //                                                             ),
-                              //                                                           ],
-                              //                                                         )
-                              //                                                       ],
-                              //                                                     ))
-                              //                                                   ],
-                              //                                                 ),
-                              //                                                 Container(
-                              //                                                   margin: const EdgeInsets.only(top: 15),
-                              //                                                   padding: const EdgeInsets.symmetric(vertical: 10),
-                              //                                                   decoration: BoxDecoration(border: BorderDirectional(top: BorderSide(width: 1, color: Colors.grey[400]!), bottom: BorderSide(width: 1, color: Colors.grey[400]!))),
-                              //                                                   child: Row(
-                              //                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //                                                     children: [
-                              //                                                       Text(
-                              //                                                         "${list[index]["DetailList"].length} sản phẩm",
-                              //                                                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: Colors.black),
-                              //                                                       ),
-                              //                                                       Row(
-                              //                                                         children: [
-                              //                                                           const Text(
-                              //                                                             "Thành tiền:",
-                              //                                                             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: Colors.black),
-                              //                                                           ),
-                              //                                                           const SizedBox(
-                              //                                                             width: 3,
-                              //                                                           ),
-                              //                                                           Text(
-                              //                                                             NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(list[index]["TotalAmount"] == 0 ? totalBooking(list[index]["DetailList"]) : list[index]["TotalAmount"]),
-                              //                                                             style: const TextStyle(
-                              //                                                               fontSize: 12,
-                              //                                                               fontWeight: FontWeight.w400,
-                              //                                                             ),
-                              //                                                           )
-                              //                                                         ],
-                              //                                                       )
-                              //                                                     ],
-                              //                                                   ),
-                              //                                                 )
-                              //                                               ],
-                              //                                             )))
-                              //                                     : Container();
-                              //                               },
-                              //                             ),
-                              //                           );
-                              //                         } else {
-                              //                           return Column(
-                              //                             children: [
-                              //                               Container(
-                              //                                 margin:
-                              //                                     const EdgeInsets
-                              //                                         .only(
-                              //                                         top: 40,
-                              //                                         bottom:
-                              //                                             15),
-                              //                                 child: Image.asset(
-                              //                                     "assets/images/account/img.webp"),
-                              //                               ),
-                              //                               Container(
-                              //                                 margin:
-                              //                                     const EdgeInsets
-                              //                                         .symmetric(
-                              //                                         horizontal:
-                              //                                             20),
-                              //                                 child: const Text(
-                              //                                   "Chưa có đơn hàng",
-                              //                                   textAlign:
-                              //                                       TextAlign
-                              //                                           .center,
-                              //                                   style: TextStyle(
-                              //                                       fontSize:
-                              //                                           15,
-                              //                                       fontWeight:
-                              //                                           FontWeight
-                              //                                               .w300),
-                              //                                 ),
-                              //                               )
-                              //                             ],
-                              //                           );
-                              //                         }
-                              //                       } else {
-                              //                         return const Row(
-                              //                           mainAxisAlignment:
-                              //                               MainAxisAlignment
-                              //                                   .center,
-                              //                           children: [
-                              //                             SizedBox(
-                              //                               width: 40,
-                              //                               height: 40,
-                              //                               child:
-                              //                                   LoadingIndicator(
-                              //                                 colors:
-                              //                                     kDefaultRainbowColors,
-                              //                                 indicatorType:
-                              //                                     Indicator
-                              //                                         .lineSpinFadeLoader,
-                              //                                 strokeWidth: 1,
-                              //                                 // pathBackgroundColor: Colors.black45,
-                              //                               ),
-                              //                             ),
-                              //                             SizedBox(
-                              //                               width: 10,
-                              //                             ),
-                              //                             Text(
-                              //                                 "Đang lấy dữ liệu")
-                              //                           ],
-                              //                         );
-                              //                       }
-                              //                     }))
-                              //                 .toList()))
-                              //   ],
-                              // );
-                            } else {
-                              return const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: LoadingIndicator(
-                                      colors: kDefaultRainbowColors,
-                                      indicatorType:
-                                          Indicator.lineSpinFadeLoader,
-                                      strokeWidth: 1,
-                                      // pathBackgroundColor: Colors.black45,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text("Đang lấy dữ liệu")
-                                ],
-                              );
-                            }
-                          }).toList()))
+                      child: TabBarView(controller: tabController1, children: [
+                        const BeautyProfile(),
+                        OrderHistory(
+                          listTab: widget.listTab,
+                          ac: widget.ac,
+                        ),
+                        OrderHistory(
+                          listTab: widget.listTab,
+                          ac: widget.ac,
+                        ),
+                        OrderHistory(
+                          listTab: widget.listTab,
+                          ac: widget.ac,
+                        ),
+                        const BeautyProfile()
+                      ]))
                 ],
               ))),
     );

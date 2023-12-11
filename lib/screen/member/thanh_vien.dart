@@ -343,7 +343,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                                       .w300),
                                                         )
                                                       : Text(
-                                                          "Cần sử dụng thêm ${snapshot.data!["Point"] != null ? rank[index]["point"] - snapshot.data!["Point"] : rank[index]["point"]} điểm nữa để lên hạng ${rank[index + 1]["rank"]}",
+                                                          "Cần tích lũy thêm ${snapshot.data!["Point"] != null ? rank[index]["point"] - snapshot.data!["Point"] : rank[index]["point"]} điểm nữa để lên hạng ${rank[index + 1]["rank"]}",
                                                           style: const TextStyle(
                                                               fontSize: 12,
                                                               fontWeight:
@@ -396,8 +396,8 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4.0),
                               ),
-                              size: Size(12, 8),
-                              activeSize: Size(24, 8),
+                              size: const Size(12, 8),
+                              activeSize: const Size(24, 8),
                               color: mainColor,
                               activeColor: mainColor,
                               activeShape: RoundedRectangleBorder(
