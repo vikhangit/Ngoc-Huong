@@ -7,7 +7,6 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/firebase_options.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/information/information.dart';
-import 'package:ngoc_huong/screen/account/setting/setting.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
@@ -104,7 +103,6 @@ class _MyAppState extends State<MyApp> {
         "tin_tuc": (context) => const TinTucScreen(),
         "hangthanhvien": (context) => const ThanhVienScreen(),
         "booking": (context) => const BookingServices(),
-        "setting": (context) => const SettingAccout(),
         "informationAccount": (context) => const InfomationAccount()
       },
       theme: _customThemeData.themeData,

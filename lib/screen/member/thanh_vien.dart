@@ -427,7 +427,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                             labelStyle: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
-                                fontFamily: "LexendDeca"),
+                                fontFamily: "Quicksand"),
                             tabs: [
                               SizedBox(
                                 width:

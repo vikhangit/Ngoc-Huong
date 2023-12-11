@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
@@ -10,18 +9,18 @@ import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
-class BookingHistory extends StatefulWidget {
+class BeautifyHistory extends StatefulWidget {
   final int? ac;
   final List listAction;
-  const BookingHistory({super.key, this.ac, required this.listAction});
+  const BeautifyHistory({super.key, this.ac, required this.listAction});
 
   @override
-  State<BookingHistory> createState() => _BookingHistoryState();
+  State<BeautifyHistory> createState() => _BeautifyHistoryState();
 }
 
 int? _selectedIndex;
 
-class _BookingHistoryState extends State<BookingHistory>
+class _BeautifyHistoryState extends State<BeautifyHistory>
     with TickerProviderStateMixin {
   final ScrollController scrollController = ScrollController();
   TabController? tabController;
@@ -88,7 +87,7 @@ class _BookingHistoryState extends State<BookingHistory>
                     color: Colors.black,
                   ),
                 )),
-            title: const Text("Lịch sử đặt lịch",
+            title: const Text("Lịch sử làm đẹp",
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

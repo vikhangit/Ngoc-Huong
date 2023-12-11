@@ -11,6 +11,8 @@ import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
+import 'package:ngoc_huong/screen/account/about_us/AboutUs.dart';
+import 'package:ngoc_huong/screen/account/beautify_history/beautify_history.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/account/dieu_khoan_sd/dieu_khoan_sd.dart';
@@ -38,12 +40,12 @@ List menu = [
     "icon": "assets/images/account/thong-tin.png",
     "title": "Thông tin tài khoản",
   },
-  // {
-  //   "icon": "assets/images/account/giao-dich.png",
-  //   "title": "Lịch sử giao dịch",
-  // },
   {
     "icon": "assets/images/account/dat-lich.png",
+    "title": "Lịch sử đặt lịch",
+  },
+  {
+    "icon": "assets/images/account/giao-dich.png",
     "title": "Lịch sử làm đẹp",
   },
   {
@@ -51,21 +53,20 @@ List menu = [
     "title": "Lịch sử mua hàng",
   },
   {
-    "icon": "assets/images/account/dieu-khoan.png",
-    "title": "Điều khoản sử dụng",
+    "icon": "assets/images/account/dia-chi.png",
+    "title": "Quản lý địa chỉ",
   },
   {
     "icon": "assets/images/account/gioi-thieu.png",
     "title": "Giới thiệu bạn bè",
   },
   {
-    "icon": "assets/images/account/dia-chi.png",
-    "title": "Quản lý địa chỉ",
-  },
-
-  {
     "icon": "assets/images/account/ve-chung-toi.png",
-    "title": "Về Ngọc Hường",
+    "title": "Về Ngọc Hường Beauty",
+  },
+  {
+    "icon": "assets/images/account/dieu-khoan.png",
+    "title": "Điều khoản sử dụng",
   },
   // {
   //   "icon": "assets/images/delete-black.png",
@@ -153,15 +154,10 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     void goAction(int index) {
-      print(index);
       switch (index) {
         case 0:
           Navigator.pushNamed(context, "informationAccount");
           break;
-        // case 1:
-        //   Navigator.push(context,
-        //       MaterialPageRoute(builder: (context) => const TranHistory()));
-        //   break;
         case 1:
           bookingModel.getListBookinfStatus().then((value) => Navigator.push(
               context,
@@ -169,46 +165,38 @@ class _AccountScreenState extends State<AccountScreen> {
                   builder: (context) => BookingHistory(listAction: value))));
           break;
         case 2:
+          bookingModel.getListBookinfStatus().then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BeautifyHistory(listAction: value))));
+          break;
+        case 3:
           orderModel.getStatusList().then((value) => Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => BuyHistory(
                         listTab: value,
                       ))));
-
-          break;
-        case 3:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
           break;
         case 4:
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
+              MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
         case 5:
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
+              MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
           break;
-        // case 6:
-        //   {
-        //     customModal.showAlertDialog(context, "error", "Xóa tài khoản",
-        //         "Bạn có chắc chắn muốn xóa tài khoản không?", () {
-        //       EasyLoading.show(status: "Đang xử lý...");
-        //       storageCustomerToken.deleteItem("customer_token");
-        //       Future.delayed(const Duration(seconds: 1), () {
-        //         EasyLoading.dismiss();
-        //         Navigator.pop(context);
-        //         Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //                 builder: (context) => const HomeScreen()));
-        //       });
-        //     }, () => Navigator.pop(context));
-
-        //     break;
-        //   }
-
+        case 6:
+          {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AboutUs()));
+            break;
+          }
         case 7:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
+          break;
+        case 8:
           handleLogout();
           break;
         default:

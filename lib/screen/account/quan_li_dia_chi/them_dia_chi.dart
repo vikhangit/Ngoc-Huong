@@ -9,9 +9,9 @@ import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_phuong_xa.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_quan_huyen.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/modal_thanh_pho.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
-import 'package:ngoc_huong/screen/account/setting/custom_switch.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/custom_switch.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 

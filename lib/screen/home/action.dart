@@ -8,6 +8,7 @@ import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_dia_chi.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
+import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/member/thanh_vien.dart';
 import 'package:ngoc_huong/screen/news/tin_tuc.dart';
@@ -54,12 +55,6 @@ class _ActionHomeState extends State<ActionHome> {
           }
         case 1:
           {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => ChooseBrandScreen(
-            //               saveCN: () => setState(() {}),
-            //             )));
             showModalBottomSheet<void>(
                 backgroundColor: Colors.white,
                 clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -70,7 +65,7 @@ class _ActionHomeState extends State<ActionHome> {
                       color: Colors.white,
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom),
-                      height: MediaQuery.of(context).size.height * .95,
+                      height: MediaQuery.of(context).size.height * .96,
                       child: ModalDiaChi(saveCN: () => setState(() {})));
                 });
             break;
@@ -86,16 +81,10 @@ class _ActionHomeState extends State<ActionHome> {
             });
             break;
           }
-
         case 3:
           {
-            customModal.showAlertDialog(context, "error", "Shop Quà Tặng",
-                "Chúng tôi đang cập nhật tính năng này. Xin vui lòng thử lại sau.",
-                () {
-              Navigator.pop(context);
-            }, () {
-              Navigator.pop(context);
-            });
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const GiftShop()));
             break;
           }
         case 4:

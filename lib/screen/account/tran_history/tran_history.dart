@@ -68,7 +68,7 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
                   labelStyle: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
-                      fontFamily: "LexendDeca"),
+                      fontFamily: "Quicksand"),
                   onTap: (tabIndex) {
                     setState(() {
                       _selectedIndex = tabIndex;

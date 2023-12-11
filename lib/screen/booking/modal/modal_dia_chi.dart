@@ -81,7 +81,7 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primary,
                     borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.circular(30))),
+                        bottom: Radius.circular(30), top: Radius.circular(0))),
                 child: Row(
                   children: [
                     Expanded(

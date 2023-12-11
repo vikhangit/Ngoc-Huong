@@ -13,7 +13,7 @@ class DataCustom {
   AppBarTheme appBarTheme = AppBarTheme(
     backgroundColor: mainColor,
     toolbarHeight: 70,
-    shape: RoundedRectangleBorder(
+    shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         bottom: Radius.circular(30),
       ),
