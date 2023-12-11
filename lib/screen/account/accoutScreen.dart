@@ -369,8 +369,10 @@ class _AccountScreenState extends State<AccountScreen> {
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
                                             return Container(
-                                              width: 55,
-                                              padding: const EdgeInsets.all(2),
+                                              width: 75,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4),
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       const BorderRadius.all(
@@ -384,20 +386,20 @@ class _AccountScreenState extends State<AccountScreen> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
                                                   children: [
-                                                    Icon(
-                                                      Icons
-                                                          .monetization_on_outlined,
-                                                      color: Colors.yellow[300],
-                                                      size: 28,
+                                                    Image.asset(
+                                                      "assets/images/icon/Xu.png",
+                                                      width: 20,
+                                                      height: 20,
                                                     ),
                                                     const SizedBox(
-                                                      width: 3,
+                                                      width: 5,
                                                     ),
                                                     Text(
-                                                      "${snapshot.data!["Point"] ?? "0"}",
+                                                      "${snapshot.data!["Point"] ?? "0"} xu",
                                                       style: const TextStyle(
                                                           fontWeight:
-                                                              FontWeight.w400),
+                                                              FontWeight.w400,
+                                                          fontSize: 12),
                                                     )
                                                   ],
                                                 ),

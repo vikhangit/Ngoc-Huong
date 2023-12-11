@@ -242,12 +242,10 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.start,
                                                     children: [
-                                                      Icon(
-                                                        Icons
-                                                            .monetization_on_outlined,
-                                                        color:
-                                                            Colors.yellow[300],
-                                                        size: 28,
+                                                      Image.asset(
+                                                        "assets/images/icon/Xu.png",
+                                                        width: 24,
+                                                        height: 24,
                                                       ),
                                                       const SizedBox(
                                                         width: 5,

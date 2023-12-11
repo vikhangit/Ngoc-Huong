@@ -579,6 +579,12 @@ class _BookingServicesState extends State<BookingServices>
                                                                   setState(() {
                                                                     activeBranch =
                                                                         item;
+                                                                    showBranch =
+                                                                        false;
+                                                                    _animationController1
+                                                                        .reverse(
+                                                                            from:
+                                                                                0.5);
                                                                   });
                                                                 },
                                                                 style: ButtonStyle(

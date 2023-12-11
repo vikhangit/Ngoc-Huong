@@ -10,7 +10,7 @@ class DataCustom {
   OutlineInputBorder border2 = OutlineInputBorder(
       borderRadius: const BorderRadius.all(Radius.circular(10)),
       borderSide: BorderSide(width: 1, color: mainColor));
-  AppBarTheme appBarTheme =  AppBarTheme(
+  AppBarTheme appBarTheme = AppBarTheme(
     backgroundColor: mainColor,
     toolbarHeight: 70,
     shape: RoundedRectangleBorder(
@@ -20,9 +20,9 @@ class DataCustom {
     ),
   );
   TextTheme textTheme = const TextTheme(
-    bodyMedium: TextStyle(fontWeight: FontWeight.w500, color: Colors.black),
-    titleMedium: TextStyle(fontWeight: FontWeight.w400, color: Colors.black),
-  );
+      bodyMedium: TextStyle(fontWeight: FontWeight.w500, color: Colors.black),
+      titleMedium: TextStyle(fontWeight: FontWeight.w500, color: Colors.black),
+      titleSmall: TextStyle(fontWeight: FontWeight.w400, color: Colors.black));
   TextSelectionThemeData textSelectionThemeData = const TextSelectionThemeData(
       selectionColor: Colors.grey,
       cursorColor: Color(0xff171d49),
@@ -38,12 +38,10 @@ DataCustom dataCustom = DataCustom();
 
 class CustomThemeData {
   ThemeData themeData = ThemeData(
-      fontFamily: "LexendDeca",
+      fontFamily: "Quicksand",
       appBarTheme: dataCustom.appBarTheme,
       pageTransitionsTheme: const PageTransitionsTheme(
-        builders: {
-          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-        },
+        builders: {TargetPlatform.android: CupertinoPageTransitionsBuilder()},
       ),
       textTheme: dataCustom.textTheme,
       textSelectionTheme: dataCustom.textSelectionThemeData,
@@ -53,7 +51,7 @@ class CustomThemeData {
       highlightColor: Colors.white,
       floatingActionButtonTheme: dataCustom.floatingActionButtonThemeData,
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        elevation: 0,
+          elevation: 0,
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
           selectedItemColor: Color.fromARGB(255, 4, 194, 207),

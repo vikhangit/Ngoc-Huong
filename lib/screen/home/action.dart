@@ -13,6 +13,7 @@ import 'package:ngoc_huong/screen/member/thanh_vien.dart';
 import 'package:ngoc_huong/screen/news/tin_tuc.dart';
 import 'package:ngoc_huong/screen/notifications/notification.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class ActionHome extends StatefulWidget {
@@ -38,6 +39,7 @@ class _ActionHomeState extends State<ActionHome> {
   final ProfileModel profileModel = ProfileModel();
   final BookingModel bookingModel = BookingModel();
   final CartModel cartModel = CartModel();
+  final CustomModal customModal = CustomModal();
 
   void goToService(BuildContext context, int index) {
     if (storageCustomerToken.getItem("customer_token") != null) {
@@ -73,7 +75,29 @@ class _ActionHomeState extends State<ActionHome> {
                 });
             break;
           }
+        case 2:
+          {
+            customModal.showAlertDialog(context, "error", "Check In Nhận Quà",
+                "Chúng tôi đang cập nhật tính năng này. Xin vui lòng thử lại sau.",
+                () {
+              Navigator.pop(context);
+            }, () {
+              Navigator.pop(context);
+            });
+            break;
+          }
 
+        case 3:
+          {
+            customModal.showAlertDialog(context, "error", "Shop Quà Tặng",
+                "Chúng tôi đang cập nhật tính năng này. Xin vui lòng thử lại sau.",
+                () {
+              Navigator.pop(context);
+            }, () {
+              Navigator.pop(context);
+            });
+            break;
+          }
         case 4:
           {
             Navigator.push(context,

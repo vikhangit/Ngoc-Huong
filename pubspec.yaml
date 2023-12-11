@@ -269,6 +269,17 @@ flutter:
           weight: 700
         - asset: assets/fonts/LexendDeca-ExtraBold.ttf
           weight: 800
-
+    - family: Quicksand
+      fonts:
+        - asset: assets/fonts/font/Quicksand-Light.ttf
+          weight: 300
+        - asset: assets/fonts/font/Quicksand-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/font/Quicksand-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/font/Quicksand-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/font/Quicksand-Bold.ttf
+          weight: 700
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
