@@ -167,7 +167,7 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                   ),
                   Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
-                      height: MediaQuery.of(context).size.height - 295,
+                      height: MediaQuery.of(context).size.height - 320,
                       child: TabBarView(controller: tabController1, children: [
                         const BeautyProfile(),
                         OrderHistory(

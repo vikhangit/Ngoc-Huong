@@ -170,7 +170,7 @@ class _OrderHistoryState extends State<OrderHistory>
                       ),
                     ),
                     SizedBox(
-                        height: MediaQuery.of(context).size.height - 440,
+                        height: MediaQuery.of(context).size.height - 455,
                         child: TabBarView(
                             controller: tabController,
                             children: widget.listTab
