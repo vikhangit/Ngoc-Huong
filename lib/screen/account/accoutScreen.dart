@@ -68,10 +68,10 @@ List menu = [
     "icon": "assets/images/account/dieu-khoan.png",
     "title": "Điều khoản sử dụng",
   },
-  // {
-  //   "icon": "assets/images/delete-black.png",
-  //   "title": "Xóa tài khoản",
-  // },
+  {
+    "icon": "assets/images/delete-black.png",
+    "title": "Xóa tài khoản",
+  },
   {
     "icon": "assets/images/account/dang-xuat.png",
     "title": "Đăng xuất",
@@ -197,6 +197,19 @@ class _AccountScreenState extends State<AccountScreen> {
               MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
           break;
         case 8:
+          customModal.showAlertDialog(context, "error", "Xóa tài khoản",
+              "Bạn có chắc chắn muốn xóa tài khoản không?", () {
+            EasyLoading.show(status: "Đang xử lý...");
+            storageCustomerToken.deleteItem("customer_token");
+            Future.delayed(const Duration(seconds: 1), () {
+              EasyLoading.dismiss();
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
+            });
+          }, () => Navigator.pop(context));
+          break;
+        case 9:
           handleLogout();
           break;
         default:
