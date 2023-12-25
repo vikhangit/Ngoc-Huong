@@ -76,6 +76,7 @@ class _StartScreenState extends State<StartScreen> {
             body: SingleChildScrollView(
               child: Container(
                 height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
                 child: AspectRatio(
                   aspectRatio: videoController.value.aspectRatio,
                   child: Stack(

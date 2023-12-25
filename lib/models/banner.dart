@@ -8,15 +8,15 @@ class BannerModel {
   Future<List> getBannerList() async {
     List result = [];
     try {
-      Response response =
-          await client.dio.get('${client.apiUrl}/Home/getSliderHome',
+      Response response = await client.dio
+          .get('${client.goodAppUrl}/ecombanners?access_token=${client.token}',
               options: Options(headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 // 'Authorization':
                 //     '${localStorageCustomerToken.getItem("customer_token")}',
               }));
       if (response.statusCode == 200) {
-        return result = response.data["Data"];
+        return result = response.data;
       } else {
         return result;
       }
@@ -29,15 +29,15 @@ class BannerModel {
   Future<List> getFlashSale() async {
     List result = [];
     try {
-      Response response =
-          await client.dio.get('${client.apiUrl}/Home/getFlashSale',
-              options: Options(headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                // 'Authorization':
-                //     '${localStorageCustomerToken.getItem("customer_token")}',
-              }));
+      Response response = await client.dio.get(
+          '${client.goodAppUrl}/ecompromotion_flashsales?access_token=${client.token}',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            // 'Authorization':
+            //     '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
       if (response.statusCode == 200) {
-        return result = response.data["Data"];
+        return result = response.data;
       } else {
         return result;
       }

@@ -53,79 +53,33 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
     scrollController.dispose();
   }
 
-  Color checkColor(int index) {
-    Color color = Colors.black;
-    switch (index) {
-      case 0:
-        {
-          return Colors.pink[50]!;
-        }
-      case 1:
-        {
-          return Colors.greenAccent[100]!;
-        }
-      case 2:
-        {
-          return Colors.lightBlue[100]!;
-        }
-      case 3:
-        {
-          return Colors.grey[300]!;
-        }
-      case 4:
-        {
-          return Colors.orangeAccent[100]!;
-        }
-      case 5:
-        {
-          return Colors.black12;
-        }
-      default:
-        {}
-    }
-    return color;
-  }
-
-  Color checkColorText(int index) {
-    Color color = Colors.black;
-    switch (index) {
-      case 0:
-        {
-          return Colors.pink;
-        }
-      case 1:
-        {
-          return Colors.green;
-        }
-      case 2:
-        {
-          return Colors.lightBlue[700]!;
-        }
-      case 3:
-        {
-          return Colors.grey[800]!;
-        }
-      case 4:
-        {
-          return Colors.orangeAccent[700]!;
-        }
-      case 5:
-        {
-          return Colors.black54;
-        }
-      default:
-        {}
-    }
-    return color;
-  }
-
   @override
   Widget build(BuildContext context) {
     List rank = [
-      {"card": silver(context), "rank": "Bạc", "point": 100},
-      {"card": gold(context), "rank": "Vàng", "point": 250},
-      {"card": platinum(context), "rank": "Bạch kim", "point": 500},
-      {"card": diamond(context), "rank": "Kim cương", "point": 1000},
+      {
+        "card": "assets/images/rank/BAC.png",
+        "rank": "Bạc",
+        "point": 100,
+        "key": "TV"
+      },
+      {
+        "card": "assets/images/rank/VANG.png",
+        "rank": "Vàng",
+        "point": 250,
+        "key": "Gold"
+      },
+      {
+        "card": "assets/images/rank/BACHKIM.png",
+        "rank": "Bạch kim",
+        "point": 500,
+        "key": "Platinum"
+      },
+      {
+        "card": "assets/images/rank/KIMCUONG.png",
+        "rank": "Kim cương",
+        "point": 1000,
+        "key": "Diamond"
+      },
     ];
     return SafeArea(
         bottom: false,
@@ -173,6 +127,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                 future: profileModel.getProfile(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    Map profile = snapshot.data!;
                     return ListView(
                       children: [
                         Container(
@@ -205,7 +160,12 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                     child: Stack(
                                       clipBehavior: Clip.none,
                                       children: [
-                                        rank[index]["card"],
+                                        Image.asset(
+                                          "${rank[index]["card"]}",
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 190,
+                                        ),
                                         Positioned(
                                             top: 0,
                                             left: 0,
@@ -213,144 +173,29 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                     .size
                                                     .width -
                                                 30,
-                                            height: 190,
                                             child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 20),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                // mainAxisAlignment:
-                                                //     MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    snapshot
-                                                        .data!["CustomerName"]
-                                                        .toString()
-                                                        .toUpperCase(),
-                                                    style: const TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w400),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Image.asset(
-                                                        "assets/images/icon/Xu.png",
-                                                        width: 24,
-                                                        height: 24,
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 5,
-                                                      ),
-                                                      Text(
-                                                        "${snapshot.data!["Point"] ?? 0}",
-                                                        style: const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 8,
-                                                      ),
-                                                      const Icon(
-                                                        Icons.circle,
-                                                        size: 5,
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 8,
-                                                      ),
-                                                      Text(
-                                                        rank[index]["rank"],
-                                                        style: const TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Container(
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            top: 10),
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    height: 3,
-                                                    child:
-                                                        LinearProgressIndicator(
-                                                      value: snapshot.data[
-                                                                  "Point"] ==
-                                                              null
-                                                          ? 0
-                                                          : (snapshot.data[
-                                                                  "Point"] /
-                                                              rank[index]
-                                                                  ["point"]),
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        "${snapshot.data["Point"] ?? 0}",
-                                                        style: const TextStyle(
-                                                            fontSize: 13,
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                      ),
-                                                      Text(
-                                                        rank[index]["point"]
-                                                            .toString(),
-                                                        style: const TextStyle(
-                                                            fontSize: 13,
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  index == 3
-                                                      ? const Text(
-                                                          "Hãy thăng hạng kim cương để có thể hưởng thụ nhiều ưu đãi tuyệt vời nhất",
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w300),
-                                                        )
-                                                      : Text(
-                                                          "Cần tích lũy thêm ${snapshot.data!["Point"] != null ? rank[index]["point"] - snapshot.data!["Point"] : rank[index]["point"]} điểm nữa để lên hạng ${rank[index + 1]["rank"]}",
-                                                          style: const TextStyle(
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w300),
-                                                        )
-                                                ],
+                                              alignment: Alignment.topRight,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: index == 0
+                                                      ? 42
+                                                      : index == 1
+                                                          ? 52
+                                                          : index == 2
+                                                              ? 41
+                                                              : index == 3
+                                                                  ? 22
+                                                                  : 42,
+                                                  vertical: 20),
+                                              child: Text(
+                                                profile["CustomerName"]
+                                                    .toString()
+                                                    .toUpperCase(),
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black
+                                                        .withOpacity(0.6)),
                                               ),
                                             )),
                                         // Positioned(
@@ -403,499 +248,219 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                               activeShape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4.0),
                               ),
-                              spacing: EdgeInsets.all(1)),
+                              spacing: const EdgeInsets.all(1)),
                         ),
                         const SizedBox(
                           height: 15,
                         ),
                         TabBar(
-                            controller: tabController,
-                            // padding: EdgeInsets.zero,
-                            // indicatorPadding: EdgeInsets.zero,
-                            tabAlignment: TabAlignment.start,
-                            onTap: (tabIndex) {
-                              setState(() {
-                                currentIndex = tabIndex;
-                                buttonCarouselController.jumpToPage(tabIndex);
-                              });
-                            },
-                            labelColor: Theme.of(context).colorScheme.primary,
-                            isScrollable: true,
-                            unselectedLabelColor: Colors.black,
-                            indicatorColor:
-                                Theme.of(context).colorScheme.primary,
-                            labelStyle: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                fontFamily: "Quicksand"),
-                            tabs: [
-                              SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width / 3 - 20,
-                                child: const Tab(text: "Bạc"),
-                              ),
-                              SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width / 3 - 20,
-                                child: const Tab(text: "Vàng"),
-                              ),
-                              SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width / 3 - 20,
-                                child: const Tab(text: "Bạch Kim"),
-                              ),
-                              SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width / 4 - 20,
-                                child: const Tab(
-                                  text: "Kim Cương",
+                          controller: tabController,
+                          // padding: EdgeInsets.zero,
+                          // indicatorPadding: EdgeInsets.zero,
+                          tabAlignment: TabAlignment.start,
+                          onTap: (tabIndex) {
+                            setState(() {
+                              currentIndex = tabIndex;
+                              buttonCarouselController.jumpToPage(tabIndex);
+                            });
+                          },
+                          labelColor: Theme.of(context).colorScheme.primary,
+                          isScrollable: true,
+                          unselectedLabelColor: Colors.black,
+                          indicatorColor: Theme.of(context).colorScheme.primary,
+                          labelStyle: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              fontFamily: "Quicksand"),
+                          tabs: rank
+                              .map(
+                                (e) => SizedBox(
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20,
+                                  child: Tab(text: "${e["rank"]}"),
                                 ),
-                              ),
-                            ]),
+                              )
+                              .toList(),
+                        ),
                         const SizedBox(
                           height: 15,
                         ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height / 2,
-                          child:
-                              TabBarView(controller: tabController, children: [
-                            FutureBuilder(
-                              future: memberModel.getRank("TV"),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return ListView(children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 15),
-                                      decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(8)),
-                                          color: Colors.grey[300]),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "${snapshot.data!["Promotion"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
+                          child: TabBarView(
+                              controller: tabController,
+                              children: rank.map((e) {
+                                int index = rank.indexOf(e);
+                                return FutureBuilder(
+                                  future: memberModel.getRank("${e["key"]}"),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return ListView(children: [
+                                        Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 5, horizontal: 15),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(8)),
+                                              color: Colors.grey[300]),
+                                          child: index == 3
+                                              ? const Text(
+                                                  "Bạn đã đạt đến cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!",
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                )
+                                              : Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "${profile["Point"] ?? 0} điểm",
+                                                          style: const TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        ),
+                                                        Text(
+                                                          "${e["point"]}",
+                                                          style: const TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              top: 5,
+                                                              bottom: 5),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      height: 3,
+                                                      child:
+                                                          LinearProgressIndicator(
+                                                        value: profile[
+                                                                    "Point"] ==
+                                                                null
+                                                            ? 0
+                                                            : (profile[
+                                                                    "Point"] /
+                                                                e["point"]),
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Cần thêm ${profile["Point"] != null ? e["point"] - profile["Point"] : e["point"]} điểm để nâng hạng ${rank[index + 1]["rank"]}",
+                                                      style: const TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    )
+                                                  ],
+                                                ),
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Column(children: [
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 20),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.card_giftcard,
+                                                  size: 25,
+                                                  color: mainColor,
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                    child: Text(
+                                                  "${snapshot.data!["Benfits"]}",
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300),
+                                                ))
+                                              ],
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Column(children: [
-                                      Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.card_giftcard,
-                                              size: 25,
-                                              color: mainColor,
+                                          Container(
+                                            decoration: const BoxDecoration(
+                                                border: Border(
+                                                    top: BorderSide(
+                                                        width: 0.5,
+                                                        color: Colors.grey))),
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 20),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.card_giftcard,
+                                                  size: 25,
+                                                  color: mainColor,
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                    child: Text(
+                                                  "${snapshot.data!["Perks"]}",
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w300),
+                                                ))
+                                              ],
                                             ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: Text(
-                                              "${snapshot.data!["Benfits"]}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300),
-                                            ))
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: const BoxDecoration(
-                                            border: Border(
-                                                top: BorderSide(
-                                                    width: 0.5,
-                                                    color: Colors.grey))),
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.card_giftcard,
-                                              size: 25,
-                                              color: mainColor,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: Text(
-                                              "${snapshot.data!["Perks"]}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300),
-                                            ))
-                                          ],
-                                        ),
-                                      )
-                                    ])
-                                  ]);
-                                } else {
-                                  return const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: LoadingIndicator(
-                                          colors: kDefaultRainbowColors,
-                                          indicatorType:
-                                              Indicator.lineSpinFadeLoader,
-                                          strokeWidth: 1,
-                                          // pathBackgroundColor: Colors.black45,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text("Đang lấy dữ liệu")
-                                    ],
-                                  );
-                                }
-                              },
-                            ),
-                            FutureBuilder(
-                              future: memberModel.getRank("Gold"),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return ListView(children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 15),
-                                      decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(8)),
-                                          color: Colors.grey[300]),
-                                      child: Row(
+                                          )
+                                        ])
+                                      ]);
+                                    } else {
+                                      return const Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            "${snapshot.data!["Promotion"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
+                                          SizedBox(
+                                            width: 40,
+                                            height: 40,
+                                            child: LoadingIndicator(
+                                              colors: kDefaultRainbowColors,
+                                              indicatorType:
+                                                  Indicator.lineSpinFadeLoader,
+                                              strokeWidth: 1,
+                                              // pathBackgroundColor: Colors.black45,
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Column(children: [
-                                      Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.card_giftcard,
-                                              size: 25,
-                                              color: mainColor,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: Text(
-                                              "${snapshot.data!["Benfits"]}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300),
-                                            ))
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: const BoxDecoration(
-                                            border: Border(
-                                                top: BorderSide(
-                                                    width: 0.5,
-                                                    color: Colors.grey))),
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.card_giftcard,
-                                              size: 25,
-                                              color: mainColor,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: Text(
-                                              "${snapshot.data!["Perks"]}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300),
-                                            ))
-                                          ],
-                                        ),
-                                      )
-                                    ])
-                                  ]);
-                                } else {
-                                  return const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: LoadingIndicator(
-                                          colors: kDefaultRainbowColors,
-                                          indicatorType:
-                                              Indicator.lineSpinFadeLoader,
-                                          strokeWidth: 1,
-                                          // pathBackgroundColor: Colors.black45,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text("Đang lấy dữ liệu")
-                                    ],
-                                  );
-                                }
-                              },
-                            ),
-                            FutureBuilder(
-                              future: memberModel.getRank("Platinum"),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return ListView(children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 15),
-                                      decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(8)),
-                                          color: Colors.grey[300]),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "${snapshot.data!["Promotion"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
+                                          SizedBox(
+                                            width: 10,
                                           ),
+                                          Text("Đang lấy dữ liệu")
                                         ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Column(children: [
-                                      Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.card_giftcard,
-                                              size: 25,
-                                              color: mainColor,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: Text(
-                                              "${snapshot.data!["Benfits"]}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300),
-                                            ))
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: const BoxDecoration(
-                                            border: Border(
-                                                top: BorderSide(
-                                                    width: 0.5,
-                                                    color: Colors.grey))),
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.card_giftcard,
-                                              size: 25,
-                                              color: mainColor,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: Text(
-                                              "${snapshot.data!["Perks"]}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300),
-                                            ))
-                                          ],
-                                        ),
-                                      )
-                                    ])
-                                  ]);
-                                } else {
-                                  return const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: LoadingIndicator(
-                                          colors: kDefaultRainbowColors,
-                                          indicatorType:
-                                              Indicator.lineSpinFadeLoader,
-                                          strokeWidth: 1,
-                                          // pathBackgroundColor: Colors.black45,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text("Đang lấy dữ liệu")
-                                    ],
-                                  );
-                                }
-                              },
-                            ),
-                            FutureBuilder(
-                              future: memberModel.getRank("Diamond"),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return ListView(children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 15),
-                                      decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(8)),
-                                          color: Colors.grey[300]),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "${snapshot.data!["Promotion"]}",
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w300),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Column(children: [
-                                      Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.card_giftcard,
-                                              size: 25,
-                                              color: mainColor,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: Text(
-                                              "${snapshot.data!["Benfits"]}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300),
-                                            ))
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: const BoxDecoration(
-                                            border: Border(
-                                                top: BorderSide(
-                                                    width: 0.5,
-                                                    color: Colors.grey))),
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.card_giftcard,
-                                              size: 25,
-                                              color: mainColor,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: Text(
-                                              "${snapshot.data!["Perks"]}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w300),
-                                            ))
-                                          ],
-                                        ),
-                                      )
-                                    ])
-                                  ]);
-                                } else {
-                                  return const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: LoadingIndicator(
-                                          colors: kDefaultRainbowColors,
-                                          indicatorType:
-                                              Indicator.lineSpinFadeLoader,
-                                          strokeWidth: 1,
-                                          // pathBackgroundColor: Colors.black45,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text("Đang lấy dữ liệu")
-                                    ],
-                                  );
-                                }
-                              },
-                            ),
-                          ]),
+                                      );
+                                    }
+                                  },
+                                );
+                              }).toList()),
                         ),
                         const SizedBox(
                           height: 15,

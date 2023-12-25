@@ -46,7 +46,7 @@ List menu = [
   },
   {
     "icon": "assets/images/account/giao-dich.png",
-    "title": "Lịch sử làm đẹp",
+    "title": "Lịch sử tham gia dịch vụ",
   },
   {
     "icon": "assets/images/cart-black.png",

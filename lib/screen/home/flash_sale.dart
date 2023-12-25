@@ -49,8 +49,8 @@ class _FlashSaleState extends State<FlashSale> {
                 List list = snapshot.data!;
                 List newList = [];
                 for (var i = 0; i < list.length; i++) {
-                  if (DateTime.parse(list[i]["StartDate"]).isBefore(now) &&
-                      DateTime.parse(list[i]["EndDate"]).isAfter(now)) {
+                  if (DateTime.parse(list[i]["tu_ngay"]).isBefore(now) &&
+                      DateTime.parse(list[i]["den_ngay"]).isAfter(now)) {
                     newList.add(list[i]);
                   }
                 }
@@ -146,7 +146,7 @@ class _FlashSaleState extends State<FlashSale> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      "${e["Image"]}",
+                      "https://api.goodapp.vn/${e["picture"]}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
                       fit: BoxFit.cover,

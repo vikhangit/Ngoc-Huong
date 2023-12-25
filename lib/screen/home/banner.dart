@@ -22,9 +22,12 @@ class _BannerSliderState extends State<BannerSlider> {
             future: bannerModel.getBannerList(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List list = snapshot.data!;
-                return CarouselSlider.builder(
-                  itemCount: list.length,
+                List list = [
+                  snapshot.data![0]["slide_hinh_anh_1"],
+                  snapshot.data![0]["slide_hinh_anh_2"],
+                  snapshot.data![0]["slide_hinh_anh_3"],
+                ];
+                return CarouselSlider(
                   options: CarouselOptions(
                       height: 250,
                       // aspectRatio: 26 / 14,
@@ -35,14 +38,19 @@ class _BannerSliderState extends State<BannerSlider> {
                       onPageChanged: (index, reason) {
                         // goToPage(index, reason);
                       }),
-                  itemBuilder: (context, index, realIndex) {
-                    return ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(15)),
-                      child: Image.network("${list[index]["Image"]}",
-                          fit: BoxFit.cover),
-                    );
-                  },
+                  items: list.map((e) {
+                    if (e == null) {
+                      return Container();
+                    } else {
+                      return ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                            bottom: Radius.circular(15)),
+                        child: Image.network(
+                            "https://api.goodapp.vn/${e}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
+                            fit: BoxFit.cover),
+                      );
+                    }
+                  }).toList(),
                 );
               } else {
                 return const SizedBox(

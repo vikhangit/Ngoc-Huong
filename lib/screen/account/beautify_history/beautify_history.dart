@@ -87,7 +87,7 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
                     color: Colors.black,
                   ),
                 )),
-            title: const Text("Lịch sử làm đẹp",
+            title: const Text("Lịch sử tham gia dịch vụ",
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

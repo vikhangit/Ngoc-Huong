@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
+import 'package:ngoc_huong/models/checkinModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_dia_chi.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
+import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
 import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/member/thanh_vien.dart';
@@ -35,12 +38,28 @@ List toolServices = [
   // {"icon": "assets/images/list-order.png", "title": "Lịch sử mua hàng"},
 ];
 
+bool showMore = false;
+int count = 0;
+
 class _ActionHomeState extends State<ActionHome> {
   final LocalStorage storageCustomerToken = LocalStorage('customer_token');
   final ProfileModel profileModel = ProfileModel();
   final BookingModel bookingModel = BookingModel();
   final CartModel cartModel = CartModel();
   final CustomModal customModal = CustomModal();
+  final CheckInModel checkInModel = CheckInModel();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    showMore = false;
+  }
 
   void goToService(BuildContext context, int index) {
     if (storageCustomerToken.getItem("customer_token") != null) {
@@ -72,13 +91,13 @@ class _ActionHomeState extends State<ActionHome> {
           }
         case 2:
           {
-            customModal.showAlertDialog(context, "error", "Check In Nhận Quà",
-                "Chúng tôi đang cập nhật tính năng này. Xin vui lòng thử lại sau.",
-                () {
-              Navigator.pop(context);
-            }, () {
-              Navigator.pop(context);
-            });
+            showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return const CheckIn();
+              },
+            );
             break;
           }
         case 3:

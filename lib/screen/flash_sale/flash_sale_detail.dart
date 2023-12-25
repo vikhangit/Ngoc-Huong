@@ -171,7 +171,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(14)),
                             child: Image.network(
-                              "${newsDetail["Image"]}",
+                              "https://api.goodapp.vn/${newsDetail["picture"]}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
                               width: MediaQuery.of(context).size.width,
                               fit: BoxFit.cover,
                             ),
@@ -184,7 +184,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                           children: [
                             Expanded(
                               child: Text(
-                                newsDetail["Title"],
+                                newsDetail["ten_chietkhau"],
                                 textAlign: TextAlign.left,
                                 style: const TextStyle(
                                     fontSize: 20,
@@ -198,7 +198,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                           height: 5,
                         ),
                         Text(
-                          "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["StartDate"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["EndDate"]))}",
+                          "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["tu_ngay"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["den_ngay"]))}",
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
@@ -207,7 +207,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                         ),
                         SizedBox(
                           child: Html(
-                            data: newsDetail["Content"],
+                            data: newsDetail["dien_giai"],
                             style: {
                               "*": Style(
                                 fontSize: FontSize(15),
@@ -439,7 +439,68 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                                   },
                                 ),
                               )
-                            : Container(),
+                            : Container(
+                                height: 50,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 10),
+                                child: TextButton(
+                                            style: ButtonStyle(
+                                                padding: MaterialStateProperty.all(
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 20)),
+                                                shape: MaterialStateProperty.all(
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    15)))),
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .primary
+                                                            .withOpacity(0.4))),
+                                            onPressed: () {
+                                              if (storageCustomerToken.getItem(
+                                                      "customer_token") ==
+                                                  null) {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const LoginScreen()));
+                                              } else {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            BookingServices(
+                                                              
+                                                            )));
+                                              }
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  "Đặt lịch hẹn",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                                const SizedBox(width: 15),
+                                                Image.asset(
+                                                  "assets/images/calendar-black.png",
+                                                  width: 24,
+                                                  height: 24,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ],
+                                            ))
+                              ),
                     const SizedBox(
                       height: 5,
                     )
