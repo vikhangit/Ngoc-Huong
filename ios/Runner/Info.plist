@@ -4,6 +4,8 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Can I push notification?</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App need access Photo Library Usage to upload avatar</string>
 	<key>NSCameraUsageDescription</key>
