@@ -1,16 +1,23 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/models/ExpectedScanResult.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
+import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
+import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
 import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
+import 'package:ngoc_huong/screen/scan_order/orderPage.dart';
+import 'package:ngoc_huong/screen/scan_order/scanQr.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/services/all_service.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -29,9 +36,9 @@ int selectedTab = 0;
 
 List bottomList = [
   {"icon": "assets/images/icon/home.png", "title": "Trang chủ"},
-  {"icon": "assets/images/icon/dich-vu.png", "title": "Dịch vụ"},
+  {"icon": "assets/images/icon/QR-fanpage.png", "title": "Quét hóa đơn"},
   {"icon": "assets/images/icon/tu-van.png", "title": "Tư vấn"},
-  {"icon": "assets/images/icon/my-pham.png", "title": "Mỹ phẩm cao cấp"},
+  {"icon": "assets/images/icon/checkin.png", "title": "Nhiệm vụ nhận quà"},
   {"icon": "assets/images/telesales-black.png", "title": "Tư vấn"},
 ];
 
@@ -42,7 +49,42 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
   final ProfileModel profileModel = ProfileModel();
   final CartModel cartModel = CartModel();
   final ServicesModel servicesModel = ServicesModel();
-  String a = "";
+
+  Future<void> scanBarcodeNormal() async {
+    String barCodeScanRes;
+    try {
+      barCodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+    } on PlatformException {
+      barCodeScanRes = "Fail to get platform version.";
+    }
+    print("--------------------------------------------");
+    debugPrint(barCodeScanRes);
+    print("--------------------------------------------");
+    if (!mounted) return;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => OrderPage(item: barCodeScanRes)));
+  }
+
+  Future<void> scanQR() async {
+    String barCodeScanRes;
+    try {
+      barCodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.QR);
+    } on PlatformException {
+      barCodeScanRes = "Fail to get platform version.";
+    }
+    print("--------------------------------------------");
+    debugPrint(barCodeScanRes);
+    print("--------------------------------------------");
+    if (!mounted) return;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => OrderPage(item: barCodeScanRes)));
+  }
 
   @override
   void initState() {
@@ -58,43 +100,12 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
       selectedTab = index;
     });
     {
-      if (index == 4) {
-        if (storageCustomer.getItem("customer_token") != null) {
-          Navigator.pushNamed(context, "account");
-        } else if (storageCustomer.getItem("customer_Token") == null) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: ((context) => const LoginScreen())));
-        }
-      } else {
+      if (index == 0 || index == 2) {
         switch (index) {
           case 0:
             {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const HomeScreen()));
-              break;
-            }
-          case 1:
-            {
-              servicesModel
-                  .getGroupServiceByBranch()
-                  .then((value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AllServiceScreen(
-                                listTab: value,
-                              ))));
-              break;
-            }
-          case 3:
-            {
-              productModel.getGroupProduct().then((value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Cosmetic(
-                                listTab: value,
-                              )))
-                  // print(value)
-                  );
               break;
             }
           case 2:
@@ -103,6 +114,39 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
               break;
             }
           default:
+        }
+      } else {
+        if (storageCustomer.getItem("customer_token") != null) {
+          switch (index) {
+            case 1:
+              {
+                scanQR();
+                break;
+              }
+            case 3:
+              {
+                showDialog<void>(
+                  context: context,
+                  barrierDismissible: false, // user must tap button!
+                  builder: (BuildContext context) {
+                    return const CheckIn();
+                  },
+                );
+                break;
+              }
+            case 4:
+              {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AccountScreen()));
+                break;
+              }
+            default:
+          }
+        } else {
+          Navigator.push(context,
+              MaterialPageRoute(builder: ((context) => const LoginScreen())));
         }
       }
     }
@@ -124,9 +168,11 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
         ],
       ),
       height: 100,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Wrap(
+        direction: Axis.vertical,
+        verticalDirection: VerticalDirection.up,
+        runAlignment: WrapAlignment.spaceEvenly,
+        runSpacing: 15,
         children: bottomList.map((e) {
           int index = bottomList.indexOf(e);
           if (index == 4) {
@@ -134,7 +180,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
               return Container(
                   // margin: EdgeInsets.only(
                   //     left: index == 2 ? 60 : 0, right: index == 1 ? 30 : 0),
-                  width: MediaQuery.of(context).size.width / 5,
+
                   alignment: Alignment.center,
                   child: TextButton(
                       style: ButtonStyle(
@@ -219,9 +265,6 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
             }
           } else {
             return Container(
-              width: index == 3
-                  ? 100
-                  : (MediaQuery.of(context).size.width - 100) / 4 - 5,
               alignment: Alignment.center,
               child: GestureDetector(
                   // style: ButtonStyle(

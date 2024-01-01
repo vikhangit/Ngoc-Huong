@@ -136,17 +136,18 @@ class _VoucherPageState extends State<VoucherPage> {
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(15),
-                                            child: Image.network(
-                                              "${list[i]["Image_Name"]}",
+                                            child: Image.asset(
+                                              "assets/images/voucher1.png",
+
                                               // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                              fit: BoxFit.contain,
+                                              fit: BoxFit.fitHeight,
                                             ),
                                           )),
                                       const SizedBox(
                                         height: 10,
                                       ),
                                       Text(
-                                        "Voucher giảm 500k cho tất cả dịch vụ",
+                                        "Voucher giảm 200k cho tất cả dịch vụ",
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(

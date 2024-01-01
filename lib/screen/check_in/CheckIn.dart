@@ -18,7 +18,8 @@ class CheckIn extends StatefulWidget {
 
 bool isLoading = false;
 bool showMore = false;
-List diemdanh = [];
+List checkInList = [];
+Map profile = {};
 
 class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
   final ServicesModel servicesModel = ServicesModel();
@@ -40,8 +41,13 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
       isLoading = true;
     });
     checkInModel.getCheckInList().then((value) => setState(() {
-          diemdanh = value.toList();
+          checkInList = value.toList();
         }));
+    profileModel.getProfile().then((value) {
+      setState(() {
+        profile = value;
+      });
+    });
     Future.delayed(const Duration(milliseconds: 1500), () {
       setState(() {
         isLoading = false;
@@ -63,10 +69,19 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    String convertTime(String date) {
-      int day = DateTime.parse(date).day;
-      int month = DateTime.parse(date).month;
-      int year = DateTime.parse(date).year;
+    List diemdanh = checkInList
+        .where((element) => element["device_user_id"] == profile["Phone"])
+        .toList();
+    String convertTime(String date, bool n) {
+      DateTime a;
+      if (!n) {
+        a = DateTime.parse(date).add(Duration(hours: 7));
+      } else {
+        a = DateTime.now();
+      }
+      int day = a.day;
+      int month = a.month;
+      int year = a.year;
 
       return "${day < 10 ? "0$day" : "$day"}/${month < 10 ? "0$month" : "$month"}/$year";
     }
@@ -661,8 +676,9 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
               margin: const EdgeInsets.only(top: 20),
               decoration: BoxDecoration(
                   color: diemdanh.isNotEmpty
-                      ? convertTime(diemdanh[0]["record_time"]) !=
-                              convertTime(DateTime.now().toIso8601String())
+                      ? convertTime(diemdanh[0]["record_time"], false) !=
+                              convertTime(
+                                  DateTime.now().toIso8601String(), true)
                           ? Theme.of(context).colorScheme.primary
                           : Colors.grey
                       : Theme.of(context).colorScheme.primary,
@@ -670,90 +686,58 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
                       const BorderRadius.all(Radius.circular(999999))),
               height: 40,
               width: 150,
-              child: FutureBuilder(
-                  future: profileModel.getProfile(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return GestureDetector(
-                        onTap: () => {
-                          setState(() {
-                            if (diemdanh.isEmpty) {
-                              EasyLoading.show(status: "Đang xử lý");
-                              Future.delayed(const Duration(seconds: 1), () {
-                                checkInModel.addCheckIn({
-                                  "record_time":
-                                      DateTime.now().toIso8601String(),
-                                  "device_user_id":
-                                      "${snapshot.data!["CustomerName"]}"
-                                }).then((value) {
-                                  EasyLoading.dismiss();
-                                  Navigator.pop(context);
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible:
-                                        false, // user must tap button!
-                                    builder: (BuildContext context) {
-                                      return const CheckIn();
-                                    },
-                                  );
-                                });
-                              });
-                            } else if (convertTime(
-                                    diemdanh[0]["record_time"]) !=
-                                convertTime(DateTime.now().toIso8601String())) {
-                              EasyLoading.show(status: "Đang xử lý");
-                              Future.delayed(const Duration(seconds: 1), () {
-                                checkInModel.addCheckIn({
-                                  "record_time":
-                                      DateTime.now().toIso8601String(),
-                                  "device_user_id":
-                                      "${snapshot.data!["CustomerName"]}"
-                                }).then((value) {
-                                  EasyLoading.dismiss();
-                                  Navigator.pop(context);
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible:
-                                        false, // user must tap button!
-                                    builder: (BuildContext context) {
-                                      return const CheckIn();
-                                    },
-                                  );
-                                });
-                              });
-                            }
-                          })
-                        },
-                        child: const Text(
-                          "Check-in",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
-                        ),
-                      );
-                    } else {
-                      return const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: LoadingIndicator(
-                          colors: [
-                            Colors.white,
-                            Colors.white,
-                            Colors.white,
-                            Colors.white,
-                            Colors.white,
-                            Colors.white,
-                            Colors.white,
-                          ],
-                          indicatorType: Indicator.lineSpinFadeLoader,
-                          strokeWidth: 1,
-                          // pathBackgroundColor: Colors.black45,
-                        ),
-                      );
+              child: GestureDetector(
+                onTap: () => {
+                  setState(() {
+                    if (diemdanh.isEmpty) {
+                      EasyLoading.show(status: "Đang xử lý");
+                      Future.delayed(const Duration(seconds: 1), () {
+                        checkInModel.addCheckIn({
+                          "record_time": DateTime.now().toIso8601String(),
+                          "device_user_id": "${profile["Phone"]}"
+                        }).then((value) {
+                          EasyLoading.dismiss();
+                          Navigator.pop(context);
+                          showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return const CheckIn();
+                            },
+                          );
+                        });
+                      });
+                    } else if (convertTime(diemdanh[0]["record_time"], false) !=
+                        convertTime(DateTime.now().toIso8601String(), true)) {
+                      EasyLoading.show(status: "Đang xử lý");
+                      Future.delayed(const Duration(seconds: 1), () {
+                        checkInModel.addCheckIn({
+                          "record_time": DateTime.now().toIso8601String(),
+                          "device_user_id": "${profile["Phone"]}"
+                        }).then((value) {
+                          EasyLoading.dismiss();
+                          Navigator.pop(context);
+                          showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return const CheckIn();
+                            },
+                          );
+                        });
+                      });
                     }
-                  }),
+                  })
+                },
+                child: const Text(
+                  "Check-in",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white),
+                ),
+              ),
             ),
           ],
         ));

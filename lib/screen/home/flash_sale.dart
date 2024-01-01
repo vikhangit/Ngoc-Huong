@@ -27,19 +27,14 @@ class _FlashSaleState extends State<FlashSale> {
     return Container(
       margin: const EdgeInsets.only(top: 20, left: 12.5, right: 12.5),
       width: MediaQuery.of(context).size.width,
-      child: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              "FLASH SALE",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: mainColor,
-              ),
-            ),
-          ],
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          "FLASH SALE",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: mainColor,
+          ),
         ),
         FutureBuilder(
             future: bannerModel.getFlashSale(),
@@ -56,43 +51,46 @@ class _FlashSaleState extends State<FlashSale> {
                 }
                 return newList.isNotEmpty
                     ? _buildCarousel(newList)
-                    : GestureDetector(
-                        onTap: () {
-                          customModal.showAlertDialog(
-                              context,
-                              "error",
-                              "Flash Sale",
-                              "Các chương trình flash sale đã hết hạn",
-                              () => Navigator.pop(context),
-                              () => Navigator.pop(context));
-                        },
-                        child: Container(
-                            height: 250,
-                            padding: const EdgeInsets.all(5),
-                            margin: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: const Offset(
-                                      0, 3), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                "assets/images/Home/banner-sale.png",
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                fit: BoxFit.cover,
+                    : Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: GestureDetector(
+                          onTap: () {
+                            customModal.showAlertDialog(
+                                context,
+                                "error",
+                                "Flash Sale",
+                                "Các chương trình flash sale đã hết hạn",
+                                () => Navigator.pop(context),
+                                () => Navigator.pop(context));
+                          },
+                          child: Container(
+                              height: 200,
+                              padding: const EdgeInsets.all(5),
+                              margin: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: const Offset(
+                                        0, 3), // changes position of shadow
+                                  ),
+                                ],
                               ),
-                            )),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  "assets/images/Home/banner-sale.png",
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
+                                  fit: BoxFit.cover,
+                                ),
+                              )),
+                        ),
                       );
               } else {
                 return const SizedBox(
@@ -129,7 +127,8 @@ class _FlashSaleState extends State<FlashSale> {
               },
               child: Container(
                   padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(
+                      left: 5, right: 5, top: 5, bottom: 5),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -155,45 +154,85 @@ class _FlashSaleState extends State<FlashSale> {
             ))
         .toList();
 
-    return Column(
-      children: [
-        SizedBox(
-          height: 250,
-          child: CarouselSlider.builder(
-            options: CarouselOptions(
-              aspectRatio: 2.0,
-              enlargeCenterPage: false,
-              viewportFraction: 1,
-              scrollPhysics: pages.length == 1
-                  ? const ScrollPhysics(parent: NeverScrollableScrollPhysics())
-                  : null,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  activeDot = index;
-                });
-              },
-            ),
-            itemCount: pages.length,
-            itemBuilder: (context, index, realIndex) => pages[index],
-          ),
-        ),
-        DotsIndicator(
-          dotsCount: pages.length,
-          position: activeDot,
-          decorator: DotsDecorator(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0),
+    return pages.length > 1
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 250,
+                child: CarouselSlider.builder(
+                  options: CarouselOptions(
+                    aspectRatio: 2.0,
+                    enlargeCenterPage: false,
+                    viewportFraction: 1,
+                    scrollPhysics: pages.length == 1
+                        ? const ScrollPhysics(
+                            parent: NeverScrollableScrollPhysics())
+                        : null,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        activeDot = index;
+                      });
+                    },
+                  ),
+                  itemCount: pages.length,
+                  itemBuilder: (context, index, realIndex) => pages[index],
+                ),
               ),
-              size: Size(12, 8),
-              activeSize: Size(24, 8),
-              color: mainColor,
-              activeColor: mainColor,
-              activeShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0),
+              const SizedBox(
+                height: 8,
               ),
-              spacing: EdgeInsets.all(1)),
-        )
-      ],
-    );
+              DotsIndicator(
+                dotsCount: pages.length,
+                position: activeDot,
+                decorator: DotsDecorator(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    size: Size(12, 8),
+                    activeSize: Size(24, 8),
+                    color: mainColor,
+                    activeColor: mainColor,
+                    activeShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    spacing: EdgeInsets.all(1)),
+              )
+            ],
+          )
+        : GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FlashSaleDetail(
+                            detail: list[0],
+                          )));
+            },
+            child: Container(
+                padding: const EdgeInsets.all(5),
+                margin:
+                    const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    "https://api.goodapp.vn/${list[0]["picture"]}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
+                  ),
+                )),
+          );
   }
 }

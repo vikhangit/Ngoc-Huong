@@ -36,6 +36,7 @@ import 'package:ngoc_huong/screen/home/promotion.dart';
 import 'package:ngoc_huong/screen/home/register.dart';
 import 'package:ngoc_huong/screen/home/service.dart';
 import 'package:ngoc_huong/screen/home/top.dart';
+import 'package:ngoc_huong/screen/home/voucher.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/member/thanh_vien.dart';
 import 'package:ngoc_huong/screen/news/tin_tuc.dart';
@@ -63,11 +64,6 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-List listBanner = [
-  "assets/images/Home/banner1.jpg",
-  "assets/images/Home/banner2.jpg",
-  "assets/images/Home/banner3.jpg",
-];
 bool showAppBar = false;
 int current = 0;
 String tokenfirebase = "";
@@ -158,6 +154,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   storageCustomerToken.getItem("customer_token") == null
                       ? const Register()
                       : Container(),
+                  const Voucher(),
                   const FlashSale(),
                   const ServicesPage(),
                   const ProductPage(),

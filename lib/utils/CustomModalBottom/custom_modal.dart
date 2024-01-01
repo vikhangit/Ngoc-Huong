@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
+import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomModal {
+  final LocalStorage storageCustomer = LocalStorage('customer_token');
   void showAlertDialog(BuildContext context, String type, String title,
       String desc, Function okFuc, Function cancleFuc) {
     showGeneralDialog(
@@ -186,11 +189,20 @@ class CustomModal {
                     ),
                     TextButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const BookingServices()));
+                          if (storageCustomer.getItem("customer_token") !=
+                              null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const BookingServices()));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: ((context) =>
+                                        const LoginScreen())));
+                          }
                         },
                         style: ButtonStyle(
                             padding: MaterialStateProperty.all(

@@ -72,6 +72,7 @@ class _ProductPageState extends State<ProductPage> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List list = snapshot.data!.toList();
+                  print("List: $list");
                   List<Widget> pages = List<Widget>.generate(
                       list.length,
                       (i) => GestureDetector(
@@ -171,7 +172,7 @@ class _ProductPageState extends State<ProductPage> {
                                             fontStyle: FontStyle.italic,
                                             fontWeight: FontWeight.w400),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 5,
                                       ),
                                     ],

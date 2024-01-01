@@ -5,17 +5,21 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/checkinModel.dart';
+import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
+import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_dia_chi.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
 import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
+import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
 import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/member/thanh_vien.dart';
 import 'package:ngoc_huong/screen/news/tin_tuc.dart';
 import 'package:ngoc_huong/screen/notifications/notification.dart';
+import 'package:ngoc_huong/screen/services/all_service.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -29,13 +33,10 @@ class ActionHome extends StatefulWidget {
 
 List toolServices = [
   {"icon": "assets/images/icon/icon1.png", "title": "Đặt lịch"},
-  {"icon": "assets/images/icon/icon-vi-tri.jpg", "title": "Chi nhánh gần nhất"},
-  {"icon": "assets/images/icon/QR-fanpage.png", "title": "Check In nhận quà"},
+  {"icon": "assets/images/icon/icon-vi-tri.jpg", "title": "Tìm địa chỉ"},
+  {"icon": "assets/images/icon/dich-vu.png", "title": "Dịch vụ làm đẹp"},
+  {"icon": "assets/images/icon/my-pham.png", "title": "Mỹ phẩm cao cấp"},
   {"icon": "assets/images/icon/gift.png", "title": "Shop Quà Tặng"},
-  {"icon": "assets/images/icon/icon5.png", "title": "Ưu đãi tháng"},
-  // {"icon": "assets/images/Home/Icon/dich-vu.png", "title": "Dịch vụ"},
-  // {"icon": "assets/images/Home/Icon/vi.png", "title": "Điểm"},
-  // {"icon": "assets/images/list-order.png", "title": "Lịch sử mua hàng"},
 ];
 
 bool showMore = false;
@@ -48,6 +49,8 @@ class _ActionHomeState extends State<ActionHome> {
   final CartModel cartModel = CartModel();
   final CustomModal customModal = CustomModal();
   final CheckInModel checkInModel = CheckInModel();
+  final ServicesModel servicesModel = ServicesModel();
+  final ProductModel productModel = ProductModel();
 
   @override
   void initState() {
@@ -91,25 +94,34 @@ class _ActionHomeState extends State<ActionHome> {
           }
         case 2:
           {
-            showDialog<void>(
-              context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return const CheckIn();
-              },
-            );
-            break;
+            {
+              servicesModel
+                  .getGroupServiceByBranch()
+                  .then((value) => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllServiceScreen(
+                                listTab: value,
+                              ))));
+              break;
+            }
           }
         case 3:
           {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const GiftShop()));
+            productModel.getGroupProduct().then((value) => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Cosmetic(
+                              listTab: value,
+                            )))
+                // print(value)
+                );
             break;
           }
         case 4:
           {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const TinTucScreen()));
+                MaterialPageRoute(builder: (context) => const GiftShop()));
             break;
           }
         // case 7:
@@ -337,7 +349,7 @@ class _ActionHomeState extends State<ActionHome> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "Hi, ${profile["CustomerName"]}",
+                                            "Hi, ${profile["CustomerName"].toString().toUpperCase()}",
                                             style: TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600,
@@ -744,7 +756,7 @@ class _ActionHomeState extends State<ActionHome> {
                   children: toolServices.map((item) {
                     int index = toolServices.indexOf(item);
                     return SizedBox(
-                      width: MediaQuery.of(context).size.width / 5 - 15,
+                      width: MediaQuery.of(context).size.width / 5 - 22,
                       // height:90,
                       child: TextButton(
                         style: ButtonStyle(

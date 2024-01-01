@@ -50,8 +50,8 @@ dependencies:
   elegant_notification: ^1.10.0
   loop_page_view: ^1.2.5
   timezone: ^0.9.2
-  flutter_local_notifications: ^16.1.0
-  firebase_messaging: ^14.6.4
+  flutter_local_notifications: ^16.3.0
+  firebase_messaging: ^14.7.9
   app_settings: ^5.0.0
   flutter_animate: ^4.2.0
   file_picker: ^6.1.1
@@ -71,6 +71,12 @@ dependencies:
   upgrader: ^8.4.0
   video_player: ^2.8.1
   image_loader: ^1.0.1
+  mobile_scanner: ^3.5.5
+  qr_code_scanner: ^1.0.1
+  flutter_barcode_scanner: ^2.0.0
+  qrcode_barcode_scanner: ^2.0.1
+  device_info_plus: ^9.1.1
+  flutter_timezone: ^1.0.8
 
 dev_dependencies:
   flutter_test:
@@ -95,152 +101,68 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/logo.png
-    - assets/images/logo2.png
-    - assets/images/account.png
-    - assets/images/login/banner.png
     - assets/images/login/banner.jpg
-    - assets/images/icon/home-black.png
-    - assets/images/icon/home-red.png
-    - assets/images/icon/brand-black.png
-    - assets/images/icon/brand-red.png
-    - assets/images/notification-solid-1.png
-    - assets/images/notification-solid-empty.png
-    - assets/images/cart-solid-white.png
-    - assets/images/icon/notifications-black.png
-    - assets/images/icon/notifications-red.png
-    - assets/images/notification-solid-black.png
-    - assets/images/shopping-cart.png
-    - assets/images/icon/profile-black.png
     - assets/images/icon/profile-red.png
     - assets/images/voucher.png
-    - assets/images/uu-dai-black.png
-    - assets/images/uu-dai-red.png
-    - assets/images/telesales.png
-    - assets/images/telesales-black.png
-    - assets/images/gift-black.png
-    - assets/images/gift-solid-red.png
-    - assets/images/lich-da-hen.png
-    - assets/images/lich-da-hen1.png
-    - assets/images/vi-solid-red.png
-    - assets/images/history-solid-red.png
-    - assets/images/diem-solid-red.png
+    - assets/images/voucher1.png
     - assets/images/thanh-toan.png
-    - assets/images/point.png
-    - assets/images/calendar.png
-    - assets/images/calendar-red.png
-    - assets/images/calendar-solid-white.png
     - assets/images/calendar-solid-red.png
     - assets/images/calendar-white.png
-    - assets/images/call.png
-    - assets/images/eye-white.png
     - assets/images/cart-black.png
-    - assets/images/cart-red.png
     - assets/images/cart-white.png
     - assets/images/nam-white.png
     - assets/images/nam-black.png
     - assets/images/nu-white.png
     - assets/images/nu-black.png
     - assets/images/call-solid-red.png
-    - assets/images/location-solid-red.png
     - assets/images/location-solid-black.png
     - assets/images/location-green.png
-    - assets/images/time-solid-red.png
     - assets/images/time-solid-black.png
     - assets/images/TimeCircleBlack.png
-    - assets/images/note-solid-red.png
-    - assets/images/info-red.png
     - assets/images/calendar-black.png
     - assets/images/call-black.png
-    - assets/images/call-solid-white.png
-    - assets/images/avatar.png
     - assets/images/delete-black.png
     - assets/images/delete-red.png
     - assets/images/cod.png
-    - assets/images/product-black.png
-    - assets/images/product-solid-red.png
     - assets/images/chuyen-khoan.png
-    - assets/images/messenger.png
-    - assets/images/messenger-white.png
     - assets/images/messenger-red.png
-    - assets/images/zalo-icon.png
     - assets/images/zalo1.png
     - assets/images/x.png
     - assets/images/award.png
     - assets/images/Home/Services/thanh-vien.png
     - assets/images/giftbox.png
-    - assets/images/facebook.png
-    - assets/images/chat-icon.png
-    - assets/images/list-order.png
-    - assets/images/cancel.png
     - assets/images/location-to.png
     - assets/images/calendar-solid-black.png
-    - assets/images/Home/banner1.jpg
-    - assets/images/Home/banner2.jpg
-    - assets/images/Home/banner3.jpg
     - assets/images/Home/banner-sale.png
-    - assets/images/Home/Disscount/img1.jpg
-    - assets/images/Home/Disscount/img2.jpg
-    - assets/images/Home/Disscount/img3.jpg
-    - assets/images/Home/Disscount/img4.jpg
-    - assets/images/Home/News/news1.jpg
-    - assets/images/Home/News/news2.jpg
-    - assets/images/Home/Icon/my-pham.png
-    - assets/images/Home/Icon/dich-vu.png
-    - assets/images/Home/Icon/vi.png
-    - assets/images/Home/Icon/calendar.png
-    - assets/images/Home/Icon/membership.png
-    - assets/images/Home/Icon/uu-dai.png
-    - assets/images/Home/Icon/history.png
-    - assets/images/Home/Icon/call.png
     - assets/images/Notifications/noti1.png
-    - assets/images/Notifications/noti2.png
     - assets/images/Notifications/bell1.png
     - assets/images/Notifications/bell2.png
     - assets/images/account/thong-tin.png
     - assets/images/account/giao-dich.png
     - assets/images/account/dat-lich.png
     - assets/images/account/dieu-khoan.png
-    - assets/images/list.png
-    - assets/images/list1.png
     - assets/images/account/file-white.png
     - assets/images/account/gioi-thieu.png
     - assets/images/account/dia-chi.png
-    - assets/images/account/cai-dat.png
     - assets/images/account/ve-chung-toi.png
     - assets/images/account/dang-xuat.png
-    - assets/images/account/mat-khau.png
-    - assets/images/account/van-chuyen.png
-    - assets/images/pin-green.png
     - assets/images/account/img.webp
     - assets/images/dieu-tri.png
     - assets/images/may.png
-    - assets/images/tam-trang.png
     - assets/images/tre-hoa.png
-    - assets/images/giam-beo.png
     - assets/images/waxing.png
-    - assets/images/banner.png
     - assets/images/banner-flash.png
     - assets/images/icon/cart.png
     - assets/images/icon/icon1.png
-    - assets/images/icon/icon2.png
-    - assets/images/icon/icon3.png
-    - assets/images/icon/icon4.png
-    - assets/images/icon/icon5.png
     - assets/images/icon/home.png
     - assets/images/icon/dich-vu.png
     - assets/images/icon/my-pham.png
     - assets/images/icon/tu-van.png
     - assets/images/icon/Xu.png
     - assets/images/icon/QR-fanpage.png
-    - assets/images/icon/icon-vi-tri.png
+    - assets/images/icon/checkin.png
     - assets/images/icon/icon-vi-tri.jpg
     - assets/images/icon/gift.png
-    - assets/images/start/1.jpg
-    - assets/images/start/2.jpg
-    - assets/images/start/3.jpg
-    - assets/images/start/4.jpg
-    - assets/images/start/start.gif
     - assets/intro/intro.MP4
     - assets/images/rank/BAC.png
     - assets/images/rank/VANG.png

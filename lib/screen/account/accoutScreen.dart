@@ -35,6 +35,9 @@ class AccountScreen extends StatefulWidget {
   State<AccountScreen> createState() => _AccountScreenState();
 }
 
+Map profile = {};
+bool loading = true;
+
 List menu = [
   {
     "icon": "assets/images/account/thong-tin.png",
@@ -127,6 +130,16 @@ class _AccountScreenState extends State<AccountScreen> {
     // TODO: implement initState
     super.initState();
     Upgrader.clearSavedSettings();
+    profileModel.getProfile().then((value) {
+      setState(() {
+        profile = value;
+      });
+    });
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      setState(() {
+        loading = false;
+      });
+    });
   }
 
   @override
@@ -216,17 +229,33 @@ class _AccountScreenState extends State<AccountScreen> {
       }
     }
 
-    String checkRank(int point) {
-      if (point == 0 && point < 100) {
-        return "Bạc";
-      } else if (point >= 100 && point < 200) {
-        return "Vàng";
-      } else if (point >= 200 && point < 500) {
-        return "Bạch kim";
-      } else if (point >= 500) {
-        return "Kim cương";
-      }
-      return "Bạc";
+    Widget checkRank() {
+      if (profile["Point"] == null) {
+        return Image.asset(
+          "${rank[0]["card"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        );
+      } else if (profile["Point"] == 0 && profile["Point"] < 100) {
+        return Image.asset(
+          "${rank[0]["card"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        );
+      } else if (profile["Point"] >= 100 && profile["Point"] < 200) {
+        return Image.asset(
+          "${rank[1]["card"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        );
+      } else if (profile["Point"] >= 200 && profile["Point"] < 500) {
+        ;
+      } else if (profile["Point"] >= 500) {}
+      return Image.asset(
+        "${rank[0]["card"]}",
+        width: MediaQuery.of(context).size.width,
+        height: 190,
+      );
     }
 
     return SafeArea(
@@ -248,474 +277,321 @@ class _AccountScreenState extends State<AccountScreen> {
                 showIgnore: false,
                 showReleaseNotes: false,
               ),
-              child: Container(
-                  height: MediaQuery.of(context).size.height - 100,
-                  child: ListView(
-                    controller: scrollController,
-                    padding: const EdgeInsets.symmetric(vertical: 25),
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              child: loading
+                  ? const Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Expanded(
-                              child: GestureDetector(
-                                  onTap: () {
-                                    makingPhoneCall();
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Image.asset(
-                                        "assets/images/call-black.png",
-                                        width: 25,
-                                        height: 25,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      const Text("Hỗ trợ",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400))
-                                    ],
-                                  )),
-                            ),
-                            Expanded(
-                                child: FutureBuilder(
-                                    future: profileModel.getProfile(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Center(
-                                            child: Stack(children: [
-                                          GestureDetector(
-                                            onTap: () async {
-                                              await showDialog(
-                                                context: context,
-                                                builder: (_) => Dialog(
-                                                  backgroundColor: Colors.black,
-                                                  insetPadding:
-                                                      const EdgeInsets.all(20),
-                                                  child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    height: 350,
-                                                    decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(
-                                                                "${snapshot.data["CustomerImage"]}"),
-                                                            fit: BoxFit.cover)),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: SizedBox(
-                                              width: 100,
-                                              height: 100,
-                                              child: CircleAvatar(
-                                                backgroundColor:
-                                                    const Color(0xff00A3FF),
-                                                backgroundImage: NetworkImage(
-                                                    "${snapshot.data["CustomerImage"]}"),
-                                                radius: 35.0,
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            right: 0,
-                                            bottom: 0,
-                                            child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            90.0),
-                                                    color: Colors.blue[100]),
-                                                child: GestureDetector(
-                                                    onTap: () {
-                                                      _pickFile();
-                                                    },
-                                                    child: Icon(
-                                                      Icons.linked_camera,
-                                                      size: 16,
-                                                      color: Colors.blue[600],
-                                                    ))),
-                                          )
-                                        ]));
-                                      } else {
-                                        return const Center(
-                                          child: SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: LoadingIndicator(
-                                              colors: kDefaultRainbowColors,
-                                              indicatorType:
-                                                  Indicator.lineSpinFadeLoader,
-                                              strokeWidth: 1,
-                                              // pathBackgroundColor: Colors.black45,
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    })),
-                            Expanded(
-                                child: Align(
-                                    alignment: Alignment.topRight,
-                                    child: FutureBuilder(
-                                        future: profileModel.getProfile(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            return Container(
-                                              width: 75,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(20)),
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary
-                                                      .withOpacity(0.4)),
-                                              child: GestureDetector(
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Image.asset(
-                                                      "assets/images/icon/Xu.png",
-                                                      width: 20,
-                                                      height: 20,
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Text(
-                                                      "${snapshot.data!["Point"] ?? "0"} xu",
-                                                      style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: 12),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          } else {
-                                            return const Center(
-                                              child: SizedBox(
-                                                width: 40,
-                                                height: 40,
-                                                child: LoadingIndicator(
-                                                  colors: kDefaultRainbowColors,
-                                                  indicatorType: Indicator
-                                                      .lineSpinFadeLoader,
-                                                  strokeWidth: 1,
-                                                  // pathBackgroundColor: Colors.black45,
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        })))
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      FutureBuilder(
-                        future: profileModel.getProfile(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            Map profile = snapshot.data!;
-                            return Column(
-                              children: [
-                                Text(profile["CustomerName"].toString(),
-                                    style: const TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w400)),
-                                Text(profile["Phone"].toString(),
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w300))
-                              ],
-                            );
-                          } else {
-                            return const Center(
-                              child: SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: LoadingIndicator(
-                                  colors: kDefaultRainbowColors,
-                                  indicatorType: Indicator.lineSpinFadeLoader,
-                                  strokeWidth: 1,
-                                  // pathBackgroundColor: Colors.black45,
-                                ),
+                            SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: LoadingIndicator(
+                                colors: kDefaultRainbowColors,
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                strokeWidth: 1,
+                                // pathBackgroundColor: Colors.black45,
                               ),
-                              // SizedBox(
-                              //   width: 10,
-                              // ),
-                              // Text("Đang lấy dữ liệu")
-                            );
-                          }
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Đang lấy dữ liệu")
+                          ]),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(vertical: 25),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                              flex: 47,
-                              child: FutureBuilder(
-                                  future: profileModel.getProfile(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ThanhVienScreen()));
-                                        },
-                                        child: Container(
-                                          margin:
-                                              const EdgeInsets.only(left: 15),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 15, horizontal: 10),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(6)),
-                                              border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.grey)),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                width: 40,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary
-                                                        .withOpacity(0.2),
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                8))),
-                                                child: Image.network(
-                                                  "https://cdn-icons-png.flaticon.com/512/2385/2385865.png",
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                      checkRank(snapshot
-                                                              .data!["Point"] ??
-                                                          0),
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500)),
-                                                  Text("Nâng hạng",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300))
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return const Center(
-                                        child: SizedBox(
-                                          width: 40,
-                                          height: 40,
-                                          child: LoadingIndicator(
-                                            colors: kDefaultRainbowColors,
-                                            indicatorType:
-                                                Indicator.lineSpinFadeLoader,
-                                            strokeWidth: 1,
-                                            // pathBackgroundColor: Colors.black45,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  })),
-                          Expanded(flex: 6, child: Container()),
-                          Expanded(
-                              flex: 47,
-                              child: FutureBuilder(
-                                  future: profileModel.getProfile(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          // showAlertDialog(context,
-                                          //     "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      TinTucScreen()));
-                                        },
-                                        child: Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 15),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 15, horizontal: 10),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(6)),
-                                              border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.grey)),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                width: 40,
-                                                height: 40,
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary
-                                                        .withOpacity(0.2),
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                8))),
-                                                child: Image.network(
-                                                  "https://cdn-icons-png.flaticon.com/512/3702/3702999.png",
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              const Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text("Ưu đãi",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500)),
-                                                  Text("Dùng ngay",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300))
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return const Center(
-                                        child: SizedBox(
-                                          width: 40,
-                                          height: 40,
-                                          child: LoadingIndicator(
-                                            colors: kDefaultRainbowColors,
-                                            indicatorType:
-                                                Indicator.lineSpinFadeLoader,
-                                            strokeWidth: 1,
-                                            // pathBackgroundColor: Colors.black45,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  })),
-                        ],
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        child: Column(
-                          children: menu.map((element) {
-                            int index = menu.indexOf(element);
-                            return SizedBox(
-                              height: 60,
-                              child: TextButton(
-                                  style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 15))),
-                                  onPressed: () {
-                                    goAction(index);
-                                  },
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        makingPhoneCall();
+                                      },
+                                      child: Row(
                                         children: [
-                                          Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
-                                              decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary
-                                                      .withOpacity(0.2),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(8))),
-                                              child: Image.asset(
-                                                element["icon"],
-                                                width: 24,
-                                                height: 24,
-                                              )),
-                                          Container(
-                                            margin:
-                                                const EdgeInsets.only(left: 20),
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                95,
-                                            child: Text(
-                                              "${element["title"]}",
-                                              style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w300),
-                                            ),
+                                          Image.asset(
+                                            "assets/images/call-black.png",
+                                            width: 25,
+                                            height: 25,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          const Text("Hỗ trợ",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400))
+                                        ],
+                                      )),
+                                ),
+                                Expanded(
+                                    child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Container(
+                                    width: 75,
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 4),
+                                    decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(20)),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.4)),
+                                    child: GestureDetector(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            "assets/images/icon/Xu.png",
+                                            width: 20,
+                                            height: 20,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            "${profile["Point"] ?? "0"} xu",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 12),
                                           )
                                         ],
                                       ),
-                                      if (index < menu.length - 1)
-                                        Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 55, top: 5),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width -
-                                              80,
-                                          color: Colors.grey.withOpacity(0.2),
-                                          height: 1,
-                                        )
-                                    ],
-                                  )),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  )))),
+                                    ),
+                                  ),
+                                ))
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: Row(
+                              children: [
+                                Stack(children: [
+                                  GestureDetector(
+                                    onTap: () async {
+                                      await showDialog(
+                                        context: context,
+                                        builder: (_) => Dialog(
+                                          backgroundColor: Colors.black,
+                                          insetPadding:
+                                              const EdgeInsets.all(20),
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 350,
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        "${profile["CustomerImage"]}"),
+                                                    fit: BoxFit.cover)),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 60,
+                                      height: 60,
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                            const Color(0xff00A3FF),
+                                        backgroundImage: NetworkImage(
+                                            "${profile["CustomerImage"]}"),
+                                        radius: 35.0,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(90.0),
+                                            color: Colors.blue[100]),
+                                        child: GestureDetector(
+                                            onTap: () {
+                                              _pickFile();
+                                            },
+                                            child: Icon(
+                                              Icons.linked_camera,
+                                              size: 10,
+                                              color: Colors.blue[600],
+                                            ))),
+                                  )
+                                ]),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(profile["CustomerName"].toString(),
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400)),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(profile["Phone"].toString(),
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500))
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(
+                                left: 15,
+                                right: 15,
+                              ),
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  checkRank(),
+                                  Positioned(
+                                      top: 0,
+                                      left: 0,
+                                      width: MediaQuery.of(context).size.width -
+                                          30,
+                                      child: Container(
+                                        alignment: Alignment.topRight,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: profile["Point"] == null
+                                                ? 42
+                                                : profile["Point"] < 100
+                                                    ? 42
+                                                    : profile["Point"] >= 100 &&
+                                                            profile["Point"] <
+                                                                250
+                                                        ? 52
+                                                        : profile["Point"] >=
+                                                                    250 &&
+                                                                profile["Point"] <
+                                                                    500
+                                                            ? 41
+                                                            : profile["point"] >=
+                                                                        500 &&
+                                                                    profile["point"] <
+                                                                        1000
+                                                                ? 22
+                                                                : 42,
+                                            vertical: 20),
+                                        child: Text(
+                                          profile["CustomerName"]
+                                              .toString()
+                                              .toUpperCase(),
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black
+                                                  .withOpacity(0.6)),
+                                        ),
+                                      )),
+                                ],
+                              )),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Expanded(
+                            child: ListView(
+                              children: menu.map((element) {
+                                int index = menu.indexOf(element);
+                                return SizedBox(
+                                  height: 60,
+                                  child: TextButton(
+                                      style: ButtonStyle(
+                                          padding: MaterialStateProperty.all(
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 15))),
+                                      onPressed: () {
+                                        goAction(index);
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 5,
+                                                      vertical: 5),
+                                                  decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary
+                                                          .withOpacity(0.2),
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                              Radius.circular(
+                                                                  8))),
+                                                  child: Image.asset(
+                                                    element["icon"],
+                                                    width: 24,
+                                                    height: 24,
+                                                  )),
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                    left: 20),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    95,
+                                                child: Text(
+                                                  "${element["title"]}",
+                                                  style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w300),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          if (index < menu.length - 1)
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 55, top: 5),
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  80,
+                                              color:
+                                                  Colors.grey.withOpacity(0.2),
+                                              height: 1,
+                                            )
+                                        ],
+                                      )),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      )))),
     );
   }
 }

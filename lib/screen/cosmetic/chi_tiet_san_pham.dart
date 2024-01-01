@@ -629,15 +629,28 @@ class _ImageDetailState extends State<ImageDetail> {
   final CarouselController carouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
+    List newList = [
+      widget.item["ImageList"][0]["Image_Name"],
+      widget.item["ImageList"][0]["Image_Name2"],
+      widget.item["ImageList"][0]["Image_Name3"],
+      widget.item["ImageList"][0]["Image_Name4"],
+      widget.item["ImageList"][0]["Image_Name5"]
+    ];
+    List result = [];
+    for (var x in newList) {
+      if (!["", null, false, 0].contains(x)) {
+        result.add(x);
+      }
+    }
     List<Widget> imgList = List<Widget>.generate(
-      3,
+      result.length,
       (index) => Container(
         alignment: Alignment.center,
         decoration: const BoxDecoration(
             // color: checkColor,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Image.network(
-          "${widget.item["Image_Name"]}",
+          "${result[index]}",
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           fit: BoxFit.fitHeight,
@@ -648,58 +661,70 @@ class _ImageDetailState extends State<ImageDetail> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       width: MediaQuery.of(context).size.width,
-      child: Column(
-        children: [
-          CarouselSlider.builder(
-              carouselController: carouselController,
-              options: CarouselOptions(
-                aspectRatio: 2,
-                height: 380,
-                enlargeCenterPage: false,
-                viewportFraction: 1,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    currentIndex = index;
-                  });
-                },
+      child: (imgList.length > 1)
+          ? Column(
+              children: [
+                CarouselSlider.builder(
+                    carouselController: carouselController,
+                    options: CarouselOptions(
+                      aspectRatio: 2,
+                      height: 380,
+                      enlargeCenterPage: false,
+                      viewportFraction: 1,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          currentIndex = index;
+                        });
+                      },
+                    ),
+                    itemCount: imgList.length,
+                    itemBuilder: (context, index, realIndex) => imgList[index]),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: result.map((e) {
+                    int index = result.indexOf(e);
+                    return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            currentIndex = index;
+                            carouselController.animateToPage(index,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.linear);
+                          });
+                        },
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: index == 1 ? 5 : 0),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1,
+                                color: currentIndex == index
+                                    ? mainColor
+                                    : Colors.white),
+                          ),
+                          child: Image.network(
+                            e,
+                            width: 80,
+                            height: 80,
+                          ),
+                        ));
+                  }).toList(),
+                )
+              ],
+            )
+          : Container(
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                  // color: checkColor,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Image.network(
+                "${result[0]}",
+                fit: BoxFit.cover,
               ),
-              itemCount: imgList.length,
-              itemBuilder: (context, index, realIndex) => imgList[index]),
-          const SizedBox(
-            height: 8,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: imgList.map((e) {
-              int index = imgList.indexOf(e);
-              return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      currentIndex = index;
-                      carouselController.animateToPage(index,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.linear);
-                    });
-                  },
-                  child: Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: index == 1 ? 5 : 0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 1,
-                          color:
-                              currentIndex == index ? mainColor : Colors.white),
-                    ),
-                    child: Image.network(
-                      "${widget.item["Image_Name"]}",
-                      width: 80,
-                      height: 80,
-                    ),
-                  ));
-            }).toList(),
-          )
-        ],
-      ),
+            ),
     );
   }
 }

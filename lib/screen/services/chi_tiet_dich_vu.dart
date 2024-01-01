@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
@@ -5,6 +6,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
@@ -119,17 +121,11 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                       child: ListView(
                         children: [
                           Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 15),
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                              child: Image.network(
-                                "${detail["Image_Name"]}",
-                                width: MediaQuery.of(context).size.width,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: ImageDetail(
+                                item: detail,
+                              )),
                           Container(
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 15),
@@ -395,6 +391,120 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                   ],
                 ),
               ))),
+    );
+  }
+}
+
+class ImageDetail extends StatefulWidget {
+  final Map item;
+  const ImageDetail({super.key, required this.item});
+
+  @override
+  State<ImageDetail> createState() => _ImageDetailState();
+}
+
+int currentIndex = 0;
+
+class _ImageDetailState extends State<ImageDetail> {
+  final CarouselController carouselController = CarouselController();
+  @override
+  Widget build(BuildContext context) {
+    List newList = [
+      widget.item["ImageList"][0]["Image_Name"],
+      widget.item["ImageList"][0]["Image_Name2"],
+      widget.item["ImageList"][0]["Image_Name3"],
+      widget.item["ImageList"][0]["Image_Name4"],
+      widget.item["ImageList"][0]["Image_Name5"]
+    ];
+    List result = [];
+    for (var x in newList) {
+      if (!["", null, false, 0].contains(x)) {
+        result.add(x);
+      }
+    }
+    List<Widget> imgList = List<Widget>.generate(
+      result.length,
+      (index) => Container(
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+            // color: checkColor,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: Image.network(
+          "${result[index]}",
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.fitHeight,
+        ),
+      ),
+    );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.of(context).size.width,
+      child: (imgList.length > 1)
+          ? Column(
+              children: [
+                CarouselSlider.builder(
+                    carouselController: carouselController,
+                    options: CarouselOptions(
+                      aspectRatio: 2,
+                      height: 380,
+                      enlargeCenterPage: false,
+                      viewportFraction: 1,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          currentIndex = index;
+                        });
+                      },
+                    ),
+                    itemCount: imgList.length,
+                    itemBuilder: (context, index, realIndex) => imgList[index]),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: result.map((e) {
+                    int index = result.indexOf(e);
+                    return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            currentIndex = index;
+                            carouselController.animateToPage(index,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.linear);
+                          });
+                        },
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: index == 1 ? 5 : 0),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1,
+                                color: currentIndex == index
+                                    ? mainColor
+                                    : Colors.white),
+                          ),
+                          child: Image.network(
+                            e,
+                            width: 80,
+                            height: 80,
+                          ),
+                        ));
+                  }).toList(),
+                )
+              ],
+            )
+          : Container(
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                  // color: checkColor,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Image.network(
+                "${result[0]}",
+                fit: BoxFit.cover,
+              ),
+            ),
     );
   }
 }

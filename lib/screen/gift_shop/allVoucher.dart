@@ -251,18 +251,17 @@ class _AllVoucherScreenState extends State<AllVoucherScreen> {
                                                                 BorderRadius
                                                                     .circular(
                                                                         15),
-                                                            child:
-                                                                Image.network(
-                                                              "${item["Image_Name"] ?? "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                            child: Image.asset(
+                                                              "assets/images/voucher1.png",
                                                               fit: BoxFit
-                                                                  .contain,
+                                                                  .fitHeight,
                                                             ),
                                                           )),
                                                       const SizedBox(
                                                         height: 10,
                                                       ),
                                                       Text(
-                                                        "${item["Name"]}",
+                                                        "Voucher giảm 200k cho tất cả dịch vụ",
                                                         maxLines: 3,
                                                         overflow: TextOverflow
                                                             .ellipsis,

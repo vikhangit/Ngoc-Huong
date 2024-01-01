@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
+import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/gift_shop/allProduct.dart';
 import 'package:ngoc_huong/screen/gift_shop/allService.dart';
 import 'package:ngoc_huong/screen/gift_shop/allVoucher.dart';
@@ -124,6 +125,13 @@ class _GiftShopState extends State<GiftShop> {
 
                               Expanded(
                                   child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AccountScreen()));
+                                },
                                 child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 10),

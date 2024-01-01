@@ -21,6 +21,32 @@ class ThanhVienScreen extends StatefulWidget {
 
 int? _selectedIndex;
 int currentIndex = 0;
+List rank = [
+  {
+    "card": "assets/images/rank/BAC.png",
+    "rank": "Bạc",
+    "point": 100,
+    "key": "TV"
+  },
+  {
+    "card": "assets/images/rank/VANG.png",
+    "rank": "Vàng",
+    "point": 250,
+    "key": "Gold"
+  },
+  {
+    "card": "assets/images/rank/BACHKIM.png",
+    "rank": "Bạch kim",
+    "point": 500,
+    "key": "Platinum"
+  },
+  {
+    "card": "assets/images/rank/KIMCUONG.png",
+    "rank": "Kim cương",
+    "point": 1000,
+    "key": "Diamond"
+  },
+];
 
 class _MyPhamScreenState extends State<ThanhVienScreen>
     with TickerProviderStateMixin {
@@ -55,32 +81,6 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
 
   @override
   Widget build(BuildContext context) {
-    List rank = [
-      {
-        "card": "assets/images/rank/BAC.png",
-        "rank": "Bạc",
-        "point": 100,
-        "key": "TV"
-      },
-      {
-        "card": "assets/images/rank/VANG.png",
-        "rank": "Vàng",
-        "point": 250,
-        "key": "Gold"
-      },
-      {
-        "card": "assets/images/rank/BACHKIM.png",
-        "rank": "Bạch kim",
-        "point": 500,
-        "key": "Platinum"
-      },
-      {
-        "card": "assets/images/rank/KIMCUONG.png",
-        "rank": "Kim cương",
-        "point": 1000,
-        "key": "Diamond"
-      },
-    ];
     return SafeArea(
         bottom: false,
         child: Scaffold(
