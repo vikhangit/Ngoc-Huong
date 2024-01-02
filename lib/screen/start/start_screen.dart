@@ -70,23 +70,20 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-            backgroundColor: Colors.white,
-            body: SingleChildScrollView(
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: AspectRatio(
-                  aspectRatio: videoController.value.aspectRatio,
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: <Widget>[
-                      VideoPlayer(videoController),
-                    ],
-                  ),
-                ),
-              ),
-            )));
+    return Stack(
+      children: <Widget>[
+        SizedBox.expand(
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              width: videoController.value.size.width ?? 0,
+              height: videoController.value.size.height ?? 0,
+              child: VideoPlayer(videoController),
+            ),
+          ),
+        ),
+        //FURTHER IMPLEMENTATION
+      ],
+    );
   }
 }
