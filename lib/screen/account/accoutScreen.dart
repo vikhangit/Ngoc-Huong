@@ -17,6 +17,7 @@ import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/account/dieu_khoan_sd/dieu_khoan_sd.dart';
 import 'package:ngoc_huong/screen/account/gioi_thieu_ban_be/gioi_thieu_ban_be.dart';
+import 'package:ngoc_huong/screen/account/my_order/my_order.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/tran_history/tran_history.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
@@ -48,12 +49,16 @@ List menu = [
     "title": "Lịch sử đặt lịch",
   },
   {
-    "icon": "assets/images/account/giao-dich.png",
+    "icon": "assets/images/TimeCircleBlack.png",
     "title": "Lịch sử tham gia dịch vụ",
   },
   {
     "icon": "assets/images/cart-black.png",
     "title": "Lịch sử mua hàng",
+  },
+  {
+    "icon": "assets/images/account/giao-dich.png",
+    "title": "Đơn hàng của tôi",
   },
   {
     "icon": "assets/images/account/dia-chi.png",
@@ -184,32 +189,36 @@ class _AccountScreenState extends State<AccountScreen> {
                   builder: (context) => BeautifyHistory(listAction: value))));
           break;
         case 3:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const BuyHistory()));
+          break;
+        case 4:
           orderModel.getStatusList().then((value) => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => BuyHistory(
+                  builder: (context) => MyOrder(
                         listTab: value,
                       ))));
           break;
-        case 4:
+        case 5:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
-        case 5:
+        case 6:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
           break;
-        case 6:
+        case 7:
           {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const AboutUs()));
             break;
           }
-        case 7:
+        case 8:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
           break;
-        case 8:
+        case 9:
           customModal.showAlertDialog(context, "error", "Xóa tài khoản",
               "Bạn có chắc chắn muốn xóa tài khoản không?", () {
             EasyLoading.show(status: "Đang xử lý...");
@@ -222,7 +231,7 @@ class _AccountScreenState extends State<AccountScreen> {
             });
           }, () => Navigator.pop(context));
           break;
-        case 9:
+        case 10:
           handleLogout();
           break;
         default:
@@ -231,31 +240,102 @@ class _AccountScreenState extends State<AccountScreen> {
 
     Widget checkRank() {
       if (profile["Point"] == null) {
-        return Image.asset(
-          "${rank[0]["card"]}",
-          width: MediaQuery.of(context).size.width,
-          height: 190,
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ThanhVienScreen(
+                          ac: 0,
+                        )));
+          },
+          child: Image.asset(
+            "${rank[0]["card"]}",
+            width: MediaQuery.of(context).size.width,
+            height: 190,
+          ),
         );
       } else if (profile["Point"] == 0 && profile["Point"] < 100) {
-        return Image.asset(
-          "${rank[0]["card"]}",
-          width: MediaQuery.of(context).size.width,
-          height: 190,
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ThanhVienScreen(
+                          ac: 0,
+                        )));
+          },
+          child: Image.asset(
+            "${rank[0]["card"]}",
+            width: MediaQuery.of(context).size.width,
+            height: 190,
+          ),
         );
-      } else if (profile["Point"] >= 100 && profile["Point"] < 200) {
-        return Image.asset(
-          "${rank[1]["card"]}",
-          width: MediaQuery.of(context).size.width,
-          height: 190,
+      } else if (profile["Point"] >= 100 && profile["Point"] < 250) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ThanhVienScreen(
+                          ac: 1,
+                        )));
+          },
+          child: Image.asset(
+            "${rank[1]["card"]}",
+            width: MediaQuery.of(context).size.width,
+            height: 190,
+          ),
         );
-      } else if (profile["Point"] >= 200 && profile["Point"] < 500) {
-        ;
-      } else if (profile["Point"] >= 500) {}
-      return Image.asset(
-        "${rank[0]["card"]}",
-        width: MediaQuery.of(context).size.width,
-        height: 190,
-      );
+      } else if (profile["Point"] >= 250 && profile["Point"] < 500) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ThanhVienScreen(
+                          ac: 2,
+                        )));
+          },
+          child: Image.asset(
+            "${rank[2]["card"]}",
+            width: MediaQuery.of(context).size.width,
+            height: 190,
+          ),
+        );
+      } else if (profile["Point"] >= 500) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ThanhVienScreen(
+                          ac: 3,
+                        )));
+          },
+          child: Image.asset(
+            "${rank[3]["card"]}",
+            width: MediaQuery.of(context).size.width,
+            height: 190,
+          ),
+        );
+      } else {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ThanhVienScreen(
+                          ac: 0,
+                        )));
+          },
+          child: Image.asset(
+            "${rank[0]["card"]}",
+            width: MediaQuery.of(context).size.width,
+            height: 190,
+          ),
+        );
+      }
     }
 
     return SafeArea(

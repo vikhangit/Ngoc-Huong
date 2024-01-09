@@ -171,6 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "Address": address.isEmpty ? addressController.text : address,
       "Email": email.isEmpty ? emailController.text : email,
       "Phone": phoneController.text,
+      "Token": "${localStorageCustomerToken.getItem("customer_token")}"
     };
     if (!isValid) {
       return;

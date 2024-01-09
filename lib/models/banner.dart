@@ -8,8 +8,8 @@ class BannerModel {
   Future<List> getBannerList() async {
     List result = [];
     try {
-      Response response = await client.dio
-          .get('${client.goodAppUrl}/ecombanners?access_token=${client.token}',
+      Response response =
+          await client.dio.get('$goodAppUrl/api/$idApp/mobilelib?$token',
               options: Options(headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 // 'Authorization':
@@ -29,13 +29,13 @@ class BannerModel {
   Future<List> getFlashSale() async {
     List result = [];
     try {
-      Response response = await client.dio.get(
-          '${client.goodAppUrl}/ecompromotion_flashsales?access_token=${client.token}',
-          options: Options(headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            // 'Authorization':
-            //     '${localStorageCustomerToken.getItem("customer_token")}',
-          }));
+      Response response = await client.dio
+          .get('$goodAppUrl/api/$idApp/ecompromotion_flashsales?$token',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                // 'Authorization':
+                //     '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
       if (response.statusCode == 200) {
         return result = response.data;
       } else {

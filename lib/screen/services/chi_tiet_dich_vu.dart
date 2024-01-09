@@ -66,6 +66,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     Map detail = widget.detail;
+    print(detail);
     return SafeArea(
       bottom: false,
       child: Scaffold(
@@ -121,11 +122,29 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                       child: ListView(
                         children: [
                           Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: ImageDetail(
-                                item: detail,
-                              )),
+                            margin: const EdgeInsets.symmetric(horizontal: 15),
+                            child: detail["ImageList"].toList().length > 0
+                                ? ImageDetail(
+                                    item: detail,
+                                  )
+                                : Container(
+                                    alignment: Alignment.center,
+                                    decoration: const BoxDecoration(
+                                        // color: checkColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: Image.network(
+                                      "${detail["Image_Name"]}",
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, exception, stackTrace) {
+                                        return Image.network(
+                                            fit: BoxFit.cover,
+                                            'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                                      },
+                                    ),
+                                  ),
+                          ),
                           Container(
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 15),
@@ -422,6 +441,7 @@ class _ImageDetailState extends State<ImageDetail> {
         result.add(x);
       }
     }
+    print(result);
     List<Widget> imgList = List<Widget>.generate(
       result.length,
       (index) => Container(
@@ -495,16 +515,32 @@ class _ImageDetailState extends State<ImageDetail> {
                 )
               ],
             )
-          : Container(
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                  // color: checkColor,
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Image.network(
-                "${result[0]}",
-                fit: BoxFit.cover,
-              ),
-            ),
+          : imgList.length == 1
+              ? Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Image.network(
+                    "${result[0]}",
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Image.network(
+                    "${widget.item["Image_Name"]}",
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, exception, stackTrace) {
+                      return Image.network(
+                          fit: BoxFit.cover,
+                          'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                    },
+                  ),
+                ),
     );
   }
 }

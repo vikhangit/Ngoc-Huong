@@ -189,10 +189,10 @@ class _BookingHistoryState extends State<BookingHistory>
                                                   height: 125,
                                                   child: FutureBuilder(
                                                     future: servicesModel
-                                                        .getServiceByName(list[
+                                                        .getServiceByCode(list[
                                                                     index]
                                                                 ["serviceList"]
-                                                            [0]["ServiceName"]),
+                                                            [0]["ServiceCode"]),
                                                     builder:
                                                         (context, snapshot) {
                                                       if (snapshot.hasData) {
@@ -211,6 +211,10 @@ class _BookingHistoryState extends State<BookingHistory>
                                                                                 "1",
                                                                             status:
                                                                                 i["GroupName"],
+                                                                            save:
+                                                                                () {
+                                                                              setState(() {});
+                                                                            },
                                                                           )));
                                                             },
                                                             style: ButtonStyle(

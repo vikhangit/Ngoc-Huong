@@ -13,7 +13,8 @@ import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class ThanhVienScreen extends StatefulWidget {
-  const ThanhVienScreen({super.key});
+  final int? ac;
+  const ThanhVienScreen({super.key, this.ac});
 
   @override
   State<ThanhVienScreen> createState() => _MyPhamScreenState();
@@ -62,6 +63,13 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
     super.initState();
     Upgrader.clearSavedSettings();
     tabController = TabController(length: 4, vsync: this);
+    if (widget.ac != null) {
+      setState(() {
+        currentIndex = widget.ac!;
+        tabController!.animateTo(currentIndex,
+            duration: const Duration(milliseconds: 300), curve: Curves.linear);
+      });
+    }
     tabController?.addListener(_getActiveTabIndex);
   }
 
@@ -69,6 +77,8 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
     setState(() {
       currentIndex = tabController!.index;
       buttonCarouselController.jumpToPage(tabController!.index);
+      tabController!.animateTo(tabController!.index,
+          duration: const Duration(milliseconds: 300), curve: Curves.linear);
     });
   }
 
@@ -77,6 +87,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
     // TODO: implement dispose
     super.dispose();
     scrollController.dispose();
+    tabController!.dispose();
   }
 
   @override
@@ -161,7 +172,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                       clipBehavior: Clip.none,
                                       children: [
                                         Image.asset(
-                                          "${rank[index]["card"]}",
+                                          "${rank[currentIndex]["card"]}",
                                           width:
                                               MediaQuery.of(context).size.width,
                                           height: 190,
@@ -262,6 +273,9 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                             setState(() {
                               currentIndex = tabIndex;
                               buttonCarouselController.jumpToPage(tabIndex);
+                              tabController!.animateTo(tabIndex,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.linear);
                             });
                           },
                           labelColor: Theme.of(context).colorScheme.primary,
@@ -307,9 +321,9 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                       Radius.circular(8)),
                                               color: Colors.grey[300]),
                                           child: index == 3
-                                              ? const Text(
-                                                  "Bạn đã đạt đến cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!",
-                                                  style: TextStyle(
+                                              ? Text(
+                                                  "Bạn cần hơn ${profile["Point"] != null ? "${501 - profile["Point"]}" : "500 điểm"} nữa để đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!",
+                                                  style: const TextStyle(
                                                       fontSize: 10,
                                                       fontWeight:
                                                           FontWeight.w600),
@@ -364,13 +378,35 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                             Colors.white,
                                                       ),
                                                     ),
-                                                    Text(
-                                                      "Cần thêm ${profile["Point"] != null ? e["point"] - profile["Point"] : e["point"]} điểm để nâng hạng ${rank[index + 1]["rank"]}",
-                                                      style: const TextStyle(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    )
+                                                    profile["Point"] != null
+                                                        ? e["point"] >
+                                                                profile["Point"]
+                                                            ? Text(
+                                                                "Cần thêm ${e["point"] - profile["Point"]} điểm để thăng hạng ${rank[index + 1]["rank"]}",
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        10,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                              )
+                                                            : Text(
+                                                                "Bạn đã đạt được hạng ${rank[index + 1]["rank"]}",
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        10,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                              )
+                                                        : Text(
+                                                            "Cần thêm ${e["point"]} điểm để nâng hạng ${rank[index + 1]["rank"]}",
+                                                            style: const TextStyle(
+                                                                fontSize: 10,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600),
+                                                          )
                                                   ],
                                                 ),
                                         ),

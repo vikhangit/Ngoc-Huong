@@ -26,10 +26,10 @@ class NewsModel {
     List result = [];
     try {
       Response response = await client.dio.get(
-        '${client.apiUrl}/Home/getAllCustomerNews',
+        '$goodAppUrl/api/$idApp/news?$token',
       );
       if (response.statusCode == 200) {
-        return result = response.data["Data"];
+        return result = response.data;
       } else {
         return result;
       }
@@ -55,5 +55,4 @@ class NewsModel {
     }
     return result;
   }
-
 }

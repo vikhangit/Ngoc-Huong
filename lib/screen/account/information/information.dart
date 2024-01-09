@@ -160,6 +160,7 @@ class _InfomationAccountState extends State<InfomationAccount> {
       "Address": address.isEmpty ? addressController.text : address,
       "Email": email.isEmpty ? emailController.text : email,
       "Phone": phoneController.text,
+      "Token": "${localStorageCustomerToken.getItem("customer_token")}"
     };
     if (!isValid) {
       return;

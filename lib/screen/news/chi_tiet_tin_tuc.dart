@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
+import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class ChiTietTinTuc extends StatefulWidget {
   final Map detail;
-  final String type;
-  const ChiTietTinTuc({super.key, required this.detail, required this.type});
+  const ChiTietTinTuc({super.key, required this.detail});
 
   @override
   State<ChiTietTinTuc> createState() => _ChiTietTinTucState();
@@ -56,11 +56,8 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                     color: Colors.black,
                   ),
                 )),
-            title: Text(
-                widget.type == "kiến thức làm đẹp"
-                    ? "Kiến thức làm đẹp"
-                    : "Chi tiết ${widget.type}",
-                style: const TextStyle(
+            title: const Text("Chi tiết tin tức",
+                style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
@@ -94,7 +91,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(14)),
                       child: Image.network(
-                        "${newsDetail["Image"]}",
+                        "$goodAppUrl/${newsDetail["picture"]}?$token",
                         width: MediaQuery.of(context).size.width - 40,
                         fit: BoxFit.cover,
                       ),
@@ -107,7 +104,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                     children: [
                       Expanded(
                         child: Text(
-                          "${newsDetail["Title"]}",
+                          "${newsDetail["title"]}",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               fontSize: 20,
@@ -122,41 +119,16 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                   ),
                   Text(
                     DateFormat("dd/MM/yyyy")
-                        .format(DateTime.parse(newsDetail["ModifiedDate"])),
+                        .format(DateTime.parse(newsDetail["date_updated"])),
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     style: const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.w300),
                   ),
-                  if (widget.type == "khuyến mãi")
-                    Container(
-                      margin: EdgeInsets.only(top: 10),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                          color: Color(0xFFFED766),
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: Html(
-                        data: newsDetail["ShortDescription"],
-                        style: {
-                          "*": Style(
-                              fontSize: FontSize(15),
-                              lineHeight: LineHeight(1),
-                              margin: Margins.all(0)),
-                          "*:not(strong)": Style(
-                            fontWeight: FontWeight.w300,
-                          ),
-                          "*:not(img)": Style(
-                              lineHeight: const LineHeight(1.5),
-                              margin:
-                                  Margins.only(left: 0, top: 10, bottom: 10))
-                        },
-                      ),
-                    ),
                   SizedBox(
                     child: Html(
-                      data: newsDetail["Content"],
+                      data: newsDetail["content"],
                       style: {
                         "*": Style(
                           fontSize: FontSize(15),

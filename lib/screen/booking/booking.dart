@@ -133,6 +133,8 @@ class _BookingServicesState extends State<BookingServices>
   void dispose() {
     _animationController.dispose();
     activeService = {};
+    activeDate = null;
+    activeTime = null;
     chooseService.clear();
     scrollController.dispose();
     super.dispose();

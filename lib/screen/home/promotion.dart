@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/models/newsModel.dart';
 import 'package:ngoc_huong/screen/news/chi_tiet_tin_tuc.dart';
 import 'package:ngoc_huong/screen/news/tin_tuc.dart';
@@ -59,7 +60,7 @@ class _PromotionState extends State<Promotion> {
           ),
           SizedBox(
             child: FutureBuilder(
-              future: newsModel.getCustomerNewsByGroup("Tin khuyến mãi"),
+              future: newsModel.getAllCustomerNews(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List list = snapshot.data!.toList();
@@ -85,18 +86,14 @@ class _PromotionState extends State<Promotion> {
                     return Wrap(
                       spacing: 15,
                       runSpacing: 15,
-                      children: list
-                          .sublist(0, list.length > 6 ? 6 : list.length)
-                          .map((item) {
+                      children: list.map((item) {
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ChiTietTinTuc(
-                                          detail: item,
-                                          type: "khuyến mãi",
-                                        )));
+                                    builder: (context) =>
+                                        ChiTietTinTuc(detail: item)));
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width / 2 - 17.5,
@@ -127,7 +124,7 @@ class _PromotionState extends State<Promotion> {
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
                                       child: Image.network(
-                                        "${item["Image"]}",
+                                        "$goodAppUrl/${item["picture"]}?$token",
                                         // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                         fit: BoxFit.cover,
                                         width:
@@ -139,7 +136,7 @@ class _PromotionState extends State<Promotion> {
                                       height: 15,
                                     ),
                                     Text(
-                                      "${item["Title"]}",
+                                      "${item["title"]}",
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(

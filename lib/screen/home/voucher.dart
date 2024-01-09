@@ -46,7 +46,8 @@ class _VoucherState extends State<Voucher> {
                 List newList = [];
                 for (var i = 0; i < list.length; i++) {
                   if (DateTime.parse(list[i]["tu_ngay"]).isBefore(now) &&
-                      DateTime.parse(list[i]["den_ngay"]).isAfter(now)) {
+                      DateTime.parse(list[i]["den_ngay"]).isAfter(now) &&
+                      list[i]["trang_thai"] == "1") {
                     newList.add(list[i]);
                   }
                 }

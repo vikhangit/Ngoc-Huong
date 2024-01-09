@@ -29,7 +29,7 @@ class _FlashSaleState extends State<FlashSale> {
       width: MediaQuery.of(context).size.width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          "FLASH SALE",
+          "ƯU ĐÃI GIÁ HỜI",
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w500,
@@ -45,7 +45,8 @@ class _FlashSaleState extends State<FlashSale> {
                 List newList = [];
                 for (var i = 0; i < list.length; i++) {
                   if (DateTime.parse(list[i]["tu_ngay"]).isBefore(now) &&
-                      DateTime.parse(list[i]["den_ngay"]).isAfter(now)) {
+                      DateTime.parse(list[i]["den_ngay"]).isAfter(now) &&
+                      list[i]["trang_thai"] == "1") {
                     newList.add(list[i]);
                   }
                 }

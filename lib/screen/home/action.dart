@@ -148,91 +148,129 @@ class _ActionHomeState extends State<ActionHome> {
 
   Widget checkRank(int point) {
     if (point == 0 && point < 100) {
-      return Container(
-        margin: const EdgeInsets.only(top: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(99999)),
-          gradient: LinearGradient(
-              begin: Alignment(0.7658354043960571, 0.2429373413324356),
-              end: Alignment(-0.24266093969345093, 0.25175198912620544),
-              colors: [
-                Color.fromRGBO(171, 171, 171, 1),
-                Color.fromRGBO(223, 223, 223, 1),
-                Color.fromRGBO(196, 196, 196, 1),
-                Color.fromRGBO(184, 184, 184, 1)
-              ]),
-        ),
-        child: const Text(
-          "Thành viên bạc >",
-          style: TextStyle(
-              fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
-        ),
-      );
-    } else if (point >= 100 && point < 200) {
-      return Container(
-        margin: const EdgeInsets.only(top: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(99999)),
-          gradient: LinearGradient(
-              begin: Alignment(0.7658354043960571, 0.2429373413324356),
-              end: Alignment(-0.24266093969345093, 0.25175198912620544),
-              colors: [
-                Color.fromRGBO(222, 193, 161, 1),
-                Color.fromRGBO(251, 236, 215, 1),
-                Color.fromRGBO(245, 223, 199, 1),
-                Color.fromRGBO(213, 181, 156, 1)
-              ]),
-        ),
-        child: const Text(
-          "Thành viên vàng >",
-          style: TextStyle(
-              fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 0,
+                      )));
+        },
+        child: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(99999)),
+            gradient: LinearGradient(
+                begin: Alignment(0.7658354043960571, 0.2429373413324356),
+                end: Alignment(-0.24266093969345093, 0.25175198912620544),
+                colors: [
+                  Color.fromRGBO(171, 171, 171, 1),
+                  Color.fromRGBO(223, 223, 223, 1),
+                  Color.fromRGBO(196, 196, 196, 1),
+                  Color.fromRGBO(184, 184, 184, 1)
+                ]),
+          ),
+          child: const Text(
+            "Thành viên bạc >",
+            style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+          ),
         ),
       );
-    } else if (point >= 200 && point < 500) {
-      return Container(
-        margin: const EdgeInsets.only(top: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(99999)),
-          gradient: LinearGradient(
-              begin: Alignment(0.7658354043960571, 0.2429373413324356),
-              end: Alignment(-0.24266093969345093, 0.25175198912620544),
-              colors: [
-                Color.fromRGBO(114, 137, 221, 1),
-                Color.fromRGBO(208, 218, 255, 1),
-                Color.fromRGBO(171, 187, 247, 1),
-                Color.fromRGBO(126, 149, 232, 1)
-              ]),
+    } else if (point >= 100 && point < 250) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 1,
+                      )));
+        },
+        child: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(99999)),
+            gradient: LinearGradient(
+                begin: Alignment(0.7658354043960571, 0.2429373413324356),
+                end: Alignment(-0.24266093969345093, 0.25175198912620544),
+                colors: [
+                  Color.fromRGBO(222, 193, 161, 1),
+                  Color.fromRGBO(251, 236, 215, 1),
+                  Color.fromRGBO(245, 223, 199, 1),
+                  Color.fromRGBO(213, 181, 156, 1)
+                ]),
+          ),
+          child: const Text(
+            "Thành viên vàng >",
+            style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+          ),
         ),
-        child: const Text(
-          "Thành viên bạch kim >",
-          style: TextStyle(
-              fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+      );
+    } else if (point >= 250 && point < 500) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 2,
+                      )));
+        },
+        child: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(99999)),
+            gradient: LinearGradient(
+                begin: Alignment(0.7658354043960571, 0.2429373413324356),
+                end: Alignment(-0.24266093969345093, 0.25175198912620544),
+                colors: [
+                  Color.fromRGBO(114, 137, 221, 1),
+                  Color.fromRGBO(208, 218, 255, 1),
+                  Color.fromRGBO(171, 187, 247, 1),
+                  Color.fromRGBO(126, 149, 232, 1)
+                ]),
+          ),
+          child: const Text(
+            "Thành viên bạch kim >",
+            style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+          ),
         ),
       );
     } else if (point >= 500) {
-      return Container(
-        margin: const EdgeInsets.only(top: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(99999)),
-          gradient: LinearGradient(
-              begin: Alignment(0.7658354043960571, 0.2429373413324356),
-              end: Alignment(-0.24266093969345093, 0.25175198912620544),
-              colors: [
-                Color.fromRGBO(107, 218, 207, 1),
-                Color.fromRGBO(208, 252, 255, 1),
-                Color.fromRGBO(171, 234, 247, 1),
-                Color.fromRGBO(126, 229, 232, 1)
-              ]),
-        ),
-        child: const Text(
-          "Thành viên kim cương >",
-          style: TextStyle(
-              fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(ac: 3)));
+        },
+        child: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(99999)),
+            gradient: LinearGradient(
+                begin: Alignment(0.7658354043960571, 0.2429373413324356),
+                end: Alignment(-0.24266093969345093, 0.25175198912620544),
+                colors: [
+                  Color.fromRGBO(107, 218, 207, 1),
+                  Color.fromRGBO(208, 252, 255, 1),
+                  Color.fromRGBO(171, 234, 247, 1),
+                  Color.fromRGBO(126, 229, 232, 1)
+                ]),
+          ),
+          child: const Text(
+            "Thành viên kim cương >",
+            style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+          ),
         ),
       );
     }
@@ -301,6 +339,7 @@ class _ActionHomeState extends State<ActionHome> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               Map profile = snapshot.data!;
+                              print(profile["Point"]);
                               return Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -355,14 +394,7 @@ class _ActionHomeState extends State<ActionHome> {
                                                 fontWeight: FontWeight.w600,
                                                 color: mainColor),
                                           ),
-                                          GestureDetector(
-                                              onTap: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const ThanhVienScreen())),
-                                              child: checkRank(
-                                                  profile["Point"] ?? 0))
+                                          checkRank(profile["Point"] ?? 0)
                                         ],
                                       )
                                     ],

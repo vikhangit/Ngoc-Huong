@@ -96,7 +96,7 @@ class ServicesModel {
   Future getServiceByName(String name) async {
     try {
       Response response = await client.dio.get(
-        '${client.apiUrl}/Service/getServiceByGroup?groupServiceCode=',
+        '${client.apiUrl}/Home/getServiceByBranch?branchCode=001',
       );
       if (response.statusCode == 200) {
         return response.data["Data"].toList().firstWhere(
@@ -115,7 +115,7 @@ class ServicesModel {
   Future getServiceByCode(String code) async {
     try {
       Response response = await client.dio.get(
-        '${client.apiUrl}/Service/getServiceByGroup?groupServiceCode=',
+        '${client.apiUrl}/Home/getServiceByBranch?branchCode=001',
       );
       if (response.statusCode == 200) {
         return response.data["Data"].toList().firstWhere(

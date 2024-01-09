@@ -3,6 +3,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
+import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_chi_tiet_booking.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
@@ -17,6 +18,7 @@ class BookingSuccess extends StatefulWidget {
 
 double circleSize = 140;
 double iconSize = 108;
+List bookingList = [];
 
 class _BookingSuccessState extends State<BookingSuccess>
     with TickerProviderStateMixin {
@@ -43,6 +45,9 @@ class _BookingSuccessState extends State<BookingSuccess>
       }
     });
     scaleController.forward();
+    bookingModel.getBookingList().then((value) => setState(() {
+          bookingList = value;
+        }));
   }
 
   @override
@@ -50,6 +55,10 @@ class _BookingSuccessState extends State<BookingSuccess>
     scaleController.dispose();
     checkController.dispose();
     scrollController.dispose();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => const BookingServices()));
     super.dispose();
   }
 

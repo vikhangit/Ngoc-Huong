@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/models/banner.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -22,11 +23,7 @@ class _BannerSliderState extends State<BannerSlider> {
             future: bannerModel.getBannerList(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List list = [
-                  snapshot.data![0]["slide_hinh_anh_1"],
-                  snapshot.data![0]["slide_hinh_anh_2"],
-                  snapshot.data![0]["slide_hinh_anh_3"],
-                ];
+                List list = snapshot.data!;
                 return CarouselSlider(
                   options: CarouselOptions(
                       height: 250,
@@ -39,17 +36,13 @@ class _BannerSliderState extends State<BannerSlider> {
                         // goToPage(index, reason);
                       }),
                   items: list.map((e) {
-                    if (e == null) {
-                      return Container();
-                    } else {
-                      return ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            bottom: Radius.circular(15)),
-                        child: Image.network(
-                            "https://api.goodapp.vn/${e}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
-                            fit: BoxFit.cover),
-                      );
-                    }
+                    return ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(15)),
+                      child: Image.network(
+                          "$goodAppUrl/${e["hinh_anh"]}?$token",
+                          fit: BoxFit.cover),
+                    );
                   }).toList(),
                 );
               } else {

@@ -7,48 +7,28 @@ import 'package:ngoc_huong/screen/account/buy_history/beauty_profile.dart';
 import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
 import 'package:ngoc_huong/screen/account/buy_history/order_history.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class BuyHistory extends StatefulWidget {
-  final List listTab;
-  final int? ac;
-  const BuyHistory({super.key, this.ac, required this.listTab});
+  const BuyHistory({super.key});
 
   @override
   State<BuyHistory> createState() => _BuyHistoryState();
 }
 
 int? selectedIndex;
-int selectedParent = 0;
-int length = 0;
-String activeTab = "";
 List status = [];
-List typeHistory = [
-  {"id": 1, "title": "Hồ sơ làm đẹp"},
-  {"id": 2, "title": "Lịch sử hóa đơn"},
-  {"id": 3, "title": "Lịch sử tích lũy điểm"},
-  {"id": 4, "title": "Lịch sử voucher"},
-  {"id": 5, "title": "Lịch sử tích bảo hành"},
-];
 
-class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
-  TabController? tabController;
-  TabController? tabController1;
+class _BuyHistoryState extends State<BuyHistory> {
   final OrderModel orderModel = OrderModel();
   final ScrollController scrollController = ScrollController();
-  void _getActiveParentTabIndex() {
-    setState(() {
-      selectedParent = tabController1!.index;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
     Upgrader.clearSavedSettings();
-    tabController1 = TabController(length: typeHistory.length, vsync: this);
-    tabController1?.addListener(_getActiveParentTabIndex);
   }
 
   @override
@@ -68,6 +48,14 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    num totalBooking(List list) {
+      num total = 0;
+      for (var i = 0; i < list.length; i++) {
+        total += list[i]["Amount"];
+      }
+      return total;
+    }
+
     return SafeArea(
       bottom: false,
       child: Scaffold(
@@ -110,82 +98,208 @@ class _BuyHistoryState extends State<BuyHistory> with TickerProviderStateMixin {
                 showIgnore: false,
                 showReleaseNotes: false,
               ),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  SizedBox(
-                    child: TabBar(
-                      tabAlignment: TabAlignment.start,
-                      controller: tabController1,
-                      isScrollable: true,
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.black,
-                      indicatorColor: Colors.transparent,
-                      labelStyle: TextStyle(
-                          fontSize: 14,
-                          fontFamily: "Quicksand",
-                          color: Theme.of(context).colorScheme.primary),
-                      onTap: (tabIndex) {
-                        setState(() {
-                          selectedParent = tabIndex;
-                        });
-                      },
-                      tabs: typeHistory.map((e) {
-                        int index = typeHistory.indexOf(e);
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 10, top: 10),
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: selectedParent == index
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.8)
-                                : Colors.white,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset: const Offset(
-                                    0, 3), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          // width:
-                          //     MediaQuery.of(context).size.width / 2 - 40,
-                          child: Tab(
-                            text: "${e["title"]}",
+              child: FutureBuilder(
+                  future: orderModel.getOrderListByStatus("complete"),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        List list = snapshot.data!;
+                        return RefreshIndicator(
+                          onRefresh: refreshData,
+                          child: ListView.builder(
+                            // controller: scrollController,
+                            itemCount: list.length,
+                            itemBuilder: (context, index) {
+                              return list[index]["DetailList"].isNotEmpty
+                                  ? Container(
+                                      margin: EdgeInsets.only(
+                                          left: 15,
+                                          right: 15,
+                                          top: index != 0 ? 20 : 30,
+                                          bottom: index == list.length - 1
+                                              ? 20
+                                              : 0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 1,
+                                            blurRadius: 8,
+                                            offset: const Offset(4,
+                                                4), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      // height: 135,
+                                      child: TextButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ModalChiTietBuy(
+                                                          product: list[index],
+                                                          type: "",
+                                                          save: () {
+                                                            setState(() {});
+                                                          },
+                                                        )));
+                                          },
+                                          style: ButtonStyle(
+                                            padding: MaterialStateProperty.all(
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 30,
+                                                    horizontal: 15)),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.white),
+                                            shape: MaterialStateProperty.all(
+                                                const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                20)))),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Hóa đơn ${list[index]["Code"]}",
+                                                      style: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w700),
+                                                    ),
+                                                    Text(
+                                                      "Ngày mua ${DateFormat("dd/MM/yyyy").format(DateTime.parse(list[index]["CreatedDate"]))}",
+                                                      style: const TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                  child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Text(
+                                                        NumberFormat.currency(
+                                                                locale: "vi_VI",
+                                                                symbol: "")
+                                                            .format(
+                                                          list[index]
+                                                              ["TotalAmount"],
+                                                        ),
+                                                        style: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                      ),
+                                                      const Text(
+                                                        "đ",
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .underline),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      const Text(
+                                                        "Điểm tích lũy: ",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                      Text(
+                                                        "${list[index]["TotalAmount"] / 100000} điểm",
+                                                        style: TextStyle(
+                                                            color: mainColor,
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ))
+                                            ],
+                                          )))
+                                  : Container();
+                            },
                           ),
                         );
-                      }).toList(),
-                    ),
-                  ),
-                  Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      height: MediaQuery.of(context).size.height - 320,
-                      child: TabBarView(controller: tabController1, children: [
-                        const BeautyProfile(),
-                        OrderHistory(
-                          listTab: widget.listTab,
-                          ac: widget.ac,
+                      } else {
+                        return Column(
+                          children: [
+                            Container(
+                              margin:
+                                  const EdgeInsets.only(top: 40, bottom: 15),
+                              child:
+                                  Image.asset("assets/images/account/img.webp"),
+                            ),
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: const Text(
+                                "Chưa có đơn hàng được mua",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w300),
+                              ),
+                            )
+                          ],
+                        );
+                      }
+                    } else {
+                      return const Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: LoadingIndicator(
+                                colors: kDefaultRainbowColors,
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                strokeWidth: 1,
+                                // pathBackgroundColor: Colors.black45,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Đang lấy dữ liệu")
+                          ],
                         ),
-                        OrderHistory(
-                          listTab: widget.listTab,
-                          ac: widget.ac,
-                        ),
-                        OrderHistory(
-                          listTab: widget.listTab,
-                          ac: widget.ac,
-                        ),
-                        const BeautyProfile()
-                      ]))
-                ],
-              ))),
+                      );
+                    }
+                  }))),
     );
   }
 }

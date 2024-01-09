@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/newsModel.dart';
 import 'package:ngoc_huong/screen/news/chi_tiet_tin_tuc.dart';
@@ -87,8 +88,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                             top: 10, left: 15, right: 15, bottom: 15),
                         child: SizedBox(
                           child: FutureBuilder(
-                            future: newsModel
-                                .getCustomerNewsByGroup("Tin khuyến mãi"),
+                            future: newsModel.getAllCustomerNews(),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 List list = snapshot.data!.toList();
@@ -126,9 +126,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       ChiTietTinTuc(
-                                                        detail: item,
-                                                        type: "khuyến mãi",
-                                                      )));
+                                                          detail: item)));
                                         },
                                         child: Container(
                                           width: MediaQuery.of(context)
@@ -171,7 +169,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                                         BorderRadius.circular(
                                                             15),
                                                     child: Image.network(
-                                                      "${item["Image"]}",
+                                                      "$goodAppUrl/${item["picture"]}?$token",
                                                       // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                                       fit: BoxFit.cover,
                                                       width:
@@ -185,7 +183,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                                     height: 15,
                                                   ),
                                                   Text(
-                                                    "${item["Title"]}",
+                                                    "${item["title"]}",
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,

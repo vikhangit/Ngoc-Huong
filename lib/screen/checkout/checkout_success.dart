@@ -4,6 +4,7 @@ import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
 import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
+import 'package:ngoc_huong/screen/account/my_order/my_order.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
@@ -216,10 +217,9 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      BuyHistory(
-                                                          listTab:
-                                                              snapshot.data!)));
+                                                  builder: (context) => MyOrder(
+                                                      listTab:
+                                                          snapshot.data!)));
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(

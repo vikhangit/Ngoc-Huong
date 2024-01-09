@@ -725,22 +725,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.1"
-  qr_code_scanner:
-    dependency: "direct main"
-    description:
-      name: qr_code_scanner
-      sha256: f23b68d893505a424f0bd2e324ebea71ed88465d572d26bb8d2e78a4749591fd
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
-  qrcode_barcode_scanner:
-    dependency: "direct main"
-    description:
-      name: qrcode_barcode_scanner
-      sha256: "839c68814bc6f8cd085cfd53a1df6c1a89a86df57580a31dce4c70ce857027e0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
   rxdart:
     dependency: transitive
     description:

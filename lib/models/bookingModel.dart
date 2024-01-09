@@ -8,12 +8,34 @@ class BookingModel {
   Future<List> getBookingList() async {
     List result = [];
     try {
-      Response response =
-          await client.dio.get('${client.apiUrl}/Home/getBookServiceList',
+      Response response = await client.dio
+          .get('${client.apiUrl}/Home/getAllBookServiceByCustomer',
               options: Options(headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Authorization':
                     '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"];
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
+  Future<List> getUsingBooking() async {
+    List result = [];
+    try {
+      Response response = await client.dio
+          .get('${client.apiUrl}/Question/getAllUsingServiceCustomer',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    // 'ajl6c2xnSTNkNCtYbnJ1NmdjSjFlN2Z2azhGSGp0ZkRyUjFsOHpmR2F1eXlyY0VaOUFSZGdBPT0='
+                '${localStorageCustomerToken.getItem("customer_token")}',
               }));
       if (response.statusCode == 200) {
         return result = response.data["Data"];
@@ -76,15 +98,25 @@ class BookingModel {
   Future<List> getBookingListByStatusCode(String statusCode) async {
     List result = [];
     try {
-      Response response = await client.dio.get(
-          '${client.apiUrl}/Home/getBookServiceByStatus?Status=$statusCode',
-          options: Options(headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization':
+      Response response = await client.dio
+          .get('${client.apiUrl}/Home/getAllBookServiceByCustomer',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    // 'ajl6c2xnSTNkNCtYbnJ1NmdjSjFlN2Z2azhGSGp0ZkRyUjFsOHpmR2F1eXlyY0VaOUFSZGdBPT0='
                 '${localStorageCustomerToken.getItem("customer_token")}',
-          }));
+              }));
       if (response.statusCode == 200) {
-        return result = response.data["Data"];
+        // for (int i = 0; i < response.data["Data"].length; i++) {
+        //   if (response.data["Data"][i]["Status"] == statusCode) {
+        //     result.add(response.data["Data"][i]);
+        //   }
+        // }
+        return result = response.data["Data"]
+            .where((e) =>
+                e["Status"].toString() == statusCode &&
+                e["serviceList"][0]["Type"] == "service")
+            .toList();
       } else {
         return result;
       }
@@ -104,6 +136,48 @@ class BookingModel {
                     '${localStorageCustomerToken.getItem("customer_token")}',
               }),
               data: data);
+      if (response.statusCode == 200) {
+        print(response);
+        return response.data;
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future putBookingService(Map data) async {
+    try {
+      Response response =
+          await client.dio.put('${client.apiUrl}/Home/putBookService',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }),
+              data: data);
+      if (response.statusCode == 200) {
+        print(response);
+        return response.data;
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future cancelBookingService(Map data) async {
+    try {
+      Response response =
+          await client.dio.put('${client.apiUrl}/Home/putBookService',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }),
+              data: {...data, "Status": "cancel"});
       if (response.statusCode == 200) {
         print(response);
         return response.data;

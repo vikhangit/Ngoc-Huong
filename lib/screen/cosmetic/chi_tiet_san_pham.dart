@@ -140,6 +140,8 @@ class _ProductDetailState extends State<ProductDetail>
       }, () => Navigator.pop(context));
     }
 
+    print(widget.details);
+
     return SafeArea(
         bottom: false,
         child: Scaffold(
@@ -654,6 +656,13 @@ class _ImageDetailState extends State<ImageDetail> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           fit: BoxFit.fitHeight,
+          errorBuilder: (context, exception, stackTrace) {
+            return Image.network(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                fit: BoxFit.fitHeight,
+                'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+          },
         ),
       ),
     );
@@ -715,16 +724,37 @@ class _ImageDetailState extends State<ImageDetail> {
                 )
               ],
             )
-          : Container(
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                  // color: checkColor,
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Image.network(
-                "${result[0]}",
-                fit: BoxFit.cover,
-              ),
-            ),
+          : imgList.length == 1
+              ? Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Image.network(
+                    "${result[0]}",
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, exception, stackTrace) {
+                      return Image.network(
+                          fit: BoxFit.cover,
+                          'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                    },
+                  ),
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Image.network(
+                    "${widget.item["Image_Name"]}",
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, exception, stackTrace) {
+                      return Image.network(
+                          fit: BoxFit.cover,
+                          'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                    },
+                  ),
+                ),
     );
   }
 }

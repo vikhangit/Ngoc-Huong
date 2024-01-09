@@ -72,9 +72,7 @@ dependencies:
   video_player: ^2.8.1
   image_loader: ^1.0.1
   mobile_scanner: ^3.5.5
-  qr_code_scanner: ^1.0.1
   flutter_barcode_scanner: ^2.0.0
-  qrcode_barcode_scanner: ^2.0.1
   device_info_plus: ^9.1.1
   flutter_timezone: ^1.0.8
 
@@ -164,6 +162,8 @@ flutter:
     - assets/images/icon/icon-vi-tri.jpg
     - assets/images/icon/gift.png
     - assets/intro/intro.MP4
+    - assets/intro/intro1.MP4
+    - assets/intro/start.mp4
     - assets/images/rank/BAC.png
     - assets/images/rank/VANG.png
     - assets/images/rank/BACHKIM.png
