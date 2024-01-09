@@ -65,7 +65,27 @@ class _ActionHomeState extends State<ActionHome> {
   }
 
   void goToService(BuildContext context, int index) {
-    if (storageCustomerToken.getItem("customer_token") != null) {
+    if(index == 2){
+      servicesModel
+                  .getGroupServiceByBranch()
+                  .then((value) => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllServiceScreen(
+                                listTab: value,
+                              ))));
+              
+    }else if(index == 3){
+      productModel.getGroupProduct().then((value) => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Cosmetic(
+                              listTab: value,
+                            )))
+                // print(value)
+                );
+          
+    }else if (storageCustomerToken.getItem("customer_token") != null) {
       switch (index) {
         case 0:
           {
@@ -92,32 +112,7 @@ class _ActionHomeState extends State<ActionHome> {
                 });
             break;
           }
-        case 2:
-          {
-            {
-              servicesModel
-                  .getGroupServiceByBranch()
-                  .then((value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AllServiceScreen(
-                                listTab: value,
-                              ))));
-              break;
-            }
-          }
-        case 3:
-          {
-            productModel.getGroupProduct().then((value) => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Cosmetic(
-                              listTab: value,
-                            )))
-                // print(value)
-                );
-            break;
-          }
+          
         case 4:
           {
             Navigator.push(context,

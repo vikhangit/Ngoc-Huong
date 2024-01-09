@@ -145,13 +145,11 @@ class _VoucherDetailState extends State<VoucherDetail> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 10, right: 10),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height - 260,
+                Expanded(
+                    
                     child: ListView(
                       controller: scrollController,
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       children: [
                         Container(
                           decoration: const BoxDecoration(
@@ -229,7 +227,7 @@ class _VoucherDetailState extends State<VoucherDetail> {
                       ],
                     ),
                   ),
-                ),
+                
                 Column(
                   children: [
                     Container(
