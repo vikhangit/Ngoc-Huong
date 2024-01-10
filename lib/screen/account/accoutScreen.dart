@@ -56,10 +56,10 @@ List menu = [
     "icon": "assets/images/cart-black.png",
     "title": "Lịch sử mua hàng",
   },
-  {
-    "icon": "assets/images/account/giao-dich.png",
-    "title": "Đơn hàng của tôi",
-  },
+  // {
+  //   "icon": "assets/images/account/giao-dich.png",
+  //   "title": "Đơn hàng của tôi",
+  // },
   {
     "icon": "assets/images/account/dia-chi.png",
     "title": "Quản lý địa chỉ",
@@ -192,33 +192,33 @@ class _AccountScreenState extends State<AccountScreen> {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const BuyHistory()));
           break;
+        // case 4:
+        //   orderModel.getStatusList().then((value) => Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => MyOrder(
+        //                 listTab: value,
+        //               ))));
+        //   break;
         case 4:
-          orderModel.getStatusList().then((value) => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MyOrder(
-                        listTab: value,
-                      ))));
-          break;
-        case 5:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
-        case 6:
+        case 5:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
           break;
-        case 7:
+        case 6:
           {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const AboutUs()));
             break;
           }
-        case 8:
+        case 7:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
           break;
-        case 9:
+        case 8:
           customModal.showAlertDialog(context, "error", "Xóa tài khoản",
               "Bạn có chắc chắn muốn xóa tài khoản không?", () {
             EasyLoading.show(status: "Đang xử lý...");
@@ -231,7 +231,7 @@ class _AccountScreenState extends State<AccountScreen> {
             });
           }, () => Navigator.pop(context));
           break;
-        case 10:
+        case 9:
           handleLogout();
           break;
         default:
