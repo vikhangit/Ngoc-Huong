@@ -190,14 +190,9 @@ class _ProductDetailState extends State<ProductDetail>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
-                        margin: const EdgeInsets.only(bottom: 5),
-                        color: Colors.white,
-                        height: MediaQuery.of(context).size.height -
-                            (widget.detailPage != null ? (280) : 135),
+                      Expanded(
                         child: ListView(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
                           children: [
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,7 +317,7 @@ class _ProductDetailState extends State<ProductDetail>
                       if (widget.detailPage != null)
                         Container(
                           margin: const EdgeInsets.only(
-                              bottom: 30, left: 15, right: 15),
+                              bottom: 30, left: 15, right: 15, top: 30),
                           color: Colors.white,
                           child: Column(
                             children: [

@@ -76,63 +76,63 @@ class _CheckOutScreenState extends State<CheckOutCart> {
     }
 
     void setCheckOutCart() {
-      customModal.showAlertDialog(context, "error", "Hê thống đang bảo trì",
-          "Quý khách hànng xin thử lại sau", () {
-        Navigator.pop(context);
-      }, () {
-        Navigator.pop(context);
-      });
-      // if (selectAddress.isNotEmpty) {
-      //   List details = [];
-      //   List idList = [];
-      //   for (var i = 0; i < listProductPayment.length; i++) {
-      //     details.add({
-      //       "Amount": listProductPayment[i]["Amount"],
-      //       "Price": listProductPayment[i]["Amount"] /
-      //           listProductPayment[i]["Quantity"],
-      //       "Quantity": listProductPayment[i]["Quantity"],
-      //       "ProductId": listProductPayment[i]["ProductId"],
-      //     });
-      //     idList.add(listProductPayment[i]["Id"]);
-      //   }
-      //   Map data = {
-      //     "Address": selectAddress,
-      //     "TotalAmount": widget.total,
-      //     "BranchName": storageBranch.getItem("branch") == null
-      //         ? ""
-      //         : jsonDecode(storageBranch.getItem("branch"))["Name"],
-      //     "DetailList": [...details]
-      //   };
-      //   customModal.showAlertDialog(
-      //       context, "error", "Đặt Hàng", "Bạn có chắc chắn đăt hàng không?",
-      //       () {
-      //     Navigator.pop(context);
-      //     EasyLoading.show(status: "Vui lòng chờ...");
-      //     Future.delayed(const Duration(seconds: 2), () {
-      //       for (var i = 0; i < listProductPayment.length; i++) {
-      //         cartModel.updateProductInCart({
-      //           // "Id": 1,
-      //           "DetailList": [
-      //             {...listProductPayment[i], "IsDeleted": true}
-      //           ]
-      //         }).then((value) => setState(() {}));
-      //       }
-      //       orderModel.setOrder(data).then((value) {
-      //         EasyLoading.dismiss();
-      //         Navigator.push(context,
-      //             MaterialPageRoute(builder: (context) => CheckoutSuccess()));
-      //       });
-      //     });
-      //   }, () => Navigator.pop(context));
-      // } else {
-      //   customModal.showAlertDialog(
-      //       context, "error", "Đặt Hàng", "Bạn chưa chọn địa chỉ giao hàng",
-      //       () {
-      //     Navigator.pop(context);
-      //   }, () {
-      //     Navigator.pop(context);
-      //   });
-      // }
+      // customModal.showAlertDialog(context, "error", "Hê thống đang bảo trì",
+      //     "Quý khách hànng xin thử lại sau", () {
+      //   Navigator.pop(context);
+      // }, () {
+      //   Navigator.pop(context);
+      // });
+      if (selectAddress.isNotEmpty) {
+        List details = [];
+        List idList = [];
+        for (var i = 0; i < listProductPayment.length; i++) {
+          details.add({
+            "Amount": listProductPayment[i]["Amount"],
+            "Price": listProductPayment[i]["Amount"] /
+                listProductPayment[i]["Quantity"],
+            "Quantity": listProductPayment[i]["Quantity"],
+            "ProductId": listProductPayment[i]["ProductId"],
+          });
+          idList.add(listProductPayment[i]["Id"]);
+        }
+        Map data = {
+          "Address": selectAddress,
+          "TotalAmount": widget.total,
+          "BranchName": storageBranch.getItem("branch") == null
+              ? ""
+              : jsonDecode(storageBranch.getItem("branch"))["Name"],
+          "DetailList": [...details]
+        };
+        customModal.showAlertDialog(
+            context, "error", "Đặt Hàng", "Bạn có chắc chắn đăt hàng không?",
+            () {
+          Navigator.pop(context);
+          EasyLoading.show(status: "Vui lòng chờ...");
+          Future.delayed(const Duration(seconds: 2), () {
+            for (var i = 0; i < listProductPayment.length; i++) {
+              cartModel.updateProductInCart({
+                // "Id": 1,
+                "DetailList": [
+                  {...listProductPayment[i], "IsDeleted": true}
+                ]
+              }).then((value) => setState(() {}));
+            }
+            orderModel.setOrder(data).then((value) {
+              EasyLoading.dismiss();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CheckoutSuccess()));
+            });
+          });
+        }, () => Navigator.pop(context));
+      } else {
+        customModal.showAlertDialog(
+            context, "error", "Đặt Hàng", "Bạn chưa chọn địa chỉ giao hàng",
+            () {
+          Navigator.pop(context);
+        }, () {
+          Navigator.pop(context);
+        });
+      }
     }
 
     return SafeArea(

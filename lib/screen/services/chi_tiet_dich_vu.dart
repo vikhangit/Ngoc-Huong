@@ -114,199 +114,191 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      // margin: const EdgeInsets.only(bottom: 10),
-                      color: Colors.white,
-                      height: MediaQuery.of(context).size.height - 274,
-                      child: ListView(
-                        children: [
-                          Container(
+                    Expanded(
+                        child: ListView(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 15),
+                          child: detail["ImageList"].toList().length > 0
+                              ? ImageDetail(
+                                  item: detail,
+                                )
+                              : Container(
+                                  alignment: Alignment.center,
+                                  decoration: const BoxDecoration(
+                                      // color: checkColor,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: Image.network(
+                                    "${detail["Image_Name"]}",
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, exception, stackTrace) {
+                                      return Image.network(
+                                          fit: BoxFit.cover,
+                                          'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                                    },
+                                  ),
+                                ),
+                        ),
+                        Container(
                             margin: const EdgeInsets.symmetric(horizontal: 15),
-                            child: detail["ImageList"].toList().length > 0
-                                ? ImageDetail(
-                                    item: detail,
-                                  )
-                                : Container(
-                                    alignment: Alignment.center,
-                                    decoration: const BoxDecoration(
-                                        // color: checkColor,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    child: Image.network(
-                                      "${detail["Image_Name"]}",
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, exception, stackTrace) {
-                                        return Image.network(
-                                            fit: BoxFit.cover,
-                                            'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
-                                      },
-                                    ),
-                                  ),
-                          ),
-                          Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    detail["Name"],
-                                    style: const TextStyle(fontSize: 17),
-                                  ),
-                                  // const SizedBox(
-                                  //   height: 10,
-                                  // ),
-                                  // Row(
-                                  //   children: [
-                                  //     Text(
-                                  //       NumberFormat.currency(
-                                  //           locale: "vi_VI", symbol: "")
-                                  //           .format(
-                                  //         detail["PriceOutbound"],
-                                  //       ),
-                                  //       style: TextStyle(
-                                  //           fontSize: 15,
-                                  //           color: Theme.of(context)
-                                  //               .colorScheme
-                                  //               .primary),
-                                  //     ),
-                                  //     Text(
-                                  //       "đ",
-                                  //       style: TextStyle(
-                                  //         color:
-                                  //         Theme.of(context).colorScheme.primary,
-                                  //         fontSize: 15,
-                                  //         decoration: TextDecoration.underline,
-                                  //       ),
-                                  //     )
-                                  //   ],
-                                  // ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  const Text(
-                                    "Thông tin dịch vụ",
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                ],
-                              )),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                    child: Container(
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          bottom: activeTab == 1
-                                              ? BorderSide(
-                                                  width: 2,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary)
-                                              : BorderSide.none)),
-                                  child: TextButton(
-                                    style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.all(0))),
-                                    onPressed: () => goToTab(1),
-                                    child: Text(
-                                      "Chi tiết dịch vụ",
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  detail["Name"],
+                                  style: const TextStyle(fontSize: 17),
+                                ),
+                                // const SizedBox(
+                                //   height: 10,
+                                // ),
+                                // Row(
+                                //   children: [
+                                //     Text(
+                                //       NumberFormat.currency(
+                                //           locale: "vi_VI", symbol: "")
+                                //           .format(
+                                //         detail["PriceOutbound"],
+                                //       ),
+                                //       style: TextStyle(
+                                //           fontSize: 15,
+                                //           color: Theme.of(context)
+                                //               .colorScheme
+                                //               .primary),
+                                //     ),
+                                //     Text(
+                                //       "đ",
+                                //       style: TextStyle(
+                                //         color:
+                                //         Theme.of(context).colorScheme.primary,
+                                //         fontSize: 15,
+                                //         decoration: TextDecoration.underline,
+                                //       ),
+                                //     )
+                                //   ],
+                                // ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                const Text(
+                                  "Thông tin dịch vụ",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                              ],
+                            )),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Container(
+                                height: 60,
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: activeTab == 1
+                                            ? BorderSide(
+                                                width: 2,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary)
+                                            : BorderSide.none)),
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(0))),
+                                  onPressed: () => goToTab(1),
+                                  child: Text(
+                                    "Chi tiết dịch vụ",
+                                    style: TextStyle(
+                                        color: activeTab == 1
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                            : Colors.black),
+                                  ),
+                                ),
+                              )),
+                              Expanded(
+                                  child: Container(
+                                height: 60,
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: activeTab == 2
+                                            ? BorderSide(
+                                                width: 2,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary)
+                                            : BorderSide.none)),
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(0))),
+                                  onPressed: () => goToTab(2),
+                                  child: Text("Đánh giá dịch vụ",
                                       style: TextStyle(
-                                          color: activeTab == 1
+                                          color: activeTab == 2
                                               ? Theme.of(context)
                                                   .colorScheme
                                                   .primary
-                                              : Colors.black),
-                                    ),
-                                  ),
-                                )),
-                                Expanded(
-                                    child: Container(
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          bottom: activeTab == 2
-                                              ? BorderSide(
-                                                  width: 2,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary)
-                                              : BorderSide.none)),
-                                  child: TextButton(
-                                    style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.all(0))),
-                                    onPressed: () => goToTab(2),
-                                    child: Text("Đánh giá dịch vụ",
-                                        style: TextStyle(
-                                            color: activeTab == 2
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .primary
-                                                : Colors.black)),
-                                  ),
-                                ))
-                              ],
-                            ),
+                                              : Colors.black)),
+                                ),
+                              ))
+                            ],
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: Column(
-                                children: [
-                                  if (activeTab == 1)
-                                    Html(
-                                      data: detail["Description"] ?? "",
-                                      style: {
-                                        "*": Style(
-                                            margin: Margins.only(left: 0)),
-                                        "p": Style(
-                                            lineHeight: const LineHeight(1.8),
-                                            fontSize: FontSize(15),
-                                            fontWeight: FontWeight.w300,
-                                            textAlign: TextAlign.justify),
-                                        "img":
-                                            Style(margin: Margins.only(top: 5))
-                                        //   "img": Style(
-                                        //     width: Width(MediaQuery.of(context).size.width * .85),
-                                        //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
-                                        //     textAlign: TextAlign.center
-                                        //   )
-                                      },
-                                    ),
-                                  if (activeTab == 2)
-                                    SizedBox(
-                                        child: Text(
-                                      "Chúng tôi đang nâng cấp tính năng này",
-                                      style: TextStyle(
-                                          fontSize: 12,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Column(
+                              children: [
+                                if (activeTab == 1)
+                                  Html(
+                                    data: detail["Description"] ?? "",
+                                    style: {
+                                      "*": Style(margin: Margins.only(left: 0)),
+                                      "p": Style(
+                                          lineHeight: const LineHeight(1.8),
+                                          fontSize: FontSize(15),
                                           fontWeight: FontWeight.w300,
-                                          color: Colors.black),
-                                    )),
-                                ],
-                              )),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
+                                          textAlign: TextAlign.justify),
+                                      "img": Style(margin: Margins.only(top: 5))
+                                      //   "img": Style(
+                                      //     width: Width(MediaQuery.of(context).size.width * .85),
+                                      //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
+                                      //     textAlign: TextAlign.center
+                                      //   )
+                                    },
+                                  ),
+                                if (activeTab == 2)
+                                  const SizedBox(
+                                      child: Text(
+                                    "Chúng tôi đang nâng cấp tính năng này",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.black),
+                                  )),
+                              ],
+                            )),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    )),
                     Container(
                       margin: const EdgeInsets.only(
-                          bottom: 30, left: 15, right: 15),
+                          bottom: 30, left: 15, right: 15, top: 30),
                       child: Column(
                         children: [
                           Container(

@@ -146,91 +146,95 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                    child: ListView(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Color.fromRGBO(
-                                      0, 0, 0, 0.10000000149011612),
-                                  offset: Offset(0, 3),
-                                  blurRadius: 8)
-                            ],
+                  child: ListView(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 15),
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
                           ),
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(14)),
-                            child: Image.network(
-                              "https://api.goodapp.vn/${newsDetail["picture"]}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
-                              width: MediaQuery.of(context).size.width,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                newsDetail["ten_chietkhau"],
-                                textAlign: TextAlign.left,
-                                style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black),
-                              ),
-                            )
+                          boxShadow: [
+                            BoxShadow(
+                                color: Color.fromRGBO(
+                                    0, 0, 0, 0.10000000149011612),
+                                offset: Offset(0, 3),
+                                blurRadius: 8)
                           ],
                         ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["tu_ngay"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["den_ngay"]))}",
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: const TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w400),
-                        ),
-                        SizedBox(
-                          child: Html(
-                            data: newsDetail["dien_giai"],
-                            style: {
-                              "*": Style(
-                                fontSize: FontSize(15),
-                              ),
-                              "a": Style(
-                                  textDecoration: TextDecoration.none,
-                                  color: Colors.black),
-                              "img": Style(
-                                  height: Height.auto(),
-                                  width:
-                                      Width(MediaQuery.of(context).size.width)),
-                              "*:not(img)": Style(
-                                  lineHeight: const LineHeight(1.5),
-                                  margin: Margins.only(
-                                      left: 0, top: 10, bottom: 10))
-                            },
+                        child: ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(14)),
+                          child: Image.network(
+                            "https://api.goodapp.vn/${newsDetail["picture"]}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              newsDetail["ten_chietkhau"],
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["tu_ngay"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["den_ngay"]))}",
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w400),
+                      ),
+                      SizedBox(
+                        child: Html(
+                          data: newsDetail["dien_giai"],
+                          style: {
+                            "*": Style(
+                              fontSize: FontSize(15),
+                            ),
+                            "a": Style(
+                                textDecoration: TextDecoration.none,
+                                color: Colors.black),
+                            "img": Style(
+                                height: Height.auto(),
+                                width:
+                                    Width(MediaQuery.of(context).size.width)),
+                            "*:not(img)": Style(
+                                lineHeight: const LineHeight(1.5),
+                                margin:
+                                    Margins.only(left: 0, top: 10, bottom: 10))
+                          },
+                        ),
+                      ),
+                    ],
                   ),
+                ),
                 Column(
                   children: [
                     Container(
+                      height: 20,
+                    ),
+                    Container(
                       height: 50,
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      margin: const EdgeInsets.symmetric(horizontal: 15),
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           border: Border.all(width: 1, color: Colors.grey),
@@ -270,7 +274,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                         ? Container(
                             height: 50,
                             margin: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 10),
+                                vertical: 15, horizontal: 15),
                             child: FutureBuilder(
                                 future: servicesModel.getServiceByCode(
                                     newsDetail["ProductCode"]),
@@ -354,7 +358,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                                 height: 50,
                                 width: MediaQuery.of(context).size.width,
                                 margin: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 15),
+                                    horizontal: 15, vertical: 15),
                                 color: Colors.white,
                                 child: FutureBuilder(
                                   future: cartModel.getDetailCartByCode(
@@ -438,65 +442,57 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                             : Container(
                                 height: 50,
                                 margin: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 10),
+                                    vertical: 15, horizontal: 15),
                                 child: TextButton(
-                                            style: ButtonStyle(
-                                                padding: MaterialStateProperty.all(
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 20)),
-                                                shape: MaterialStateProperty.all(
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    15)))),
-                                                backgroundColor:
-                                                    MaterialStateProperty.all(
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .primary
-                                                            .withOpacity(0.4))),
-                                            onPressed: () {
-                                              if (storageCustomerToken.getItem(
-                                                      "customer_token") ==
-                                                  null) {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const LoginScreen()));
-                                              } else {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            BookingServices(
-                                                              
-                                                            )));
-                                              }
-                                            },
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                const Text(
-                                                  "Đặt lịch hẹn",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                                const SizedBox(width: 15),
-                                                Image.asset(
-                                                  "assets/images/calendar-black.png",
-                                                  width: 24,
-                                                  height: 24,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ],
-                                            ))
-                              ),
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 20)),
+                                        shape: MaterialStateProperty.all(
+                                            const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(15)))),
+                                        backgroundColor: MaterialStateProperty.all(Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.4))),
+                                    onPressed: () {
+                                      if (storageCustomerToken
+                                              .getItem("customer_token") ==
+                                          null) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const LoginScreen()));
+                                      } else {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BookingServices()));
+                                      }
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          "Đặt lịch hẹn",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        const SizedBox(width: 15),
+                                        Image.asset(
+                                          "assets/images/calendar-black.png",
+                                          width: 24,
+                                          height: 24,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ],
+                                    ))),
                     const SizedBox(
                       height: 5,
                     )

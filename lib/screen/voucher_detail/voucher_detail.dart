@@ -146,93 +146,95 @@ class _VoucherDetailState extends State<VoucherDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                    
-                    child: ListView(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Color.fromRGBO(
-                                      0, 0, 0, 0.10000000149011612),
-                                  offset: Offset(0, 3),
-                                  blurRadius: 8)
-                            ],
+                  child: ListView(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 15),
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
                           ),
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(14)),
-                            child: Image.asset(
-                              "assets/images/voucher1.png",
-                              width: MediaQuery.of(context).size.width,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                newsDetail["ten_chietkhau"],
-                                textAlign: TextAlign.left,
-                                style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black),
-                              ),
-                            )
+                          boxShadow: [
+                            BoxShadow(
+                                color: Color.fromRGBO(
+                                    0, 0, 0, 0.10000000149011612),
+                                offset: Offset(0, 3),
+                                blurRadius: 8)
                           ],
                         ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["tu_ngay"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["den_ngay"]))}",
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: const TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w400),
-                        ),
-                        SizedBox(
-                          child: Html(
-                            data: newsDetail["dien_giai"],
-                            style: {
-                              "*": Style(
-                                fontSize: FontSize(15),
-                              ),
-                              "a": Style(
-                                  textDecoration: TextDecoration.none,
-                                  color: Colors.black),
-                              "img": Style(
-                                  height: Height.auto(),
-                                  width:
-                                      Width(MediaQuery.of(context).size.width)),
-                              "*:not(img)": Style(
-                                  lineHeight: const LineHeight(1.5),
-                                  margin: Margins.only(
-                                      left: 0, top: 10, bottom: 10))
-                            },
+                        child: ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(14)),
+                          child: Image.asset(
+                            "assets/images/voucher1.png",
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              newsDetail["ten_chietkhau"],
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["tu_ngay"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["den_ngay"]))}",
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w400),
+                      ),
+                      SizedBox(
+                        child: Html(
+                          data: newsDetail["dien_giai"],
+                          style: {
+                            "*": Style(
+                              fontSize: FontSize(15),
+                            ),
+                            "a": Style(
+                                textDecoration: TextDecoration.none,
+                                color: Colors.black),
+                            "img": Style(
+                                height: Height.auto(),
+                                width:
+                                    Width(MediaQuery.of(context).size.width)),
+                            "*:not(img)": Style(
+                                lineHeight: const LineHeight(1.5),
+                                margin:
+                                    Margins.only(left: 0, top: 10, bottom: 10))
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                
+                ),
                 Column(
                   children: [
                     Container(
+                      height: 20,
+                    ),
+                    Container(
                       height: 50,
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      margin: const EdgeInsets.symmetric(horizontal: 15),
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           border: Border.all(width: 1, color: Colors.grey),
@@ -272,7 +274,7 @@ class _VoucherDetailState extends State<VoucherDetail> {
                         ? Container(
                             height: 50,
                             margin: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 10),
+                                vertical: 15, horizontal: 15),
                             child: FutureBuilder(
                                 future: servicesModel.getServiceByCode(
                                     newsDetail["ProductCode"]),
@@ -356,7 +358,7 @@ class _VoucherDetailState extends State<VoucherDetail> {
                                 height: 50,
                                 width: MediaQuery.of(context).size.width,
                                 margin: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 15),
+                                    horizontal: 15, vertical: 15),
                                 color: Colors.white,
                                 child: FutureBuilder(
                                   future: cartModel.getDetailCartByCode(
@@ -440,7 +442,7 @@ class _VoucherDetailState extends State<VoucherDetail> {
                             : Container(
                                 height: 50,
                                 margin: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 10),
+                                    vertical: 15, horizontal: 15),
                                 child: TextButton(
                                     style: ButtonStyle(
                                         padding: MaterialStateProperty.all(
