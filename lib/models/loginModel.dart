@@ -48,8 +48,8 @@ class Login {
             "error",
             "Lỗi xác thực",
             "Mã xác thực otp không đúng!",
-            () => Navigator.pop(context),
-            () => Navigator.pop(context));
+            () => Navigator.of(context).pop(),
+            () => Navigator.of(context).pop());
         return;
       }
     } catch (e) {
@@ -58,8 +58,8 @@ class Login {
           "error",
           "Lỗi xác thực",
           "Mã xác thực otp không đúng!",
-          () => Navigator.pop(context),
-          () => Navigator.pop(context));
+          () => Navigator.of(context).pop(),
+          () => Navigator.of(context).pop());
     }
   }
 }

@@ -98,7 +98,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
       customModal.showAlertDialog(context, "error", "Thêm địa chỉ",
           "Bạn có chắc chắn thêm địa chỉ này không?", () {
         EasyLoading.show(status: "Vui lòng chờ...");
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         if (isDefault == true) {
           if (widget.listAddress.isNotEmpty) {
             for (var i = 0; i < widget.listAddress.length; i++) {
@@ -112,11 +112,11 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
         Future.delayed(const Duration(seconds: 2), () {
           addressModel.setNewCustomerAddress(data).then((value) => setState(() {
                 EasyLoading.dismiss();
-                Navigator.pop(context);
+                Navigator.of(context).pop();
                 widget.save();
               }));
         });
-      }, () => Navigator.pop(context));
+      }, () => Navigator.of(context).pop());
     }
   }
 
@@ -145,7 +145,7 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -535,8 +535,10 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
                                                   "error",
                                                   "Lỗi",
                                                   "Vui lòng chọn tỉnh/thành phố trước",
-                                                  () => Navigator.pop(context),
-                                                  () => Navigator.pop(context));
+                                                  () => Navigator.of(context)
+                                                      .pop(),
+                                                  () => Navigator.of(context)
+                                                      .pop());
                                             }
                                           },
                                           decoration: InputDecoration(
@@ -630,8 +632,10 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
                                                   "error",
                                                   "Lỗi",
                                                   "Vui lòng chọn tỉnh/thành phố và phường/xã trước",
-                                                  () => Navigator.pop(context),
-                                                  () => Navigator.pop(context));
+                                                  () => Navigator.of(context)
+                                                      .pop(),
+                                                  () => Navigator.of(context)
+                                                      .pop());
                                             }
                                           },
                                           decoration: InputDecoration(

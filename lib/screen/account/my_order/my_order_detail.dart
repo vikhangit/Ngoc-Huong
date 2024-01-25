@@ -74,7 +74,7 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -906,7 +906,7 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
                             "error",
                             "Hủy Đơn Hàng",
                             "Bạn có chắc chắn hủy đơn hàng không?", () {
-                          Navigator.pop(context);
+                          Navigator.of(context).pop();
                           EasyLoading.show(status: "Vui lòng chờ...");
                           Future.delayed(const Duration(seconds: 2), () {
                             orderModel.putStatusOrder(
@@ -925,7 +925,7 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
                               });
                             });
                           });
-                        }, () => Navigator.pop(context));
+                        }, () => Navigator.of(context).pop());
                       },
                       style: ButtonStyle(
                           shape: MaterialStateProperty.all(

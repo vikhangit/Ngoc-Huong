@@ -66,7 +66,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
     print("================ Data ==================");
     customModal.showAlertDialog(context, "error", "Giỏ hàng",
         "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-      Navigator.pop(context);
+      Navigator.of(context).pop();
       EasyLoading.show(status: "Vui lòng chờ...");
       Future.delayed(const Duration(seconds: 2), () {
         cartModel.addToCart(data).then((value) {
@@ -78,13 +78,13 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
               MaterialPageRoute(builder: (context) => const AddCartSuccess()));
         });
       });
-    }, () => Navigator.pop(context));
+    }, () => Navigator.of(context).pop());
   }
 
   void updateCart(Map item) async {
     customModal.showAlertDialog(context, "error", "Giỏ hàng",
         "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-      Navigator.pop(context);
+      Navigator.of(context).pop();
       EasyLoading.show(status: "Vui lòng chờ...");
       Future.delayed(const Duration(seconds: 2), () {
         cartModel.updateProductInCart({
@@ -102,7 +102,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
               MaterialPageRoute(builder: (context) => const AddCartSuccess()));
         });
       });
-    }, () => Navigator.pop(context));
+    }, () => Navigator.of(context).pop());
   }
 
   @override
@@ -125,7 +125,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),

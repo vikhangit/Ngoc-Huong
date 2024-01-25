@@ -7,15 +7,34 @@ class MemberModel {
   final LocalStorage localStorageCustomerToken = LocalStorage("customer_token");
   Future getRank(String name) async {
     try {
-      Response response =
-          await client.dio.get('${client.apiUrl}/CustomerLevel/GetCustomerLevelDetail?Code=$name',
+      Response response = await client.dio.get(
+          '${client.apiUrl}/CustomerLevel/GetCustomerLevelDetail?Code=$name',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+                '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
+      if (response.statusCode == 200) {
+        return response.data["Data"][0];
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future getAllRank() async {
+    try {
+      Response response = await client.dio
+          .get('${client.apiUrl}/MemberCard/getAllMemberCardType',
               options: Options(headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Authorization':
                     '${localStorageCustomerToken.getItem("customer_token")}',
               }));
       if (response.statusCode == 200) {
-        return response.data["Data"][0];
+        return response.data["Data"];
       } else {
         return;
       }

@@ -191,7 +191,7 @@ class _ModalDiaDiemState extends State<ModalPhuongXa> {
                           const BorderRadius.all(Radius.circular(15))),
                   child: TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.of(context).pop();
                         widget.saveAddress();
                       },
                       style: ButtonStyle(

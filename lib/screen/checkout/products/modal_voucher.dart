@@ -11,7 +11,7 @@ class _ModalVoucherState extends State<ModalVoucher> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+        color: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -33,7 +33,7 @@ class _ModalVoucherState extends State<ModalVoucher> {
                           style: ButtonStyle(
                               padding: MaterialStateProperty.all(
                                   const EdgeInsets.all(0))),
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => Navigator.of(context).pop(),
                           child: const Icon(
                             Icons.close,
                             size: 18,
@@ -178,7 +178,7 @@ class _ModalVoucherState extends State<ModalVoucher> {
                   borderRadius: const BorderRadius.all(Radius.circular(15.0))),
               child: TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   style: ButtonStyle(
                       padding:

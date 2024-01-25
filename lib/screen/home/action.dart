@@ -5,14 +5,17 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/checkinModel.dart';
+import 'package:ngoc_huong/models/memberModel.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
+import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_dia_chi.dart';
 import 'package:ngoc_huong/screen/cart/cart.dart';
 import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
+import 'package:ngoc_huong/screen/choose_brand/chooseBrand.dart';
 import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
 import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
@@ -41,6 +44,7 @@ List toolServices = [
 
 bool showMore = false;
 int count = 0;
+List rank = [];
 
 class _ActionHomeState extends State<ActionHome> {
   final LocalStorage storageCustomerToken = LocalStorage('customer_token');
@@ -51,10 +55,14 @@ class _ActionHomeState extends State<ActionHome> {
   final CheckInModel checkInModel = CheckInModel();
   final ServicesModel servicesModel = ServicesModel();
   final ProductModel productModel = ProductModel();
+  final MemberModel memberModel = MemberModel();
 
   @override
   void initState() {
     super.initState();
+    memberModel.getAllRank().then((value) => setState(() {
+          rank = value;
+        }));
   }
 
   @override
@@ -65,27 +73,23 @@ class _ActionHomeState extends State<ActionHome> {
   }
 
   void goToService(BuildContext context, int index) {
-    if(index == 2){
-      servicesModel
-                  .getGroupServiceByBranch()
-                  .then((value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AllServiceScreen(
-                                listTab: value,
-                              ))));
-              
-    }else if(index == 3){
+    if (index == 2) {
+      servicesModel.getGroupServiceByBranch().then((value) => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AllServiceScreen(
+                    listTab: value,
+                  ))));
+    } else if (index == 3) {
       productModel.getGroupProduct().then((value) => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Cosmetic(
-                              listTab: value,
-                            )))
-                // print(value)
-                );
-          
-    }else if (storageCustomerToken.getItem("customer_token") != null) {
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Cosmetic(
+                        listTab: value,
+                      )))
+          // print(value)
+          );
+    } else if (storageCustomerToken.getItem("customer_token") != null) {
       switch (index) {
         case 0:
           {
@@ -97,22 +101,15 @@ class _ActionHomeState extends State<ActionHome> {
           }
         case 1:
           {
-            showModalBottomSheet<void>(
-                backgroundColor: Colors.white,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                context: context,
-                isScrollControlled: true,
-                builder: (BuildContext context) {
-                  return Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
-                      height: MediaQuery.of(context).size.height * .96,
-                      child: ModalDiaChi(saveCN: () => setState(() {})));
-                });
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ChooseBrandScreen(
+                          saveCN: () => setState(() {}),
+                        )));
             break;
           }
-          
+
         case 4:
           {
             Navigator.push(context,
@@ -141,8 +138,8 @@ class _ActionHomeState extends State<ActionHome> {
     }
   }
 
-  Widget checkRank(int point) {
-    if (point == 0 && point < 100) {
+  Widget checkRankPoint(int point) {
+    if (point < rank[1]["PointUpLevel"]) {
       return GestureDetector(
         onTap: () {
           Navigator.push(
@@ -174,7 +171,8 @@ class _ActionHomeState extends State<ActionHome> {
           ),
         ),
       );
-    } else if (point >= 100 && point < 250) {
+    } else if (point >= rank[1]["PointUpLevel"] &&
+        point < rank[2]["PointUpLevel"]) {
       return GestureDetector(
         onTap: () {
           Navigator.push(
@@ -206,7 +204,8 @@ class _ActionHomeState extends State<ActionHome> {
           ),
         ),
       );
-    } else if (point >= 250 && point < 500) {
+    } else if (point >= rank[2]["PointUpLevel"] &&
+        point < rank[3]["PointUpLevel"]) {
       return GestureDetector(
         onTap: () {
           Navigator.push(
@@ -238,7 +237,159 @@ class _ActionHomeState extends State<ActionHome> {
           ),
         ),
       );
-    } else if (point >= 500) {
+    } else if (point >= rank[3]["PointUpLevel"]) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(ac: 3)));
+        },
+        child: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(99999)),
+            gradient: LinearGradient(
+                begin: Alignment(0.7658354043960571, 0.2429373413324356),
+                end: Alignment(-0.24266093969345093, 0.25175198912620544),
+                colors: [
+                  Color.fromRGBO(107, 218, 207, 1),
+                  Color.fromRGBO(208, 252, 255, 1),
+                  Color.fromRGBO(171, 234, 247, 1),
+                  Color.fromRGBO(126, 229, 232, 1)
+                ]),
+          ),
+          child: const Text(
+            "Thành viên kim cương >",
+            style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+          ),
+        ),
+      );
+    }
+    return Container(
+      margin: const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(99999)),
+        gradient: LinearGradient(
+            begin: Alignment(0.7658354043960571, 0.2429373413324356),
+            end: Alignment(-0.24266093969345093, 0.25175198912620544),
+            colors: [
+              Color.fromRGBO(171, 171, 171, 1),
+              Color.fromRGBO(223, 223, 223, 1),
+              Color.fromRGBO(196, 196, 196, 1),
+              Color.fromRGBO(184, 184, 184, 1)
+            ]),
+      ),
+      child: const Text(
+        "Thành viên bạc >",
+        style: TextStyle(
+            fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget checkRankWithName(String rank) {
+    rank = rank.toUpperCase();
+    if (rank == "SILVER") {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 0,
+                      )));
+        },
+        child: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(99999)),
+            gradient: LinearGradient(
+                begin: Alignment(0.7658354043960571, 0.2429373413324356),
+                end: Alignment(-0.24266093969345093, 0.25175198912620544),
+                colors: [
+                  Color.fromRGBO(171, 171, 171, 1),
+                  Color.fromRGBO(223, 223, 223, 1),
+                  Color.fromRGBO(196, 196, 196, 1),
+                  Color.fromRGBO(184, 184, 184, 1)
+                ]),
+          ),
+          child: const Text(
+            "Thành viên bạc >",
+            style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+          ),
+        ),
+      );
+    } else if (rank == "GOLD") {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 1,
+                      )));
+        },
+        child: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(99999)),
+            gradient: LinearGradient(
+                begin: Alignment(0.7658354043960571, 0.2429373413324356),
+                end: Alignment(-0.24266093969345093, 0.25175198912620544),
+                colors: [
+                  Color.fromRGBO(222, 193, 161, 1),
+                  Color.fromRGBO(251, 236, 215, 1),
+                  Color.fromRGBO(245, 223, 199, 1),
+                  Color.fromRGBO(213, 181, 156, 1)
+                ]),
+          ),
+          child: const Text(
+            "Thành viên vàng >",
+            style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+          ),
+        ),
+      );
+    } else if (rank == "PLATINUM") {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 2,
+                      )));
+        },
+        child: Container(
+          margin: const EdgeInsets.only(top: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(99999)),
+            gradient: LinearGradient(
+                begin: Alignment(0.7658354043960571, 0.2429373413324356),
+                end: Alignment(-0.24266093969345093, 0.25175198912620544),
+                colors: [
+                  Color.fromRGBO(114, 137, 221, 1),
+                  Color.fromRGBO(208, 218, 255, 1),
+                  Color.fromRGBO(171, 187, 247, 1),
+                  Color.fromRGBO(126, 149, 232, 1)
+                ]),
+          ),
+          child: const Text(
+            "Thành viên bạch kim >",
+            style: TextStyle(
+                fontSize: 9, fontWeight: FontWeight.w500, color: Colors.white),
+          ),
+        ),
+      );
+    } else if (rank == "DIAMOND") {
       return GestureDetector(
         onTap: () {
           Navigator.push(
@@ -334,65 +485,62 @@ class _ActionHomeState extends State<ActionHome> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               Map profile = snapshot.data!;
-                              print(profile["Point"]);
                               return Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          await showDialog(
-                                            context: context,
-                                            builder: (_) => Dialog(
-                                              backgroundColor: Colors.black,
-                                              insetPadding:
-                                                  const EdgeInsets.all(20),
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 350,
-                                                decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            "${profile["CustomerImage"]}"),
-                                                        fit: BoxFit.cover)),
-                                              ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const AccountScreen()));
+                                          },
+                                          child: SizedBox(
+                                            width: 35,
+                                            height: 35,
+                                            child: CircleAvatar(
+                                              backgroundColor:
+                                                  const Color(0xff00A3FF),
+                                              backgroundImage: NetworkImage(
+                                                  "${profile["CustomerImage"]}"),
+                                              radius: 35.0,
                                             ),
-                                          );
-                                        },
-                                        child: SizedBox(
-                                          width: 35,
-                                          height: 35,
-                                          child: CircleAvatar(
-                                            backgroundColor:
-                                                const Color(0xff00A3FF),
-                                            backgroundImage: NetworkImage(
-                                                "${profile["CustomerImage"]}"),
-                                            radius: 35.0,
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        width: 6,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Hi, ${profile["CustomerName"].toString().toUpperCase()}",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                                color: mainColor),
-                                          ),
-                                          checkRank(profile["Point"] ?? 0)
-                                        ],
-                                      )
-                                    ],
+                                        const SizedBox(
+                                          width: 6,
+                                        ),
+                                        Expanded(
+                                            child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const AccountScreen()));
+                                              },
+                                              child: Text(
+                                                "Hi, ${profile["CustomerName"].toString().toUpperCase()}",
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: mainColor),
+                                              ),
+                                            ),
+                                            checkRankPoint(profile["Point"])
+                                          ],
+                                        ))
+                                      ],
+                                    ),
                                   ),
                                   Row(
                                     crossAxisAlignment:
@@ -419,12 +567,13 @@ class _ActionHomeState extends State<ActionHome> {
                                                     color: mainColor),
                                               ),
                                               const SizedBox(
-                                                width: 4,
+                                                width: 1,
                                               ),
                                               Image.asset(
-                                                "assets/images/icon/Xu.png",
-                                                width: 12,
-                                                height: 12,
+                                                "assets/images/icon/Xu1.png",
+                                                width: 15,
+                                                height: 15,
+                                                fit: BoxFit.fill,
                                               )
                                             ],
                                           )

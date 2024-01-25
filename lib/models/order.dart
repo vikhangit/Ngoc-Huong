@@ -103,6 +103,28 @@ class OrderModel {
     return result;
   }
 
+  Future<List> getAllOrderList() async {
+    List result = [];
+    try {
+      Response response = await client.dio
+          .get('${client.apiUrl}/ProductInvoice/getProductInvoiceByCustomer',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    // 'ajl6c2xnSTNkNCtYbnJ1NmdjSjFlN2Z2azhGSGp0ZkRyUjFsOHpmR2F1eXlyY0VaOUFSZGdBPT0='
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"];
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
   Future<List> getMyOrderListByStatus(String status) async {
     List result = [];
     try {

@@ -181,7 +181,7 @@ class _ModalDiaDiemState extends State<ModalQuanHuyen> {
                         wardController = TextEditingController(text: "");
                         wardId = "";
                         activeWard = "";
-                        Navigator.pop(context);
+                        Navigator.of(context).pop();
                         widget.saveAddress();
                       },
                       style: ButtonStyle(

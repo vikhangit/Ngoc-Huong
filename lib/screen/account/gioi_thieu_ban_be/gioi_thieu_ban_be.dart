@@ -28,7 +28,7 @@ class _GioiThieuBanBeState extends State<GioiThieuBanBe> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),

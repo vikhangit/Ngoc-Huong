@@ -5,7 +5,7 @@ Widget headerOTP(BuildContext context) {
     alignment: Alignment.centerRight,
     child: GestureDetector(
       onTap: () {
-        Navigator.pop(context);
+        Navigator.of(context).pop();
       },
       child: const Icon(
         Icons.close,

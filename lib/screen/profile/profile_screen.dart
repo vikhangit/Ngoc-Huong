@@ -178,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       customModal.showAlertDialog(context, "error", "Lưu thông tin",
           "Bạn có chắc chắn lưu lưu thông tin?", () {
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         EasyLoading.show(status: "Vui lòng chờ...");
         Future.delayed(const Duration(seconds: 2), () {
           profileModel.setProfile(data).then((value) {
@@ -202,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             });
           });
         });
-      }, () => Navigator.pop(context));
+      }, () => Navigator.of(context).pop());
     }
   }
 
@@ -244,7 +244,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   const HomeScreen()));
-                                    }, () => Navigator.pop(context));
+                                    }, () => Navigator.of(context).pop());
                                   } else {
                                     customModal.showAlertDialog(
                                         context,
@@ -257,7 +257,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   const HomeScreen()));
-                                    }, () => Navigator.pop(context));
+                                    }, () => Navigator.of(context).pop());
                                   }
                                 },
                                 child: Align(
@@ -390,7 +390,9 @@ Widget modalChinhSach(BuildContext context) {
             Html(
               data: desc,
               style: {
-                "*": Style(margin: Margins.only(left: 0)),
+                "*": Style(
+                    margin: Margins.only(left: 0),
+                    textAlign: TextAlign.justify),
                 "a": Style(textDecoration: TextDecoration.none),
                 "p": Style(
                     lineHeight: const LineHeight(1.2),
@@ -415,7 +417,7 @@ Widget modalChinhSach(BuildContext context) {
                   padding: MaterialStateProperty.all(
                       const EdgeInsets.symmetric(vertical: 15))),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
               child: const Text(
                 "Đồng ý",

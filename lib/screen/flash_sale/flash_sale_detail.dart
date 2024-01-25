@@ -47,7 +47,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
     void addToCart() async {
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
           "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         EasyLoading.show(status: "Vui lòng chờ...");
         Future.delayed(const Duration(seconds: 2), () {
           Map data = {
@@ -70,13 +70,13 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                     builder: (context) => const AddCartSuccess()));
           });
         });
-      }, () => Navigator.pop(context));
+      }, () => Navigator.of(context).pop());
     }
 
     void updateCart(Map item) async {
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
           "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         EasyLoading.show(status: "Vui lòng chờ...");
         Future.delayed(const Duration(seconds: 2), () {
           cartModel.updateProductInCart({
@@ -96,7 +96,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                     builder: (context) => const AddCartSuccess()));
           });
         });
-      }, () => Navigator.pop(context));
+      }, () => Navigator.of(context).pop());
     }
 
     return SafeArea(
@@ -116,7 +116,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -208,15 +208,15 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                           data: newsDetail["dien_giai"],
                           style: {
                             "*": Style(
-                              fontSize: FontSize(15),
-                            ),
+                                fontSize: FontSize(15),
+                                margin: Margins.symmetric(horizontal: 0),
+                                textAlign: TextAlign.justify),
                             "a": Style(
                                 textDecoration: TextDecoration.none,
                                 color: Colors.black),
                             "img": Style(
-                                height: Height.auto(),
-                                width:
-                                    Width(MediaQuery.of(context).size.width)),
+                              height: Height.auto(),
+                            ),
                             "*:not(img)": Style(
                                 lineHeight: const LineHeight(1.5),
                                 margin:

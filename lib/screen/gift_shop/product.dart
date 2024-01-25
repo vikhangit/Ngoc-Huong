@@ -25,7 +25,7 @@ class _ShopProductPageState extends State<ShopProductPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -199,14 +199,14 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                               borderRadius:
                                                   const BorderRadius.all(
                                                       Radius.circular(8)),
-                                              color: mainColor,
+                                              color: mainColor.withOpacity(0.6),
                                             ),
                                             child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Image.asset(
-                                                  "assets/images/icon/Xu.png",
+                                                  "assets/images/icon/Xu1.png",
                                                   width: 20,
                                                   height: 20,
                                                 ),
@@ -214,7 +214,7 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                                   width: 3,
                                                 ),
                                                 Text(
-                                                  "100",
+                                                  "10.000",
                                                   style: TextStyle(
                                                       fontSize: 12,
                                                       fontWeight:

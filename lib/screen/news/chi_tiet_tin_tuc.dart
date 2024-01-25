@@ -44,7 +44,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -131,8 +131,8 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                       data: newsDetail["content"],
                       style: {
                         "*": Style(
-                          fontSize: FontSize(15),
-                        ),
+                            fontSize: FontSize(15),
+                            textAlign: TextAlign.justify),
                         "a": Style(
                             textDecoration: TextDecoration.none,
                             color: Colors.black),

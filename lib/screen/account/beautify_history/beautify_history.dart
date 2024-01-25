@@ -4,6 +4,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
+import 'package:ngoc_huong/screen/account/beautify_history/modal_beautify_history_detail.dart';
 import 'package:ngoc_huong/screen/booking/modal/modal_chi_tiet_booking.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -76,7 +77,7 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -88,7 +89,7 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
                     color: Colors.black,
                   ),
                 )),
-            title: const Text("Lịch sử tham gia dịch vụ",
+            title: const Text("Lịch sử làm đẹp",
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -136,19 +137,24 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
                                     ],
                                   ),
                                   child: FutureBuilder(
-                                    future: servicesModel.getServiceByCode(
-                                        list[index]["ServiceCode"]),
+                                    future: bookingModel.getImageUsingBooking(
+                                        list[index]["ProductInvoiceId"]
+                                            .toString()),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
-                                        Map detail = snapshot.data!;
+                                        List detail = snapshot.data!;
                                         return TextButton(
                                             onPressed: () {
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          ChiTietScreen(
-                                                              detail: detail)));
+                                                          ModalBeautifyHistoryDetail(
+                                                            detailBooking:
+                                                                list[index],
+                                                            listImageUsing:
+                                                                detail,
+                                                          )));
                                             },
                                             style: ButtonStyle(
                                               padding:
@@ -171,28 +177,28 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(10)),
-                                                  child: Image.network(
-                                                    "${detail["Image_Name"]}",
-                                                    errorBuilder: (context,
-                                                        exception, stackTrace) {
-                                                      return Image.network(
-                                                          width: 110,
-                                                          height: 110,
-                                                          fit: BoxFit.cover,
-                                                          'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
-                                                    },
-                                                    width: 110,
-                                                    height: 110,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
+                                                // ClipRRect(
+                                                //   borderRadius:
+                                                //       const BorderRadius.all(
+                                                //           Radius.circular(10)),
+                                                //   child: Image.network(
+                                                //     "${detail["Image_Name"]}",
+                                                //     errorBuilder: (context,
+                                                //         exception, stackTrace) {
+                                                //       return Image.network(
+                                                //           width: 110,
+                                                //           height: 110,
+                                                //           fit: BoxFit.cover,
+                                                //           'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                                                //     },
+                                                //     width: 110,
+                                                //     height: 110,
+                                                //     fit: BoxFit.cover,
+                                                //   ),
+                                                // ),
+                                                // const SizedBox(
+                                                //   width: 10,
+                                                // ),
                                                 Expanded(
                                                     child: Column(
                                                   crossAxisAlignment:
@@ -201,51 +207,12 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     Text(
-                                                      "${detail["Name"]}",
+                                                      "${list[index]["ServiceName"]}",
                                                       style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w700,
                                                           color: Colors.black),
                                                     ),
-                                                    // Container(
-                                                    //     margin:
-                                                    //     const EdgeInsets
-                                                    //         .only(
-                                                    //         bottom:
-                                                    //         0,
-                                                    //         top: 5),
-                                                    //     child: Html(
-                                                    //         style: {
-                                                    //           "*": Style(
-                                                    //               margin: Margins.only(
-                                                    //                   top:
-                                                    //                   0,
-                                                    //                   left:
-                                                    //                   0),
-                                                    //               maxLines:
-                                                    //               2,
-                                                    //               fontSize: FontSize(
-                                                    //                   14),
-                                                    //               fontWeight: FontWeight
-                                                    //                   .w300,
-                                                    //               textOverflow:
-                                                    //               TextOverflow.ellipsis),
-                                                    //         },
-                                                    //         data: "")),
-                                                    // const SizedBox(height: 5,),
-                                                    //  Text(
-                                                    //    NumberFormat.currency(
-                                                    //        locale:
-                                                    //        "vi_VI",
-                                                    //        symbol:
-                                                    //        "đ")
-                                                    //        .format(
-                                                    //        detail["PriceOutbound"],
-                                                    //    ),
-                                                    //   style: const TextStyle(
-                                                    //     color: Colors.black
-                                                    //   ),
-                                                    //  ),
                                                     const SizedBox(
                                                       height: 5,
                                                     ),
@@ -255,13 +222,19 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
                                                               .spaceBetween,
                                                       children: [
                                                         const Text(
-                                                            "Số lần thực hiện",
+                                                            "Ngày thực hiện",
                                                             style: TextStyle(
                                                                 fontSize: 12,
                                                                 color: Colors
                                                                     .black)),
                                                         Text(
-                                                            "${list[index]["QuantityUsed"]}/${list[index]["Quantity"]}",
+                                                            DateFormat(
+                                                                    "dd/MM/yyyy")
+                                                                .format(DateTime
+                                                                    .parse(list[
+                                                                            index]
+                                                                        [
+                                                                        "UsingServiceDate"])),
                                                             style:
                                                                 const TextStyle(
                                                                     fontSize:
@@ -270,20 +243,98 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
                                                                         .black))
                                                       ],
                                                     ),
+                                                    if (list[index][
+                                                            "ReExaminationDate"] !=
+                                                        null)
+                                                      const SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                    if (list[index][
+                                                            "ReExaminationDate"] !=
+                                                        null)
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          const Text(
+                                                              "Ngày hẹn kế tiếp",
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .black)),
+                                                          Text(
+                                                              DateFormat(
+                                                                      "dd/MM/yyyy")
+                                                                  .format(DateTime
+                                                                      .parse(list[
+                                                                              index]
+                                                                          [
+                                                                          "ReExaminationDate"])),
+                                                              style: const TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .black))
+                                                        ],
+                                                      ),
                                                     const SizedBox(
                                                       height: 5,
                                                     ),
-                                                    if (list[index]
-                                                                ["DetailList"]
-                                                            [0]["Status"] !=
-                                                        null)
-                                                      Text(
-                                                        "Tình trạng: ${list[index]["DetailList"][0]["Status"].toString().toLowerCase()}",
-                                                        style: const TextStyle(
-                                                            fontSize: 12,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        const Expanded(
+                                                          child: Text(
+                                                              "Nhân viên thực hiện",
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .black)),
+                                                        ),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${list[index]["DetailList"][0]["StaffName"]}",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .right,
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    color: Colors
+                                                                        .black)))
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        const Expanded(
+                                                          child: Text(
+                                                              "Chi nhánh thực hiện",
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .black)),
+                                                        ),
+                                                        Expanded(
+                                                            child: Text(
+                                                                "${list[index]["BranchName"]}",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .right,
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    color: Colors
+                                                                        .black)))
+                                                      ],
+                                                    ),
                                                   ],
                                                 ))
                                               ],

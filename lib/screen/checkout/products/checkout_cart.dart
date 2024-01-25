@@ -78,9 +78,9 @@ class _CheckOutScreenState extends State<CheckOutCart> {
     void setCheckOutCart() {
       // customModal.showAlertDialog(context, "error", "Hê thống đang bảo trì",
       //     "Quý khách hànng xin thử lại sau", () {
-      //   Navigator.pop(context);
+      //   Navigator.of(context).pop();
       // }, () {
-      //   Navigator.pop(context);
+      //   Navigator.of(context).pop();
       // });
       if (selectAddress.isNotEmpty) {
         List details = [];
@@ -106,7 +106,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
         customModal.showAlertDialog(
             context, "error", "Đặt Hàng", "Bạn có chắc chắn đăt hàng không?",
             () {
-          Navigator.pop(context);
+          Navigator.of(context).pop();
           EasyLoading.show(status: "Vui lòng chờ...");
           Future.delayed(const Duration(seconds: 2), () {
             for (var i = 0; i < listProductPayment.length; i++) {
@@ -123,14 +123,14 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                   MaterialPageRoute(builder: (context) => CheckoutSuccess()));
             });
           });
-        }, () => Navigator.pop(context));
+        }, () => Navigator.of(context).pop());
       } else {
         customModal.showAlertDialog(
             context, "error", "Đặt Hàng", "Bạn chưa chọn địa chỉ giao hàng",
             () {
-          Navigator.pop(context);
+          Navigator.of(context).pop();
         }, () {
-          Navigator.pop(context);
+          Navigator.of(context).pop();
         });
       }
     }
@@ -145,7 +145,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),

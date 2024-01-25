@@ -25,7 +25,7 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -173,14 +173,14 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(8)),
-                                            color: mainColor,
+                                            color: mainColor.withOpacity(0.6),
                                           ),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
                                               Image.asset(
-                                                "assets/images/icon/Xu.png",
+                                                "assets/images/icon/Xu1.png",
                                                 width: 20,
                                                 height: 20,
                                               ),
@@ -188,7 +188,7 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                                                 width: 3,
                                               ),
                                               Text(
-                                                "100",
+                                                "5.000",
                                                 style: TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.w600,

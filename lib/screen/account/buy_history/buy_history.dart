@@ -72,7 +72,7 @@ class _BuyHistoryState extends State<BuyHistory> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -99,7 +99,7 @@ class _BuyHistoryState extends State<BuyHistory> {
                 showReleaseNotes: false,
               ),
               child: FutureBuilder(
-                  future: orderModel.getOrderListByStatus("complete"),
+                  future: orderModel.getAllOrderList(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data!.isNotEmpty) {

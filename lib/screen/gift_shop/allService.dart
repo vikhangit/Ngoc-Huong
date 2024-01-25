@@ -68,7 +68,7 @@ class _AllServiceScreenState extends State<AllServiceScreen> {
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),
@@ -286,7 +286,7 @@ class _AllServiceScreenState extends State<AllServiceScreen> {
                                                                           .center,
                                                                   children: [
                                                                     Image.asset(
-                                                                      "assets/images/icon/Xu.png",
+                                                                      "assets/images/icon/Xu1.png",
                                                                       width: 20,
                                                                       height:
                                                                           20,
@@ -295,7 +295,7 @@ class _AllServiceScreenState extends State<AllServiceScreen> {
                                                                       width: 3,
                                                                     ),
                                                                     Text(
-                                                                      "100",
+                                                                      "5.000",
                                                                       style: TextStyle(
                                                                           fontSize:
                                                                               12,

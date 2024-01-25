@@ -26,7 +26,7 @@ class _VoucherPageState extends State<VoucherPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -186,14 +186,14 @@ class _VoucherPageState extends State<VoucherPage> {
                                               borderRadius:
                                                   const BorderRadius.all(
                                                       Radius.circular(8)),
-                                              color: mainColor,
+                                              color: mainColor.withOpacity(0.6),
                                             ),
                                             child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Image.asset(
-                                                  "assets/images/icon/Xu.png",
+                                                  "assets/images/icon/Xu1.png",
                                                   width: 20,
                                                   height: 20,
                                                 ),
@@ -201,7 +201,7 @@ class _VoucherPageState extends State<VoucherPage> {
                                                   width: 3,
                                                 ),
                                                 Text(
-                                                  "100",
+                                                  "400",
                                                   style: TextStyle(
                                                       fontSize: 12,
                                                       fontWeight:

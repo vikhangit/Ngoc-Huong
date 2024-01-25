@@ -87,7 +87,7 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                     Expanded(
                       flex: 8,
                       child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () => Navigator.of(context).pop(),
                           child: Container(
                             decoration: const BoxDecoration(
                                 color: Colors.white, shape: BoxShape.circle),
@@ -160,7 +160,22 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                                                     const BorderRadius.all(
                                                         Radius.circular(10)),
                                                 child: Image.network(
-                                                    "https://image-us.eva.vn/upload/3-2022/images/2022-09-09/picture-9-1662696857-151-width1600height1068.jpg"),
+                                                  item["ImageName"],
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  fit: BoxFit.fitHeight,
+                                                  errorBuilder: (context,
+                                                      exception, stackTrace) {
+                                                    return Image.network(
+                                                        fit: BoxFit.cover,
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                                                  },
+                                                ),
                                               ),
                                               const SizedBox(
                                                 height: 15,
@@ -415,7 +430,7 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                     onPressed: () {
                       storageBranch.setItem("branch", jsonEncode(activeBranch));
                       widget.saveCN();
-                      Navigator.pop(context);
+                      Navigator.of(context).pop();
                     },
                     child: Row(
                       children: [

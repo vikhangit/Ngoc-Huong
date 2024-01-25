@@ -247,31 +247,31 @@ class _BookingServicesState extends State<BookingServices>
         customModal.showAlertDialog(
             context, "error", "Lỗi Đặt Lịch", "Bạn chưa chọn ngày đặt lịch",
             () {
-          Navigator.pop(context);
+          Navigator.of(context).pop();
           selectDate();
-        }, () => Navigator.pop(context));
+        }, () => Navigator.of(context).pop());
       } else if (activeTime == null) {
         customModal.showAlertDialog(
             context, "error", "Lỗi Đặt Lịch", "Bạn chưa chọn giờ đặt lịch", () {
-          Navigator.pop(context);
+          Navigator.of(context).pop();
           selectTime();
-        }, () => Navigator.pop(context));
+        }, () => Navigator.of(context).pop());
       } else if (activeBranch.isEmpty) {
         customModal.showAlertDialog(
             context,
             "error",
             "Lỗi Đặt Lịch",
             "Bạn chưa chọn chi nhánh",
-            () => Navigator.pop(context),
-            () => Navigator.pop(context));
+            () => Navigator.of(context).pop(),
+            () => Navigator.of(context).pop());
       } else if (activeService.isEmpty) {
         customModal.showAlertDialog(
             context,
             "error",
             "Lỗi Đặt Lịch",
             "Bạn chưa chọn dịch vụ đặt lịch",
-            () => Navigator.pop(context),
-            () => Navigator.pop(context));
+            () => Navigator.of(context).pop(),
+            () => Navigator.of(context).pop());
       } else {
         DateTime dateBook = DateTime(activeDate!.year, activeDate!.month,
             activeDate!.day, activeTime!.hour, activeTime!.minute);
@@ -283,9 +283,9 @@ class _BookingServicesState extends State<BookingServices>
         if (dateBook.isBefore(dateOpen) || dateBook.isAfter(dateClose)) {
           customModal.showAlertDialog(context, "error", "Lỗi Đặt Lịch",
               "Bạn đã chọn đặt lịch vào thời gian Ngọc Hường chưa mở cửa", () {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
             selectTime();
-          }, () => Navigator.pop(context));
+          }, () => Navigator.of(context).pop());
         } else {
           if (dateBook.isAfter(now)) {
             Map data = {
@@ -297,9 +297,10 @@ class _BookingServicesState extends State<BookingServices>
                 activeService["Id"],
               ]
             };
+            print(data);
             customModal.showAlertDialog(context, "error", "Xác Nhận Đặt Lịch",
                 "Bạn có chắc chắn chọn đặt lịch này không?", () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               EasyLoading.show(status: "Vui lòng chờ...");
               Future.delayed(const Duration(seconds: 2), () {
                 bookingModel.setBookingService(data).then((value) {
@@ -313,15 +314,15 @@ class _BookingServicesState extends State<BookingServices>
                               )));
                 });
               });
-            }, () => Navigator.pop(context));
+            }, () => Navigator.of(context).pop());
           } else {
             customModal.showAlertDialog(
                 context,
                 "error",
                 "Lỗi Đặt Lịch",
                 "Không thể đặt lịch với thời gian trong quá khứ",
-                () => Navigator.pop(context),
-                () => Navigator.pop(context));
+                () => Navigator.of(context).pop(),
+                () => Navigator.of(context).pop());
           }
         }
       }
@@ -337,7 +338,7 @@ class _BookingServicesState extends State<BookingServices>
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),

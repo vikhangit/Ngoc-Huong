@@ -62,8 +62,8 @@ class _VoucherState extends State<Voucher> {
                                 "error",
                                 "Voucher",
                                 "Các voucher đã hết hạn",
-                                () => Navigator.pop(context),
-                                () => Navigator.pop(context));
+                                () => Navigator.of(context).pop(),
+                                () => Navigator.of(context).pop());
                           },
                           child: Container(
                               height: 200,

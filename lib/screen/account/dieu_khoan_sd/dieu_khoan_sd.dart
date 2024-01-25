@@ -62,7 +62,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),

@@ -184,7 +184,7 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
                           const BorderRadius.all(Radius.circular(15))),
                   child: TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.of(context).pop();
                         districtController = TextEditingController(text: "");
                         wardController = TextEditingController(text: "");
                         districtId = "";

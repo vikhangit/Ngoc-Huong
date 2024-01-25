@@ -36,13 +36,13 @@ class _ChooseAddressShippingState extends State<ChooseAddressShipping> {
         context, "error", "Xóa địa chỉ", "Bạn có chắc chắn xóa địa chỉ này?",
         () {
       EasyLoading.show(status: "Vui lòng chờ");
-      Navigator.pop(context);
+      Navigator.of(context).pop();
       Future.delayed(const Duration(seconds: 2), () {
         addressModel.deleteCustomerAddress(id).then((value) => setState(() {
               EasyLoading.dismiss();
             }));
       });
-    }, () => Navigator.pop(context));
+    }, () => Navigator.of(context).pop());
   }
 
   @override
@@ -62,7 +62,7 @@ class _ChooseAddressShippingState extends State<ChooseAddressShipping> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -110,7 +110,7 @@ class _ChooseAddressShippingState extends State<ChooseAddressShipping> {
                                             activeIndex = index;
                                             selectAddress =
                                                 "${item["ApartmentNumber"]}, ${item["WardName"]}, ${item["DistrictName"]}, ${item["ProvinceName"]}";
-                                            Navigator.pop(context);
+                                            Navigator.of(context).pop();
                                             widget.saveAddress();
                                           }),
                                           child: Container(

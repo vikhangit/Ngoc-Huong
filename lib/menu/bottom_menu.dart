@@ -15,6 +15,7 @@ import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
 import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
+import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/scan_order/orderPage.dart';
 import 'package:ngoc_huong/screen/scan_order/scanQr.dart';
@@ -120,18 +121,20 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
           switch (index) {
             case 1:
               {
-                scanQR();
+                // scanQR();
+                customModal.showAlertDialog(
+                    context,
+                    "error",
+                    "Quét hóa đơn",
+                    "Chúng tôi đang nâng câp tính năng này",
+                    () => Navigator.of(context).pop(),
+                    () => Navigator.of(context).pop());
                 break;
               }
             case 3:
               {
-                showDialog<void>(
-                  context: context,
-                  barrierDismissible: false, // user must tap button!
-                  builder: (BuildContext context) {
-                    return const CheckIn();
-                  },
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const GiftShop()));
                 break;
               }
             case 4:

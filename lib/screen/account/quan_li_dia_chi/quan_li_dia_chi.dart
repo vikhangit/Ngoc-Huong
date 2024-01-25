@@ -162,7 +162,8 @@ class _QuanLiDiaChiState extends State<QuanLiDiaChi> {
                                                         EasyLoading.show(
                                                             status:
                                                                 "Vui lòng chờ");
-                                                        Navigator.pop(context);
+                                                        Navigator.of(context)
+                                                            .pop();
                                                         Future.delayed(
                                                             const Duration(
                                                                 seconds: 2),

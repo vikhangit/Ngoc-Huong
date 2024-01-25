@@ -94,7 +94,7 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),
@@ -427,29 +427,29 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(10)),
-                                                child: Image.network(
-                                                  "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                  errorBuilder: (context,
-                                                      exception, stackTrace) {
-                                                    return Image.network(
-                                                      'http://ngochuong.osales.vn/assets/css/images/noimage.gif',
-                                                      width: 110,
-                                                      height: 110,
-                                                      fit: BoxFit.cover,
-                                                    );
-                                                  },
-                                                  width: 110,
-                                                  height: 110,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
+                                              // ClipRRect(
+                                              //   borderRadius:
+                                              //       const BorderRadius.all(
+                                              //           Radius.circular(10)),
+                                              //   child: Image.network(
+                                              //     "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                              //     errorBuilder: (context,
+                                              //         exception, stackTrace) {
+                                              //       return Image.network(
+                                              //         'http://ngochuong.osales.vn/assets/css/images/noimage.gif',
+                                              //         width: 110,
+                                              //         height: 110,
+                                              //         fit: BoxFit.cover,
+                                              //       );
+                                              //     },
+                                              //     width: 110,
+                                              //     height: 110,
+                                              //     fit: BoxFit.cover,
+                                              //   ),
+                                              // ),
+                                              // const SizedBox(
+                                              //   width: 10,
+                                              // ),
                                               Expanded(
                                                   child: Column(
                                                 crossAxisAlignment:
@@ -615,28 +615,28 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(10)),
-                                                child: Image.network(
-                                                  "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                  errorBuilder: (context,
-                                                      exception, stackTrace) {
-                                                    return Image.network(
-                                                        width: 110,
-                                                        height: 110,
-                                                        fit: BoxFit.cover,
-                                                        'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
-                                                  },
-                                                  width: 110,
-                                                  height: 110,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
+                                              // ClipRRect(
+                                              //   borderRadius:
+                                              //       const BorderRadius.all(
+                                              //           Radius.circular(10)),
+                                              //   child: Image.network(
+                                              //     "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                              //     errorBuilder: (context,
+                                              //         exception, stackTrace) {
+                                              //       return Image.network(
+                                              //           width: 110,
+                                              //           height: 110,
+                                              //           fit: BoxFit.cover,
+                                              //           'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                                              //     },
+                                              //     width: 110,
+                                              //     height: 110,
+                                              //     fit: BoxFit.cover,
+                                              //   ),
+                                              // ),
+                                              // const SizedBox(
+                                              //   width: 10,
+                                              // ),
                                               Expanded(
                                                   child: Column(
                                                 crossAxisAlignment:
@@ -745,7 +745,8 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                                                                       .black),
                                                         ),
                                                       if (item["Status"] !=
-                                                          null)
+                                                              null &&
+                                                          item["Status"] != "*")
                                                         Text(
                                                           "Tình trạng: ${item["Status"].toString().toLowerCase()}",
                                                           style:

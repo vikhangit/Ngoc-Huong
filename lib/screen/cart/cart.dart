@@ -142,7 +142,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -458,7 +458,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                                 "Xóa sản phẩm",
                                                                                 "Bạn có chắc chắn xóa sản phẩm này?",
                                                                                 () {
-                                                                              Navigator.pop(context);
+                                                                              Navigator.of(context).pop();
                                                                               EasyLoading.show(status: "Đang xử lý...");
                                                                               Future.delayed(const Duration(seconds: 1), () {
                                                                                 cartModel.updateProductInCart({
@@ -475,7 +475,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                                   });
                                                                                 });
                                                                               });
-                                                                            }, () => Navigator.pop(context));
+                                                                            }, () => Navigator.of(context).pop());
                                                                           },
                                                                           child: Row(
                                                                             children: [
@@ -614,8 +614,10 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                 "error",
                                                 "Đặt Hàng",
                                                 "Bạn chưa chọn sản phẩm đặt hàng",
-                                                () => Navigator.pop(context),
-                                                () => Navigator.pop(context));
+                                                () =>
+                                                    Navigator.of(context).pop(),
+                                                () => Navigator.of(context)
+                                                    .pop());
                                           }
                                         },
                                         child: Row(

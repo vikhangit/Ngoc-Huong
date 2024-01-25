@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/models/memberModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
+import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
 import 'package:ngoc_huong/screen/gift_shop/allProduct.dart';
 import 'package:ngoc_huong/screen/gift_shop/allService.dart';
 import 'package:ngoc_huong/screen/gift_shop/allVoucher.dart';
@@ -11,6 +13,7 @@ import 'package:ngoc_huong/screen/gift_shop/service.dart';
 import 'package:ngoc_huong/screen/gift_shop/voucher.dart';
 import 'package:ngoc_huong/screen/home/prodouct.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class GiftShop extends StatefulWidget {
@@ -20,26 +23,44 @@ class GiftShop extends StatefulWidget {
   State<GiftShop> createState() => _GiftShopState();
 }
 
+Map profile = {};
+List rank = [];
+
 class _GiftShopState extends State<GiftShop> {
   final ProfileModel profileModel = ProfileModel();
+  final ScrollController scrollController = ScrollController();
+  final MemberModel memberModel = MemberModel();
 
   @override
   void initState() {
     super.initState();
     Upgrader.clearSavedSettings();
+    profileModel.getProfile().then((value) => setState(() {
+          profile = value;
+        }));
+    memberModel.getAllRank().then((value) => setState(() {
+          rank = value.toList();
+        }));
   }
 
-  String checkRank(int point) {
-    if (point <= 100) {
-      return "Bạc";
-    } else if (point > 100 && point <= 250) {
-      return "Vàng";
-    } else if (point > 250 && point <= 500) {
-      return "Bạch kim";
-    } else if (point > 500) {
-      return "Kim cương";
+  Future refreshData() async {
+    await Future.delayed(const Duration(seconds: 3));
+    setState(() {});
+  }
+
+  String checkRank(int ponit) {
+    if (ponit < rank[1]["PointUpLevel"]) {
+      return rank[0]["CardName"];
+    } else if (ponit >= rank[1]["PointUpLevel"] &&
+        ponit < rank[2]["PointUpLevel"]) {
+      return rank[1]["CardName"];
+    } else if (ponit >= rank[2]["PointUpLevel"] &&
+        ponit < rank[3]["PointUpLevel"]) {
+      return rank[2]["CardName"];
+    } else if (ponit >= rank[3]["PointUpLevel"]) {
+      return rank[3]["CardName"];
     }
-    return "Bạc";
+    return rank[0]["CardName"];
   }
 
   @override
@@ -53,7 +74,7 @@ class _GiftShopState extends State<GiftShop> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -71,7 +92,12 @@ class _GiftShopState extends State<GiftShop> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          bottomNavigationBar: const MyBottomMenu(active: 4),
+          bottomNavigationBar: ScrollToHide(
+              scrollController: scrollController,
+              height: 100,
+              child: const MyBottomMenu(
+                active: 0,
+              )),
           body: UpgradeAlert(
               upgrader: Upgrader(
                 dialogStyle: UpgradeDialogStyle.cupertino,
@@ -80,259 +106,261 @@ class _GiftShopState extends State<GiftShop> {
                 showIgnore: false,
                 showReleaseNotes: false,
               ),
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  FutureBuilder(
-                      future: profileModel.getProfile(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          Map profile = snapshot.data!;
-                          return Row(
-                            children: [
-                              // Expanded(
-                              //     child: GestureDetector(
-                              //   child: Container(
-                              //     padding: const EdgeInsets.symmetric(
-                              //         horizontal: 10, vertical: 10),
-                              //     margin: const EdgeInsets.only(right: 5),
-                              //     decoration: BoxDecoration(
-                              //         borderRadius: const BorderRadius.all(
-                              //             Radius.circular(6)),
-                              //         color: Colors.amber.withOpacity(0.3)),
-                              //     child: Row(
-                              //       mainAxisAlignment:
-                              //           MainAxisAlignment.spaceBetween,
-                              //       children: [
-                              //         Text(
-                              //           "${profile["Point"] ?? 0} điểm",
-                              //           style: const TextStyle(
-                              //               fontSize: 12,
-                              //               fontWeight: FontWeight.w600),
-                              //         ),
-                              //         const Icon(
-                              //           Icons.keyboard_arrow_right,
-                              //           size: 20,
-                              //           weight: 300,
-                              //         )
-                              //       ],
-                              //     ),
-                              //   ),
-                              // )),
-
-                              Expanded(
-                                  child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AccountScreen()));
-                                },
-                                child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
-                                    margin: const EdgeInsets.only(left: 5),
+              child: RefreshIndicator(
+                  onRefresh: () => refreshData(),
+                  child: ListView(
+                    controller: scrollController,
+                    // padding: const EdgeInsets.symmetric(horizontal: 10),
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AccountScreen()));
+                              },
+                              child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  margin: const EdgeInsets.only(left: 5),
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(6)),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.3)),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          profile.isNotEmpty
+                                              ? Text(profile["CustomerName"]
+                                                  .toString()
+                                                  .toUpperCase())
+                                              : const SizedBox(
+                                                  width: 20,
+                                                  height: 20,
+                                                  child: LoadingIndicator(
+                                                    colors:
+                                                        kDefaultRainbowColors,
+                                                    indicatorType: Indicator
+                                                        .lineSpinFadeLoader,
+                                                    strokeWidth: 1,
+                                                  ),
+                                                ),
+                                          profile.isNotEmpty
+                                              ? Text(
+                                                  "Hạng ${checkRank(profile["Point"])}")
+                                              : const SizedBox(
+                                                  width: 20,
+                                                  height: 20,
+                                                  child: LoadingIndicator(
+                                                    colors:
+                                                        kDefaultRainbowColors,
+                                                    indicatorType: Indicator
+                                                        .lineSpinFadeLoader,
+                                                    strokeWidth: 1,
+                                                  ),
+                                                ),
+                                          profile.isNotEmpty
+                                              ? Row(
+                                                  children: [
+                                                    const Text("Xu đang có: "),
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    const Text(
+                                                      "150",
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 1,
+                                                    ),
+                                                    Image.asset(
+                                                      "assets/images/icon/Xu1.png",
+                                                      width: 18,
+                                                      height: 18,
+                                                    ),
+                                                  ],
+                                                )
+                                              : const SizedBox(
+                                                  width: 20,
+                                                  height: 20,
+                                                  child: LoadingIndicator(
+                                                    colors:
+                                                        kDefaultRainbowColors,
+                                                    indicatorType: Indicator
+                                                        .lineSpinFadeLoader,
+                                                    strokeWidth: 1,
+                                                  ),
+                                                ),
+                                        ],
+                                      ),
+                                      const Icon(
+                                        Icons.keyboard_arrow_right,
+                                        size: 20,
+                                        weight: 300,
+                                      )
+                                    ],
+                                  )),
+                            ))
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AllProductScreen())),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(6)),
                                         color: Theme.of(context)
                                             .colorScheme
                                             .primary
-                                            .withOpacity(0.3)),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text("${profile["CustomerName"]}"),
-                                            Text(
-                                                "Hạng ${profile["Point"] == null ? "Bạc" : checkRank(profile["Point"])}"),
-                                            Row(
-                                              children: [
-                                                const Text("Xu đang có: "),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                const Text(
-                                                  "5",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Image.asset(
-                                                  "assets/images/icon/Xu.png",
-                                                  width: 20,
-                                                  height: 20,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        const Icon(
-                                          Icons.keyboard_arrow_right,
-                                          size: 20,
-                                          weight: 300,
-                                        )
-                                      ],
-                                    )),
-                              ))
-                            ],
-                          );
-                        } else {
-                          return const Center(
-                            child: SizedBox(
-                              width: 40,
-                              height: 40,
-                              child: LoadingIndicator(
-                                colors: kDefaultRainbowColors,
-                                indicatorType: Indicator.lineSpinFadeLoader,
-                                strokeWidth: 1,
-                                // pathBackgroundColor: Colors.black45,
+                                            .withOpacity(0.2),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(15))),
+                                    child: Image.asset(
+                                      "assets/images/icon/my-pham.png",
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  const Text(
+                                    "Sảm phẩm",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14),
+                                  )
+                                ],
                               ),
                             ),
-                            // SizedBox(
-                            //   width: 10,
-                            // ),
-                            // Text("Đang lấy dữ liệu")
-                          );
-                        }
+                            const SizedBox(
+                              width: 14,
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AllServiceScreen())),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.2),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(15))),
+                                    child: Image.asset(
+                                      "assets/images/dieu-tri.png",
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  const Text(
+                                    "Dịch vụ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AllVoucherScreen())),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.2),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(15))),
+                                    child: Image.asset(
+                                      "assets/images/Home/Services/thanh-vien.png",
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  const Text(
+                                    "Quà đối tác",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      CheckIn(save: () {
+                        setState(() {});
                       }),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const AllProductScreen())),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.2),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(15))),
-                              child: Image.asset(
-                                "assets/images/icon/my-pham.png",
-                                width: 40,
-                                height: 40,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            const Text(
-                              "Sảm phẩm",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 14),
-                            )
-                          ],
-                        ),
-                      ),
+                      const ShopProductPage(),
+                      const ShopServicesPage(),
+                      const VoucherPage(),
                       const SizedBox(
-                        width: 14,
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const AllServiceScreen())),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.2),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(15))),
-                              child: Image.asset(
-                                "assets/images/dieu-tri.png",
-                                width: 40,
-                                height: 40,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            const Text(
-                              "Dịch vụ",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 14),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const AllVoucherScreen())),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.2),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(15))),
-                              child: Image.asset(
-                                "assets/images/Home/Services/thanh-vien.png",
-                                width: 40,
-                                height: 40,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            const Text(
-                              "Quà đối tác",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 14),
-                            )
-                          ],
-                        ),
+                        height: 20,
                       )
                     ],
-                  ),
-                  const ShopProductPage(),
-                  const ShopServicesPage(),
-                  const VoucherPage(),
-                  const SizedBox(
-                    height: 20,
-                  )
-                ],
-              ))),
+                  )))),
     );
   }
 }

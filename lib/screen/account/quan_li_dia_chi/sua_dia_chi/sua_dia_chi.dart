@@ -106,7 +106,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
       customModal.showAlertDialog(context, "error", "Sửa địa chỉ",
           "Bạn có chắc chắn sửa địa chỉ này không?", () {
         EasyLoading.show(status: "Vui lòng chờ...");
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         if (isDefault == true) {
           if (widget.listAddress.isNotEmpty) {
             for (var i = 0; i < widget.listAddress.length; i++) {
@@ -120,11 +120,11 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
         Future.delayed(const Duration(seconds: 2), () {
           addressModel.updateCustomerAddress(data).then((value) => setState(() {
                 EasyLoading.dismiss();
-                Navigator.pop(context);
+                Navigator.of(context).pop();
                 widget.saveAddress();
               }));
         });
-      }, () => Navigator.pop(context));
+      }, () => Navigator.of(context).pop());
     }
   }
 
@@ -158,7 +158,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
       );
       Future.delayed(const Duration(seconds: 3), () {
         editAddress();
-        Navigator.pop(context);
+        Navigator.of(context).pop();
       });
     }
 
@@ -181,7 +181,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),

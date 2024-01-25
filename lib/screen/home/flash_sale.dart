@@ -61,8 +61,8 @@ class _FlashSaleState extends State<FlashSale> {
                                 "error",
                                 "Flash Sale",
                                 "Các chương trình flash sale đã hết hạn",
-                                () => Navigator.pop(context),
-                                () => Navigator.pop(context));
+                                () => Navigator.of(context).pop(),
+                                () => Navigator.of(context).pop());
                           },
                           child: Container(
                               height: 200,

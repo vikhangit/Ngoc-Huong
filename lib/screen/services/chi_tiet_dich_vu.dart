@@ -1,13 +1,20 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
+import 'package:ngoc_huong/screen/modalZoomImage.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -28,12 +35,13 @@ int activeTab = 1;
 class _ChiTietScreenState extends State<ChiTietScreen>
     with TickerProviderStateMixin {
   final ScrollController scrollController = ScrollController();
-
+  CustomModal customModal = CustomModal();
   final LocalStorage storageCustomerToken = LocalStorage('customer_token');
   TabController? tabController;
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     Upgrader.clearSavedSettings();
     tabController = TabController(length: 2, vsync: this);
     tabController?.addListener(_getActiveTabIndex);
@@ -46,6 +54,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
   void dispose() {
     super.dispose();
     activeTab = 1;
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   void _getActiveTabIndex() {
@@ -66,7 +75,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     Map detail = widget.detail;
-    print(detail);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return SafeArea(
       bottom: false,
       child: Scaffold(
@@ -84,7 +93,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -110,7 +119,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                 showIgnore: false,
                 showReleaseNotes: false,
               ),
-              child: Container(
+              child: SizedBox(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -119,178 +128,126 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       children: [
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 15),
-                          child: detail["ImageList"].toList().length > 0
-                              ? ImageDetail(
-                                  item: detail,
-                                )
-                              : Container(
-                                  alignment: Alignment.center,
-                                  decoration: const BoxDecoration(
-                                      // color: checkColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: Image.network(
-                                    "${detail["Image_Name"]}",
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, exception, stackTrace) {
-                                      return Image.network(
-                                          fit: BoxFit.cover,
-                                          'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
-                                    },
-                                  ),
-                                ),
-                        ),
-                        Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  detail["Name"],
-                                  style: const TextStyle(fontSize: 17),
-                                ),
-                                // const SizedBox(
-                                //   height: 10,
-                                // ),
-                                // Row(
-                                //   children: [
-                                //     Text(
-                                //       NumberFormat.currency(
-                                //           locale: "vi_VI", symbol: "")
-                                //           .format(
-                                //         detail["PriceOutbound"],
-                                //       ),
-                                //       style: TextStyle(
-                                //           fontSize: 15,
-                                //           color: Theme.of(context)
-                                //               .colorScheme
-                                //               .primary),
-                                //     ),
-                                //     Text(
-                                //       "đ",
-                                //       style: TextStyle(
-                                //         color:
-                                //         Theme.of(context).colorScheme.primary,
-                                //         fontSize: 15,
-                                //         decoration: TextDecoration.underline,
-                                //       ),
-                                //     )
-                                //   ],
-                                // ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                const Text(
-                                  "Thông tin dịch vụ",
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                              ],
+                            margin: const EdgeInsets.only(top: 25),
+                            child: ImageDetail(
+                              item: detail,
                             )),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                  child: Container(
-                                height: 60,
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        bottom: activeTab == 1
-                                            ? BorderSide(
-                                                width: 2,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary)
-                                            : BorderSide.none)),
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(0))),
-                                  onPressed: () => goToTab(1),
-                                  child: Text(
-                                    "Chi tiết dịch vụ",
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              detail["Name"],
+                              style: const TextStyle(fontSize: 17),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            const Text(
+                              "Thông tin dịch vụ",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: activeTab == 1
+                                          ? BorderSide(
+                                              width: 2,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary)
+                                          : BorderSide.none)),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        const EdgeInsets.all(0))),
+                                onPressed: () => goToTab(1),
+                                child: Text(
+                                  "Chi tiết dịch vụ",
+                                  style: TextStyle(
+                                      color: activeTab == 1
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Colors.black),
+                                ),
+                              ),
+                            )),
+                            Expanded(
+                                child: Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: activeTab == 2
+                                          ? BorderSide(
+                                              width: 2,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary)
+                                          : BorderSide.none)),
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        const EdgeInsets.all(0))),
+                                onPressed: () => goToTab(2),
+                                child: Text("Đánh giá dịch vụ",
                                     style: TextStyle(
-                                        color: activeTab == 1
+                                        color: activeTab == 2
                                             ? Theme.of(context)
                                                 .colorScheme
                                                 .primary
-                                            : Colors.black),
-                                  ),
-                                ),
-                              )),
-                              Expanded(
-                                  child: Container(
-                                height: 60,
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        bottom: activeTab == 2
-                                            ? BorderSide(
-                                                width: 2,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary)
-                                            : BorderSide.none)),
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.all(0))),
-                                  onPressed: () => goToTab(2),
-                                  child: Text("Đánh giá dịch vụ",
-                                      style: TextStyle(
-                                          color: activeTab == 2
-                                              ? Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                              : Colors.black)),
-                                ),
-                              ))
-                            ],
-                          ),
+                                            : Colors.black)),
+                              ),
+                            ))
+                          ],
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                        Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Column(
-                              children: [
-                                if (activeTab == 1)
-                                  Html(
-                                    data: detail["Description"] ?? "",
-                                    style: {
-                                      "*": Style(margin: Margins.only(left: 0)),
-                                      "p": Style(
-                                          lineHeight: const LineHeight(1.8),
-                                          fontSize: FontSize(15),
-                                          fontWeight: FontWeight.w300,
-                                          textAlign: TextAlign.justify),
-                                      "img": Style(margin: Margins.only(top: 5))
-                                      //   "img": Style(
-                                      //     width: Width(MediaQuery.of(context).size.width * .85),
-                                      //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
-                                      //     textAlign: TextAlign.center
-                                      //   )
-                                    },
-                                  ),
-                                if (activeTab == 2)
-                                  const SizedBox(
-                                      child: Text(
-                                    "Chúng tôi đang nâng cấp tính năng này",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.black),
-                                  )),
-                              ],
-                            )),
+                        Column(
+                          children: [
+                            if (activeTab == 1)
+                              Html(
+                                data: detail["Description"] ?? "",
+                                style: {
+                                  "*": Style(
+                                      margin: Margins.only(left: 0, right: 0),
+                                      textAlign: TextAlign.justify),
+                                  "p": Style(
+                                      lineHeight: const LineHeight(1.8),
+                                      fontSize: FontSize(15),
+                                      fontWeight: FontWeight.w300,
+                                      textAlign: TextAlign.justify),
+                                  "img": Style(margin: Margins.only(top: 5))
+                                  //   "img": Style(
+                                  //     width: Width(MediaQuery.of(context).size.width * .85),
+                                  //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
+                                  //     textAlign: TextAlign.center
+                                  //   )
+                                },
+                              ),
+                            if (activeTab == 2)
+                              const SizedBox(
+                                  child: Text(
+                                "Chúng tôi đang nâng cấp tính năng này",
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black),
+                              )),
+                          ],
+                        ),
                         const SizedBox(
                           height: 10,
                         ),
@@ -418,22 +375,25 @@ int currentIndex = 0;
 
 class _ImageDetailState extends State<ImageDetail> {
   final CarouselController carouselController = CarouselController();
+  ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    List newList = [
-      widget.item["ImageList"][0]["Image_Name"],
-      widget.item["ImageList"][0]["Image_Name2"],
-      widget.item["ImageList"][0]["Image_Name3"],
-      widget.item["ImageList"][0]["Image_Name4"],
-      widget.item["ImageList"][0]["Image_Name5"]
-    ];
-    List result = [];
+    List newList = widget.item["ImageList"].isNotEmpty
+        ? [
+            widget.item["ImageList"][0]["Image_Name"],
+            widget.item["ImageList"][0]["Image_Name2"],
+            widget.item["ImageList"][0]["Image_Name3"],
+            widget.item["ImageList"][0]["Image_Name4"],
+            widget.item["ImageList"][0]["Image_Name5"]
+          ]
+        : [widget.item["Image_Name"]];
+    List<String> result = <String>[];
     for (var x in newList) {
       if (!["", null, false, 0].contains(x)) {
         result.add(x);
       }
     }
-    print(result);
+
     List<Widget> imgList = List<Widget>.generate(
       result.length,
       (index) => Container(
@@ -441,17 +401,24 @@ class _ImageDetailState extends State<ImageDetail> {
         decoration: const BoxDecoration(
             // color: checkColor,
             borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Image.network(
-          "${result[index]}",
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.fitHeight,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ModalZoomImage(
+                        currentIndex: currentIndex, imageList: result)));
+          },
+          child: Image.network(
+            result[index],
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: (imgList.length > 1)
           ? Column(
@@ -474,36 +441,40 @@ class _ImageDetailState extends State<ImageDetail> {
                 const SizedBox(
                   height: 8,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: result.map((e) {
-                    int index = result.indexOf(e);
-                    return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            currentIndex = index;
-                            carouselController.animateToPage(index,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.linear);
-                          });
-                        },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: index == 1 ? 5 : 0),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1,
-                                color: currentIndex == index
-                                    ? mainColor
-                                    : Colors.white),
-                          ),
-                          child: Image.network(
-                            e,
-                            width: 80,
-                            height: 80,
-                          ),
-                        ));
-                  }).toList(),
+                SizedBox(
+                  height: 80,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    controller: scrollController,
+                    children: result.map((e) {
+                      int index = result.indexOf(e);
+                      return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              currentIndex = index;
+                              carouselController.animateToPage(index,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.linear);
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: index == 0 ? 0 : 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1,
+                                  color: currentIndex == index
+                                      ? mainColor
+                                      : Colors.white),
+                            ),
+                            child: Image.network(
+                              e,
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
+                          ));
+                    }).toList(),
+                  ),
                 )
               ],
             )
@@ -513,26 +484,53 @@ class _ImageDetailState extends State<ImageDetail> {
                   decoration: const BoxDecoration(
                       // color: checkColor,
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Image.network(
-                    "${result[0]}",
-                    fit: BoxFit.cover,
-                  ),
-                )
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ModalZoomImage(
+                                  currentIndex: currentIndex,
+                                  imageList: result)));
+                    },
+                    child: Image.network(result[0],
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, exception, stackTrace) {
+                      return Image.network(
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                    }),
+                  ))
               : Container(
                   alignment: Alignment.center,
                   decoration: const BoxDecoration(
                       // color: checkColor,
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Image.network(
-                    "${widget.item["Image_Name"]}",
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, exception, stackTrace) {
-                      return Image.network(
-                          fit: BoxFit.cover,
-                          'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ModalZoomImage(
+                                      currentIndex: currentIndex,
+                                      imageList: [
+                                        "${widget.item["Image_Name"]}"
+                                      ])));
                     },
-                  ),
-                ),
+                    child: Image.network(
+                      "${widget.item["Image_Name"]}",
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, exception, stackTrace) {
+                        return Image.network(
+                            fit: BoxFit.cover,
+                            width: MediaQuery.of(context).size.width,
+                            'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                      },
+                    ),
+                  )),
     );
   }
 }

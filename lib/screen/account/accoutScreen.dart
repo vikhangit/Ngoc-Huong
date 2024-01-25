@@ -9,6 +9,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
+import 'package:ngoc_huong/models/memberModel.dart';
 import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/account/about_us/AboutUs.dart';
@@ -20,6 +21,7 @@ import 'package:ngoc_huong/screen/account/gioi_thieu_ban_be/gioi_thieu_ban_be.da
 import 'package:ngoc_huong/screen/account/my_order/my_order.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/tran_history/tran_history.dart';
+import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/member/thanh_vien.dart';
 import 'package:ngoc_huong/screen/news/tin_tuc.dart';
@@ -48,10 +50,7 @@ List menu = [
     "icon": "assets/images/account/dat-lich.png",
     "title": "Lịch sử đặt lịch",
   },
-  {
-    "icon": "assets/images/TimeCircleBlack.png",
-    "title": "Lịch sử tham gia dịch vụ",
-  },
+  {"icon": "assets/images/TimeCircleBlack.png", "title": "Lịch sử làm đẹp"},
   {
     "icon": "assets/images/cart-black.png",
     "title": "Lịch sử mua hàng",
@@ -60,6 +59,10 @@ List menu = [
   //   "icon": "assets/images/account/giao-dich.png",
   //   "title": "Đơn hàng của tôi",
   // },
+  {
+    "icon": "assets/images/icon/Xu1.png",
+    "title": "Lịch sử giao dịch xu",
+  },
   {
     "icon": "assets/images/account/dia-chi.png",
     "title": "Quản lý địa chỉ",
@@ -86,12 +89,15 @@ List menu = [
   },
 ];
 
+List rank = [];
+
 class _AccountScreenState extends State<AccountScreen> {
   final LocalStorage storageCustomerToken = LocalStorage('customer_token');
   final ProfileModel profileModel = ProfileModel();
   final OrderModel orderModel = OrderModel();
   final CustomModal customModal = CustomModal();
   final BookingModel bookingModel = BookingModel();
+  final MemberModel memberModel = MemberModel();
   final ScrollController scrollController = ScrollController();
   void _openFile(PlatformFile file) {
     print(file.path);
@@ -140,6 +146,9 @@ class _AccountScreenState extends State<AccountScreen> {
         profile = value;
       });
     });
+    memberModel.getAllRank().then((value) => setState(() {
+          rank = value.toList();
+        }));
     Future.delayed(const Duration(milliseconds: 2000), () {
       setState(() {
         loading = false;
@@ -162,11 +171,97 @@ class _AccountScreenState extends State<AccountScreen> {
       storageCustomerToken.deleteItem("customer_token");
       Future.delayed(const Duration(seconds: 1), () {
         EasyLoading.dismiss();
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const HomeScreen()));
       });
-    }, () => Navigator.pop(context));
+    }, () => Navigator.of(context).pop());
+  }
+
+  Widget checkRank(int point) {
+    if (point >= rank[0]["PointUpLevel"] && point < rank[1]["PointUpLevel"]) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 0,
+                      )));
+        },
+        child: Image.network(
+          "${rank[0]["Image"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        ),
+      );
+    } else if (point >= rank[1]["PointUpLevel"] &&
+        point < rank[2]["PointUpLevel"]) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 1,
+                      )));
+        },
+        child: Image.network(
+          "${rank[1]["Image"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        ),
+      );
+    } else if (point >= rank[2]["PointUpLevel"] &&
+        point < rank[3]["PointUpLevel"]) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 2,
+                      )));
+        },
+        child: Image.network(
+          "${rank[2]["Image"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        ),
+      );
+    } else if (point >= rank[3]["PointUpLevel"]) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 3,
+                      )));
+        },
+        child: Image.network(
+          "${rank[3]["Image"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 0,
+                      )));
+        },
+        child: Image.network(
+          "${rank[0]["Image"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        ),
+      );
+    }
   }
 
   @override
@@ -202,139 +297,43 @@ class _AccountScreenState extends State<AccountScreen> {
         //   break;
         case 4:
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
+              MaterialPageRoute(builder: (context) => const TranHistory()));
           break;
         case 5:
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
+              MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
         case 6:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
+          break;
+        case 7:
           {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const AboutUs()));
             break;
           }
-        case 7:
+        case 8:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
           break;
-        case 8:
+        case 9:
           customModal.showAlertDialog(context, "error", "Xóa tài khoản",
               "Bạn có chắc chắn muốn xóa tài khoản không?", () {
             EasyLoading.show(status: "Đang xử lý...");
             storageCustomerToken.deleteItem("customer_token");
             Future.delayed(const Duration(seconds: 1), () {
               EasyLoading.dismiss();
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const HomeScreen()));
             });
-          }, () => Navigator.pop(context));
+          }, () => Navigator.of(context).pop());
           break;
-        case 9:
+        case 10:
           handleLogout();
           break;
         default:
-      }
-    }
-
-    Widget checkRank() {
-      if (profile["Point"] == null) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ThanhVienScreen(
-                          ac: 0,
-                        )));
-          },
-          child: Image.asset(
-            "${rank[0]["card"]}",
-            width: MediaQuery.of(context).size.width,
-            height: 190,
-          ),
-        );
-      } else if (profile["Point"] == 0 && profile["Point"] < 100) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ThanhVienScreen(
-                          ac: 0,
-                        )));
-          },
-          child: Image.asset(
-            "${rank[0]["card"]}",
-            width: MediaQuery.of(context).size.width,
-            height: 190,
-          ),
-        );
-      } else if (profile["Point"] >= 100 && profile["Point"] < 250) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ThanhVienScreen(
-                          ac: 1,
-                        )));
-          },
-          child: Image.asset(
-            "${rank[1]["card"]}",
-            width: MediaQuery.of(context).size.width,
-            height: 190,
-          ),
-        );
-      } else if (profile["Point"] >= 250 && profile["Point"] < 500) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ThanhVienScreen(
-                          ac: 2,
-                        )));
-          },
-          child: Image.asset(
-            "${rank[2]["card"]}",
-            width: MediaQuery.of(context).size.width,
-            height: 190,
-          ),
-        );
-      } else if (profile["Point"] >= 500) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ThanhVienScreen(
-                          ac: 3,
-                        )));
-          },
-          child: Image.asset(
-            "${rank[3]["card"]}",
-            width: MediaQuery.of(context).size.width,
-            height: 190,
-          ),
-        );
-      } else {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ThanhVienScreen(
-                          ac: 0,
-                        )));
-          },
-          child: Image.asset(
-            "${rank[0]["card"]}",
-            width: MediaQuery.of(context).size.width,
-            height: 190,
-          ),
-        );
       }
     }
 
@@ -412,13 +411,17 @@ class _AccountScreenState extends State<AccountScreen> {
                                         ],
                                       )),
                                 ),
-                                Expanded(
-                                    child: Align(
-                                  alignment: Alignment.topRight,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const GiftShop()));
+                                  },
                                   child: Container(
-                                    width: 75,
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4, horizontal: 10),
                                     decoration: BoxDecoration(
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(20)),
@@ -432,15 +435,15 @@ class _AccountScreenState extends State<AccountScreen> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Image.asset(
-                                            "assets/images/icon/Xu.png",
+                                            "assets/images/icon/Xu1.png",
                                             width: 20,
                                             height: 20,
                                           ),
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          Text(
-                                            "${profile["Point"] ?? "0"} xu",
+                                          const Text(
+                                            "150 xu",
                                             style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12),
@@ -449,7 +452,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                       ),
                                     ),
                                   ),
-                                ))
+                                )
                               ],
                             ),
                           ),
@@ -548,7 +551,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               child: Stack(
                                 clipBehavior: Clip.none,
                                 children: [
-                                  checkRank(),
+                                  checkRank(profile["Point"]),
                                   Positioned(
                                       top: 0,
                                       left: 0,
@@ -557,25 +560,22 @@ class _AccountScreenState extends State<AccountScreen> {
                                       child: Container(
                                         alignment: Alignment.topRight,
                                         padding: EdgeInsets.symmetric(
-                                            horizontal: profile["Point"] == null
+                                            horizontal: profile["MemberType"]
+                                                        .toString()
+                                                        .toUpperCase() ==
+                                                    "SILVER"
                                                 ? 42
-                                                : profile["Point"] < 100
-                                                    ? 42
-                                                    : profile["Point"] >= 100 &&
-                                                            profile["Point"] <
-                                                                250
-                                                        ? 52
-                                                        : profile["Point"] >=
-                                                                    250 &&
-                                                                profile["Point"] <
-                                                                    500
-                                                            ? 41
-                                                            : profile["point"] >=
-                                                                        500 &&
-                                                                    profile["point"] <
-                                                                        1000
-                                                                ? 22
-                                                                : 42,
+                                                : profile["MemberType"]
+                                                            .toString()
+                                                            .toUpperCase() ==
+                                                        "GOLD"
+                                                    ? 52
+                                                    : profile["MemberType"]
+                                                                .toString()
+                                                                .toUpperCase() ==
+                                                            "PLATINUM"
+                                                        ? 41
+                                                        : 22,
                                             vertical: 20),
                                         child: Text(
                                           profile["CustomerName"]

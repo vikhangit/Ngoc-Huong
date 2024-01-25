@@ -32,7 +32,6 @@ class _ModalVoucherState extends State<ModalPayment> {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
         padding: const EdgeInsets.only(top: 15),
         color: Colors.white,
@@ -58,7 +57,7 @@ class _ModalVoucherState extends State<ModalPayment> {
                             style: ButtonStyle(
                                 padding: MaterialStateProperty.all(
                                     const EdgeInsets.all(0))),
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => Navigator.of(context).pop(),
                             child: const Icon(
                               Icons.close,
                               size: 18,
@@ -81,7 +80,13 @@ class _ModalVoucherState extends State<ModalPayment> {
                           onPressed: () {
                             if (item["title"] == "Thẻ Tín dụng/Ghi nợ" ||
                                 item["title"] == "Chuyển đến thẻ ngân hàng") {
-                              customModal.showAlertDialog(context, "error", "Thanh Toán", "Xin lỗi quý khách chúng tôi đang nâng cấp tính nâng thanh toán này.", () => Navigator.pop(context), () => Navigator.pop(context));
+                              customModal.showAlertDialog(
+                                  context,
+                                  "error",
+                                  "Thanh Toán",
+                                  "Xin lỗi quý khách chúng tôi đang nâng cấp tính nâng thanh toán này.",
+                                  () => Navigator.of(context).pop(),
+                                  () => Navigator.of(context).pop());
                             } else {
                               setState(() {
                                 activePayment = item["title"];
@@ -132,7 +137,7 @@ class _ModalVoucherState extends State<ModalPayment> {
               child: TextButton(
                   onPressed: () {
                     widget.savePayment();
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   style: ButtonStyle(
                       padding:

@@ -6,27 +6,32 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/checkinModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
+import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:upgrader/upgrader.dart';
 
 class CheckIn extends StatefulWidget {
-  const CheckIn({super.key});
+  final Function save;
+  const CheckIn({super.key, required this.save});
 
   @override
   State<CheckIn> createState() => _CheckInState();
 }
 
-bool isLoading = false;
 bool showMore = false;
 List checkInList = [];
 Map profile = {};
+bool isLoading = false;
 
 class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
   final ServicesModel servicesModel = ServicesModel();
   final CheckInModel checkInModel = CheckInModel();
-  final ProfileModel profileModel = ProfileModel();
   final LocalStorage storageToken = LocalStorage("customer_token");
+  final ProfileModel profileModel = ProfileModel();
   final ScrollController scrollController = ScrollController();
+  final CustomModal customModal = CustomModal();
   late AnimationController _animationController;
   @override
   initState() {
@@ -69,13 +74,15 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    print("========================");
+    print(profile["Phone"]);
     List diemdanh = checkInList
         .where((element) => element["device_user_id"] == profile["Phone"])
         .toList();
     String convertTime(String date, bool n) {
       DateTime a;
       if (!n) {
-        a = DateTime.parse(date).add(Duration(hours: 7));
+        a = DateTime.parse(date).add(const Duration(hours: 7));
       } else {
         a = DateTime.now();
       }
@@ -86,660 +93,374 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
       return "${day < 10 ? "0$day" : "$day"}/${month < 10 ? "0$month" : "$month"}/$year";
     }
 
-    return Align(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              height: showMore ? 430 : 170,
-              margin: const EdgeInsets.only(left: 10, right: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(6),
+    void handleCheckIn(int index, bool show) {
+      if (diemdanh.isEmpty) {
+        if (index + int.parse('${!show ? 0 : 7}') > 0) {
+          customModal.showAlertDialog(
+              context,
+              "error",
+              "Lỗi điểm danh",
+              "Bạn hãy điểm danh ngày ${diemdanh.length + 1} trước",
+              () => Navigator.of(context).pop(),
+              () => Navigator.of(context).pop());
+        } else {
+          EasyLoading.show(status: "Đang xử lý");
+          Future.delayed(const Duration(seconds: 1), () {
+            checkInModel.addCheckIn({
+              "record_time": DateTime.now().toIso8601String(),
+              "device_user_id": "${profile["Phone"]}"
+            }).then((value) {
+              EasyLoading.dismiss();
+              setState(() {
+                checkInModel.getCheckInList().then((value) => setState(() {
+                      checkInList = value.toList();
+                    }));
+              });
+              diemdanh = checkInList
+                  .where((element) =>
+                      element["device_user_id"] == profile["Phone"])
+                  .toList();
+            });
+          });
+        }
+      } else if (index + 1 + int.parse('${!show ? 0 : 7}') <= diemdanh.length) {
+        customModal.showAlertDialog(
+            context,
+            "error",
+            "Điểm danh",
+            "Bạn đã điểm danh ngày này rồi",
+            () => Navigator.of(context).pop(),
+            () => Navigator.of(context).pop());
+      } else if (convertTime(diemdanh[0]["record_time"], false) ==
+          convertTime(DateTime.now().toIso8601String(), true)) {
+        customModal.showAlertDialog(
+            context,
+            "error",
+            "Điểm danh",
+            "Hôm nay bạn đã điểm danh rồi hãy quay lại vào ngày mai nhé!",
+            () => Navigator.of(context).pop(),
+            () => Navigator.of(context).pop());
+      } else if (index + int.parse('${!show ? 0 : 7}') > diemdanh.length) {
+        customModal.showAlertDialog(
+            context,
+            "error",
+            "Lỗi điểm danh",
+            "Bạn hãy điểm danh ngày ${diemdanh.length + 1} trước",
+            () => Navigator.of(context).pop(),
+            () => Navigator.of(context).pop());
+      } else if (convertTime(diemdanh[0]["record_time"], false) !=
+          convertTime(DateTime.now().toIso8601String(), true)) {
+        EasyLoading.show(status: "Đang xử lý");
+        Future.delayed(const Duration(seconds: 1), () {
+          checkInModel.addCheckIn({
+            "record_time": DateTime.now().toIso8601String(),
+            "device_user_id": "${profile["Phone"]}"
+          }).then((value) {
+            EasyLoading.dismiss();
+            setState(() {
+              checkInModel.getCheckInList().then((value) => setState(() {
+                    checkInList = value.toList();
+                  }));
+            });
+            diemdanh = checkInList
+                .where(
+                    (element) => element["device_user_id"] == profile["Phone"])
+                .toList();
+          });
+        });
+      }
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 20),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          border: Border.all(width: 1, color: mainColor),
+          borderRadius: const BorderRadius.all(Radius.circular(5))),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Điểm danh",
+                style: TextStyle(fontWeight: FontWeight.w700),
               ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Điểm danh",
-                        style: TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          child: Icon(Icons.close),
-                        ),
-                      )
-                    ],
-                  ),
-                  !isLoading
-                      ? Column(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 15),
-                              height: showMore ? 320 : 70,
-                              child: ListView(
-                                children: [
-                                  Wrap(
-                                    alignment: WrapAlignment.spaceBetween,
-                                    spacing: 9,
-                                    children: List.generate(
-                                        7,
-                                        (index) => GestureDetector(
-                                              onTap: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (_) => Dialog(
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                    insetPadding:
-                                                        const EdgeInsets.all(
-                                                            20),
-                                                    child: Container(
-                                                      margin: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 20),
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              15.0),
-                                                      decoration: const BoxDecoration(
-                                                          color: Colors.white,
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4))),
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      height: 120,
-                                                      child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Text(
-                                                                  index + 1 == 7
-                                                                      ? "+20"
-                                                                      : "+10",
-                                                                  style: const TextStyle(
-                                                                      fontSize:
-                                                                          24,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w700,
-                                                                      color: Colors
-                                                                          .amber),
-                                                                ),
-                                                                const SizedBox(
-                                                                  width: 5,
-                                                                ),
-                                                                Image.asset(
-                                                                  "assets/images/icon/Xu.png",
-                                                                  width: 30,
-                                                                  height: 30,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            GestureDetector(
-                                                              onTap: () =>
-                                                                  Navigator.pop(
-                                                                      context),
-                                                              child: Container(
-                                                                alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                                decoration: const BoxDecoration(
-                                                                    color: Colors
-                                                                        .indigo,
-                                                                    borderRadius:
-                                                                        BorderRadius.all(
-                                                                            Radius.circular(99999))),
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                height: 40,
-                                                                child:
-                                                                    const Text(
-                                                                  "Đóng",
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                              ),
-                                                            )
-                                                          ]),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                    .size
-                                                                    .width /
-                                                                7 -
-                                                            14,
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            bottom: 2),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(vertical: 5),
-                                                    decoration: BoxDecoration(
-                                                        color: index + 1 <=
-                                                                diemdanh.length
-                                                            ? Colors.black
-                                                                .withOpacity(
-                                                                    0.2)
-                                                            : Colors.white,
-                                                        border: Border.all(
-                                                            color: index + 1 <=
-                                                                    diemdanh
-                                                                        .length
-                                                                ? Colors.black
-                                                                    .withOpacity(
-                                                                        0.1)
-                                                                : index + 1 == 7
-                                                                    ? Colors
-                                                                        .amber
-                                                                    : Colors
-                                                                        .black
-                                                                        .withOpacity(
-                                                                            0.3)),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    4))),
-                                                    child: Column(
-                                                      children: [
-                                                        Text(
-                                                          index + 1 == 7
-                                                              ? "20"
-                                                              : "10",
-                                                          style: TextStyle(
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color: index +
-                                                                          1 <=
-                                                                      diemdanh
-                                                                          .length
-                                                                  ? Colors.black
-                                                                      .withOpacity(
-                                                                          0.3)
-                                                                  : index + 1 ==
-                                                                          7
-                                                                      ? Colors
-                                                                          .amber
-                                                                      : Theme.of(
-                                                                              context)
-                                                                          .colorScheme
-                                                                          .primary),
-                                                        ),
-                                                        index + 1 <=
-                                                                diemdanh.length
-                                                            ? const Icon(
-                                                                Icons
-                                                                    .check_circle,
-                                                                color: Colors
-                                                                    .green,
-                                                                size: 20,
-                                                              )
-                                                            : index + 1 == 7
-                                                                ? Image.asset(
-                                                                    "assets/images/giftbox.png",
-                                                                    width: 20,
-                                                                    height: 20,
-                                                                  )
-                                                                : Image.asset(
-                                                                    "assets/images/icon/Xu.png",
-                                                                    width: 20,
-                                                                    height: 20,
-                                                                  ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "Ngày ${index + 1}",
-                                                    style: TextStyle(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: index + 1 <=
-                                                                diemdanh.length
-                                                            ? Colors.black
-                                                                .withOpacity(
-                                                                    0.3)
-                                                            : index + 1 == 7
-                                                                ? Colors.amber
-                                                                : Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary),
-                                                  )
-                                                ],
-                                              ),
-                                            )),
-                                  ),
-                                  AnimatedCrossFade(
-                                      firstChild: Container(),
-                                      secondChild: Container(
-                                        margin: EdgeInsets.only(top: 15),
-                                        child: Wrap(
-                                          alignment: WrapAlignment.spaceBetween,
-                                          spacing: 9,
-                                          runSpacing: 15,
-                                          children: List.generate(
-                                              21,
-                                              (index) => GestureDetector(
-                                                    onTap: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (_) => Dialog(
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .transparent,
-                                                          insetPadding:
-                                                              const EdgeInsets
-                                                                  .all(20),
-                                                          child: Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        20),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(15.0),
-                                                            decoration: const BoxDecoration(
-                                                                color: Colors
-                                                                    .white,
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            4))),
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            height: 120,
-                                                            child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                        index + 1 == 7 ||
-                                                                                index + 1 == 14 ||
-                                                                                index + 1 == 21
-                                                                            ? "+20"
-                                                                            : "+10",
-                                                                        style: const TextStyle(
-                                                                            fontSize:
-                                                                                24,
-                                                                            fontWeight:
-                                                                                FontWeight.w700,
-                                                                            color: Colors.amber),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            5,
-                                                                      ),
-                                                                      Image
-                                                                          .asset(
-                                                                        "assets/images/icon/Xu.png",
-                                                                        width:
-                                                                            30,
-                                                                        height:
-                                                                            30,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  GestureDetector(
-                                                                    onTap: () =>
-                                                                        Navigator.pop(
-                                                                            context),
-                                                                    child:
-                                                                        Container(
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                      decoration: const BoxDecoration(
-                                                                          color: Colors
-                                                                              .indigo,
-                                                                          borderRadius:
-                                                                              BorderRadius.all(Radius.circular(99999))),
-                                                                      width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width,
-                                                                      height:
-                                                                          40,
-                                                                      child:
-                                                                          const Text(
-                                                                        "Đóng",
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.w600,
-                                                                            color: Colors.white),
-                                                                      ),
-                                                                    ),
-                                                                  )
-                                                                ]),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  7 -
-                                                              14,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  bottom: 2),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical: 5),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  color: index +
-                                                                              1 +
-                                                                              7 <=
-                                                                          diemdanh
-                                                                              .length
-                                                                      ? Colors
-                                                                          .black
-                                                                          .withOpacity(
-                                                                              0.2)
-                                                                      : Colors
-                                                                          .white,
-                                                                  border: Border.all(
-                                                                      color: index + 1 + 7 <= diemdanh.length
-                                                                          ? Colors.black.withOpacity(0.1)
-                                                                          : index + 1 == 7 || index + 1 == 14 || index + 1 == 21
-                                                                              ? Colors.amber
-                                                                              : Colors.black.withOpacity(0.3)),
-                                                                  borderRadius: const BorderRadius.all(Radius.circular(4))),
-                                                          child: Column(
-                                                            children: [
-                                                              Text(
-                                                                index + 1 ==
-                                                                            7 ||
-                                                                        index + 1 ==
-                                                                            14 ||
-                                                                        index + 1 ==
-                                                                            21
-                                                                    ? "20"
-                                                                    : "10",
-                                                                style: TextStyle(
-                                                                    fontSize: 10,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    color: index + 1 + 7 <= diemdanh.length
-                                                                        ? Colors.black.withOpacity(0.3)
-                                                                        : index + 1 == 7 || index + 1 == 14 || index + 1 == 21
-                                                                            ? Colors.amber
-                                                                            : Theme.of(context).colorScheme.primary),
-                                                              ),
-                                                              index + 1 + 7 <=
-                                                                      diemdanh
-                                                                          .length
-                                                                  ? const Icon(
-                                                                      Icons
-                                                                          .check_circle,
-                                                                      size: 20,
-                                                                      color: Colors
-                                                                          .green,
-                                                                    )
-                                                                  : index + 1 ==
-                                                                              7 ||
-                                                                          index + 1 ==
-                                                                              14
-                                                                      ? Image
-                                                                          .asset(
-                                                                          "assets/images/giftbox.png",
-                                                                          width:
-                                                                              20,
-                                                                          height:
-                                                                              20,
-                                                                        )
-                                                                      : index + 1 ==
-                                                                              21
-                                                                          ? Image
-                                                                              .asset(
-                                                                              "assets/images/award.png",
-                                                                              width: 20,
-                                                                              height: 20,
-                                                                            )
-                                                                          : Image
-                                                                              .asset(
-                                                                              "assets/images/icon/Xu.png",
-                                                                              width: 20,
-                                                                              height: 20,
-                                                                            )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          "Ngày ${index + 1 + 7}",
-                                                          style: TextStyle(
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color: index +
-                                                                          1 +
-                                                                          7 <=
-                                                                      diemdanh
-                                                                          .length
-                                                                  ? Colors.black
-                                                                      .withOpacity(
-                                                                          0.3)
-                                                                  : index + 1 == 7 ||
-                                                                          index + 1 ==
-                                                                              14 ||
-                                                                          index + 1 ==
-                                                                              21
-                                                                      ? Colors
-                                                                          .amber
-                                                                      : Theme.of(
-                                                                              context)
-                                                                          .colorScheme
-                                                                          .primary),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  )),
-                                        ),
-                                      ),
-                                      crossFadeState: showMore
-                                          ? CrossFadeState.showSecond
-                                          : CrossFadeState.showFirst,
-                                      duration: 500.milliseconds),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  child: Icon(Icons.close),
+                ),
+              )
+            ],
+          ),
+          Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 15),
+                child: Column(
+                  children: [
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      spacing: 9,
+                      children: List.generate(
+                          7,
+                          (index) => GestureDetector(
                                 onTap: () {
-                                  setState(() {
-                                    if (showMore) {
-                                      _animationController.reverse(from: 0.5);
-                                    } else {
-                                      _animationController.forward(from: 0.0);
-                                    }
-                                    showMore = !showMore;
-                                  });
+                                  handleCheckIn(index, false);
                                 },
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 15),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        showMore ? "Thu gọn" : "Xem tất cả",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                                .withOpacity(0.8),
-                                            fontWeight: FontWeight.w700),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width /
+                                              7 -
+                                          14,
+                                      margin: const EdgeInsets.only(bottom: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      decoration: BoxDecoration(
+                                          color: index + 1 <= diemdanh.length
+                                              ? Colors.black.withOpacity(0.2)
+                                              : Colors.white,
+                                          border: Border.all(
+                                              color:
+                                                  index + 1 <= diemdanh.length
+                                                      ? mainColor
+                                                      : index + 1 == 7
+                                                          ? Colors.amber
+                                                          : mainColor),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(4))),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            index + 1 == 7 ? "20" : "10",
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w600,
+                                                color:
+                                                    index + 1 <= diemdanh.length
+                                                        ? Colors.black
+                                                            .withOpacity(0.3)
+                                                        : index + 1 == 7
+                                                            ? Colors.amber
+                                                            : Theme.of(context)
+                                                                .colorScheme
+                                                                .primary),
+                                          ),
+                                          index + 1 <= diemdanh.length
+                                              ? Icon(
+                                                  Icons.check_circle,
+                                                  color: mainColor,
+                                                  size: 20,
+                                                )
+                                              : index + 1 == 7
+                                                  ? Image.asset(
+                                                      "assets/images/giftbox.png",
+                                                      width: 20,
+                                                      height: 20,
+                                                    )
+                                                  : Image.asset(
+                                                      "assets/images/icon/Xu1.png",
+                                                      width: 20,
+                                                      height: 20,
+                                                    ),
+                                        ],
                                       ),
-                                      RotationTransition(
-                                        turns: Tween(begin: 0.0, end: 1.0)
-                                            .animate(_animationController),
-                                        child: Icon(
-                                          Icons.expand_more_outlined,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withOpacity(0.8),
-                                          size: 16,
-                                          weight: 1,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )),
-                          ],
-                        )
-                      : Container(
-                          height: showMore ? 380 : 120,
-                          alignment: Alignment.center,
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: LoadingIndicator(
-                                  colors: kDefaultRainbowColors,
-                                  indicatorType: Indicator.lineSpinFadeLoader,
-                                  strokeWidth: 1,
-                                  // pathBackgroundColor: Colors.black45,
+                                    ),
+                                    Text(
+                                      "Ngày ${index + 1}",
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600,
+                                          color: index + 1 <= diemdanh.length
+                                              ? Colors.black.withOpacity(0.3)
+                                              : index + 1 == 7
+                                                  ? Colors.amber
+                                                  : Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                    )
+                                  ],
                                 ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "Đang lấy dữ liệu",
-                                style: TextStyle(fontSize: 12),
-                              )
-                            ],
+                              )),
+                    ),
+                    AnimatedCrossFade(
+                        firstChild: Container(),
+                        secondChild: Container(
+                          margin: const EdgeInsets.only(top: 15),
+                          child: Wrap(
+                            alignment: WrapAlignment.spaceBetween,
+                            spacing: 9,
+                            runSpacing: 15,
+                            children: List.generate(
+                                21,
+                                (index) => GestureDetector(
+                                      onTap: () {
+                                        // widget.checkInClick(index, true);
+                                        handleCheckIn(index, true);
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    7 -
+                                                14,
+                                            margin: const EdgeInsets.only(
+                                                bottom: 2),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5),
+                                            decoration: BoxDecoration(
+                                                color: index + 1 + 7 <=
+                                                        diemdanh.length
+                                                    ? Colors.black
+                                                        .withOpacity(0.2)
+                                                    : Colors.white,
+                                                border: Border.all(
+                                                    color: index + 1 + 7 <=
+                                                            diemdanh.length
+                                                        ? mainColor
+                                                        : index + 1 == 7 ||
+                                                                index + 1 ==
+                                                                    14 ||
+                                                                index + 1 == 21
+                                                            ? Colors.amber
+                                                            : mainColor),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(4))),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  index + 1 == 7 ||
+                                                          index + 1 == 14 ||
+                                                          index + 1 == 21
+                                                      ? "20"
+                                                      : "10",
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: index + 1 + 7 <=
+                                                              diemdanh.length
+                                                          ? Colors.black
+                                                              .withOpacity(0.3)
+                                                          : index + 1 == 7 ||
+                                                                  index + 1 ==
+                                                                      14 ||
+                                                                  index + 1 ==
+                                                                      21
+                                                              ? Colors.amber
+                                                              : Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primary),
+                                                ),
+                                                index + 1 + 7 <= diemdanh.length
+                                                    ? Icon(
+                                                        Icons.check_circle,
+                                                        size: 20,
+                                                        color: mainColor,
+                                                      )
+                                                    : index + 1 == 7 ||
+                                                            index + 1 == 14
+                                                        ? Image.asset(
+                                                            "assets/images/giftbox.png",
+                                                            width: 20,
+                                                            height: 20,
+                                                          )
+                                                        : index + 1 == 21
+                                                            ? Image.asset(
+                                                                "assets/images/award.png",
+                                                                width: 20,
+                                                                height: 20,
+                                                              )
+                                                            : Image.asset(
+                                                                "assets/images/icon/Xu1.png",
+                                                                width: 20,
+                                                                height: 20,
+                                                              )
+                                              ],
+                                            ),
+                                          ),
+                                          Text(
+                                            "Ngày ${index + 1 + 7}",
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w600,
+                                                color: index + 1 + 7 <=
+                                                        diemdanh.length
+                                                    ? Colors.black
+                                                        .withOpacity(0.3)
+                                                    : index + 1 == 7 ||
+                                                            index + 1 == 14 ||
+                                                            index + 1 == 21
+                                                        ? Colors.amber
+                                                        : Theme.of(context)
+                                                            .colorScheme
+                                                            .primary),
+                                          )
+                                        ],
+                                      ),
+                                    )),
                           ),
-                        )
-                ],
-              ),
-            ),
-            Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(top: 20),
-              decoration: BoxDecoration(
-                  color: diemdanh.isNotEmpty
-                      ? convertTime(diemdanh[0]["record_time"], false) !=
-                              convertTime(
-                                  DateTime.now().toIso8601String(), true)
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.grey
-                      : Theme.of(context).colorScheme.primary,
-                  borderRadius:
-                      const BorderRadius.all(Radius.circular(999999))),
-              height: 40,
-              width: 150,
-              child: GestureDetector(
-                onTap: () => {
-                  setState(() {
-                    if (diemdanh.isEmpty) {
-                      EasyLoading.show(status: "Đang xử lý");
-                      Future.delayed(const Duration(seconds: 1), () {
-                        checkInModel.addCheckIn({
-                          "record_time": DateTime.now().toIso8601String(),
-                          "device_user_id": "${profile["Phone"]}"
-                        }).then((value) {
-                          EasyLoading.dismiss();
-                          Navigator.pop(context);
-                          showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) {
-                              return const CheckIn();
-                            },
-                          );
-                        });
-                      });
-                    } else if (convertTime(diemdanh[0]["record_time"], false) !=
-                        convertTime(DateTime.now().toIso8601String(), true)) {
-                      EasyLoading.show(status: "Đang xử lý");
-                      Future.delayed(const Duration(seconds: 1), () {
-                        checkInModel.addCheckIn({
-                          "record_time": DateTime.now().toIso8601String(),
-                          "device_user_id": "${profile["Phone"]}"
-                        }).then((value) {
-                          EasyLoading.dismiss();
-                          Navigator.pop(context);
-                          showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) {
-                              return const CheckIn();
-                            },
-                          );
-                        });
-                      });
-                    }
-                  })
-                },
-                child: const Text(
-                  "Check-in",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white),
+                        ),
+                        crossFadeState: showMore
+                            ? CrossFadeState.showSecond
+                            : CrossFadeState.showFirst,
+                        duration: 500.milliseconds),
+                  ],
                 ),
               ),
-            ),
-          ],
-        ));
+              GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (showMore) {
+                        _animationController.reverse(from: 0.5);
+                      } else {
+                        _animationController.forward(from: 0.0);
+                      }
+                      showMore = !showMore;
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          showMore ? "Thu gọn" : "Xem tất cả",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.8),
+                              fontWeight: FontWeight.w700),
+                        ),
+                        RotationTransition(
+                          turns: Tween(begin: 0.0, end: 1.0)
+                              .animate(_animationController),
+                          child: Icon(
+                            Icons.expand_more_outlined,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.8),
+                            size: 16,
+                            weight: 1,
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

@@ -137,7 +137,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),
@@ -177,9 +177,8 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                             children: listAction.map((item) {
                               int index = listAction.indexOf(item);
                               return Container(
-                                // margin: EdgeInsets.only(
-                                //     bottom:
-                                //         index == listAction.length - 1 ? 10 : 0),
+                                margin:
+                                    const EdgeInsets.only(bottom: 3, top: 3),
                                 decoration: BoxDecoration(
                                     border: Border(
                                         left: activeCode == item["code"]
@@ -197,8 +196,8 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                       backgroundColor:
                                           MaterialStateProperty.all(
                                               activeCode == item["code"]
-                                                  ? Colors.red[100]
-                                                  : Colors.blue[100]),
+                                                  ? Colors.white
+                                                  : Colors.red[100]),
                                       shape: MaterialStateProperty.all(
                                           const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
@@ -266,10 +265,11 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                   .7 /
                                                                   2 -
                                                               5,
-                                                      margin: EdgeInsets.only(
-                                                          left: 2,
-                                                          right: 2,
-                                                          top: 8),
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 2,
+                                                              right: 2,
+                                                              top: 8),
                                                       height: 230,
                                                       padding: const EdgeInsets
                                                           .symmetric(

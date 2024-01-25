@@ -67,7 +67,7 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),

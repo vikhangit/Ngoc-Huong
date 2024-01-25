@@ -8,8 +8,8 @@ class BookingModel {
   Future<List> getBookingList() async {
     List result = [];
     try {
-      Response response = await client.dio
-          .get('${client.apiUrl}/Home/getAllBookServiceByCustomer',
+      Response response =
+          await client.dio.get('${client.apiUrl}/Home/getBookServiceList',
               options: Options(headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Authorization':
@@ -35,8 +35,30 @@ class BookingModel {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Authorization':
                     // 'ajl6c2xnSTNkNCtYbnJ1NmdjSjFlN2Z2azhGSGp0ZkRyUjFsOHpmR2F1eXlyY0VaOUFSZGdBPT0='
-                '${localStorageCustomerToken.getItem("customer_token")}',
+                    '${localStorageCustomerToken.getItem("customer_token")}',
               }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"];
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
+  Future<List> getImageUsingBooking(String id) async {
+    List result = [];
+    try {
+      Response response = await client.dio.get(
+          '${client.apiUrl}/ProductInvoice/getImageProductInvoiceById?ProductInvoiceId=$id',
+          options: Options(headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization':
+                // 'ajl6c2xnSTNkNCtYbnJ1NmdjSjFlN2Z2azhGSGp0ZkRyUjFsOHpmR2F1eXlyY0VaOUFSZGdBPT0='
+                '${localStorageCustomerToken.getItem("customer_token")}',
+          }));
       if (response.statusCode == 200) {
         return result = response.data["Data"];
       } else {
@@ -104,7 +126,7 @@ class BookingModel {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Authorization':
                     // 'ajl6c2xnSTNkNCtYbnJ1NmdjSjFlN2Z2azhGSGp0ZkRyUjFsOHpmR2F1eXlyY0VaOUFSZGdBPT0='
-                '${localStorageCustomerToken.getItem("customer_token")}',
+                    '${localStorageCustomerToken.getItem("customer_token")}',
               }));
       if (response.statusCode == 200) {
         // for (int i = 0; i < response.data["Data"].length; i++) {
@@ -113,9 +135,7 @@ class BookingModel {
         //   }
         // }
         return result = response.data["Data"]
-            .where((e) =>
-                e["Status"].toString() == statusCode &&
-                e["serviceList"][0]["Type"] == "service")
+            .where((e) => e["Status"].toString() == statusCode)
             .toList();
       } else {
         return result;

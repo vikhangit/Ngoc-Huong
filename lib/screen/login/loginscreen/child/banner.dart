@@ -26,7 +26,7 @@ Widget bannerLogin(BuildContext context) {
               MaterialPageRoute(builder: (context) => const HomeScreen()));
           storageStart.deleteItem("start");
         } else {
-          Navigator.pop(context);
+          Navigator.of(context).pop();
         }
       },
       child: Container(

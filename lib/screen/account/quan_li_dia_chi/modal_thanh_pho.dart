@@ -182,7 +182,7 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
                         wardId = "";
                         activeDistrict = "";
                         activeWard = "";
-                        Navigator.pop(context);
+                        Navigator.of(context).pop();
                         widget.saveAddress();
                       },
                       style: ButtonStyle(

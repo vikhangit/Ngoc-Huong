@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
@@ -9,10 +11,14 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/cart/cart_success.dart';
+import 'package:ngoc_huong/screen/modalZoomImage.dart';
+import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:upgrader/upgrader.dart';
 
 class GiftShopDetail extends StatefulWidget {
@@ -84,11 +90,12 @@ class _GiftShopDetailState extends State<GiftShopDetail>
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     Map productDetail = widget.details;
     void addToCart() async {
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
           "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         EasyLoading.show(status: "Vui lòng chờ...");
         Future.delayed(const Duration(seconds: 2), () {
           Map data = {
@@ -111,13 +118,13 @@ class _GiftShopDetailState extends State<GiftShopDetail>
                     builder: (context) => const AddCartSuccess()));
           });
         });
-      }, () => Navigator.pop(context));
+      }, () => Navigator.of(context).pop());
     }
 
     void updateCart(Map item) async {
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
           "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         EasyLoading.show(status: "Vui lòng chờ...");
         Future.delayed(const Duration(seconds: 2), () {
           cartModel.updateProductInCart({
@@ -137,7 +144,7 @@ class _GiftShopDetailState extends State<GiftShopDetail>
                     builder: (context) => const AddCartSuccess()));
           });
         });
-      }, () => Navigator.pop(context));
+      }, () => Navigator.of(context).pop());
     }
 
     return SafeArea(
@@ -157,7 +164,7 @@ class _GiftShopDetailState extends State<GiftShopDetail>
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),
@@ -188,27 +195,24 @@ class _GiftShopDetailState extends State<GiftShopDetail>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
-                        margin: const EdgeInsets.only(bottom: 5),
-                        color: Colors.white,
-                        height: MediaQuery.of(context).size.height - 200,
+                      Expanded(
                         child: ListView(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
                           children: [
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   ImageDetail(
                                     item: productDetail,
-                                    type: widget.type,
                                   ),
                                   const SizedBox(
                                     height: 30,
                                   ),
                                   Text(
                                     "${productDetail["Name"]}",
-                                    style: const TextStyle(fontSize: 16),
+                                    style: const TextStyle(
+                                        fontSize: 16, color: Colors.black),
                                   ),
                                   const SizedBox(
                                     height: 10,
@@ -220,29 +224,33 @@ class _GiftShopDetailState extends State<GiftShopDetail>
                                       Row(
                                         children: [
                                           Image.asset(
-                                            "assets/images/icon/Xu.png",
+                                            "assets/images/icon/Xu1.png",
                                             width: 25,
                                             height: 25,
                                           ),
-                                          const SizedBox(width: 5),
+                                          const SizedBox(width: 3),
                                           const Text(
-                                            "100",
+                                            "10.000",
                                             style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
                                         ],
                                       ),
-                                      const Row(
+                                      Row(
                                         children: [
-                                          Icon(Icons.calendar_today_outlined,
-                                              color: Colors.black54),
-                                          SizedBox(width: 5),
-                                          Text(
+                                          Image.asset(
+                                            "assets/images/calendar-solid-black.png",
+                                            width: 24,
+                                            height: 24,
+                                            fit: BoxFit.contain,
+                                          ),
+                                          const SizedBox(width: 3),
+                                          const Text(
                                             "Còn 100",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w600,
-                                                color: Colors.black54),
+                                                color: Colors.black),
                                           ),
                                         ],
                                       ),
@@ -311,11 +319,11 @@ class _GiftShopDetailState extends State<GiftShopDetail>
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                      const SizedBox(width: 10),
+                                      const SizedBox(width: 5),
                                       Image.asset(
-                                        "assets/images/icon/Xu.png",
-                                        width: 24,
-                                        height: 24,
+                                        "assets/images/icon/Xu1.png",
+                                        width: 30,
+                                        height: 30,
                                         fit: BoxFit.contain,
                                       ),
                                     ],
@@ -405,7 +413,9 @@ class _GiftShopDetailState extends State<GiftShopDetail>
               ? Html(
                   data: mieuTa,
                   style: {
-                    "*": Style(margin: Margins.only(left: 0)),
+                    "*": Style(
+                        margin: Margins.only(left: 0),
+                        textAlign: TextAlign.justify),
                     "p": Style(
                         lineHeight: const LineHeight(1.8),
                         fontSize: FontSize(15),
@@ -503,8 +513,7 @@ class _GiftShopDetailState extends State<GiftShopDetail>
 
 class ImageDetail extends StatefulWidget {
   final Map item;
-  final String type;
-  const ImageDetail({super.key, required this.item, required this.type});
+  const ImageDetail({super.key, required this.item});
 
   @override
   State<ImageDetail> createState() => _ImageDetailState();
@@ -514,40 +523,58 @@ int currentIndex = 0;
 
 class _ImageDetailState extends State<ImageDetail> {
   final CarouselController carouselController = CarouselController();
+  PageController pageController = PageController();
+  CustomModal customModal = CustomModal();
+  ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
+    List newList = widget.item["ImageList"].isNotEmpty
+        ? [
+            widget.item["ImageList"][0]["Image_Name"],
+            widget.item["ImageList"][0]["Image_Name2"],
+            widget.item["ImageList"][0]["Image_Name3"],
+            widget.item["ImageList"][0]["Image_Name4"],
+            widget.item["ImageList"][0]["Image_Name5"]
+          ]
+        : [widget.item["Image_Name"]];
+    List<String> result = <String>[];
+    for (var x in newList) {
+      if (!["", null, false, 0].contains(x)) {
+        result.add(x);
+      }
+    }
+
     List<Widget> imgList = List<Widget>.generate(
-      3,
+      result.length,
       (index) => Container(
         alignment: Alignment.center,
         decoration: const BoxDecoration(
             // color: checkColor,
             borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Image.network(
-          "${widget.item["Image_Name"]}",
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.fitHeight,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ModalZoomImage(
+                        currentIndex: currentIndex, imageList: result)));
+          },
+          child: Image.network(
+            result[index],
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
 
-    return widget.type == "service"
-        ? Container(
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-                // color: checkColor,
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Image.network(
-              "${widget.item["Image_Name"]}",
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
-            ),
-          )
-        : Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            width: MediaQuery.of(context).size.width,
-            child: Column(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.of(context).size.width,
+      child: (imgList.length > 1)
+          ? Column(
               children: [
                 CarouselSlider.builder(
                     carouselController: carouselController,
@@ -567,39 +594,89 @@ class _ImageDetailState extends State<ImageDetail> {
                 const SizedBox(
                   height: 8,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: imgList.map((e) {
-                    int index = imgList.indexOf(e);
-                    return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            currentIndex = index;
-                            carouselController.animateToPage(index,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.linear);
-                          });
-                        },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: index == 1 ? 5 : 0),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1,
-                                color: currentIndex == index
-                                    ? mainColor
-                                    : Colors.white),
-                          ),
-                          child: Image.network(
-                            "${widget.item["Image_Name"]}",
-                            width: 80,
-                            height: 80,
-                          ),
-                        ));
-                  }).toList(),
+                SizedBox(
+                  height: 80,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    controller: scrollController,
+                    children: result.map((e) {
+                      int index = result.indexOf(e);
+                      return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              currentIndex = index;
+                              carouselController.animateToPage(index,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.linear);
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: index == 0 ? 0 : 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1,
+                                  color: currentIndex == index
+                                      ? mainColor
+                                      : Colors.white),
+                            ),
+                            child: Image.network(
+                              e,
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
+                          ));
+                    }).toList(),
+                  ),
                 )
               ],
-            ),
-          );
+            )
+          : imgList.length == 1
+              ? Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ModalZoomImage(
+                                  currentIndex: currentIndex,
+                                  imageList: result)));
+                    },
+                    child: Image.network(
+                      result[0],
+                      fit: BoxFit.cover,
+                    ),
+                  ))
+              : Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ModalZoomImage(
+                                      currentIndex: currentIndex,
+                                      imageList: [
+                                        "${widget.item["Image_Name"]}"
+                                      ])));
+                    },
+                    child: Image.network(
+                      "${widget.item["Image_Name"]}",
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, exception, stackTrace) {
+                        return Image.network(
+                            fit: BoxFit.cover,
+                            'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                      },
+                    ),
+                  )),
+    );
   }
 }

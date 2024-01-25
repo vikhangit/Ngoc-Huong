@@ -75,6 +75,8 @@ dependencies:
   flutter_barcode_scanner: ^2.0.0
   device_info_plus: ^9.1.1
   flutter_timezone: ^1.0.8
+  easy_image_viewer: ^1.4.0
+  photo_view: ^0.14.0
 
 dev_dependencies:
   flutter_test:
@@ -157,6 +159,7 @@ flutter:
     - assets/images/icon/my-pham.png
     - assets/images/icon/tu-van.png
     - assets/images/icon/Xu.png
+    - assets/images/icon/Xu1.png
     - assets/images/icon/QR-fanpage.png
     - assets/images/icon/checkin.png
     - assets/images/icon/icon-vi-tri.jpg

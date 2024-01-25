@@ -90,7 +90,7 @@ class _MyOrderState extends State<MyOrder> with TickerProviderStateMixin {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -144,7 +144,6 @@ class _MyOrderState extends State<MyOrder> with TickerProviderStateMixin {
                       ),
                     ),
                     Expanded(
-                        
                         child: TabBarView(
                             controller: tabController,
                             children: widget.listTab
@@ -153,19 +152,37 @@ class _MyOrderState extends State<MyOrder> with TickerProviderStateMixin {
                                         .getMyOrderListByStatus(e["GroupCode"]),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
-                                        if (snapshot.data!.isNotEmpty && snapshot.data!.where((e) =>  e["DetailList"].where((x) =>  x["ProductType"] == "product").toList().isNotEmpty).toList().isNotEmpty) {
+                                        if (snapshot.data!.isNotEmpty &&
+                                            snapshot.data!
+                                                .where((e) => e["DetailList"]
+                                                    .where((x) =>
+                                                        x["ProductType"] ==
+                                                        "product")
+                                                    .toList()
+                                                    .isNotEmpty)
+                                                .toList()
+                                                .isNotEmpty) {
                                           List list = snapshot.data!;
                                           print("==================");
-                                          print(snapshot.data!.where((e) =>  e["DetailList"].where((x) =>  x["ProductType"] == "product").toList().isNotEmpty).toList());
+                                          print(snapshot.data!
+                                              .where((e) => e["DetailList"]
+                                                  .where((x) =>
+                                                      x["ProductType"] ==
+                                                      "product")
+                                                  .toList()
+                                                  .isNotEmpty)
+                                              .toList());
                                           return RefreshIndicator(
                                             onRefresh: refreshData,
                                             child: ListView.builder(
                                               // controller: scrollController,
                                               itemCount: list.length,
                                               itemBuilder: (context, index) {
-                                                return list[index]["DetailList"].where(
-                                                  (x) => x["ProductType"] == "product"
-                                                ).toList()
+                                                return list[index]["DetailList"]
+                                                        .where((x) =>
+                                                            x["ProductType"] ==
+                                                            "product")
+                                                        .toList()
                                                         .isNotEmpty
                                                     ? Container(
                                                         margin: EdgeInsets.only(

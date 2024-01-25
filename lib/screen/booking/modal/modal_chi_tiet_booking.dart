@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
@@ -5,9 +6,11 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/branchsModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
+import 'package:ngoc_huong/screen/ModalZoomImage.dart';
 import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:upgrader/upgrader.dart';
 
 class ModalChiTietBooking extends StatefulWidget {
@@ -48,7 +51,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),
@@ -90,30 +93,13 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData) {
                                           Map detailProduct = snapshot.data!;
-                                          print(detailProduct);
+
                                           return Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                10)),
-                                                    child: Image.network(
-                                                      "${detailProduct["Image_Name"]}",
-                                                      // height: 210,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                    ),
-                                                  ),
-                                                ),
+                                                ImageDetail(
+                                                    item: detailProduct),
                                                 Container(
                                                     margin: const EdgeInsets
                                                         .symmetric(
@@ -347,21 +333,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                         if (snapshot.hasData) {
                                           Map detailProduct = snapshot.data!;
                                           return Column(children: [
-                                            Center(
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(10)),
-                                                child: Image.network(
-                                                  "${detailProduct["Image_Name"]}",
-                                                  // height: 210,
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
+                                            ImageDetail(item: detailProduct),
                                             Container(
                                                 margin:
                                                     const EdgeInsets.symmetric(
@@ -633,7 +605,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                       "Hủy Đặt Lịch",
                                       "Bạn có chắc chắn hủy đặt lịch này không?",
                                       () {
-                                    Navigator.pop(context);
+                                    Navigator.of(context).pop();
                                     EasyLoading.show(status: "Vui lòng chờ...");
                                     Future.delayed(const Duration(seconds: 2),
                                         () {
@@ -657,7 +629,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                         });
                                       });
                                     });
-                                  }, () => Navigator.pop(context));
+                                  }, () => Navigator.of(context).pop());
                                 },
                                 style: ButtonStyle(
                                     shape: MaterialStateProperty.all(
@@ -693,5 +665,184 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                           )
                       ],
                     )))));
+  }
+}
+
+class ImageDetail extends StatefulWidget {
+  final Map item;
+  const ImageDetail({super.key, required this.item});
+
+  @override
+  State<ImageDetail> createState() => _ImageDetailState();
+}
+
+int currentIndex = 0;
+
+class _ImageDetailState extends State<ImageDetail> {
+  final CarouselController carouselController = CarouselController();
+  PageController pageController = PageController();
+  ScrollController scrollController = ScrollController();
+  CustomModal customModal = CustomModal();
+
+  @override
+  Widget build(BuildContext context) {
+    List newList = [
+      widget.item["ImageList"][0]["Image_Name"],
+      widget.item["ImageList"][0]["Image_Name2"],
+      widget.item["ImageList"][0]["Image_Name3"],
+      widget.item["ImageList"][0]["Image_Name4"],
+      widget.item["ImageList"][0]["Image_Name5"]
+    ];
+    List<String> result = [];
+    for (var x in newList) {
+      if (!["", null, false, 0].contains(x)) {
+        result.add(x);
+      }
+    }
+
+    List<Widget> imgList = List<Widget>.generate(
+      result.length,
+      (index) => Container(
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+              // color: checkColor,
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ModalZoomImage(
+                          currentIndex: currentIndex, imageList: result)));
+            },
+            child: Image.network(
+              result[index],
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+              errorBuilder: (context, exception, stackTrace) {
+                return Image.network(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.fitHeight,
+                    'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+              },
+            ),
+          )),
+    );
+
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: (imgList.length > 1)
+          ? Column(
+              children: [
+                CarouselSlider.builder(
+                    carouselController: carouselController,
+                    options: CarouselOptions(
+                      aspectRatio: 2,
+                      height: 380,
+                      enlargeCenterPage: false,
+                      viewportFraction: 1,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          currentIndex = index;
+                        });
+                      },
+                    ),
+                    itemCount: imgList.length,
+                    itemBuilder: (context, index, realIndex) => imgList[index]),
+                const SizedBox(
+                  height: 8,
+                ),
+                SizedBox(
+                  height: 80,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    controller: scrollController,
+                    children: result.map((e) {
+                      int index = result.indexOf(e);
+                      return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              currentIndex = index;
+                              carouselController.animateToPage(index,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.linear);
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: index == 0 ? 0 : 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1,
+                                  color: currentIndex == index
+                                      ? mainColor
+                                      : Colors.white),
+                            ),
+                            child: Image.network(
+                              e,
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
+                          ));
+                    }).toList(),
+                  ),
+                )
+              ],
+            )
+          : imgList.length == 1
+              ? Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ModalZoomImage(
+                                  currentIndex: currentIndex,
+                                  imageList: result)));
+                    },
+                    child: Image.network(
+                      result[0],
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, exception, stackTrace) {
+                        return Image.network(
+                            fit: BoxFit.cover,
+                            'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                      },
+                    ),
+                  ))
+              : Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ModalZoomImage(
+                                      currentIndex: currentIndex,
+                                      imageList: [
+                                        "${widget.item["Image_Name"]}"
+                                      ])));
+                    },
+                    child: Image.network(
+                      "${widget.item["Image_Name"]}",
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, exception, stackTrace) {
+                        return Image.network(
+                            fit: BoxFit.cover,
+                            'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                      },
+                    ),
+                  )),
+    );
   }
 }

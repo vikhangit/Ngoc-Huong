@@ -47,7 +47,7 @@ class _VoucherDetailState extends State<VoucherDetail> {
     void addToCart() async {
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
           "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         EasyLoading.show(status: "Vui lòng chờ...");
         Future.delayed(const Duration(seconds: 2), () {
           Map data = {
@@ -70,13 +70,13 @@ class _VoucherDetailState extends State<VoucherDetail> {
                     builder: (context) => const AddCartSuccess()));
           });
         });
-      }, () => Navigator.pop(context));
+      }, () => Navigator.of(context).pop());
     }
 
     void updateCart(Map item) async {
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
           "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.pop(context);
+        Navigator.of(context).pop();
         EasyLoading.show(status: "Vui lòng chờ...");
         Future.delayed(const Duration(seconds: 2), () {
           cartModel.updateProductInCart({
@@ -96,7 +96,7 @@ class _VoucherDetailState extends State<VoucherDetail> {
                     builder: (context) => const AddCartSuccess()));
           });
         });
-      }, () => Navigator.pop(context));
+      }, () => Navigator.of(context).pop());
     }
 
     return SafeArea(
@@ -116,7 +116,7 @@ class _VoucherDetailState extends State<VoucherDetail> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -208,8 +208,8 @@ class _VoucherDetailState extends State<VoucherDetail> {
                           data: newsDetail["dien_giai"],
                           style: {
                             "*": Style(
-                              fontSize: FontSize(15),
-                            ),
+                                fontSize: FontSize(15),
+                                textAlign: TextAlign.justify),
                             "a": Style(
                                 textDecoration: TextDecoration.none,
                                 color: Colors.black),

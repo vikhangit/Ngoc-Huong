@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
@@ -22,32 +23,9 @@ class ThanhVienScreen extends StatefulWidget {
 
 int? _selectedIndex;
 int currentIndex = 0;
-List rank = [
-  {
-    "card": "assets/images/rank/BAC.png",
-    "rank": "Bạc",
-    "point": 100,
-    "key": "TV"
-  },
-  {
-    "card": "assets/images/rank/VANG.png",
-    "rank": "Vàng",
-    "point": 250,
-    "key": "Gold"
-  },
-  {
-    "card": "assets/images/rank/BACHKIM.png",
-    "rank": "Bạch kim",
-    "point": 500,
-    "key": "Platinum"
-  },
-  {
-    "card": "assets/images/rank/KIMCUONG.png",
-    "rank": "Kim cương",
-    "point": 1000,
-    "key": "Diamond"
-  },
-];
+List rank = [];
+Map profile = {};
+bool isLoading = true;
 
 class _MyPhamScreenState extends State<ThanhVienScreen>
     with TickerProviderStateMixin {
@@ -71,6 +49,17 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
       });
     }
     tabController?.addListener(_getActiveTabIndex);
+    profileModel.getProfile().then((value) => setState(() {
+          profile = value;
+        }));
+    memberModel.getAllRank().then((value) => setState(() {
+          rank = value.toList();
+        }));
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   void _getActiveTabIndex() {
@@ -92,6 +81,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
 
   @override
   Widget build(BuildContext context) {
+    print(rank);
     return SafeArea(
         bottom: false,
         child: Scaffold(
@@ -108,7 +98,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),
@@ -134,12 +124,29 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                 showIgnore: false,
                 showReleaseNotes: false,
               ),
-              child: FutureBuilder(
-                future: profileModel.getProfile(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    Map profile = snapshot.data!;
-                    return ListView(
+              child: isLoading
+                  ? const Center(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: LoadingIndicator(
+                                colors: kDefaultRainbowColors,
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                strokeWidth: 1,
+                                // pathBackgroundColor: Colors.black45,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Đang lấy dữ liệu")
+                          ]),
+                    )
+                  : Column(
                       children: [
                         Container(
                           margin: EdgeInsets.only(top: 20),
@@ -171,8 +178,8 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                     child: Stack(
                                       clipBehavior: Clip.none,
                                       children: [
-                                        Image.asset(
-                                          "${rank[currentIndex]["card"]}",
+                                        Image.network(
+                                          "${rank[currentIndex]["Image"]}",
                                           width:
                                               MediaQuery.of(context).size.width,
                                           height: 190,
@@ -209,26 +216,26 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                         .withOpacity(0.6)),
                                               ),
                                             )),
-                                        // Positioned(
-                                        //     bottom: -150,
-                                        //     left: 0,
-                                        //     width: (MediaQuery.of(context)
-                                        //             .size
-                                        //             .width -
-                                        //         30),
-                                        //     height: 100,
-                                        //     child: Container(
-                                        //       margin:
-                                        //           const EdgeInsets.symmetric(
-                                        //               horizontal: 10),
-                                        //       decoration: const BoxDecoration(
-                                        //           color: Colors.grey,
-                                        //           borderRadius:
-                                        //               BorderRadius.vertical(
-                                        //                   bottom:
-                                        //                       Radius.circular(
-                                        //                           12))),
-                                        //     ))
+                                        Positioned(
+                                            bottom: -150,
+                                            left: 0,
+                                            width: (MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                30),
+                                            height: 100,
+                                            child: Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                              decoration: const BoxDecoration(
+                                                  color: Colors.grey,
+                                                  borderRadius:
+                                                      BorderRadius.vertical(
+                                                          bottom:
+                                                              Radius.circular(
+                                                                  12))),
+                                            ))
                                       ],
                                     ));
                               }),
@@ -291,7 +298,7 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                 (e) => SizedBox(
                                   width: MediaQuery.of(context).size.width / 3 -
                                       20,
-                                  child: Tab(text: "${e["rank"]}"),
+                                  child: Tab(text: "${e["CardName"]}"),
                                 ),
                               )
                               .toList(),
@@ -299,235 +306,104 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                         const SizedBox(
                           height: 15,
                         ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height / 2,
+                        Expanded(
                           child: TabBarView(
                               controller: tabController,
                               children: rank.map((e) {
                                 int index = rank.indexOf(e);
-                                return FutureBuilder(
-                                  future: memberModel.getRank("${e["key"]}"),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return ListView(children: [
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 5, horizontal: 15),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(8)),
-                                              color: Colors.grey[300]),
-                                          child: index == 3
-                                              ? Text(
-                                                  "Bạn cần hơn ${profile["Point"] != null ? "${501 - profile["Point"]}" : "500 điểm"} nữa để đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!",
-                                                  style: const TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                )
-                                              : Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          "${profile["Point"] ?? 0} điểm",
-                                                          style: const TextStyle(
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600),
-                                                        ),
-                                                        Text(
-                                                          "${e["point"]}",
-                                                          style: const TextStyle(
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    Container(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              top: 5,
-                                                              bottom: 5),
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      height: 3,
-                                                      child:
-                                                          LinearProgressIndicator(
-                                                        value: profile[
-                                                                    "Point"] ==
-                                                                null
-                                                            ? 0
-                                                            : (profile[
-                                                                    "Point"] /
-                                                                e["point"]),
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                      ),
-                                                    ),
-                                                    profile["Point"] != null
-                                                        ? e["point"] >
-                                                                profile["Point"]
-                                                            ? Text(
-                                                                "Cần thêm ${e["point"] - profile["Point"]} điểm để thăng hạng ${rank[index + 1]["rank"]}",
-                                                                style: const TextStyle(
-                                                                    fontSize:
-                                                                        10,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                              )
-                                                            : Text(
-                                                                "Bạn đã đạt được hạng ${rank[index + 1]["rank"]}",
-                                                                style: const TextStyle(
-                                                                    fontSize:
-                                                                        10,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                              )
-                                                        : Text(
-                                                            "Cần thêm ${e["point"]} điểm để nâng hạng ${rank[index + 1]["rank"]}",
-                                                            style: const TextStyle(
-                                                                fontSize: 10,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                          )
-                                                  ],
-                                                ),
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Column(children: [
-                                          Container(
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 20),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.card_giftcard,
-                                                  size: 25,
-                                                  color: mainColor,
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                  "${snapshot.data!["Benfits"]}",
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w300),
-                                                ))
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: const BoxDecoration(
-                                                border: Border(
-                                                    top: BorderSide(
-                                                        width: 0.5,
-                                                        color: Colors.grey))),
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 20),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.card_giftcard,
-                                                  size: 25,
-                                                  color: mainColor,
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                  "${snapshot.data!["Perks"]}",
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w300),
-                                                ))
-                                              ],
-                                            ),
+                                return Column(children: [
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 15),
+                                    decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(8)),
+                                        color: Colors.grey[300]),
+                                    child: index == 3
+                                        ? Text(
+                                            profile["Point"] >=
+                                                    rank[3]["PointUpLevel"]
+                                                ? "Bạn đã đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!"
+                                                : "Bạn cần hơn ${rank[3]["PointUpLevel"] - profile["Point"]} điểm nữa để đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!",
+                                            style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w600),
                                           )
-                                        ])
-                                      ]);
-                                    } else {
-                                      return const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: LoadingIndicator(
-                                              colors: kDefaultRainbowColors,
-                                              indicatorType:
-                                                  Indicator.lineSpinFadeLoader,
-                                              strokeWidth: 1,
-                                              // pathBackgroundColor: Colors.black45,
-                                            ),
+                                        : Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "${profile["Point"] ?? 0} điểm",
+                                                    style: const TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                  Text(
+                                                    "${rank[index + 1]["PointUpLevel"]}",
+                                                    style: const TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  )
+                                                ],
+                                              ),
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                    top: 5, bottom: 5),
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: 3,
+                                                child: LinearProgressIndicator(
+                                                    value: profile["Point"] == 0
+                                                        ? 0
+                                                        : (profile["Point"] /
+                                                            (rank[index + 1][
+                                                                "PointUpLevel"])),
+                                                    color: mainColor),
+                                              ),
+                                              profile["Point"] == 0 ||
+                                                      rank[index + 1]
+                                                              ["PointUpLevel"] >
+                                                          profile["Point"]
+                                                  ? Text(
+                                                      "Cần thêm ${rank[index + 1]["PointUpLevel"] - profile["Point"]} điểm để thăng hạng ${rank[index + 1]["CardName"]}",
+                                                      style: const TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    )
+                                                  : const Text(
+                                                      "Bạn đã đủ điều kiện để đạt hạng này rồi",
+                                                      style: TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    )
+                                            ],
                                           ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text("Đang lấy dữ liệu")
-                                        ],
-                                      );
-                                    }
-                                  },
-                                );
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Html(data: "${e["Promotion"]}")
+                                ]);
                               }).toList()),
                         ),
                         const SizedBox(
                           height: 15,
                         )
                       ],
-                    );
-                  } else {
-                    return const Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: LoadingIndicator(
-                              colors: kDefaultRainbowColors,
-                              indicatorType: Indicator.lineSpinFadeLoader,
-                              strokeWidth: 1,
-                              // pathBackgroundColor: Colors.black45,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text("Đang lấy dữ liệu")
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
+                    ),
             )));
   }
 }
