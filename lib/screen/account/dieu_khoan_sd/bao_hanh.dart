@@ -6,14 +6,14 @@ import 'package:ngoc_huong/models/appInfoController.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:upgrader/upgrader.dart';
 
-class AboutUs extends StatefulWidget {
-  const AboutUs({super.key});
+class BaoHanhScreen extends StatefulWidget {
+  const BaoHanhScreen({super.key});
 
   @override
-  State<AboutUs> createState() => _AboutUsState();
+  State<BaoHanhScreen> createState() => _BaoHanhScreenState();
 }
 
-class _AboutUsState extends State<AboutUs> {
+class _BaoHanhScreenState extends State<BaoHanhScreen> {
   final AppInfoModel appInfoModel = AppInfoModel();
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _AboutUsState extends State<AboutUs> {
                     color: Colors.black,
                   ),
                 )),
-            title: const Text("Về Ngọc Hường Beauty",
+            title: const Text("Chính sách bảo hành",
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -70,9 +70,10 @@ class _AboutUsState extends State<AboutUs> {
                         padding: const EdgeInsets.only(
                             left: 15, right: 15, top: 20, bottom: 30),
                         children: [
-                          snapshot.data!["gioi_thieu"] != null
+                          snapshot.data!["exfields"]["cs_doi_tra"] != null
                               ? Html(
-                                  data: snapshot.data!["gioi_thieu"],
+                                  data: snapshot.data!["exfields"]
+                                      ["cs_doi_tra"],
                                   style: {
                                     "*": Style(
                                         fontSize: FontSize(15),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/screen/account/dieu_khoan_sd/bao_hanh.dart';
+import 'package:ngoc_huong/screen/account/dieu_khoan_sd/bao_mat.dart';
+import 'package:ngoc_huong/screen/account/dieu_khoan_sd/van_chuyen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -62,13 +65,10 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                 children: [
                   TextButton(
                       onPressed: () {
-                        customModal.showAlertDialog(
+                        Navigator.push(
                             context,
-                            "error",
-                            "Đang cập nhật",
-                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này",
-                            () => Navigator.of(context).pop(),
-                            () => Navigator.of(context).pop());
+                            MaterialPageRoute(
+                                builder: (context) => const BaoHanhScreen()));
                       },
                       style: ButtonStyle(
                           padding: MaterialStateProperty.all(
@@ -78,7 +78,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Điều khoản sử dụng",
+                            "Chính sách bảo hành",
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w300,
@@ -89,13 +89,10 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                       )),
                   TextButton(
                       onPressed: () {
-                        customModal.showAlertDialog(
+                        Navigator.push(
                             context,
-                            "error",
-                            "Đang cập nhật",
-                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này",
-                            () => Navigator.of(context).pop(),
-                            () => Navigator.of(context).pop());
+                            MaterialPageRoute(
+                                builder: (context) => const BaoMatScreen()));
                       },
                       style: ButtonStyle(
                           padding: MaterialStateProperty.all(
@@ -105,7 +102,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Chính sách thành viên",
+                            "Chính sách bảo mật thông tin",
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w300,
@@ -116,13 +113,10 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                       )),
                   TextButton(
                       onPressed: () {
-                        customModal.showAlertDialog(
+                        Navigator.push(
                             context,
-                            "error",
-                            "Đang cập nhật",
-                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này",
-                            () => Navigator.of(context).pop(),
-                            () => Navigator.of(context).pop());
+                            MaterialPageRoute(
+                                builder: (context) => const VanChuyenScreen()));
                       },
                       style: ButtonStyle(
                           padding: MaterialStateProperty.all(
@@ -132,7 +126,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Bảo mật thành viên",
+                            "Chính sách vận chuyển và giao hàng",
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w300,
@@ -140,7 +134,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                           ),
                           Icon(Icons.keyboard_arrow_right, color: Colors.black)
                         ],
-                      ))
+                      )),
                 ],
               ),
             ),
