@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/screen/cart/cart_success.dart';
-import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/gift_shop/chi_tiet_uu_dai.dart';
-import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -62,18 +59,12 @@ class _AllProductScreenState extends State<AllProductScreen> {
         }
       ]
     };
-    print("================ Data ==================");
-    print(data);
-    print("================ Data ==================");
     customModal.showAlertDialog(context, "error", "Giỏ hàng",
         "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
       Navigator.of(context).pop();
       EasyLoading.show(status: "Vui lòng chờ...");
       Future.delayed(const Duration(seconds: 2), () {
         cartModel.addToCart(data).then((value) {
-          print("================ Value ==================");
-          print(value);
-          print("================ Value ==================");
           EasyLoading.dismiss();
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const AddCartSuccess()));

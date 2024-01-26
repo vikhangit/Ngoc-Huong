@@ -30,7 +30,7 @@ class _ShopProductPageState extends State<ShopProductPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.5),
+            padding: const EdgeInsets.symmetric(horizontal: 12.5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -127,7 +127,7 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                                     .withOpacity(0.3),
                                                 spreadRadius: 2,
                                                 blurRadius: 2,
-                                                offset: Offset(0,
+                                                offset: const Offset(0,
                                                     1), // changes position of shadow
                                               ),
                                             ],
@@ -169,13 +169,13 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                             fontStyle: FontStyle.italic,
                                             fontWeight: FontWeight.w400),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 5,
                                       ),
                                     ],
                                   ),
                                   Container(
-                                    padding: EdgeInsets.all(2),
+                                    padding: const EdgeInsets.all(2),
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(8)),
@@ -185,7 +185,7 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                           color: Colors.grey.withOpacity(0.3),
                                           spreadRadius: 2,
                                           blurRadius: 2,
-                                          offset: Offset(0,
+                                          offset: const Offset(0,
                                               1), // changes position of shadow
                                         ),
                                       ],
@@ -193,7 +193,7 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                     child: GestureDetector(
                                         child: Container(
                                             alignment: Alignment.center,
-                                            padding: EdgeInsets.symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                                 vertical: 5),
                                             decoration: BoxDecoration(
                                               borderRadius:
@@ -210,10 +210,10 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                                   width: 20,
                                                   height: 20,
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   width: 3,
                                                 ),
-                                                Text(
+                                                const Text(
                                                   "10.000",
                                                   style: TextStyle(
                                                       fontSize: 12,

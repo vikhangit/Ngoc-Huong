@@ -13,7 +13,6 @@ import 'package:ngoc_huong/screen/profile/child/field_email.dart';
 import 'package:ngoc_huong/screen/profile/child/field_gender.dart';
 import 'package:ngoc_huong/screen/profile/child/field_name.dart';
 import 'package:ngoc_huong/screen//profile/child/field_phone.dart';
-import 'package:ngoc_huong/screen/choose_brand/chooseBrand.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';

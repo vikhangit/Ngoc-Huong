@@ -5,8 +5,6 @@ import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/beautify_history/modal_beautify_history_detail.dart';
-import 'package:ngoc_huong/screen/booking/modal/modal_chi_tiet_booking.dart';
-import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
@@ -49,7 +47,6 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     scrollController.dispose();
   }

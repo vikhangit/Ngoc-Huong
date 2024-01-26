@@ -3,9 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/order.dart';
-import 'package:ngoc_huong/screen/account/buy_history/beauty_profile.dart';
 import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
-import 'package:ngoc_huong/screen/account/buy_history/order_history.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
@@ -48,14 +46,6 @@ class _BuyHistoryState extends State<BuyHistory> {
 
   @override
   Widget build(BuildContext context) {
-    num totalBooking(List list) {
-      num total = 0;
-      for (var i = 0; i < list.length; i++) {
-        total += list[i]["Amount"];
-      }
-      return total;
-    }
-
     return SafeArea(
       bottom: false,
       child: Scaffold(
@@ -140,7 +130,13 @@ class _BuyHistoryState extends State<BuyHistory> {
                                                     builder: (context) =>
                                                         ModalChiTietBuy(
                                                           product: list[index],
-                                                          type: "",
+                                                          productInvoice: list[
+                                                                          index]
+                                                                      [
+                                                                      "DetailList"][0]
+                                                                  [
+                                                                  "ProductInvoiceId"]
+                                                              .toString(),
                                                           save: () {
                                                             setState(() {});
                                                           },

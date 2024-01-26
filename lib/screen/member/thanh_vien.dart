@@ -2,9 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
-import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/memberModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
@@ -395,7 +393,61 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                   const SizedBox(
                                     height: 15,
                                   ),
-                                  Html(data: "${e["Promotion"]}")
+                                  Column(children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 20),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.card_giftcard,
+                                            size: 25,
+                                            color: mainColor,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                              child: Text(
+                                            "${e["Promotion"]}",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w300),
+                                          ))
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                          border: Border(
+                                              top: BorderSide(
+                                                  width: 0.5,
+                                                  color: Colors.grey))),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 20),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.card_giftcard,
+                                            size: 25,
+                                            color: mainColor,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                              child: Text(
+                                            "${e["Benefit"]}",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w300),
+                                          ))
+                                        ],
+                                      ),
+                                    )
+                                  ])
                                 ]);
                               }).toList()),
                         ),

@@ -1,13 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/branchsModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/ModalZoomImage.dart';
-import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -145,13 +143,13 @@ class _ModalBeautifyHistoryDetailState
                                             // const SizedBox(
                                             //   height: 10,
                                             // ),
-                                            const Text(
-                                              "Chi tiết",
-                                              style: TextStyle(fontSize: 15),
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
+                                            // const Text(
+                                            //   "Chi tiết",
+                                            //   style: TextStyle(fontSize: 15),
+                                            // ),
+                                            // const SizedBox(
+                                            //   height: 5,
+                                            // ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -357,7 +355,7 @@ class _ModalBeautifyHistoryDetailState
                                                         Icons.description,
                                                         size: 22,
                                                       ),
-                                                      Text("Trạng thái",
+                                                      Text("Thông tin chi tiết",
                                                           style: TextStyle(
                                                               fontSize: 12,
                                                               color: Colors
@@ -407,6 +405,20 @@ int currentIndex = 0;
 class _ImageDetailState extends State<ImageDetail> {
   final CarouselController carouselController = CarouselController();
   ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      currentIndex = 0;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    currentIndex = 0;
+  }
 
   @override
   Widget build(BuildContext context) {

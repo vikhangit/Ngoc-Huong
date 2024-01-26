@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:upgrader/upgrader.dart';
 
 class DieuKhoanSudung extends StatefulWidget {
@@ -10,49 +11,15 @@ class DieuKhoanSudung extends StatefulWidget {
 }
 
 class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
+  CustomModal customModal = CustomModal();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Upgrader.clearSavedSettings();
   }
 
   @override
   Widget build(BuildContext context) {
-    void showAlertDialog(BuildContext context, String err) {
-      Widget okButton = TextButton(
-        child: const Text("OK"),
-        onPressed: () => Navigator.pop(context, 'OK'),
-      );
-      AlertDialog alert = AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        content: Builder(
-          builder: (context) {
-            return SizedBox(
-              // height: 30,
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                style: const TextStyle(height: 1.6),
-                err,
-              ),
-            );
-          },
-        ),
-        actions: [
-          okButton,
-        ],
-      );
-      // show the dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.white,
@@ -94,8 +61,13 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                 children: [
                   TextButton(
                       onPressed: () {
-                        showAlertDialog(context,
-                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                        customModal.showAlertDialog(
+                            context,
+                            "error",
+                            "Đang cập nhật",
+                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này",
+                            () => Navigator.of(context).pop(),
+                            () => Navigator.of(context).pop());
                       },
                       style: ButtonStyle(
                           padding: MaterialStateProperty.all(
@@ -116,8 +88,13 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                       )),
                   TextButton(
                       onPressed: () {
-                        showAlertDialog(context,
-                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                        customModal.showAlertDialog(
+                            context,
+                            "error",
+                            "Đang cập nhật",
+                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này",
+                            () => Navigator.of(context).pop(),
+                            () => Navigator.of(context).pop());
                       },
                       style: ButtonStyle(
                           padding: MaterialStateProperty.all(
@@ -138,8 +115,13 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                       )),
                   TextButton(
                       onPressed: () {
-                        showAlertDialog(context,
-                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này");
+                        customModal.showAlertDialog(
+                            context,
+                            "error",
+                            "Đang cập nhật",
+                            "Xin lỗi quý khách. Chúng tôi đang cập nhập tính năng này",
+                            () => Navigator.of(context).pop(),
+                            () => Navigator.of(context).pop());
                       },
                       style: ButtonStyle(
                           padding: MaterialStateProperty.all(

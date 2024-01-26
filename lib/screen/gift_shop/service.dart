@@ -6,7 +6,6 @@ import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/gift_shop/allService.dart';
 import 'package:ngoc_huong/screen/gift_shop/chi_tiet_uu_dai.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
-import 'package:ngoc_huong/screen/services/special_service.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
@@ -184,10 +183,10 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                                                 width: 20,
                                                 height: 20,
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 3,
                                               ),
-                                              Text(
+                                              const Text(
                                                 "5.000",
                                                 style: TextStyle(
                                                     fontSize: 12,

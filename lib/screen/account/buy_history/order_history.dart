@@ -239,7 +239,7 @@ class _OrderHistoryState extends State<OrderHistory>
                                                                           ModalChiTietBuy(
                                                                             product:
                                                                                 list[index],
-                                                                            type:
+                                                                            productInvoice:
                                                                                 "",
                                                                             save:
                                                                                 () {

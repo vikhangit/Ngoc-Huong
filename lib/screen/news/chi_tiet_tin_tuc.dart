@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:ngoc_huong/controllers/dio_client.dart';
-import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class ChiTietTinTuc extends StatefulWidget {

@@ -1,10 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
-import 'package:dynamic_carousel_indicator/dynamic_carousel_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/models/banner.dart';
-import 'package:ngoc_huong/screen/flash_sale/flash_sale_detail.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/screen/voucher_detail/voucher_detail.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';

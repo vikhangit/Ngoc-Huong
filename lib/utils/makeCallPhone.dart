@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:localstorage/localstorage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void makingPhoneCall() async {

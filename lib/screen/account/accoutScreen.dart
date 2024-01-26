@@ -24,7 +24,6 @@ import 'package:ngoc_huong/screen/account/tran_history/tran_history.dart';
 import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/member/thanh_vien.dart';
-import 'package:ngoc_huong/screen/news/tin_tuc.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
@@ -444,7 +443,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                           ),
                                           const Text(
                                             "150 xu",
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12),
                                           )
@@ -460,7 +459,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             height: 20,
                           ),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
                               children: [
                                 Stack(children: [

@@ -1,12 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/models/productModel.dart';
-import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
-import 'package:ngoc_huong/screen/cosmetic/special_cosmetic.dart';
-import 'package:ngoc_huong/screen/gift_shop/allProduct.dart';
 import 'package:ngoc_huong/screen/gift_shop/allVoucher.dart';
 import 'package:ngoc_huong/screen/gift_shop/chi_tiet_uu_dai.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';

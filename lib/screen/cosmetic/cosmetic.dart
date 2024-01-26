@@ -8,7 +8,6 @@ import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/screen/cart/cart_success.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
-import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';

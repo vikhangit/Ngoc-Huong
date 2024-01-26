@@ -1,16 +1,18 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
-import 'package:ngoc_huong/screen/account/buy_history/buy_history.dart';
+import 'package:ngoc_huong/screen/ModalZoomImage.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -19,13 +21,13 @@ import 'package:upgrader/upgrader.dart';
 
 class ModalChiTietBuy extends StatefulWidget {
   final Map product;
-  final String type;
+  final String productInvoice;
   final Function? save;
   final int? ac;
   const ModalChiTietBuy(
       {super.key,
       required this.product,
-      required this.type,
+      required this.productInvoice,
       this.save,
       this.ac});
 
@@ -43,6 +45,7 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
   final ProfileModel profileModel = ProfileModel();
   final ServicesModel serviceModel = ServicesModel();
   final ProductModel productModel = ProductModel();
+  final BookingModel bookingModel = BookingModel();
 
   @override
   void initState() {
@@ -294,6 +297,82 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                           )
                         ],
                       )),
+                  FutureBuilder(
+                      future: bookingModel
+                          .getImageUsingBooking(widget.productInvoice),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 10, left: 15, right: 15),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/account/dieu-khoan.png",
+                                        width: 20,
+                                        height: 20,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      const Text("Hình ảnh đơn hàng",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black))
+                                    ],
+                                  )),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: const EdgeInsets.only(
+                                    left: 15, right: 15, top: 10, bottom: 0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 20),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(14)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 1,
+                                      blurRadius: 8,
+                                      offset: const Offset(
+                                          4, 4), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: snapshot.data!.isEmpty
+                                    ? const Text(
+                                        "Chưa có hình ảnh đơn hàng",
+                                        textAlign: TextAlign.center,
+                                      )
+                                    : ImageDetail(
+                                        items: snapshot.data!.toList()),
+                              )
+                            ],
+                          );
+                        } else {
+                          return const SizedBox(
+                            height: 120,
+                            child: Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: LoadingIndicator(
+                                  colors: kDefaultRainbowColors,
+                                  indicatorType: Indicator.lineSpinFadeLoader,
+                                  strokeWidth: 0.5,
+                                  // pathBackgroundColor: Colors.black45,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      }),
                   const SizedBox(
                     height: 20,
                   ),
@@ -376,7 +455,7 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 15),
+                        vertical: 20, horizontal: 15),
                     margin: const EdgeInsets.only(left: 15, right: 15, top: 10),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -413,7 +492,7 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                                         },
                                         child: Container(
                                           margin: EdgeInsets.only(
-                                              top: index != 0 ? 10 : 0),
+                                              top: index != 0 ? 20 : 0),
                                           padding: EdgeInsets.only(
                                               top: index != 0 ? 10 : 0),
                                           decoration: BoxDecoration(
@@ -427,29 +506,29 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              // ClipRRect(
-                                              //   borderRadius:
-                                              //       const BorderRadius.all(
-                                              //           Radius.circular(10)),
-                                              //   child: Image.network(
-                                              //     "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                              //     errorBuilder: (context,
-                                              //         exception, stackTrace) {
-                                              //       return Image.network(
-                                              //         'http://ngochuong.osales.vn/assets/css/images/noimage.gif',
-                                              //         width: 110,
-                                              //         height: 110,
-                                              //         fit: BoxFit.cover,
-                                              //       );
-                                              //     },
-                                              //     width: 110,
-                                              //     height: 110,
-                                              //     fit: BoxFit.cover,
-                                              //   ),
-                                              // ),
-                                              // const SizedBox(
-                                              //   width: 10,
-                                              // ),
+                                              ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(10)),
+                                                child: Image.network(
+                                                  "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                  errorBuilder: (context,
+                                                      exception, stackTrace) {
+                                                    return Image.network(
+                                                      'http://ngochuong.osales.vn/assets/css/images/noimage.gif',
+                                                      width: 110,
+                                                      height: 110,
+                                                      fit: BoxFit.cover,
+                                                    );
+                                                  },
+                                                  width: 110,
+                                                  height: 110,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
                                               Expanded(
                                                   child: Column(
                                                 crossAxisAlignment:
@@ -615,28 +694,28 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              // ClipRRect(
-                                              //   borderRadius:
-                                              //       const BorderRadius.all(
-                                              //           Radius.circular(10)),
-                                              //   child: Image.network(
-                                              //     "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                              //     errorBuilder: (context,
-                                              //         exception, stackTrace) {
-                                              //       return Image.network(
-                                              //           width: 110,
-                                              //           height: 110,
-                                              //           fit: BoxFit.cover,
-                                              //           'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
-                                              //     },
-                                              //     width: 110,
-                                              //     height: 110,
-                                              //     fit: BoxFit.cover,
-                                              //   ),
-                                              // ),
-                                              // const SizedBox(
-                                              //   width: 10,
-                                              // ),
+                                              ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(10)),
+                                                child: Image.network(
+                                                  "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                  errorBuilder: (context,
+                                                      exception, stackTrace) {
+                                                    return Image.network(
+                                                        width: 110,
+                                                        height: 110,
+                                                        fit: BoxFit.cover,
+                                                        'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                                                  },
+                                                  width: 110,
+                                                  height: 110,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
                                               Expanded(
                                                   child: Column(
                                                 crossAxisAlignment:
@@ -926,5 +1005,148 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                 ],
               ),
             )));
+  }
+}
+
+class ImageDetail extends StatefulWidget {
+  final List items;
+  const ImageDetail({super.key, required this.items});
+
+  @override
+  State<ImageDetail> createState() => _ImageDetailState();
+}
+
+int currentIndex = 0;
+
+class _ImageDetailState extends State<ImageDetail> {
+  final CarouselController carouselController = CarouselController();
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      currentIndex = 0;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    currentIndex = 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List newList = widget.items;
+    List<String> result =
+        List.generate(newList.length, (index) => newList[index]["FilePath"]);
+    List<Widget> imgList = List<Widget>.generate(
+      newList.length,
+      (index) => Container(
+        alignment: Alignment.center,
+        decoration: const BoxDecoration(
+            // color: checkColor,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ModalZoomImage(
+                        currentIndex: currentIndex, imageList: result)));
+          },
+          child: Image.network(
+            result[index],
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+    return SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: (imgList.length > 1)
+            ? Column(
+                children: [
+                  CarouselSlider.builder(
+                      carouselController: carouselController,
+                      options: CarouselOptions(
+                        aspectRatio: 2,
+                        height: 380,
+                        enlargeCenterPage: false,
+                        viewportFraction: 1,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            currentIndex = index;
+                          });
+                        },
+                      ),
+                      itemCount: imgList.length,
+                      itemBuilder: (context, index, realIndex) =>
+                          imgList[index]),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  SizedBox(
+                    height: 70,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      controller: scrollController,
+                      children: result.map((e) {
+                        int index = result.indexOf(e);
+                        return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                currentIndex = index;
+                                carouselController.animateToPage(index,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.linear);
+                              });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: index == 0 ? 0 : 5),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1,
+                                    color: currentIndex == index
+                                        ? mainColor
+                                        : Colors.white),
+                              ),
+                              child: Image.network(
+                                e,
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              ),
+                            ));
+                      }).toList(),
+                    ),
+                  )
+                ],
+              )
+            : imgList.length == 1
+                ? Container(
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                        // color: checkColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ModalZoomImage(
+                                    currentIndex: currentIndex,
+                                    imageList: result)));
+                      },
+                      child: Image.network(
+                        result[0],
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+                      ),
+                    ))
+                : Container());
   }
 }

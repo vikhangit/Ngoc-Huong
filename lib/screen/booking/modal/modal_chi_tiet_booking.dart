@@ -685,6 +685,20 @@ class _ImageDetailState extends State<ImageDetail> {
   CustomModal customModal = CustomModal();
 
   @override
+  void initState() {
+    super.initState();
+    setState(() {
+      currentIndex = 0;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    currentIndex = 0;
+  }
+
+  @override
   Widget build(BuildContext context) {
     List newList = [
       widget.item["ImageList"][0]["Image_Name"],

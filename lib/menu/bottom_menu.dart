@@ -1,29 +1,19 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/models/ExpectedScanResult.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
-import 'package:ngoc_huong/screen/account/booking_history/booking_history.dart';
-import 'package:ngoc_huong/screen/booking/booking.dart';
-import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
-import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
 import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/scan_order/orderPage.dart';
-import 'package:ngoc_huong/screen/scan_order/scanQr.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
-import 'package:ngoc_huong/screen/services/all_service.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
-import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class MyBottomMenu extends StatefulWidget {
   final int active;
@@ -59,9 +49,6 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
     } on PlatformException {
       barCodeScanRes = "Fail to get platform version.";
     }
-    print("--------------------------------------------");
-    debugPrint(barCodeScanRes);
-    print("--------------------------------------------");
     if (!mounted) return;
     Navigator.push(
         context,
@@ -77,9 +64,6 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
     } on PlatformException {
       barCodeScanRes = "Fail to get platform version.";
     }
-    print("--------------------------------------------");
-    debugPrint(barCodeScanRes);
-    print("--------------------------------------------");
     if (!mounted) return;
     Navigator.push(
         context,

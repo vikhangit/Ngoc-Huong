@@ -61,18 +61,12 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
         }
       ]
     };
-    print("================ Data ==================");
-    print(data);
-    print("================ Data ==================");
     customModal.showAlertDialog(context, "error", "Giỏ hàng",
         "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
       Navigator.of(context).pop();
       EasyLoading.show(status: "Vui lòng chờ...");
       Future.delayed(const Duration(seconds: 2), () {
         cartModel.addToCart(data).then((value) {
-          print("================ Value ==================");
-          print(value);
-          print("================ Value ==================");
           EasyLoading.dismiss();
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const AddCartSuccess()));

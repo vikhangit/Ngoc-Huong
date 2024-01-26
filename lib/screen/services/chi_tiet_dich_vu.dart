@@ -1,21 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dots_indicator/dots_indicator.dart';
-import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
-import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/modalZoomImage.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
-import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class ChiTietScreen extends StatefulWidget {
@@ -376,6 +369,21 @@ int currentIndex = 0;
 class _ImageDetailState extends State<ImageDetail> {
   final CarouselController carouselController = CarouselController();
   ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      currentIndex = 0;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    currentIndex = 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     List newList = widget.item["ImageList"].isNotEmpty

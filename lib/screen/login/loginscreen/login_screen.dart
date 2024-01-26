@@ -97,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                                 child: ListView(children: [

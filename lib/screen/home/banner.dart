@@ -4,7 +4,6 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/models/banner.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
-import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class BannerSlider extends StatefulWidget {
   const BannerSlider({super.key});

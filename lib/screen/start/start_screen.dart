@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:ngoc_huong/screen/choose_brand/chooseBrand.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/utils/notification_services.dart';

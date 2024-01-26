@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
-import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/gift_shop/chi_tiet_uu_dai.dart';
-import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
-import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
@@ -134,7 +130,7 @@ class _AllServiceScreenState extends State<AllServiceScreen> {
                                                       .withOpacity(0.3),
                                                   spreadRadius: 2,
                                                   blurRadius: 2,
-                                                  offset: Offset(0,
+                                                  offset: const Offset(0,
                                                       1), // changes position of shadow
                                                 ),
                                               ],
