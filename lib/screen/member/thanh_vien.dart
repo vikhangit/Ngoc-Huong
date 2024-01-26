@@ -81,7 +81,8 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
   Widget build(BuildContext context) {
     print(rank);
     return SafeArea(
-        bottom: false,
+        
+        bottom: false, top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,

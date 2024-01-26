@@ -44,7 +44,7 @@ class _ModalBeautifyHistoryDetailState
     Map detailBooking = widget.detailBooking;
     List imageList = widget.listImageUsing;
     return SafeArea(
-      bottom:false,
+      bottom: false, top: false,
         child: Scaffold(
           key: scaffoldKey,
             backgroundColor: Colors.white,

@@ -140,7 +140,8 @@ class _GiftShopDetailState extends State<GiftShopDetail>
     }
 
     return SafeArea(
-        bottom: false,
+        
+        bottom: false, top: false,
         child: Scaffold(
             key: scaffoldKey,
             backgroundColor: Colors.white,

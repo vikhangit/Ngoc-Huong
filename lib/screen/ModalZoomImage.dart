@@ -36,7 +36,8 @@ class _ModalZoomImageState extends State<ModalZoomImage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.black,

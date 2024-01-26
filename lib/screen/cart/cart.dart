@@ -126,7 +126,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     //   const
     // }
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,

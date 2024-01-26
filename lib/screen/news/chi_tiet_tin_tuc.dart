@@ -27,7 +27,8 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     Map newsDetail = widget.detail;
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.white,

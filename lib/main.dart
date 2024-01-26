@@ -85,9 +85,7 @@ class _MyAppState extends State<MyApp> {
       initLanguageCode: 'vi',
     );
     super.initState();
-    if (Platform.isAndroid) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    }
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   @override

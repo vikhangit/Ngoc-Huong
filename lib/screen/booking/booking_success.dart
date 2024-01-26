@@ -68,7 +68,8 @@ class _BookingSuccessState extends State<BookingSuccess>
   Widget build(BuildContext context) {
     var details = widget.details;
     return SafeArea(
-        bottom: false,
+        
+        bottom: false, top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,

@@ -59,7 +59,8 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,

@@ -49,7 +49,8 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        bottom: false,
+        
+        bottom: false, top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -60,8 +61,6 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
                   active: 0,
                 )),
             appBar: AppBar(
-              primary: false,
-              elevation: 0.0,
               leadingWidth: 45,
               centerTitle: true,
               leading: GestureDetector(

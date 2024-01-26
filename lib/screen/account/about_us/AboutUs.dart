@@ -25,7 +25,8 @@ class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,

@@ -55,7 +55,8 @@ class _AddCartSuccessState extends State<AddCartSuccess>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        bottom: false,
+        
+        bottom: false, top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,

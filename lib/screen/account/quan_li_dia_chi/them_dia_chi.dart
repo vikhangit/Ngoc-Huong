@@ -134,7 +134,8 @@ class _QuanLiDiaChiState extends State<ThemDiaChi> {
         borderRadius: BorderRadius.all(Radius.circular(10)),
         borderSide: BorderSide(width: 1, color: Colors.grey));
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,

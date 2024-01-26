@@ -201,7 +201,8 @@ class _InfomationAccountState extends State<InfomationAccount> {
         key: _formKey,
         child: Builder(
             builder: (context) => SafeArea(
-                  bottom: false,
+                  
+                  bottom: false, top: false,
                   child: Scaffold(
                       backgroundColor: Colors.white,
                       resizeToAvoidBottomInset: true,

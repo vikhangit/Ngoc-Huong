@@ -98,7 +98,8 @@ class _VoucherDetailState extends State<VoucherDetail> {
     }
 
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.white,

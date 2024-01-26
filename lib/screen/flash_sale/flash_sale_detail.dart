@@ -98,7 +98,8 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
     }
 
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.white,

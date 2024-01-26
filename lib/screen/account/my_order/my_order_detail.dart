@@ -58,7 +58,8 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
     }
 
     return SafeArea(
-        bottom: false,
+        
+        bottom: false, top: false,
         child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,

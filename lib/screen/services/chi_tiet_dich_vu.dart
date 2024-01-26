@@ -70,7 +70,8 @@ class _ChiTietScreenState extends State<ChiTietScreen>
     Map detail = widget.detail;
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.white,

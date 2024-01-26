@@ -102,7 +102,8 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        bottom: false,
+        
+        bottom: false, top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -113,8 +114,6 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                   active: 0,
                 )),
             appBar: AppBar(
-              primary: false,
-              elevation: 0.0,
               leadingWidth: 45,
               centerTitle: true,
               leading: GestureDetector(

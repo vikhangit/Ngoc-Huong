@@ -337,7 +337,8 @@ class _AccountScreenState extends State<AccountScreen> {
     }
 
     return SafeArea(
-      bottom: false,
+      
+      bottom: false, top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
