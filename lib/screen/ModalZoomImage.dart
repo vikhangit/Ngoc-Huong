@@ -6,6 +6,7 @@ import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:upgrader/upgrader.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 
 class ModalZoomImage extends StatefulWidget {
   final int currentIndex;
@@ -22,6 +23,7 @@ int currentIndex = 0;
 class _ModalZoomImageState extends State<ModalZoomImage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   PageController pageController = PageController();
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -42,8 +44,11 @@ class _ModalZoomImageState extends State<ModalZoomImage> {
           // bottomNavigationBar: ScrollToHide(
           //     scrollController: scrollController,
           //     height: 100,
-          //     child: const MyBottomMenu(
-          //       active: 0,
+          //     child: Container(
+          //       height: 100,
+          //       decoration: const BoxDecoration(
+          //         color: Colors.black
+          //       ),
           //     )),
           appBar: AppBar(
             backgroundColor: Colors.black,

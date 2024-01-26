@@ -43,6 +43,7 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
         widget.history != null ? widget.details : widget.details["Data"];
     DateTime databook = DateTime.parse(details["StartDate"]);
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,

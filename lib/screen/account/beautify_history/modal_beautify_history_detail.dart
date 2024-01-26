@@ -32,6 +32,7 @@ class _ModalBeautifyHistoryDetailState
   final BranchsModel branchsModel = BranchsModel();
   final BookingModel bookingModel = BookingModel();
   final CustomModal customModal = CustomModal();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
@@ -43,7 +44,9 @@ class _ModalBeautifyHistoryDetailState
     Map detailBooking = widget.detailBooking;
     List imageList = widget.listImageUsing;
     return SafeArea(
+      bottom:false,
         child: Scaffold(
+          key: scaffoldKey,
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
@@ -77,12 +80,7 @@ class _ModalBeautifyHistoryDetailState
                   showIgnore: false,
                   showReleaseNotes: false,
                 ),
-                child: Container(
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListView(
+                child: ListView(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 20),
                             children: [
@@ -385,10 +383,7 @@ class _ModalBeautifyHistoryDetailState
                                         )),
                                   ])
                             ],
-                          ),
-                        ),
-                      ],
-                    )))));
+                          ))));
   }
 }
 

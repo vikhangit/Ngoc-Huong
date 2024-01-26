@@ -8,15 +8,15 @@ Widget bannerLogin(BuildContext context) {
   final LocalStorage storageStart = LocalStorage("start");
   print(storageStart.getItem("start"));
   return Container(
-    height: MediaQuery.of(context).size.height - 325,
     width: MediaQuery.of(context).size.width,
+    height: MediaQuery.of(context).size.height - 375,
     padding: const EdgeInsets.only(right: 15, top: 10),
     alignment: Alignment.topRight,
     decoration: const BoxDecoration(
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         image: DecorationImage(
           image: AssetImage("assets/images/login/banner.jpg"),
-          fit: BoxFit.cover,
+          fit: BoxFit.cover
         )),
     child: GestureDetector(
       onTap: () {

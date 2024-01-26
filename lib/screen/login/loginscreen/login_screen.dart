@@ -84,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
         key: _formKey,
         child: Builder(
             builder: (BuildContext context) => SafeArea(
+              bottom: false,
                   child: Scaffold(
                       backgroundColor: Colors.white,
                       resizeToAvoidBottomInset: true,

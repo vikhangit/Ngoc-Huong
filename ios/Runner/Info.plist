@@ -5,13 +5,13 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>NSUserNotificationsUsageDescription</key>
-	<string>Can I push notification?</string>
+	<string>Cho phép chúng tôi gửi thông báo đến bạn để nhắc nhỡ bạn về Lịch, Đơn hàng và các ưu đãi</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>App need access Photo Library Usage to upload avatar</string>
+	<string>Cho phép chúng tôi truy cập Thư Viện Ảnh của bạn để cập nhật ảnh đại diện</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Can I use the camera please?</string>
+	<string>Cho phép chúng tôi truy cập Máy Ảnh của bạn để quét mã QR thanh toán</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Can I use the mic please?</string>
+	<string>Cho phép chúng tôi truy cập Microphone của bạn để CSKH có thể trao đổi với bạn</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

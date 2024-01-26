@@ -86,12 +86,12 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            bottomNavigationBar: ScrollToHide(
-                scrollController: scrollController,
-                height: 100,
-                child: const MyBottomMenu(
-                  active: 4,
-                )),
+            // bottomNavigationBar: ScrollToHide(
+            //     scrollController: scrollController,
+            //     height: 100,
+            //     child: const MyBottomMenu(
+            //       active: 4,
+            //     )),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,

@@ -63,6 +63,7 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
