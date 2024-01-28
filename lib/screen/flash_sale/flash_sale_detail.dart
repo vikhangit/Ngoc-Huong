@@ -1,16 +1,20 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
+import 'package:ngoc_huong/screen/ModalZoomImage.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/cart/cart_success.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -98,8 +102,8 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
     }
 
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.white,
@@ -150,30 +154,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 15, horizontal: 15),
                     children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Color.fromRGBO(
-                                    0, 0, 0, 0.10000000149011612),
-                                offset: Offset(0, 3),
-                                blurRadius: 8)
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(14)),
-                          child: Image.network(
-                            "https://api.goodapp.vn/${newsDetail["picture"]}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
-                            width: MediaQuery.of(context).size.width,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                      ImageDetail(item: newsDetail),
                       const SizedBox(
                         height: 15,
                       ),
@@ -500,6 +481,203 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
               ],
             ),
           )),
+    );
+  }
+}
+
+class ImageDetail extends StatefulWidget {
+  final Map item;
+  const ImageDetail({super.key, required this.item});
+
+  @override
+  State<ImageDetail> createState() => _ImageDetailState();
+}
+
+int currentIndex = 0;
+
+class _ImageDetailState extends State<ImageDetail> {
+  final CarouselController carouselController = CarouselController();
+  PageController pageController = PageController();
+  ScrollController scrollController = ScrollController();
+  CustomModal customModal = CustomModal();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      currentIndex = 0;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    currentIndex = 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List newList = [
+      widget.item["picture"],
+      widget.item["picture2"],
+      widget.item["picture3"]
+    ];
+    List<String> result = [];
+    for (var x in newList) {
+      if (!["", null, false, 0].contains(x)) {
+        result.add("$goodAppUrl/$x?$token");
+      }
+    }
+
+    List<Widget> imgList = List<Widget>.generate(
+      result.length,
+      (index) => Container(
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+              // color: checkColor,
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ModalZoomImage(
+                          currentIndex: currentIndex, imageList: result)));
+            },
+            child: Image.network(
+              result[index],
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              fit: BoxFit.cover,
+              errorBuilder: (context, exception, stackTrace) {
+                return Image.network(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.fitHeight,
+                    'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+              },
+            ),
+          )),
+    );
+
+    return Container(
+      // height: 200,
+      width: MediaQuery.of(context).size.width,
+      child: (imgList.length > 1)
+          ? Column(
+              children: [
+                CarouselSlider.builder(
+                    carouselController: carouselController,
+                    options: CarouselOptions(
+                      aspectRatio: 2,
+                      height: 200,
+                      enlargeCenterPage: false,
+                      viewportFraction: 1,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          currentIndex = index;
+                        });
+                      },
+                    ),
+                    itemCount: imgList.length,
+                    itemBuilder: (context, index, realIndex) => imgList[index]),
+                const SizedBox(
+                  height: 8,
+                ),
+                SizedBox(
+                  child: Row(
+                    // scrollDirection: Axis.horizontal,
+                    // controller: scrollController,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: result.map((e) {
+                      int index = result.indexOf(e);
+                      return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              currentIndex = index;
+                              carouselController.animateToPage(index,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.linear);
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: index == 0 ? 0 : 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1,
+                                  color: currentIndex == index
+                                      ? mainColor
+                                      : Colors.white),
+                            ),
+                            child: Image.network(
+                              e,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            ),
+                          ));
+                    }).toList(),
+                  ),
+                )
+              ],
+            )
+          : imgList.length == 1
+              ? Container(
+                  height: 200,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ModalZoomImage(
+                                  currentIndex: currentIndex,
+                                  imageList: result)));
+                    },
+                    child: Image.network(
+                      result[0],
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, exception, stackTrace) {
+                        return Image.network(
+                            fit: BoxFit.cover,
+                            'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                      },
+                    ),
+                  ))
+              : Container(
+                  alignment: Alignment.center,
+                  height: 200,
+                  decoration: const BoxDecoration(
+                      // color: checkColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ModalZoomImage(
+                                      currentIndex: currentIndex,
+                                      imageList: [
+                                        "${widget.item["Image_Name"]}"
+                                      ])));
+                    },
+                    child: Image.network(
+                      "$goodAppUrl/${widget.item["picture"]}?$token",
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, exception, stackTrace) {
+                        return Image.network(
+                            fit: BoxFit.cover,
+                            'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                      },
+                    ),
+                  )),
     );
   }
 }

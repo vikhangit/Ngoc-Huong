@@ -36,7 +36,7 @@ class _VoucherState extends State<Voucher> {
           ),
         ),
         FutureBuilder(
-            future: bannerModel.getFlashSale(),
+            future: bannerModel.getVoucher(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 DateTime now = DateTime.now();
