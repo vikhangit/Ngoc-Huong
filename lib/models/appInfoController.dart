@@ -25,4 +25,46 @@ class AppInfoModel {
     }
     return result;
   }
+
+  Future<List> getAboutUs(String text) async {
+    List result = [];
+    try {
+      Response response =
+          await client.dio.get('$goodAppUrl/api/$idApp/info.$text?$token',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                // 'Authorization':
+                //     '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
+      if (response.statusCode == 200) {
+        return result = response.data;
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
+  Future<List> getPo() async {
+    List result = [];
+    try {
+      Response response =
+          await client.dio.get('$goodAppUrl/api/$idApp/info.intro?$token',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                // 'Authorization':
+                //     '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
+      if (response.statusCode == 200) {
+        return result = response.data;
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
 }

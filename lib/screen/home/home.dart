@@ -92,8 +92,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     print(storageCustomerToken.getItem("customer_token"));
     print("---------------------------------------");
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.white,
@@ -119,7 +119,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 padding: const EdgeInsets.only(bottom: 20),
                 controller: scrollController,
                 children: [
-                 const SizedBox(height: 60,),
+                  if (!Platform.isAndroid)
+                    const SizedBox(
+                      height: 60,
+                    ),
                   const TopBanner(),
                   storageCustomerToken.getItem("customer_token") == null
                       ? const Register()

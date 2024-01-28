@@ -25,8 +25,8 @@ class _VanChuyenScreenState extends State<VanChuyenScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -63,7 +63,7 @@ class _VanChuyenScreenState extends State<VanChuyenScreen> {
                 showReleaseNotes: false,
               ),
               child: FutureBuilder(
-                  future: appInfoModel.getAppInfo(),
+                  future: appInfoModel.getAboutUs("policy3"),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Expanded(
@@ -71,11 +71,12 @@ class _VanChuyenScreenState extends State<VanChuyenScreen> {
                         padding: const EdgeInsets.only(
                             left: 15, right: 15, top: 20, bottom: 30),
                         children: [
-                          snapshot.data!["exfields"]["cs_vanchuyen_giaohang"] !=
-                                  null
+                          snapshot.data!.isNotEmpty &&
+                                  snapshot.data![0]["content"]
+                                      .toString()
+                                      .isNotEmpty
                               ? Html(
-                                  data: snapshot.data!["exfields"]
-                                      ["cs_vanchuyen_giaohang"],
+                                  data: snapshot.data![0]["content"],
                                   style: {
                                     "*": Style(
                                         fontSize: FontSize(15),
@@ -87,7 +88,7 @@ class _VanChuyenScreenState extends State<VanChuyenScreen> {
                                         fontSize: FontSize(15),
                                         fontWeight: FontWeight.w300,
                                         textAlign: TextAlign.justify),
-                                    "img": Style(margin: Margins.only(top: 5))
+                                    // "img": Style(margin: Margins.only(top: 5))
                                     //   "img": Style(
                                     //     width: Width(MediaQuery.of(context).size.width * .85),
                                     //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),

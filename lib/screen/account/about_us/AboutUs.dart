@@ -25,8 +25,8 @@ class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -63,7 +63,7 @@ class _AboutUsState extends State<AboutUs> {
                 showReleaseNotes: false,
               ),
               child: FutureBuilder(
-                  future: appInfoModel.getAppInfo(),
+                  future: appInfoModel.getAboutUs("intro"),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Expanded(
@@ -71,9 +71,12 @@ class _AboutUsState extends State<AboutUs> {
                         padding: const EdgeInsets.only(
                             left: 15, right: 15, top: 20, bottom: 30),
                         children: [
-                          snapshot.data!["gioi_thieu"] != null
+                          snapshot.data!.isNotEmpty &&
+                                  snapshot.data![0]["content"]
+                                      .toString()
+                                      .isNotEmpty
                               ? Html(
-                                  data: snapshot.data!["gioi_thieu"],
+                                  data: "${snapshot.data![0]["content"]}",
                                   style: {
                                     "*": Style(
                                         fontSize: FontSize(15),
