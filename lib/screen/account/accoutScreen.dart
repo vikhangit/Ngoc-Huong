@@ -383,6 +383,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (!Platform.isAndroid)
+                    const SizedBox(
+                      height: 60,
+                    ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(

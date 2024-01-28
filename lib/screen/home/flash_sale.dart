@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/models/banner.dart';
 import 'package:ngoc_huong/screen/flash_sale/flash_sale_detail.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -126,6 +127,7 @@ class _FlashSaleState extends State<FlashSale> {
                             )));
               },
               child: Container(
+                 height: 250,
                   padding: const EdgeInsets.all(5),
                   margin: const EdgeInsets.only(
                       left: 5, right: 5, top: 5, bottom: 5),
@@ -145,7 +147,7 @@ class _FlashSaleState extends State<FlashSale> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      "https://api.goodapp.vn/${e["picture"]}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
+                      "$goodAppUrl/${e["picture"]}?$token",
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
                       fit: BoxFit.cover,
@@ -228,7 +230,7 @@ class _FlashSaleState extends State<FlashSale> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                    "https://api.goodapp.vn/${list[0]["picture"]}?access_token=028e7792d98ffa9234c1eb257b0f0a22",
+                    "$goodAppUrl/${list[0]["picture"]}?$token",
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
                   ),

@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/models/banner.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/screen/voucher_detail/voucher_detail.dart';
@@ -144,8 +145,8 @@ class _VoucherState extends State<Voucher> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      "assets/images/voucher1.png",
+                    child: Image.network(
+                     "$goodAppUrl/${e["picture"]}?$token",
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover,
                     ),
@@ -210,6 +211,7 @@ class _VoucherState extends State<Voucher> {
             },
             child: Container(
                 padding: const EdgeInsets.all(5),
+                height: 250,
                 margin:
                     const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
                 decoration: BoxDecoration(
@@ -226,8 +228,8 @@ class _VoucherState extends State<Voucher> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    "assets/images/voucher1.png",
+                  child: Image.network(
+                    "$goodAppUrl/${list[0]["picture"]}?$token",
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
                   ),
