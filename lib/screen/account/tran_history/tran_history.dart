@@ -208,14 +208,7 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const Text("Tháng 3/2024",
-                                                  style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.w400)),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
+                                            
                                               Column(
                                                 children: List.generate(
                                                     receiptHistory.length,

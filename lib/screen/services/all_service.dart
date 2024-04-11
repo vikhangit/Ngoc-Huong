@@ -243,7 +243,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                             children: [
                               FutureBuilder(
                                 future:
-                                    productModel.getProductByGroup(activeCode),
+                                    servicesModel.getServiceByGroup(activeCode),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     List list = snapshot.data!.toList();

@@ -163,23 +163,24 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                         ),
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                          "assets/images/calendar-solid-black.png",
-                                          width: 24,
-                                          height: 24,
-                                          fit: BoxFit.contain,
-                                        ),
-                                        const SizedBox(width: 3),
-                                        const Text(
-                                          "Còn 100",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
+                                    // Row(
+                                    //   children: [
+                                    //     Image.asset(
+                                    //       "assets/images/calendar-solid-black.png",
+                                    //       width: 24,
+                                    //       height: 24,
+                                    //       fit: BoxFit.contain,
+                                    //     ),
+                                    //     const SizedBox(width: 3),
+                                    //     const Text(
+                                    //       "Còn 100",
+                                    //       style: TextStyle(
+                                    //           fontWeight: FontWeight.w600,
+                                    //           color: Colors.black),
+                                    //     ),
+                                    //   ],
+                                    // ),
+                                  
                                   ],
                                 ),
                               ),

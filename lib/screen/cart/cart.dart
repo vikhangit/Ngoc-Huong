@@ -198,7 +198,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                              height: MediaQuery.of(context).size.height - 375,
+                              height: MediaQuery.of(context).size.height - 405,
                               child: ListView(
                                 controller: scrollController,
                                 children: allCart.map((ele) {
