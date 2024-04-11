@@ -19,6 +19,7 @@ Widget inputOTP(
         horizontal: 30,
       ),
       child: PinCodeTextField(
+        autoFocus: true,
         appContext: context,
         pastedTextStyle: TextStyle(
           color: Colors.black.withOpacity(0.8),

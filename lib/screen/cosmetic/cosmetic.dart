@@ -16,7 +16,8 @@ import 'package:upgrader/upgrader.dart';
 
 class Cosmetic extends StatefulWidget {
   final List listTab;
-  const Cosmetic({super.key, required this.listTab});
+  final bool? isShop;
+  const Cosmetic({super.key, required this.listTab, this.isShop});
 
   @override
   State<Cosmetic> createState() => _CosmeticState();
@@ -165,8 +166,8 @@ class _CosmeticState extends State<Cosmetic> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -351,6 +352,8 @@ class _CosmeticState extends State<Cosmetic> {
                                                             ProductDetail(
                                                               details: item,
                                                               detailPage: true,
+                                                              isShop:
+                                                                  widget.isShop,
                                                             )));
                                               },
                                               child: Stack(
@@ -383,7 +386,8 @@ class _CosmeticState extends State<Cosmetic> {
                                                                     0.3),
                                                             spreadRadius: 2,
                                                             blurRadius: 2,
-                                                            offset: Offset(0,
+                                                            offset: const Offset(
+                                                                0,
                                                                 1), // changes position of shadow
                                                           ),
                                                         ],
@@ -431,7 +435,7 @@ class _CosmeticState extends State<Cosmetic> {
                                                                             2,
                                                                         blurRadius:
                                                                             2,
-                                                                        offset: Offset(
+                                                                        offset: const Offset(
                                                                             0,
                                                                             1), // changes position of shadow
                                                                       ),
@@ -470,15 +474,15 @@ class _CosmeticState extends State<Cosmetic> {
                                                                         FontWeight
                                                                             .w600),
                                                               ),
-                                                              SizedBox(
+                                                              const SizedBox(
                                                                 height: 5,
                                                               ),
                                                             ],
                                                           ),
                                                           Container(
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    2),
+                                                                const EdgeInsets
+                                                                    .all(2),
                                                             decoration:
                                                                 BoxDecoration(
                                                               borderRadius:
@@ -497,7 +501,7 @@ class _CosmeticState extends State<Cosmetic> {
                                                                   spreadRadius:
                                                                       2,
                                                                   blurRadius: 2,
-                                                                  offset: Offset(
+                                                                  offset: const Offset(
                                                                       0,
                                                                       1), // changes position of shadow
                                                                 ),
@@ -510,8 +514,9 @@ class _CosmeticState extends State<Cosmetic> {
                                                               alignment:
                                                                   Alignment
                                                                       .center,
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
                                                                       vertical:
                                                                           8),
                                                               decoration:
@@ -524,16 +529,44 @@ class _CosmeticState extends State<Cosmetic> {
                                                                 color:
                                                                     mainColor,
                                                               ),
-                                                              child: Text(
-                                                                  "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceInbound"])} Đ",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
+                                                              child: widget
+                                                                          .isShop !=
+                                                                      null
+                                                                  ? item["ExchangeCoin"] !=
+                                                                          null
+                                                                      ? Row(
+                                                                          mainAxisAlignment: MainAxisAlignment
+                                                                              .center,
+                                                                          children: [
+                                                                              Image.asset(
+                                                                                "assets/images/icon/Xu1.png",
+                                                                                width: 20,
+                                                                                height: 20,
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                width: 3,
+                                                                              ),
+                                                                              Text(
+                                                                                "${item["ExchangeCoin"]}",
+                                                                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.amber),
+                                                                              ),
+                                                                            ])
+                                                                      : const Text(
+                                                                          "Đang cập nhật...",
+                                                                          style: TextStyle(
+                                                                              fontSize: 10,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: Colors.amber),
+                                                                        )
+                                                                  : Text(
+                                                                      "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceInbound"])} Đ",
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight: FontWeight
                                                                               .w400,
-                                                                      color: Colors
-                                                                          .amber)),
+                                                                          color:
+                                                                              Colors.amber)),
                                                             )),
                                                           )
                                                         ],

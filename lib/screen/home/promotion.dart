@@ -124,7 +124,7 @@ class _PromotionState extends State<Promotion> {
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
                                       child: Image.network(
-                                        "$goodAppUrl/${item["picture"]}?$token",
+                                        "$goodAppUrl${item["picture"]}?$token",
                                         // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                         fit: BoxFit.cover,
                                         width:

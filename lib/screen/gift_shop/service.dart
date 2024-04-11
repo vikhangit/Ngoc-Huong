@@ -3,8 +3,8 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
-import 'package:ngoc_huong/screen/gift_shop/allService.dart';
 import 'package:ngoc_huong/screen/gift_shop/chi_tiet_uu_dai.dart';
+import 'package:ngoc_huong/screen/services/all_service.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -43,10 +43,15 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AllServiceScreen()));
+                    servicesModel
+                        .getGroupServiceByBranch()
+                        .then((value) => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AllServiceScreen(
+                                      listTab: value,
+                                      isShop: true,
+                                    ))));
                   },
                   child: Container(
                     padding: const EdgeInsets.only(right: 20),
@@ -79,9 +84,9 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                           onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => GiftShopDetail(
-                                        details: list[i],
-                                        type: "service",
+                                  builder: (context) => ChiTietScreen(
+                                        detail: list[i],
+                                        isShop: true,
                                       ))),
                           child: Container(
                             margin: const EdgeInsets.only(
@@ -112,7 +117,7 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
@@ -131,7 +136,7 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                                       "${list[i]["Name"]}",
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.center,
+                                      textAlign: TextAlign.left,
                                       style: TextStyle(
                                           fontSize: 10,
                                           color: mainColor,
@@ -162,7 +167,9 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ChiTietScreen(
-                                                        detail: list[i])));
+                                                      detail: list[i],
+                                                      isShop: true,
+                                                    )));
                                       },
                                       child: Container(
                                           alignment: Alignment.center,
@@ -172,29 +179,39 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(8)),
-                                            color: mainColor.withOpacity(0.6),
+                                            color: mainColor,
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Image.asset(
-                                                "assets/images/icon/Xu1.png",
-                                                width: 20,
-                                                height: 20,
-                                              ),
-                                              const SizedBox(
-                                                width: 3,
-                                              ),
-                                              const Text(
-                                                "5.000",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.white),
-                                              ),
-                                            ],
-                                          ))),
+                                          child: list[i]["ExchangeCoin"] != null
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/images/icon/Xu1.png",
+                                                      width: 20,
+                                                      height: 20,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 3,
+                                                    ),
+                                                    Text(
+                                                      "${list[i]["ExchangeCoin"]}",
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.amber),
+                                                    ),
+                                                  ],
+                                                )
+                                              : const Text(
+                                                  "Đang cập nhật...",
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.amber),
+                                                ))),
                                 )
                               ],
                             ),

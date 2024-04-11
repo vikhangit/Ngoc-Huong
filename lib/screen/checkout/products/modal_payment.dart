@@ -18,6 +18,7 @@ List paymentMethod = [
     "icon": "assets/images/chuyen-khoan.png",
     "title": "Chuyển đến thẻ ngân hàng"
   },
+  {"icon": "assets/images/icon/Xu1.png", "title": "Thanh toán bằng xu"},
 ];
 
 class _ModalVoucherState extends State<ModalPayment> {
@@ -48,7 +49,7 @@ class _ModalVoucherState extends State<ModalPayment> {
                       const Text(
                         "Phương thức thanh toán",
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400),
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(
                         width: 25,

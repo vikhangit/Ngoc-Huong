@@ -27,8 +27,8 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     Map newsDetail = widget.detail;
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.white,
@@ -91,7 +91,7 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(14)),
                       child: Image.network(
-                        "$goodAppUrl/${newsDetail["picture"]}?$token",
+                        "$goodAppUrl${newsDetail["picture"]}?$token",
                         width: MediaQuery.of(context).size.width - 40,
                         fit: BoxFit.cover,
                       ),

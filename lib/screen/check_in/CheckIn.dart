@@ -69,27 +69,52 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
     setState(() {});
   }
 
-  @override
-  Widget build(BuildContext context) {
-    print("========================");
-    print(profile["Phone"]);
-    List diemdanh = checkInList
-        .where((element) => element["device_user_id"] == profile["Phone"])
-        .toList();
-    String convertTime(String date, bool n) {
-      DateTime a;
-      if (!n) {
-        a = DateTime.parse(date).add(const Duration(hours: 7));
-      } else {
-        a = DateTime.now();
-      }
-      int day = a.day;
-      int month = a.month;
-      int year = a.year;
-
-      return "${day < 10 ? "0$day" : "$day"}/${month < 10 ? "0$month" : "$month"}/$year";
+  int checkLength(List a) {
+    int length = 21;
+    if (a.isEmpty) {
+      return length = 21;
+    } else if (a.length < 21) {
+      return length = 21;
+    } else if (a.length >= 21 && a.length < 42) {
+      return length = 35;
+    } else if (a.length >= 42 && a.length < 63) {
+      return length = 49;
+    } else if (a.length >= 63 && a.length < 84) {
+      return length = 63;
+    } else if (a.length >= 84 && a.length < 105) {
+      return length = 77;
+    } else if (a.length >= 105 && a.length < 126) {
+      return length = 91;
+    } else if (a.length >= 126 && a.length < 147) {
+      return length = 105;
+    } else if (a.length >= 147 && a.length < 168) {
+      return length = 110;
+    } else if (a.length >= 168 && a.length < 189) {
+      return length = 133;
+    } else if (a.length >= 189 && a.length < 210) {
+      return length = 147;
+    } else if (a.length >= 210 && a.length < 231) {
+      return length = 161;
+    } else if (a.length >= 231 && a.length < 252) {
+      return length = 175;
+    } else if (a.length >= 252 && a.length < 273) {
+      return length = 189;
+    } else if (a.length >= 294 && a.length < 315) {
+      return length = 203;
+    } else if (a.length >= 315 && a.length < 336) {
+      return length = 217;
+    } else if (a.length >= 336 && a.length < 357) {
+      return length = 231;
+    } else if (a.length >= 357 && a.length < 378) {
+      return length = 245;
     }
 
+    return length;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List diemdanh = checkInList;
     void handleCheckIn(int index, bool show) {
       if (diemdanh.isEmpty) {
         if (index + int.parse('${!show ? 0 : 7}') > 0) {
@@ -104,8 +129,10 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
           EasyLoading.show(status: "Đang xử lý");
           Future.delayed(const Duration(seconds: 1), () {
             checkInModel.addCheckIn({
-              "record_time": DateTime.now().toIso8601String(),
-              "device_user_id": "${profile["Phone"]}"
+              "Day": DateTime.now().day,
+              "Month": DateTime.now().month,
+              "Year": DateTime.now().year,
+              "Coin": 100,
             }).then((value) {
               EasyLoading.dismiss();
               setState(() {
@@ -113,10 +140,8 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
                       checkInList = value.toList();
                     }));
               });
-              diemdanh = checkInList
-                  .where((element) =>
-                      element["device_user_id"] == profile["Phone"])
-                  .toList();
+              diemdanh = checkInList;
+              widget.save();
             });
           });
         }
@@ -128,8 +153,9 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
             "Bạn đã điểm danh ngày này rồi",
             () => Navigator.of(context).pop(),
             () => Navigator.of(context).pop());
-      } else if (convertTime(diemdanh[0]["record_time"], false) ==
-          convertTime(DateTime.now().toIso8601String(), true)) {
+      } else if (diemdanh[diemdanh.length - 1]["Year"] == DateTime.now().year &&
+          diemdanh[diemdanh.length - 1]["Month"] == DateTime.now().month &&
+          diemdanh[diemdanh.length - 1]["Day"] == DateTime.now().day) {
         customModal.showAlertDialog(
             context,
             "error",
@@ -145,13 +171,14 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
             "Bạn hãy điểm danh ngày ${diemdanh.length + 1} trước",
             () => Navigator.of(context).pop(),
             () => Navigator.of(context).pop());
-      } else if (convertTime(diemdanh[0]["record_time"], false) !=
-          convertTime(DateTime.now().toIso8601String(), true)) {
+      } else {
         EasyLoading.show(status: "Đang xử lý");
         Future.delayed(const Duration(seconds: 1), () {
           checkInModel.addCheckIn({
-            "record_time": DateTime.now().toIso8601String(),
-            "device_user_id": "${profile["Phone"]}"
+            "Day": DateTime.now().day,
+            "Month": DateTime.now().month,
+            "Year": DateTime.now().year,
+            "Coin": 100,
           }).then((value) {
             EasyLoading.dismiss();
             setState(() {
@@ -159,10 +186,8 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
                     checkInList = value.toList();
                   }));
             });
-            diemdanh = checkInList
-                .where(
-                    (element) => element["device_user_id"] == profile["Phone"])
-                .toList();
+            diemdanh = checkInList;
+            widget.save();
           });
         });
       }
@@ -177,240 +202,178 @@ class _CheckInState extends State<CheckIn> with TickerProviderStateMixin {
           borderRadius: const BorderRadius.all(Radius.circular(5))),
       child: Column(
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 "Điểm danh",
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
-              GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  child: Icon(Icons.close),
-                ),
-              )
+              // GestureDetector(
+              //   onTap: () => Navigator.of(context).pop(),
+              //   child: Container(
+              //     child: Icon(Icons.close),
+              //   ),
+              // )
             ],
           ),
           Column(
             children: [
               Container(
                 margin: const EdgeInsets.only(top: 15),
-                child: Column(
-                  children: [
-                    Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      spacing: 9,
-                      children: List.generate(
-                          7,
-                          (index) => GestureDetector(
-                                onTap: () {
-                                  handleCheckIn(index, false);
-                                },
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width /
-                                              7 -
-                                          14,
-                                      margin: const EdgeInsets.only(bottom: 2),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5),
-                                      decoration: BoxDecoration(
-                                          color: index + 1 <= diemdanh.length
-                                              ? Colors.black.withOpacity(0.2)
-                                              : Colors.white,
-                                          border: Border.all(
+                child: Container(
+                    height: showMore == true ? 320 : 75,
+                    child: ListView(
+                      children: [
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          spacing: 9,
+                          children: List.generate(
+                              7,
+                              (index) => GestureDetector(
+                                    onTap: () {
+                                      handleCheckIn(index, false);
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  7 -
+                                              14,
+                                          margin:
+                                              const EdgeInsets.only(bottom: 2),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 5),
+                                          decoration: BoxDecoration(
                                               color:
                                                   index + 1 <= diemdanh.length
-                                                      ? mainColor
-                                                      : index + 1 == 7
-                                                          ? Colors.amber
-                                                          : mainColor),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(4))),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            index + 1 == 7 ? "20" : "10",
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w600,
-                                                color:
-                                                    index + 1 <= diemdanh.length
-                                                        ? Colors.black
-                                                            .withOpacity(0.3)
-                                                        : index + 1 == 7
-                                                            ? Colors.amber
-                                                            : Theme.of(context)
-                                                                .colorScheme
-                                                                .primary),
-                                          ),
-                                          index + 1 <= diemdanh.length
-                                              ? Icon(
-                                                  Icons.check_circle,
-                                                  color: mainColor,
-                                                  size: 20,
-                                                )
-                                              : index + 1 == 7
-                                                  ? Image.asset(
-                                                      "assets/images/giftbox.png",
-                                                      width: 20,
-                                                      height: 20,
+                                                      ? Colors.black
+                                                          .withOpacity(0.2)
+                                                      : Colors.white,
+                                              border:
+                                                  Border.all(color: mainColor),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(4))),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "100",
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: mainColor),
+                                              ),
+                                              index + 1 <= diemdanh.length
+                                                  ? Icon(
+                                                      Icons.check_circle,
+                                                      color: mainColor,
+                                                      size: 20,
                                                     )
                                                   : Image.asset(
                                                       "assets/images/icon/Xu1.png",
                                                       width: 20,
                                                       height: 20,
                                                     ),
-                                        ],
-                                      ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          "Ngày ${index + 1}",
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w600,
+                                              color: mainColor),
+                                        )
+                                      ],
                                     ),
-                                    Text(
-                                      "Ngày ${index + 1}",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w600,
-                                          color: index + 1 <= diemdanh.length
-                                              ? Colors.black.withOpacity(0.3)
-                                              : index + 1 == 7
-                                                  ? Colors.amber
-                                                  : Theme.of(context)
-                                                      .colorScheme
-                                                      .primary),
-                                    )
-                                  ],
-                                ),
-                              )),
-                    ),
-                    AnimatedCrossFade(
-                        firstChild: Container(),
-                        secondChild: Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          child: Wrap(
-                            alignment: WrapAlignment.spaceBetween,
-                            spacing: 9,
-                            runSpacing: 15,
-                            children: List.generate(
-                                21,
-                                (index) => GestureDetector(
-                                      onTap: () {
-                                        // widget.checkInClick(index, true);
-                                        handleCheckIn(index, true);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    7 -
-                                                14,
-                                            margin: const EdgeInsets.only(
-                                                bottom: 2),
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 5),
-                                            decoration: BoxDecoration(
-                                                color: index + 1 + 7 <=
-                                                        diemdanh.length
-                                                    ? Colors.black
-                                                        .withOpacity(0.2)
-                                                    : Colors.white,
-                                                border: Border.all(
+                                  )),
+                        ),
+                        AnimatedCrossFade(
+                            firstChild: Container(),
+                            secondChild: Container(
+                              margin: const EdgeInsets.only(top: 15),
+                              child: Wrap(
+                                alignment: WrapAlignment.spaceBetween,
+                                spacing: 9,
+                                runSpacing: 15,
+                                children: List.generate(
+                                    checkLength(diemdanh),
+                                    (index) => GestureDetector(
+                                          onTap: () {
+                                            // widget.checkInClick(index, true);
+                                            handleCheckIn(index, true);
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context)
+                                                            .size
+                                                            .width /
+                                                        7 -
+                                                    14,
+                                                margin: const EdgeInsets.only(
+                                                    bottom: 2),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 5),
+                                                decoration: BoxDecoration(
                                                     color: index + 1 + 7 <=
                                                             diemdanh.length
-                                                        ? mainColor
-                                                        : index + 1 == 7 ||
-                                                                index + 1 ==
-                                                                    14 ||
-                                                                index + 1 == 21
-                                                            ? Colors.amber
-                                                            : mainColor),
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(4))),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  index + 1 == 7 ||
-                                                          index + 1 == 14 ||
-                                                          index + 1 == 21
-                                                      ? "20"
-                                                      : "10",
-                                                  style: TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: index + 1 + 7 <=
-                                                              diemdanh.length
-                                                          ? Colors.black
-                                                              .withOpacity(0.3)
-                                                          : index + 1 == 7 ||
-                                                                  index + 1 ==
-                                                                      14 ||
-                                                                  index + 1 ==
-                                                                      21
-                                                              ? Colors.amber
-                                                              : Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .primary),
-                                                ),
-                                                index + 1 + 7 <= diemdanh.length
-                                                    ? Icon(
-                                                        Icons.check_circle,
-                                                        size: 20,
-                                                        color: mainColor,
-                                                      )
-                                                    : index + 1 == 7 ||
-                                                            index + 1 == 14
-                                                        ? Image.asset(
-                                                            "assets/images/giftbox.png",
+                                                        ? Colors.black
+                                                            .withOpacity(0.2)
+                                                        : Colors.white,
+                                                    border: Border.all(
+                                                        color: mainColor),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                4))),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      "100",
+                                                      style: TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: mainColor),
+                                                    ),
+                                                    index + 1 + 7 <=
+                                                            diemdanh.length
+                                                        ? Icon(
+                                                            Icons.check_circle,
+                                                            size: 20,
+                                                            color: mainColor,
+                                                          )
+                                                        : Image.asset(
+                                                            "assets/images/icon/Xu1.png",
                                                             width: 20,
                                                             height: 20,
                                                           )
-                                                        : index + 1 == 21
-                                                            ? Image.asset(
-                                                                "assets/images/award.png",
-                                                                width: 20,
-                                                                height: 20,
-                                                              )
-                                                            : Image.asset(
-                                                                "assets/images/icon/Xu1.png",
-                                                                width: 20,
-                                                                height: 20,
-                                                              )
-                                              ],
-                                            ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Text(
+                                                "Ngày ${index + 1 + 7}",
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: mainColor),
+                                              )
+                                            ],
                                           ),
-                                          Text(
-                                            "Ngày ${index + 1 + 7}",
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w600,
-                                                color: index + 1 + 7 <=
-                                                        diemdanh.length
-                                                    ? Colors.black
-                                                        .withOpacity(0.3)
-                                                    : index + 1 == 7 ||
-                                                            index + 1 == 14 ||
-                                                            index + 1 == 21
-                                                        ? Colors.amber
-                                                        : Theme.of(context)
-                                                            .colorScheme
-                                                            .primary),
-                                          )
-                                        ],
-                                      ),
-                                    )),
-                          ),
-                        ),
-                        crossFadeState: showMore
-                            ? CrossFadeState.showSecond
-                            : CrossFadeState.showFirst,
-                        duration: 500.milliseconds),
-                  ],
-                ),
+                                        )),
+                              ),
+                            ),
+                            crossFadeState: showMore
+                                ? CrossFadeState.showSecond
+                                : CrossFadeState.showFirst,
+                            duration: 500.milliseconds),
+                      ],
+                    )),
               ),
               GestureDetector(
                   onTap: () {

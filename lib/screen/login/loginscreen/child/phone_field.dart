@@ -21,6 +21,7 @@ Widget phoneField(Function(String value) changeValue) {
           ),
         ),
         TextFormField(
+          autofocus: true,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
               enabledBorder: dataCustom.border,

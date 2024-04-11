@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/memberModel.dart';
+import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
+import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
-import 'package:ngoc_huong/screen/gift_shop/allProduct.dart';
-import 'package:ngoc_huong/screen/gift_shop/allService.dart';
-import 'package:ngoc_huong/screen/gift_shop/allVoucher.dart';
+import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
 import 'package:ngoc_huong/screen/gift_shop/product.dart';
 import 'package:ngoc_huong/screen/gift_shop/service.dart';
-import 'package:ngoc_huong/screen/gift_shop/voucher.dart';
+import 'package:ngoc_huong/screen/mission/mission.dart';
+import 'package:ngoc_huong/screen/services/all_service.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
@@ -28,6 +29,8 @@ List rank = [];
 class _GiftShopState extends State<GiftShop> {
   final ProfileModel profileModel = ProfileModel();
   final ScrollController scrollController = ScrollController();
+  final ServicesModel servicesModel = ServicesModel();
+  final ProductModel productModel = ProductModel();
   final MemberModel memberModel = MemberModel();
 
   @override
@@ -65,8 +68,8 @@ class _GiftShopState extends State<GiftShop> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -184,9 +187,9 @@ class _GiftShopState extends State<GiftShop> {
                                                     const SizedBox(
                                                       width: 5,
                                                     ),
-                                                    const Text(
-                                                      "150",
-                                                      style: TextStyle(
+                                                    Text(
+                                                      "${profile["CustomerCoin"] ?? 0}",
+                                                      style: const TextStyle(
                                                           fontSize: 12,
                                                           fontWeight:
                                                               FontWeight.w600),
@@ -233,11 +236,17 @@ class _GiftShopState extends State<GiftShop> {
                         child: Row(
                           children: [
                             GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AllProductScreen())),
+                              onTap: () => {
+                                productModel
+                                    .getGroupProduct()
+                                    .then((value) => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Cosmetic(
+                                                  listTab: value,
+                                                  isShop: true,
+                                                ))))
+                              },
                               child: Column(
                                 children: [
                                   Container(
@@ -271,11 +280,18 @@ class _GiftShopState extends State<GiftShop> {
                               width: 14,
                             ),
                             GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AllServiceScreen())),
+                              onTap: () => servicesModel
+                                  .getGroupServiceByBranch()
+                                  .then((value) => {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AllServiceScreen(
+                                                      listTab: value,
+                                                      isShop: true,
+                                                    )))
+                                      }),
                               child: Column(
                                 children: [
                                   Container(
@@ -309,42 +325,42 @@ class _GiftShopState extends State<GiftShop> {
                             const SizedBox(
                               width: 8,
                             ),
-                            GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AllVoucherScreen())),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withOpacity(0.2),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(15))),
-                                    child: Image.asset(
-                                      "assets/images/Home/Services/thanh-vien.png",
-                                      width: 40,
-                                      height: 40,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  const Text(
-                                    "Quà đối tác",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14),
-                                  )
-                                ],
-                              ),
-                            )
+                            // GestureDetector(
+                            //   onTap: () => Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //           builder: (context) =>
+                            //               const AllVoucherScreen())),
+                            //   child: Column(
+                            //     children: [
+                            //       Container(
+                            //         padding: const EdgeInsets.symmetric(
+                            //             horizontal: 10, vertical: 10),
+                            //         decoration: BoxDecoration(
+                            //             color: Theme.of(context)
+                            //                 .colorScheme
+                            //                 .primary
+                            //                 .withOpacity(0.2),
+                            //             borderRadius: const BorderRadius.all(
+                            //                 Radius.circular(15))),
+                            //         child: Image.asset(
+                            //           "assets/images/Home/Services/thanh-vien.png",
+                            //           width: 40,
+                            //           height: 40,
+                            //         ),
+                            //       ),
+                            //       const SizedBox(
+                            //         height: 8,
+                            //       ),
+                            //       const Text(
+                            //         "Quà đối tác",
+                            //         style: TextStyle(
+                            //             fontWeight: FontWeight.w500,
+                            //             fontSize: 14),
+                            //       )
+                            //     ],
+                            //   ),
+                            // )
                           ],
                         ),
                       ),
@@ -352,11 +368,35 @@ class _GiftShopState extends State<GiftShop> {
                         height: 15,
                       ),
                       CheckIn(save: () {
-                        setState(() {});
+                        setState(() {
+                          profileModel
+                              .getProfile()
+                              .then((value) => setState(() {
+                                    profile = value;
+                                  }));
+                          memberModel.getAllRank().then((value) => setState(() {
+                                rank = value.toList();
+                              }));
+                        });
+                      }),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Mission(save: () {
+                        setState(() {
+                          profileModel
+                              .getProfile()
+                              .then((value) => setState(() {
+                                    profile = value;
+                                  }));
+                          memberModel.getAllRank().then((value) => setState(() {
+                                rank = value.toList();
+                              }));
+                        });
                       }),
                       const ShopProductPage(),
                       const ShopServicesPage(),
-                      const VoucherPage(),
+                      // const VoucherPage(),
                       const SizedBox(
                         height: 20,
                       )

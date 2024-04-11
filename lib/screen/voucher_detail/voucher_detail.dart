@@ -525,7 +525,7 @@ class _ImageDetailState extends State<ImageDetail> {
     List<String> result = [];
     for (var x in newList) {
       if (!["", null, false, 0].contains(x)) {
-        result.add("$goodAppUrl/$x?$token");
+        result.add("$goodAppUrl$x?$token");
       }
     }
 
@@ -667,7 +667,7 @@ class _ImageDetailState extends State<ImageDetail> {
                                       ])));
                     },
                     child: Image.network(
-                      "$goodAppUrl/${widget.item["picture"]}?$token",
+                      "$goodAppUrl${widget.item["picture"]}?$token",
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
                       fit: BoxFit.cover,

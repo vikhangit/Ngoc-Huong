@@ -37,8 +37,8 @@ class _TinTucScreenState extends State<TinTucScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -168,7 +168,7 @@ class _TinTucScreenState extends State<TinTucScreen> {
                                                         BorderRadius.circular(
                                                             15),
                                                     child: Image.network(
-                                                      "$goodAppUrl/${item["picture"]}?$token",
+                                                      "$goodAppUrl${item["picture"]}?$token",
                                                       // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
                                                       fit: BoxFit.cover,
                                                       width:

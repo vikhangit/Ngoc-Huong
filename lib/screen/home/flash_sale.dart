@@ -127,7 +127,7 @@ class _FlashSaleState extends State<FlashSale> {
                             )));
               },
               child: Container(
-                 height: 250,
+                  height: 250,
                   padding: const EdgeInsets.all(5),
                   margin: const EdgeInsets.only(
                       left: 5, right: 5, top: 5, bottom: 5),
@@ -147,7 +147,7 @@ class _FlashSaleState extends State<FlashSale> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      "$goodAppUrl/${e["picture"]}?$token",
+                      "$goodAppUrl${e["picture"]}?$token",
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
                       fit: BoxFit.cover,
@@ -230,7 +230,7 @@ class _FlashSaleState extends State<FlashSale> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                    "$goodAppUrl/${list[0]["picture"]}?$token",
+                    "$goodAppUrl${list[0]["picture"]}?$token",
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
                   ),

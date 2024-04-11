@@ -10,6 +10,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
 import 'package:ngoc_huong/models/branchsModel.dart';
+import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/booking/booking_success.dart';
@@ -33,6 +34,7 @@ bool showService = true;
 bool showDay = false;
 bool showTime = false;
 bool showBranch = false;
+bool showPay = false;
 DateTime now = DateTime.now();
 DateTime? activeDate;
 TimeOfDay? activeTime;
@@ -41,17 +43,22 @@ String tokenfirebase = "";
 Map activeBranch = {};
 Map activeService = {};
 List chooseService = [];
+Map profile = {};
+List payments = ["Tiền mặt", "Xu"];
+String paymentMethod = "Tiền mặt";
 
 class _BookingServicesState extends State<BookingServices>
     with TickerProviderStateMixin {
   NotificationService notificationService = NotificationService();
   final DataCustom dataCustom = DataCustom();
   final ProfileModel profileModel = ProfileModel();
+  final ProductModel productModel = ProductModel();
   final ServicesModel servicesModel = ServicesModel();
   final CustomModal customModal = CustomModal();
   final BookingModel bookingModel = BookingModel();
   late AnimationController _animationController;
   late AnimationController _animationController1;
+  late AnimationController _animationController2;
   final BranchsModel branchsModel = BranchsModel();
   final LocalStorage storageBranch = LocalStorage('branch');
   final ScrollController scrollController = ScrollController();
@@ -68,6 +75,11 @@ class _BookingServicesState extends State<BookingServices>
         duration: const Duration(milliseconds: 500),
         upperBound: 0.5);
     _animationController1.reverse();
+    _animationController2 = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 500),
+        upperBound: 0.5);
+    _animationController2.reverse();
     notificationService.requestNotificationPermission();
     notificationService.setupFlutterNotifications();
     notificationService.setupInteractMessage(context);
@@ -117,7 +129,6 @@ class _BookingServicesState extends State<BookingServices>
         });
       }
     });
-
     Map active = storageBranch.getItem("branch") != null
         ? jsonDecode(storageBranch.getItem("branch"))
         : {};
@@ -125,6 +136,7 @@ class _BookingServicesState extends State<BookingServices>
       activeBranch = active;
     });
     Upgrader.clearSavedSettings();
+    profileModel.getProfile().then((value) => setState(() => profile = value));
     super.initState();
   }
 
@@ -134,6 +146,7 @@ class _BookingServicesState extends State<BookingServices>
     activeService = {};
     activeDate = null;
     activeTime = null;
+    paymentMethod = "Tiền mặt";
     chooseService.clear();
     scrollController.dispose();
     super.dispose();
@@ -207,7 +220,6 @@ class _BookingServicesState extends State<BookingServices>
       if (scheduledDate.isBefore(now)) {
         scheduledDate = scheduledDate.add(const Duration(days: 1));
       }
-      print(scheduledDate);
       return scheduledDate;
     }
 
@@ -287,33 +299,89 @@ class _BookingServicesState extends State<BookingServices>
           }, () => Navigator.of(context).pop());
         } else {
           if (dateBook.isAfter(now)) {
+            DateTime dateBook = DateTime(activeDate!.year, activeDate!.month,
+                activeDate!.day, activeTime!.hour, activeTime!.minute);
             Map data = {
               "branchCode": activeBranch["Code"],
               "StartDate": "$dateBook",
               "DueDate": "",
               "Note": "",
+              "PaymentMethod": paymentMethod,
               "DetailList": [
                 activeService["Id"],
               ]
             };
-            print(data);
-            customModal.showAlertDialog(context, "error", "Xác Nhận Đặt Lịch",
-                "Bạn có chắc chắn chọn đặt lịch này không?", () {
-              Navigator.of(context).pop();
-              EasyLoading.show(status: "Vui lòng chờ...");
-              Future.delayed(const Duration(seconds: 2), () {
-                bookingModel.setBookingService(data).then((value) {
-                  // sendNotifications();
-                  EasyLoading.dismiss();
-                  Navigator.push(
+
+            if (paymentMethod == "Xu") {
+              if (activeService["ExchangeCoin"] == null) {
+                customModal.showAlertDialog(
+                    context,
+                    "error",
+                    "Lỗi tính năng",
+                    "Tính năng không áp dụng cho sản phẩm này",
+                    () => Navigator.of(context).pop(),
+                    () => Navigator.of(context).pop());
+              } else {
+                if (profile.isEmpty && profile["CustomerCoin"] == null) {
+                  customModal.showAlertDialog(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => BookingSuccess(
-                                details: value,
-                              )));
+                      "error",
+                      "Lỗi thanh toán",
+                      "Tài khoản chưa có xu. Hãy nhận xu ở phần shop quà tặng hoặc nhiệm vụ nhận quà",
+                      () => Navigator.of(context).pop(),
+                      () => Navigator.of(context).pop());
+                } else if (profile["CustomerCoin"] <
+                    activeService["ExchangeCoin"]) {
+                  customModal.showAlertDialog(
+                      context,
+                      "error",
+                      "Lỗi thanh toán",
+                      "Bạn chưa đủ xu thanh toán",
+                      () => Navigator.of(context).pop(),
+                      () => Navigator.of(context).pop());
+                } else {
+                  customModal.showAlertDialog(
+                      context,
+                      "error",
+                      "Xác Nhận Đặt Lịch",
+                      "Bạn có chắc chắn sử dụng ${activeService["ExchangeCoin"]} xu để đặt lịch không?",
+                      () {
+                    Navigator.of(context).pop();
+                    EasyLoading.show(status: "Vui lòng chờ...");
+                    Future.delayed(const Duration(seconds: 2), () {
+                      bookingModel.setBookingService(data).then((value) {
+                        // sendNotifications();
+                        EasyLoading.dismiss();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BookingSuccess(
+                                      details: value,
+                                    )));
+                      });
+                    });
+                  }, () => Navigator.of(context).pop());
+                }
+              }
+            } else {
+              customModal.showAlertDialog(context, "error", "Xác Nhận Đặt Lịch",
+                  "Bạn có chắc chắn chọn đặt lịch không?", () {
+                Navigator.of(context).pop();
+                EasyLoading.show(status: "Vui lòng chờ...");
+                Future.delayed(const Duration(seconds: 2), () {
+                  bookingModel.setBookingService(data).then((value) {
+                    // sendNotifications();
+                    EasyLoading.dismiss();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BookingSuccess(
+                                  details: value,
+                                )));
+                  });
                 });
-              });
-            }, () => Navigator.of(context).pop());
+              }, () => Navigator.of(context).pop());
+            }
           } else {
             customModal.showAlertDialog(
                 context,
@@ -328,8 +396,8 @@ class _BookingServicesState extends State<BookingServices>
     }
 
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -569,10 +637,6 @@ class _BookingServicesState extends State<BookingServices>
                                                                 .start,
                                                         children: snapshot.data!
                                                             .map((item) {
-                                                          int index = snapshot
-                                                              .data!
-                                                              .indexOf(item);
-                                                          print(item);
                                                           if (item["Name"] ==
                                                               "Kho miền bắc") {
                                                             return Container();
@@ -656,6 +720,144 @@ class _BookingServicesState extends State<BookingServices>
                                                   }
                                                 }),
                                             crossFadeState: showBranch
+                                                ? CrossFadeState.showSecond
+                                                : CrossFadeState.showFirst,
+                                            duration: 500.ms)
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          Container(
+                              margin: const EdgeInsets.only(top: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(bottom: 7),
+                                    child: const Text(
+                                      "Phương thức thanh toán",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14),
+                                    ),
+                                  ),
+                                  Container(
+                                    // padding: const EdgeInsets.only(bottom: 10),
+
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 1, color: Colors.grey),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                if (showPay) {
+                                                  _animationController2.reverse(
+                                                      from: 0.5);
+                                                } else {
+                                                  _animationController2.forward(
+                                                      from: 0.0);
+                                                }
+                                                showPay = !showPay;
+                                              });
+                                            },
+                                            style: ButtonStyle(
+                                              padding:
+                                                  MaterialStateProperty.all(
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 16,
+                                                          horizontal: 15)),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    paymentMethod,
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w300),
+                                                  ),
+                                                ),
+                                                RotationTransition(
+                                                  turns: Tween(
+                                                          begin: 0.0, end: 1.0)
+                                                      .animate(
+                                                          _animationController1),
+                                                  child: const Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    color: Colors.black,
+                                                  ),
+                                                )
+                                              ],
+                                            )),
+                                        AnimatedCrossFade(
+                                            firstChild: Container(),
+                                            secondChild: Column(
+                                                children: payments.map((item) {
+                                              return TextButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      paymentMethod = item;
+                                                      showPay = false;
+                                                      _animationController2
+                                                          .reverse(from: 0.5);
+                                                    });
+                                                  },
+                                                  style: ButtonStyle(
+                                                      padding:
+                                                          MaterialStateProperty
+                                                              .all(const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 15,
+                                                                  horizontal:
+                                                                      20)),
+                                                      shape: MaterialStateProperty.all(
+                                                          const RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          10))))),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        item,
+                                                        style: TextStyle(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.6),
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                      ),
+                                                      paymentMethod == item
+                                                          ? const Icon(
+                                                              Icons.check,
+                                                              size: 20,
+                                                              color:
+                                                                  Colors.green,
+                                                            )
+                                                          : Container()
+                                                    ],
+                                                  ));
+                                            }).toList()),
+                                            crossFadeState: showPay
                                                 ? CrossFadeState.showSecond
                                                 : CrossFadeState.showFirst,
                                             duration: 500.ms)
@@ -802,7 +1004,7 @@ class _BookingServicesState extends State<BookingServices>
                                                                       Container(),
                                                                   secondChild:
                                                                       FutureBuilder(
-                                                                          future: servicesModel.getServiceByGroup(item[
+                                                                          future: servicesModel.getAllServiceByGroup(item[
                                                                               "code"]),
                                                                           builder: (context,
                                                                               snapshot) {
@@ -919,7 +1121,7 @@ class _BookingServicesState extends State<BookingServices>
                                 ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       )),
                       Container(

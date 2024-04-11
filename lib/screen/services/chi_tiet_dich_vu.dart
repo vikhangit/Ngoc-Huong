@@ -13,7 +13,8 @@ import 'package:upgrader/upgrader.dart';
 
 class ChiTietScreen extends StatefulWidget {
   final Map detail;
-  const ChiTietScreen({super.key, required this.detail});
+  final bool? isShop;
+  const ChiTietScreen({super.key, required this.detail, this.isShop});
 
   @override
   State<ChiTietScreen> createState() => _ChiTietScreenState();
@@ -70,8 +71,8 @@ class _ChiTietScreenState extends State<ChiTietScreen>
     Map detail = widget.detail;
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.white,
@@ -139,6 +140,49 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                             const SizedBox(
                               height: 15,
                             ),
+                            if (widget.isShop != null)
+                              Container(
+                                margin: EdgeInsets.only(bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          "assets/images/icon/Xu1.png",
+                                          width: 25,
+                                          height: 25,
+                                        ),
+                                        const SizedBox(width: 3),
+                                        Text(
+                                          "${detail["ExchangeCoin"] ?? "Đang cập nhật..."}",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          "assets/images/calendar-solid-black.png",
+                                          width: 24,
+                                          height: 24,
+                                          fit: BoxFit.contain,
+                                        ),
+                                        const SizedBox(width: 3),
+                                        const Text(
+                                          "Còn 100",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
                             const Text(
                               "Thông tin dịch vụ",
                               style: TextStyle(fontSize: 15),

@@ -18,8 +18,10 @@ import 'package:upgrader/upgrader.dart';
 
 class ProductDetail extends StatefulWidget {
   final bool? detailPage;
+  final bool? isShop;
   final Map details;
-  const ProductDetail({super.key, required this.details, this.detailPage});
+  const ProductDetail(
+      {super.key, required this.details, this.detailPage, this.isShop});
 
   @override
   State<ProductDetail> createState() => _ProductDetailState();
@@ -101,6 +103,7 @@ class _ProductDetailState extends State<ProductDetail>
                 "PrinceTest": productDetail["PriceInbound"] * quantity,
                 "ProductCode": productDetail["Code"],
                 "ProductId": productDetail["Id"],
+                "ExchangeCoin": productDetail["ExchangeCoin"],
                 "Quantity": quantity,
               }
             ]
@@ -143,8 +146,8 @@ class _ProductDetailState extends State<ProductDetail>
     }
 
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             key: scaffoldKey,
             backgroundColor: Colors.white,
@@ -211,40 +214,87 @@ class _ProductDetailState extends State<ProductDetail>
                                     "${productDetail["Name"]}",
                                     style: const TextStyle(fontSize: 16),
                                   ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
+                                  // const SizedBox(
+                                  //   height: 10,
+                                  // ),
+                                  if (widget.isShop != null)
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(top: 10, bottom: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            NumberFormat.currency(
-                                                    locale: "vi_VI", symbol: "")
-                                                .format(
-                                              productDetail["PriceInbound"],
-                                            ),
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary),
+                                          Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/icon/Xu1.png",
+                                                width: 25,
+                                                height: 25,
+                                              ),
+                                              const SizedBox(width: 3),
+                                              Text(
+                                                "${productDetail["ExchangeCoin"] ?? "Đang cập nhật..."}",
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            "đ",
-                                            style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              fontSize: 15,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                            ),
-                                          )
+                                          // Row(
+                                          //   children: [
+                                          //     Image.asset(
+                                          //       "assets/images/calendar-solid-black.png",
+                                          //       width: 24,
+                                          //       height: 24,
+                                          //       fit: BoxFit.contain,
+                                          //     ),
+                                          //     const SizedBox(width: 3),
+                                          //     const Text(
+                                          //       "Còn 100",
+                                          //       style: TextStyle(
+                                          //           fontWeight: FontWeight.w600,
+                                          //           color: Colors.black),
+                                          //     ),
+                                          //   ],
+                                          // ),
                                         ],
                                       ),
+                                    ),
+                                  Row(
+                                    mainAxisAlignment: widget.isShop == null
+                                        ? MainAxisAlignment.spaceBetween
+                                        : MainAxisAlignment.end,
+                                    children: [
+                                      if (widget.isShop == null)
+                                        Row(
+                                          children: [
+                                            Text(
+                                              NumberFormat.currency(
+                                                      locale: "vi_VI",
+                                                      symbol: "")
+                                                  .format(
+                                                productDetail["PriceInbound"],
+                                              ),
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                            ),
+                                            Text(
+                                              "đ",
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                fontSize: 15,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       if (widget.detailPage != null)
                                         Row(
                                           children: [
@@ -304,7 +354,25 @@ class _ProductDetailState extends State<ProductDetail>
                                               ),
                                             ),
                                           ],
-                                        )
+                                        ),
+                                      if (widget.detailPage == null &&
+                                          widget.isShop == null)
+                                        Row(
+                                          children: [
+                                            Image.asset(
+                                              "assets/images/icon/Xu1.png",
+                                              width: 25,
+                                              height: 25,
+                                            ),
+                                            const SizedBox(width: 3),
+                                            Text(
+                                              "${productDetail["ExchangeCoin"] ?? "Đang cập nhật..."}",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                     ],
                                   ),
                                   const SizedBox(

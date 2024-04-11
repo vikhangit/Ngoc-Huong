@@ -61,8 +61,8 @@ android {
         multiDexEnabled true
         // versionCode flutterVersionCode.toInteger()
         // versionName flutterVersionName 
-        versionCode 22
-        versionName '1.1.0'
+        versionCode 24
+        versionName '1.1.2'
     }
 
     signingConfigs {

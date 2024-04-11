@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
@@ -13,7 +14,8 @@ import 'package:upgrader/upgrader.dart';
 
 class AllServiceScreen extends StatefulWidget {
   final List listTab;
-  const AllServiceScreen({super.key, required this.listTab});
+  final bool? isShop;
+  const AllServiceScreen({super.key, required this.listTab, this.isShop});
 
   @override
   State<AllServiceScreen> createState() => _AllServiceScreenState();
@@ -28,6 +30,7 @@ bool isLoading = false;
 class _AllServiceScreenState extends State<AllServiceScreen>
     with TickerProviderStateMixin {
   final ServicesModel servicesModel = ServicesModel();
+  final ProductModel productModel = ProductModel();
   final LocalStorage storageToken = LocalStorage("customer_token");
   final ScrollController scrollController = ScrollController();
 
@@ -118,8 +121,8 @@ class _AllServiceScreenState extends State<AllServiceScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -240,7 +243,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                             children: [
                               FutureBuilder(
                                 future:
-                                    servicesModel.getServiceByGroup(activeCode),
+                                    productModel.getProductByGroup(activeCode),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     List list = snapshot.data!.toList();
@@ -286,7 +289,8 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                     0.3),
                                                             spreadRadius: 2,
                                                             blurRadius: 2,
-                                                            offset: Offset(0,
+                                                            offset: const Offset(
+                                                                0,
                                                                 1), // changes position of shadow
                                                           ),
                                                         ],
@@ -306,7 +310,11 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                   MaterialPageRoute(
                                                                       builder: (context) =>
                                                                           ChiTietScreen(
-                                                                              detail: item)));
+                                                                            detail:
+                                                                                item,
+                                                                            isShop:
+                                                                                widget.isShop,
+                                                                          )));
                                                             },
                                                             child: Column(
                                                               children: [
@@ -356,8 +364,8 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                           ),
                                                           Container(
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    4),
+                                                                const EdgeInsets
+                                                                    .all(4),
                                                             decoration:
                                                                 BoxDecoration(
                                                               borderRadius:
@@ -376,7 +384,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                   spreadRadius:
                                                                       2,
                                                                   blurRadius: 2,
-                                                                  offset: Offset(
+                                                                  offset: const Offset(
                                                                       0,
                                                                       1), // changes position of shadow
                                                                 ),
@@ -385,19 +393,30 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                             child:
                                                                 GestureDetector(
                                                                     onTap: () {
-                                                                      if (storageToken
-                                                                              .getItem("customer_token") ==
+                                                                      if (widget
+                                                                              .isShop !=
                                                                           null) {
                                                                         Navigator.push(
                                                                             context,
-                                                                            MaterialPageRoute(builder: (context) => const LoginScreen()));
-                                                                      } else {
-                                                                        Navigator.push(
-                                                                            context,
                                                                             MaterialPageRoute(
-                                                                                builder: (context) => BookingServices(
-                                                                                      dichvudachon: item,
+                                                                                builder: (context) => ChiTietScreen(
+                                                                                      detail: item,
+                                                                                      isShop: widget.isShop,
                                                                                     )));
+                                                                      } else {
+                                                                        if (storageToken.getItem("customer_token") ==
+                                                                            null) {
+                                                                          Navigator.push(
+                                                                              context,
+                                                                              MaterialPageRoute(builder: (context) => const LoginScreen()));
+                                                                        } else {
+                                                                          Navigator.push(
+                                                                              context,
+                                                                              MaterialPageRoute(
+                                                                                  builder: (context) => BookingServices(
+                                                                                        dichvudachon: item,
+                                                                                      )));
+                                                                        }
                                                                       }
                                                                     },
                                                                     child:
@@ -405,7 +424,8 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                       alignment:
                                                                           Alignment
                                                                               .center,
-                                                                      padding: EdgeInsets.symmetric(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
                                                                           vertical:
                                                                               8),
                                                                       decoration:
@@ -416,12 +436,28 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                         color:
                                                                             mainColor,
                                                                       ),
-                                                                      child: Text(
-                                                                          "Đặt lịch",
-                                                                          style: TextStyle(
-                                                                              fontSize: 12,
-                                                                              fontWeight: FontWeight.w400,
-                                                                              color: Colors.amber)),
+                                                                      child: widget.isShop !=
+                                                                              null
+                                                                          ? item["ExchangeCoin"] != null
+                                                                              ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                                                                  Image.asset(
+                                                                                    "assets/images/icon/Xu1.png",
+                                                                                    width: 20,
+                                                                                    height: 20,
+                                                                                  ),
+                                                                                  const SizedBox(
+                                                                                    width: 3,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    "${item["ExchangeCoin"]}",
+                                                                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.amber),
+                                                                                  ),
+                                                                                ])
+                                                                              : const Text(
+                                                                                  "Đang cập nhật...",
+                                                                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.amber),
+                                                                                )
+                                                                          : const Text("Đặt lịch", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.amber)),
                                                                     )),
                                                           )
                                                         ],

@@ -555,7 +555,7 @@ class _ActionHomeState extends State<ActionHome> {
                                           Row(
                                             children: [
                                               Text(
-                                                "150 xu",
+                                                "${profile["CustomerCoin"] ?? 0}",
                                                 style: TextStyle(
                                                     fontSize: 9,
                                                     fontWeight: FontWeight.w600,

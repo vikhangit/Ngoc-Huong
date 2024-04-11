@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
+import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
 import 'package:ngoc_huong/screen/cosmetic/special_cosmetic.dart';
 import 'package:ngoc_huong/screen/gift_shop/allProduct.dart';
 import 'package:ngoc_huong/screen/gift_shop/chi_tiet_uu_dai.dart';
@@ -44,10 +45,15 @@ class _ShopProductPageState extends State<ShopProductPage> {
                 ),
                 GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AllProductScreen()));
+                      productModel
+                          .getGroupProduct()
+                          .then((value) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Cosmetic(
+                                        listTab: value,
+                                        isShop: true,
+                                      ))));
                     },
                     child: Container(
                       padding: const EdgeInsets.only(right: 20),
@@ -79,8 +85,11 @@ class _ShopProductPageState extends State<ShopProductPage> {
                             onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => GiftShopDetail(
-                                        details: list[i], type: "product"))),
+                                    builder: (context) => ProductDetail(
+                                          details: list[i],
+                                          detailPage: true,
+                                          isShop: true,
+                                        ))),
                             child: Container(
                               margin: const EdgeInsets.only(
                                   left: 5, top: 5, bottom: 5, right: 5),
@@ -199,30 +208,42 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                               borderRadius:
                                                   const BorderRadius.all(
                                                       Radius.circular(8)),
-                                              color: mainColor.withOpacity(0.6),
+                                              color: mainColor,
                                             ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Image.asset(
-                                                  "assets/images/icon/Xu1.png",
-                                                  width: 20,
-                                                  height: 20,
-                                                ),
-                                                const SizedBox(
-                                                  width: 3,
-                                                ),
-                                                const Text(
-                                                  "10.000",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.white),
-                                                ),
-                                              ],
-                                            ))),
+                                            child: list[i]["ExchangeCoin"] !=
+                                                    null
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Image.asset(
+                                                        "assets/images/icon/Xu1.png",
+                                                        width: 20,
+                                                        height: 20,
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 3,
+                                                      ),
+                                                      Text(
+                                                        "${list[i]["ExchangeCoin"]}",
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color:
+                                                                Colors.amber),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : const Text(
+                                                    "Đang cập nhật...",
+                                                    style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: Colors.amber),
+                                                  ))),
                                   )
                                 ],
                               ),

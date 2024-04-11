@@ -140,8 +140,8 @@ class _GiftShopDetailState extends State<GiftShopDetail>
     }
 
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             key: scaffoldKey,
             backgroundColor: Colors.white,
@@ -230,23 +230,23 @@ class _GiftShopDetailState extends State<GiftShopDetail>
                                           ),
                                         ],
                                       ),
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/calendar-solid-black.png",
-                                            width: 24,
-                                            height: 24,
-                                            fit: BoxFit.contain,
-                                          ),
-                                          const SizedBox(width: 3),
-                                          const Text(
-                                            "Còn 100",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black),
-                                          ),
-                                        ],
-                                      ),
+                                      // Row(
+                                      //   children: [
+                                      //     Image.asset(
+                                      //       "assets/images/calendar-solid-black.png",
+                                      //       width: 24,
+                                      //       height: 24,
+                                      //       fit: BoxFit.contain,
+                                      //     ),
+                                      //     const SizedBox(width: 3),
+                                      //     const Text(
+                                      //       "Còn 100",
+                                      //       style: TextStyle(
+                                      //           fontWeight: FontWeight.w600,
+                                      //           color: Colors.black),
+                                      //     ),
+                                      //   ],
+                                      // ),
                                     ],
                                   ),
                                   const SizedBox(

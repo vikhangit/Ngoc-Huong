@@ -76,14 +76,28 @@ class ServicesModel {
     return result;
   }
 
-  Future<List> getAllServiceByGroup() async {
+  Future<List> getAllServiceByGroup(String code) async {
     List result = [];
     try {
-      Response response = await client.dio.get(
-        '${client.apiUrl}/Service/getServiceByGroup?groupServiceCode=',
-      );
+      Response response =
+          await client.dio.get('${client.apiUrl}/Service/getAllService',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
       if (response.statusCode == 200) {
-        return result = response.data["Data"];
+        print(response.data["Data"]);
+        for (var item in response.data["Data"]) {
+          if (item["CategoryCode"].toString().toLowerCase() ==
+              code.toLowerCase()) {
+            result.add(item);
+          }
+        }
+        print("=================================");
+        print(result);
+
+        return result;
       } else {
         return result;
       }

@@ -337,8 +337,8 @@ class _AccountScreenState extends State<AccountScreen> {
     }
 
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -384,9 +384,9 @@ class _AccountScreenState extends State<AccountScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (!Platform.isAndroid)
-                    const SizedBox(
-                      height: 60,
-                    ),
+                            const SizedBox(
+                              height: 60,
+                            ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
@@ -446,9 +446,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          const Text(
-                                            "150 xu",
-                                            style: TextStyle(
+                                          Text(
+                                            "${profile["CustomerCoin"] ?? 0}",
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12),
                                           )

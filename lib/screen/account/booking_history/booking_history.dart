@@ -26,6 +26,7 @@ class _BookingHistoryState extends State<BookingHistory>
   TabController? tabController;
   final BookingModel bookingModel = BookingModel();
   final ServicesModel servicesModel = ServicesModel();
+
   void _getActiveTabIndex() {
     setState(() {
       _selectedIndex = tabController!.index;
@@ -60,8 +61,8 @@ class _BookingHistoryState extends State<BookingHistory>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,

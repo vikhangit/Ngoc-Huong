@@ -6,10 +6,12 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/productModel.dart';
+import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/checkout/products/checkout_cart.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -25,6 +27,7 @@ int quantity = 1;
 int clickIndex = -1;
 bool checkBoxValue = false;
 List listCheckout = [];
+Map profile = {};
 
 class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   LocalStorage storageAuth = LocalStorage("auth");
@@ -32,6 +35,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   final CustomModal customModal = CustomModal();
   final CartModel cartModel = CartModel();
   final ProductModel productModel = ProductModel();
+  final ProfileModel profileModel = ProfileModel();
   TabController? tabController;
   final ScrollController scrollController = ScrollController();
   @override
@@ -43,6 +47,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     setState(() {
       listCheckout = [];
     });
+    profileModel.getProfile().then((value) => setState(() => profile = value));
   }
 
   @override
@@ -68,6 +73,23 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       if (listCheckout.isNotEmpty) {
         for (var i = 0; i < listCheckout.length; i++) {
           total += listCheckout[i]["Price"] * listCheckout[i]["Quantity"];
+        }
+      } else {
+        total = 0;
+      }
+      return total;
+    }
+
+    num totalCatCoin() {
+      num total = 0;
+      if (listCheckout.isNotEmpty) {
+        for (var i = 0; i < listCheckout.length; i++) {
+          if (listCheckout[i]["ExchangeCoin"] == null) {
+            total = 0;
+          } else {
+            total +=
+                listCheckout[i]["ExchangeCoin"] * listCheckout[i]["Quantity"];
+          }
         }
       } else {
         total = 0;
@@ -122,12 +144,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       }
     }
 
-    // void updateQuantity(Map item){
-    //   const
-    // }
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -204,7 +223,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                           ),
                                         ],
                                       ),
-                                      height: 115,
+                                      height: 135,
                                       child: Row(
                                         children: [
                                           const SizedBox(
@@ -340,19 +359,43 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                               Colors.black),
                                                                     ),
                                                                     Container(
-                                                                      margin: const EdgeInsets
-                                                                          .symmetric(
-                                                                          vertical:
-                                                                              4),
                                                                       child:
                                                                           Row(
                                                                         mainAxisAlignment:
                                                                             MainAxisAlignment.spaceBetween,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.center,
                                                                         children: [
-                                                                          Text(
-                                                                            NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(ele["Price"]),
-                                                                            style:
-                                                                                TextStyle(color: Theme.of(context).colorScheme.primary),
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Text(
+                                                                                NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(ele["Price"]),
+                                                                                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                                                                              ),
+                                                                              Container(
+                                                                                margin: const EdgeInsets.symmetric(vertical: 4),
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    Image.asset(
+                                                                                      "assets/images/icon/Xu1.png",
+                                                                                      width: 16,
+                                                                                      height: 16,
+                                                                                    ),
+                                                                                    const SizedBox(width: 3),
+                                                                                    Text(
+                                                                                      "${ele["ExchangeCoin"]}",
+                                                                                      style: TextStyle(
+                                                                                        color: mainColor,
+                                                                                        fontSize: 12,
+                                                                                        fontWeight: FontWeight.w600,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ],
                                                                           ),
                                                                           Row(
                                                                             children: [
@@ -364,7 +407,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                                       "DetailList": [
                                                                                         {
                                                                                           ...ele,
-                                                                                          "Quantity": ele["Quantity"] - 1
+                                                                                          "Quantity": ele["Quantity"] - 1,
+                                                                                          "Amount": ele["Price"] * (ele["Quantity"] - 1)
                                                                                         }
                                                                                       ]
                                                                                     };
@@ -412,7 +456,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                                       "DetailList": [
                                                                                         {
                                                                                           ...ele,
-                                                                                          "Quantity": ele["Quantity"] + 1
+                                                                                          "Quantity": ele["Quantity"] + 1,
+                                                                                          "Amount": ele["Price"] * (ele["Quantity"] + 1)
                                                                                         }
                                                                                       ]
                                                                                     }).then((value) {
@@ -577,6 +622,41 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Tính bằng xu",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          "assets/images/icon/Xu1.png",
+                                          width: 25,
+                                          height: 25,
+                                        ),
+                                        const SizedBox(width: 3),
+                                        Text(
+                                          "${totalCatCoin()}",
+                                          style: TextStyle(
+                                            color: mainColor,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                                 Container(
                                     margin: const EdgeInsets.only(top: 20),
                                     child: TextButton(
@@ -607,6 +687,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                           listCart:
                                                               listCheckout,
                                                           total: totalCat(),
+                                                          totalCatCoin:
+                                                              totalCatCoin(),
+                                                          profile: profile,
                                                         )));
                                           } else {
                                             customModal.showAlertDialog(

@@ -38,8 +38,7 @@ class _BannerSliderState extends State<BannerSlider> {
                     return ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(15)),
-                      child: Image.network(
-                          "$goodAppUrl/${e["hinh_anh"]}?$token",
+                      child: Image.network("$goodAppUrl${e["hinh_anh"]}?$token",
                           fit: BoxFit.cover),
                     );
                   }).toList(),

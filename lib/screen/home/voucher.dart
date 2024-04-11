@@ -146,7 +146,7 @@ class _VoucherState extends State<Voucher> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                     "$goodAppUrl/${e["picture"]}?$token",
+                      "$goodAppUrl${e["picture"]}?$token",
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover,
                     ),
@@ -229,7 +229,7 @@ class _VoucherState extends State<Voucher> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                    "$goodAppUrl/${list[0]["picture"]}?$token",
+                    "$goodAppUrl${list[0]["picture"]}?$token",
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
                   ),

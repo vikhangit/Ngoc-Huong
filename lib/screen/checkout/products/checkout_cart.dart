@@ -24,8 +24,15 @@ import 'package:upgrader/upgrader.dart';
 
 class CheckOutCart extends StatefulWidget {
   final num total;
+  final num totalCatCoin;
   final List listCart;
-  const CheckOutCart({super.key, required this.total, required this.listCart});
+  final Map profile;
+  const CheckOutCart(
+      {super.key,
+      required this.total,
+      required this.listCart,
+      required this.totalCatCoin,
+      required this.profile});
 
   @override
   State<CheckOutCart> createState() => _CheckOutScreenState();
@@ -71,73 +78,245 @@ class _CheckOutScreenState extends State<CheckOutCart> {
   @override
   Widget build(BuildContext context) {
     List listProductPayment = widget.listCart;
+    Map profile = widget.profile;
     void savePayment() {
       setState(() {});
     }
 
     void setCheckOutCart() {
-      // customModal.showAlertDialog(context, "error", "Hê thống đang bảo trì",
-      //     "Quý khách hànng xin thử lại sau", () {
-      //   Navigator.of(context).pop();
-      // }, () {
-      //   Navigator.of(context).pop();
-      // });
-      if (selectAddress.isNotEmpty) {
-        List details = [];
-        List idList = [];
-        for (var i = 0; i < listProductPayment.length; i++) {
-          details.add({
-            "Amount": listProductPayment[i]["Amount"],
-            "Price": listProductPayment[i]["Amount"] /
-                listProductPayment[i]["Quantity"],
-            "Quantity": listProductPayment[i]["Quantity"],
-            "ProductId": listProductPayment[i]["ProductId"],
-          });
-          idList.add(listProductPayment[i]["Id"]);
-        }
-        Map data = {
-          "Address": selectAddress,
-          "TotalAmount": widget.total,
-          "BranchName": storageBranch.getItem("branch") == null
-              ? ""
-              : jsonDecode(storageBranch.getItem("branch"))["Name"],
-          "DetailList": [...details]
-        };
-        customModal.showAlertDialog(
-            context, "error", "Đặt Hàng", "Bạn có chắc chắn đăt hàng không?",
-            () {
-          Navigator.of(context).pop();
-          EasyLoading.show(status: "Vui lòng chờ...");
-          Future.delayed(const Duration(seconds: 2), () {
-            for (var i = 0; i < listProductPayment.length; i++) {
-              cartModel.updateProductInCart({
-                // "Id": 1,
-                "DetailList": [
-                  {...listProductPayment[i], "IsDeleted": true}
-                ]
-              }).then((value) => setState(() {}));
-            }
-            orderModel.setOrder(data).then((value) {
-              EasyLoading.dismiss();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CheckoutSuccess()));
+      if (activePayment == "Thanh toán bằng xu") {
+        if (widget.totalCatCoin == 0) {
+          customModal.showAlertDialog(
+              context,
+              "error",
+              "Lỗi tính năng",
+              "Tính năng không áp dụng cho sản phẩm này",
+              () => Navigator.pop(context),
+              () => Navigator.pop(context));
+        } else {
+          if (profile.isEmpty && profile["CustomerCoin"] == null) {
+            customModal.showAlertDialog(
+                context,
+                "error",
+                "Lỗi thanh toán",
+                "Tài khoản chưa có xu. Hãy nhận xu ở phần shop quà tặng hoặc nhiệm vụ nhận quà",
+                () => Navigator.pop(context),
+                () => Navigator.pop(context));
+          } else if (profile["CustomerCoin"] < widget.totalCatCoin) {
+            customModal.showAlertDialog(
+                context,
+                "error",
+                "Lỗi thanh toán",
+                "Bạn chưa đủ xu để thanh toán",
+                () => Navigator.pop(context),
+                () => Navigator.pop(context));
+          } else {
+            customModal.showAlertDialog(context, "error",
+                "Hê thống đang bảo trì", "Quý khách hànng xin thử lại sau", () {
+              Navigator.of(context).pop();
+            }, () {
+              Navigator.of(context).pop();
             });
-          });
-        }, () => Navigator.of(context).pop());
+          }
+        }
       } else {
-        customModal.showAlertDialog(
-            context, "error", "Đặt Hàng", "Bạn chưa chọn địa chỉ giao hàng",
-            () {
+        customModal.showAlertDialog(context, "error", "Hê thống đang bảo trì",
+            "Quý khách hànng xin thử lại sau", () {
           Navigator.of(context).pop();
         }, () {
           Navigator.of(context).pop();
         });
       }
+      // if (selectAddress.isNotEmpty) {
+      //   List details = [];
+      //   List idList = [];
+      //   for (var i = 0; i < listProductPayment.length; i++) {
+      //     details.add({
+      //       "Amount": listProductPayment[i]["Amount"],
+      //       "Price": listProductPayment[i]["Amount"] /
+      //           listProductPayment[i]["Quantity"],
+      //       "Quantity": listProductPayment[i]["Quantity"],
+      //       "ProductId": listProductPayment[i]["ProductId"],
+      //     });
+      //     idList.add(listProductPayment[i]["Id"]);
+      //   }
+      //   Map data = {
+      //     "Address": selectAddress,
+      //     "TotalAmount": widget.total,
+      //     "BranchName": storageBranch.getItem("branch") == null
+      //         ? ""
+      //         : jsonDecode(storageBranch.getItem("branch"))["Name"],
+      //     "DetailList": [...details]
+      //   };
+      //   customModal.showAlertDialog(
+      //       context, "error", "Đặt Hàng", "Bạn có chắc chắn đăt hàng không?",
+      //       () {
+      //     Navigator.of(context).pop();
+      //     EasyLoading.show(status: "Vui lòng chờ...");
+      //     Future.delayed(const Duration(seconds: 2), () {
+      //       for (var i = 0; i < listProductPayment.length; i++) {
+      //         cartModel.updateProductInCart({
+      //           // "Id": 1,
+      //           "DetailList": [
+      //             {...listProductPayment[i], "IsDeleted": true}
+      //           ]
+      //         }).then((value) => setState(() {}));
+      //       }
+      //       print(data);
+      //       // orderModel.setOrder(data).then((value) {
+      //       //   EasyLoading.dismiss();
+      //       //   Navigator.push(context,
+      //       //       MaterialPageRoute(builder: (context) => CheckoutSuccess()));
+      //       // });
+      //     });
+      //   }, () => Navigator.of(context).pop());
+      // } else {
+      //   customModal.showAlertDialog(
+      //       context, "error", "Đặt Hàng", "Bạn chưa chọn địa chỉ giao hàng",
+      //       () {
+      //     Navigator.of(context).pop();
+      //   }, () {
+      //     Navigator.of(context).pop();
+      //   });
+      // }
+    }
+
+    void showAlertDialog(BuildContext context) {
+      showGeneralDialog(
+        barrierLabel: "Label",
+        barrierDismissible: true,
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionDuration: const Duration(milliseconds: 700),
+        context: context,
+        pageBuilder: (context, anim1, anim2) {
+          return Align(
+            alignment: Alignment.center,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+              height: 127,
+              margin: const EdgeInsets.only(left: 25, right: 25),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: SizedBox.expand(
+                  child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: TextButton(
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        width: 0.5, color: mainColor),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)))),
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.white)),
+                        onPressed: () {
+                          if (widget.totalCatCoin == 0) {
+                            customModal.showAlertDialog(
+                                context,
+                                "error",
+                                "Lỗi tính năng",
+                                "Tính năng không áp dụng cho sản phẩm này",
+                                () => Navigator.pop(context),
+                                () => Navigator.pop(context));
+                          } else {
+                            if (profile.isEmpty &&
+                                profile["CustomerCoin"] == null) {
+                              customModal.showAlertDialog(
+                                  context,
+                                  "error",
+                                  "Thanh toán",
+                                  "Tài khoản chưa có xu. Hãy nhận xu ở phần shop quà tặng hoặc nhiệm vụ hằng ngày",
+                                  () => Navigator.pop(context),
+                                  () => Navigator.pop(context));
+                            } else if (profile["CustomerCoin"] <
+                                widget.totalCatCoin) {
+                              customModal.showAlertDialog(
+                                  context,
+                                  "error",
+                                  "Thanh toán",
+                                  "Bạn chưa đủ xu để thanh toán",
+                                  () => Navigator.pop(context),
+                                  () => Navigator.pop(context));
+                            } else {
+                              customModal.showAlertDialog(
+                                  context,
+                                  "error",
+                                  "Hê thống đang bảo trì",
+                                  "Quý khách hànng xin thử lại sau", () {
+                                Navigator.of(context).pop();
+                              }, () {
+                                Navigator.of(context).pop();
+                              });
+                            }
+                          }
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/icon/Xu1.png",
+                                width: 22,
+                                height: 22,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "Đặt bằng xu",
+                                style:
+                                    TextStyle(fontSize: 14, color: mainColor),
+                              ),
+                            ])),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: TextButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(mainColor),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        width: 0.5, color: mainColor),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10))))),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          setCheckOutCart();
+                        },
+                        child: const Text(
+                          "Đặt bằng tiền mặt",
+                          style: TextStyle(color: Colors.white),
+                        )),
+                  )
+                ],
+              )),
+            ),
+          );
+        },
+        transitionBuilder: (context, anim1, anim2, child) {
+          return SlideTransition(
+            position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0))
+                .animate(anim1),
+            child: child,
+          );
+        },
+      );
     }
 
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -521,7 +700,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                   ),
                                 ],
                               ),
-                              height: 160,
+                              height: 175,
                               child: Row(
                                 children: [
                                   const SizedBox(
@@ -624,7 +803,7 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                                     margin: const EdgeInsets
                                                                         .symmetric(
                                                                         vertical:
-                                                                            4),
+                                                                            2),
                                                                     child: Row(
                                                                       mainAxisAlignment:
                                                                           MainAxisAlignment
@@ -635,6 +814,39 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                                               .format(item["Price"]),
                                                                           style:
                                                                               TextStyle(color: Theme.of(context).colorScheme.primary),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Container(
+                                                                    // margin: const EdgeInsets
+                                                                    //     .symmetric(
+                                                                    //     vertical:
+                                                                    //         4),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Image
+                                                                            .asset(
+                                                                          "assets/images/icon/Xu1.png",
+                                                                          width:
+                                                                              16,
+                                                                          height:
+                                                                              16,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                            width:
+                                                                                3),
+                                                                        Text(
+                                                                          "${item["ExchangeCoin"]}",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                mainColor,
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                          ),
                                                                         ),
                                                                       ],
                                                                     ),
@@ -693,24 +905,56 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                                           .black),
                                                                 ),
                                                                 const SizedBox(
-                                                                  width: 3,
+                                                                  width: 5,
                                                                 ),
-                                                                Text(
-                                                                  NumberFormat.currency(
-                                                                          locale:
-                                                                              "vi_VI",
-                                                                          symbol:
-                                                                              "đ")
-                                                                      .format(item[
-                                                                          "Amount"]),
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                  ),
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      NumberFormat.currency(
+                                                                              locale:
+                                                                                  "vi_VI",
+                                                                              symbol:
+                                                                                  "đ")
+                                                                          .format(item["Price"] *
+                                                                              item["Quantity"]),
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                      ),
+                                                                    ),
+                                                                    Container(
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Image
+                                                                              .asset(
+                                                                            "assets/images/icon/Xu1.png",
+                                                                            width:
+                                                                                16,
+                                                                            height:
+                                                                                16,
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              width: 3),
+                                                                          Text(
+                                                                            "${item["ExchangeCoin"] * item["Quantity"]}",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color: mainColor,
+                                                                              fontSize: 12,
+                                                                              fontWeight: FontWeight.w600,
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 )
                                                               ],
                                                             )
@@ -780,6 +1024,11 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
                                   context: context,
                                   isScrollControlled: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(0.0),
+                                    ),
+                                  ),
                                   builder: (BuildContext context) {
                                     return Container(
                                         padding: EdgeInsets.only(
@@ -946,6 +1195,11 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
                                   context: context,
                                   isScrollControlled: true,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(0.0),
+                                    ),
+                                  ),
                                   builder: (BuildContext context) {
                                     return Container(
                                         padding: EdgeInsets.only(
@@ -1043,6 +1297,38 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                   fontSize: 14,
                                   color: Theme.of(context).colorScheme.primary),
                             )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Tổng bằng xu",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).colorScheme.primary),
+                            ),
+                            Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/icon/Xu1.png",
+                                  width: 25,
+                                  height: 25,
+                                ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  "${widget.totalCatCoin}",
+                                  style: TextStyle(
+                                    color: mainColor,
+                                    fontSize: widget.totalCatCoin > 0 ? 14 : 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                         Container(

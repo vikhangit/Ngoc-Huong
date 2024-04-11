@@ -24,7 +24,7 @@ class _ModalVoucherState extends State<ModalVoucher> {
                     const Text(
                       "Ngọc Hường Voucher",
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     SizedBox(
                       width: 25,
@@ -94,6 +94,10 @@ class _ModalVoucherState extends State<ModalVoucher> {
                           child: TextButton(
                               onPressed: () {},
                               style: ButtonStyle(
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)))),
                                   backgroundColor: MaterialStateProperty.all(
                                       Colors.grey[400]),
                                   padding: MaterialStateProperty.all(
