@@ -475,13 +475,11 @@ class _AccountScreenState extends State<AccountScreen> {
                           ]),
                     )
                   : Container(
-                      padding: const EdgeInsets.only(top: 25),
+                      padding: const EdgeInsets.only(top: 50),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            height: Platform.isAndroid ? 30 : 60,
-                          ),
+                          
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
@@ -737,10 +735,11 @@ class _AccountScreenState extends State<AccountScreen> {
                               )),
                           Expanded(
                               child: ListView(
+                                controller: scrollController,
                             children: menu.map((element) {
                               int index = menu.indexOf(element);
                               return Container(
-                                transform: Matrix4.translationValues(0, -30, 0),
+                                transform: Matrix4.translationValues(0, -50, 0),
                                 height: 55,
                                 child: TextButton(
                                     style: ButtonStyle(

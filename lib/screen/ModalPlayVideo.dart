@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,7 +109,8 @@ class _ModalPlayVideoState extends State<ModalPlayVideo> {
                     detail["content"],
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                    margin: EdgeInsets.only(bottom: Platform.isIOS ? 20 : 0),
                     child: Text(
                       "${detail["title"]}",
                       textAlign: TextAlign.left,

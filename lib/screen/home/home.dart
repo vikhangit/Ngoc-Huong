@@ -140,10 +140,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 padding: const EdgeInsets.only(bottom: 20),
                 controller: scrollController,
                 children: [
-                  if (!Platform.isAndroid)
-                    const SizedBox(
-                      height: 60,
-                    ),
+                  
                   const TopBanner(),
                   storageCustomerToken.getItem("customer_token") == null
                       ? const Register()
