@@ -35,7 +35,6 @@ class _ChiTietScreenState extends State<ChiTietScreen>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     Upgrader.clearSavedSettings();
     tabController = TabController(length: 2, vsync: this);
     tabController?.addListener(_getActiveTabIndex);
@@ -48,7 +47,6 @@ class _ChiTietScreenState extends State<ChiTietScreen>
   void dispose() {
     super.dispose();
     activeTab = 1;
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   void _getActiveTabIndex() {
@@ -69,7 +67,6 @@ class _ChiTietScreenState extends State<ChiTietScreen>
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     Map detail = widget.detail;
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return SafeArea(
       bottom: false,
       top: false,
@@ -77,12 +74,6 @@ class _ChiTietScreenState extends State<ChiTietScreen>
           key: scaffoldKey,
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          // bottomNavigationBar: ScrollToHide(
-          //     scrollController: scrollController,
-          //     height: 100,
-          //     child: const MyBottomMenu(
-          //       active: 0,
-          //     )),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
@@ -180,7 +171,6 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                     //     ),
                                     //   ],
                                     // ),
-                                  
                                   ],
                                 ),
                               ),
@@ -369,6 +359,10 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                             builder: (context) =>
                                                 BookingServices(
                                                   dichvudachon: detail,
+                                                  payMethod:
+                                                      widget.isShop == null
+                                                          ? "Tiền mặt"
+                                                          : "Xu",
                                                 )));
                                   }
                                 },

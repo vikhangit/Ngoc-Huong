@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/notification_services.dart';
 import 'package:video_player/video_player.dart';
 // import 'package:localstorage/localstorage.dart';
@@ -47,8 +49,14 @@ class _StartScreenState extends State<StartScreen> {
       videoController.pause();
       if (storageCustomer.getItem("customer_token") != null) {
         localStorageStart.deleteItem("start");
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                      callBack: () {
+                        setState(() {});
+                      },
+                    )));
       } else {
         localStorageStart.setItem("start", "start");
         Navigator.push(context,
@@ -58,6 +66,10 @@ class _StartScreenState extends State<StartScreen> {
     if (FocusManager.instance.primaryFocus != null) {
       FocusManager.instance.primaryFocus!.unfocus();
     }
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
   }
 
   @override
@@ -68,6 +80,10 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
     return Stack(
       children: <Widget>[
         SizedBox.expand(

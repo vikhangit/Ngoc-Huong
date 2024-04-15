@@ -108,12 +108,6 @@ class _VoucherDetailState extends State<VoucherDetail> {
           key: scaffoldKey,
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          // bottomNavigationBar: ScrollToHide(
-          //     scrollController: scrollController,
-          //     height: 100,
-          //     child: const MyBottomMenu(
-          //       active: 0,
-          //     )),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,
@@ -450,7 +444,9 @@ class _VoucherDetailState extends State<VoucherDetail> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    BookingServices()));
+                                                    const BookingServices(
+                                                      payMethod: "Tiền mặt",
+                                                    )));
                                       }
                                     },
                                     child: Row(

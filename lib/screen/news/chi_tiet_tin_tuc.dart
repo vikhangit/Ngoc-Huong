@@ -33,12 +33,6 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
           key: scaffoldKey,
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
-          // bottomNavigationBar: ScrollToHide(
-          //     scrollController: scrollController,
-          //     height: 100,
-          //     child: const MyBottomMenu(
-          //       active: 0,
-          //     )),
           appBar: AppBar(
             leadingWidth: 45,
             centerTitle: true,

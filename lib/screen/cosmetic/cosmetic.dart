@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
@@ -173,7 +175,7 @@ class _CosmeticState extends State<Cosmetic> {
             resizeToAvoidBottomInset: true,
             bottomNavigationBar: ScrollToHide(
                 scrollController: scrollController,
-                height: 100,
+                height: Platform.isAndroid ? 75 : 100,
                 child: const MyBottomMenu(
                   active: 3,
                 )),

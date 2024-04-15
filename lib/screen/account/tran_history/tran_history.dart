@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -58,7 +60,7 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
           resizeToAvoidBottomInset: true,
           bottomNavigationBar: ScrollToHide(
               scrollController: scrollController,
-              height: 100,
+              height: Platform.isAndroid ? 75 : 100,
               child: const MyBottomMenu(
                 active: 4,
               )),
@@ -208,7 +210,6 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                            
                                               Column(
                                                 children: List.generate(
                                                     receiptHistory.length,

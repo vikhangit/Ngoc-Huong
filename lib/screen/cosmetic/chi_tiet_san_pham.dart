@@ -87,7 +87,6 @@ class _ProductDetailState extends State<ProductDetail>
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     Map productDetail = widget.details;
     void addToCart() async {
       customModal.showAlertDialog(context, "error", "Giỏ hàng",
@@ -152,12 +151,6 @@ class _ProductDetailState extends State<ProductDetail>
             key: scaffoldKey,
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
-            // bottomNavigationBar: ScrollToHide(
-            //     scrollController: scrollController,
-            //     height: 100,
-            //     child: const MyBottomMenu(
-            //       active: 0,
-            //     )),
             appBar: AppBar(
               leadingWidth: 45,
               centerTitle: true,

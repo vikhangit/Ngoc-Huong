@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
@@ -49,14 +51,14 @@ class _SpecialServiceScreenState extends State<SpecialServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
             bottomNavigationBar: ScrollToHide(
                 scrollController: scrollController,
-                height: 100,
+                height: Platform.isAndroid ? 75 : 100,
                 child: const MyBottomMenu(
                   active: 0,
                 )),

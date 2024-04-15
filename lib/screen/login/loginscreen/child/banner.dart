@@ -3,7 +3,7 @@ import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
-Widget bannerLogin(BuildContext context) {
+Widget bannerLogin(BuildContext context, Function callback) {
   final LocalStorage storageBranch = LocalStorage("branch");
   final LocalStorage storageStart = LocalStorage("start");
   print(storageStart.getItem("start"));
@@ -15,14 +15,17 @@ Widget bannerLogin(BuildContext context) {
     decoration: const BoxDecoration(
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         image: DecorationImage(
-          image: AssetImage("assets/images/login/banner.jpg"),
-          fit: BoxFit.cover
-        )),
+            image: AssetImage("assets/images/login/banner.jpg"),
+            fit: BoxFit.cover)),
     child: GestureDetector(
       onTap: () {
         if (storageStart.getItem("start") != null) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomeScreen(
+                        callBack: callback,
+                      )));
           storageStart.deleteItem("start");
         } else {
           Navigator.of(context).pop();

@@ -12,6 +12,7 @@ class ProfileModel {
               options: Options(headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Authorization':
+                    // "R3B1VWd4WkFuSXlTLzNKVDlvSG5DLy9iclBxYk5ZdllZalNpMzFibDVJTitSN0o1T2V6TGFBPT0="
                     '${localStorageCustomerToken.getItem("customer_token")}',
               }));
       if (response.statusCode == 200) {

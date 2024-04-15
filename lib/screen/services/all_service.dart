@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
@@ -128,7 +130,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
             resizeToAvoidBottomInset: true,
             bottomNavigationBar: ScrollToHide(
                 scrollController: scrollController,
-                height: 100,
+                height: Platform.isAndroid ? 75 : 100,
                 child: const MyBottomMenu(
                   active: 1,
                 )),

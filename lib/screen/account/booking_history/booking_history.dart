@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -68,7 +70,7 @@ class _BookingHistoryState extends State<BookingHistory>
           resizeToAvoidBottomInset: true,
           bottomNavigationBar: ScrollToHide(
               scrollController: scrollController,
-              height: 100,
+              height: Platform.isAndroid ? 75 : 100,
               child: const MyBottomMenu(
                 active: 4,
               )),

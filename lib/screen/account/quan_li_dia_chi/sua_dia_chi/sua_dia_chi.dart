@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -171,8 +173,8 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
         borderRadius: BorderRadius.all(Radius.circular(10)),
         borderSide: BorderSide(width: 1, color: Colors.grey));
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -201,7 +203,7 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
           ),
           bottomNavigationBar: ScrollToHide(
               scrollController: scrollController,
-              height: 100,
+              height: Platform.isAndroid ? 75 : 100,
               child: const MyBottomMenu(
                 active: 4,
               )),

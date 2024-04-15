@@ -171,8 +171,14 @@ class _AccountScreenState extends State<AccountScreen> {
       Future.delayed(const Duration(seconds: 1), () {
         EasyLoading.dismiss();
         Navigator.of(context).pop();
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                      callBack: () {
+                        setState(() {});
+                      },
+                    )));
       });
     }, () => Navigator.of(context).pop());
   }
@@ -263,6 +269,90 @@ class _AccountScreenState extends State<AccountScreen> {
     }
   }
 
+  Widget checkRankWithName(String r) {
+    r = r.toUpperCase();
+    if (r == "SILVER") {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 0,
+                      )));
+        },
+        child: Image.network(
+          "${rank[0]["Image"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        ),
+      );
+    } else if (r == "GOLD") {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 1,
+                      )));
+        },
+        child: Image.network(
+          "${rank[1]["Image"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        ),
+      );
+    } else if (r == "PLATINUM") {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 2,
+                      )));
+        },
+        child: Image.network(
+          "${rank[2]["Image"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        ),
+      );
+    } else if (r == "DIAMOND") {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ThanhVienScreen(
+                        ac: 3,
+                      )));
+        },
+        child: Image.network(
+          "${rank[3]["Image"]}",
+          width: MediaQuery.of(context).size.width,
+          height: 190,
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const ThanhVienScreen(
+                      ac: 0,
+                    )));
+      },
+      child: Image.network(
+        "${rank[0]["Image"]}",
+        width: MediaQuery.of(context).size.width,
+        height: 190,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     void goAction(int index) {
@@ -324,8 +414,14 @@ class _AccountScreenState extends State<AccountScreen> {
             Future.delayed(const Duration(seconds: 1), () {
               EasyLoading.dismiss();
               Navigator.of(context).pop();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomeScreen(
+                            callBack: () {
+                              setState(() {});
+                            },
+                          )));
             });
           }, () => Navigator.of(context).pop());
           break;
@@ -344,7 +440,7 @@ class _AccountScreenState extends State<AccountScreen> {
           resizeToAvoidBottomInset: true,
           bottomNavigationBar: ScrollToHide(
               scrollController: scrollController,
-              height: 100,
+              height: Platform.isAndroid ? 75 : 100,
               child: const MyBottomMenu(
                 active: 4,
               )),
@@ -379,14 +475,13 @@ class _AccountScreenState extends State<AccountScreen> {
                           ]),
                     )
                   : Container(
-                      padding: const EdgeInsets.symmetric(vertical: 25),
+                      padding: const EdgeInsets.only(top: 25),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (!Platform.isAndroid)
-                            const SizedBox(
-                              height: 60,
-                            ),
+                          SizedBox(
+                            height: Platform.isAndroid ? 30 : 60,
+                          ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
@@ -555,125 +650,165 @@ class _AccountScreenState extends State<AccountScreen> {
                               child: Stack(
                                 clipBehavior: Clip.none,
                                 children: [
-                                  checkRank(profile["Point"]),
-                                  Positioned(
-                                      top: 0,
-                                      left: 0,
-                                      width: MediaQuery.of(context).size.width -
-                                          30,
-                                      child: Container(
-                                        alignment: Alignment.topRight,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: profile["MemberType"]
-                                                        .toString()
-                                                        .toUpperCase() ==
-                                                    "SILVER"
-                                                ? 42
-                                                : profile["MemberType"]
+                                  profile["CardRank"] != null
+                                      ? checkRankWithName(profile["CardRank"])
+                                      : checkRank(profile["Point"]),
+                                  profile["CardRank"] != null
+                                      ? Positioned(
+                                          top: 0,
+                                          left: 0,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              30,
+                                          child: Container(
+                                            alignment: Alignment.topRight,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: profile[""]
                                                             .toString()
                                                             .toUpperCase() ==
-                                                        "GOLD"
-                                                    ? 52
+                                                        "SILVER"
+                                                    ? 42
+                                                    : profile["CardRank"]
+                                                                .toString()
+                                                                .toUpperCase() ==
+                                                            "GOLD"
+                                                        ? 52
+                                                        : profile["CardRank"]
+                                                                    .toString()
+                                                                    .toUpperCase() ==
+                                                                "PLATINUM"
+                                                            ? 41
+                                                            : 22,
+                                                vertical: 20),
+                                            child: Text(
+                                              profile["CustomerName"]
+                                                  .toString()
+                                                  .toUpperCase(),
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black
+                                                      .withOpacity(0.6)),
+                                            ),
+                                          ))
+                                      : Positioned(
+                                          top: 0,
+                                          left: 0,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              30,
+                                          child: Container(
+                                            alignment: Alignment.topRight,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: profile[
+                                                                "MemberType"]
+                                                            .toString()
+                                                            .toUpperCase() ==
+                                                        "SILVER"
+                                                    ? 42
                                                     : profile["MemberType"]
                                                                 .toString()
                                                                 .toUpperCase() ==
-                                                            "PLATINUM"
-                                                        ? 41
-                                                        : 22,
-                                            vertical: 20),
-                                        child: Text(
-                                          profile["CustomerName"]
-                                              .toString()
-                                              .toUpperCase(),
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black
-                                                  .withOpacity(0.6)),
-                                        ),
-                                      )),
+                                                            "GOLD"
+                                                        ? 52
+                                                        : profile["MemberType"]
+                                                                    .toString()
+                                                                    .toUpperCase() ==
+                                                                "PLATINUM"
+                                                            ? 41
+                                                            : 22,
+                                                vertical: 20),
+                                            child: Text(
+                                              profile["CustomerName"]
+                                                  .toString()
+                                                  .toUpperCase(),
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black
+                                                      .withOpacity(0.6)),
+                                            ),
+                                          )),
                                 ],
                               )),
-                          const SizedBox(
-                            height: 10,
-                          ),
                           Expanded(
-                            child: ListView(
-                              children: menu.map((element) {
-                                int index = menu.indexOf(element);
-                                return SizedBox(
-                                  height: 60,
-                                  child: TextButton(
-                                      style: ButtonStyle(
-                                          padding: MaterialStateProperty.all(
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 15))),
-                                      onPressed: () {
-                                        goAction(index);
-                                      },
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 5,
-                                                      vertical: 5),
-                                                  decoration: BoxDecoration(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary
-                                                          .withOpacity(0.2),
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                              Radius.circular(
-                                                                  8))),
-                                                  child: Image.asset(
-                                                    element["icon"],
-                                                    width: 24,
-                                                    height: 24,
-                                                  )),
-                                              Container(
-                                                margin: const EdgeInsets.only(
-                                                    left: 20),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                    95,
-                                                child: Text(
-                                                  "${element["title"]}",
-                                                  style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w300),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          if (index < menu.length - 1)
+                              child: ListView(
+                            children: menu.map((element) {
+                              int index = menu.indexOf(element);
+                              return Container(
+                                transform: Matrix4.translationValues(0, -30, 0),
+                                height: 55,
+                                child: TextButton(
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 15))),
+                                    onPressed: () {
+                                      goAction(index);
+                                    },
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 5),
+                                                decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary
+                                                        .withOpacity(0.2),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
+                                                child: Image.asset(
+                                                  element["icon"],
+                                                  width: 24,
+                                                  height: 24,
+                                                )),
                                             Container(
                                               margin: const EdgeInsets.only(
-                                                  left: 55, top: 5),
+                                                  left: 20),
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width -
-                                                  80,
-                                              color:
-                                                  Colors.grey.withOpacity(0.2),
-                                              height: 1,
+                                                  95,
+                                              child: Text(
+                                                "${element["title"]}",
+                                                style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
                                             )
-                                        ],
-                                      )),
-                                );
-                              }).toList(),
-                            ),
-                          ),
+                                          ],
+                                        ),
+                                        if (index < menu.length - 1)
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 55, top: 5),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                80,
+                                            color: Colors.grey.withOpacity(0.2),
+                                            height: 1,
+                                          )
+                                      ],
+                                    )),
+                              );
+                            }).toList(),
+                          ))
                         ],
                       )))),
     );

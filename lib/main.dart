@@ -23,7 +23,10 @@ import 'package:upgrader/upgrader.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: mainColor,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark));
   // to initialize the notificationservice.
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Upgrader.clearSavedSettings();
@@ -73,6 +76,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     super.dispose();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
   }
 
   @override
@@ -85,11 +92,18 @@ class _MyAppState extends State<MyApp> {
       initLanguageCode: 'vi',
     );
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
     return MaterialApp(
       title: 'Flutter Demo',
       initialRoute: "/",
@@ -97,7 +111,11 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: localization.localizationsDelegates,
       routes: {
         'start': (context) => const StartScreen(),
-        'home': (context) => const HomeScreen(),
+        'home': (context) => HomeScreen(
+              callBack: () {
+                setState(() {});
+              },
+            ),
         'cart': (context) => const CartScreen(),
         'account': (context) => const AccountScreen(),
         "notifications": (context) => const NotificationScreen(),
@@ -110,7 +128,11 @@ class _MyAppState extends State<MyApp> {
       home: localStorageSlash.getItem("slash") == null
           ? const StartScreen()
           : storageCustomer.getItem("customer_token") != null
-              ? const HomeScreen()
+              ? HomeScreen(
+                  callBack: () {
+                    setState(() {});
+                  },
+                )
               : const LoginScreen(),
       builder: EasyLoading.init(),
       debugShowCheckedModeBanner: false,

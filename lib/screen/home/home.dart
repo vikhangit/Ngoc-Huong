@@ -16,17 +16,20 @@ import 'package:ngoc_huong/screen/home/flash_sale.dart';
 import 'package:ngoc_huong/screen/home/prodouct.dart';
 import 'package:ngoc_huong/screen/home/promotion.dart';
 import 'package:ngoc_huong/screen/home/register.dart';
+import 'package:ngoc_huong/screen/home/review.dart';
 import 'package:ngoc_huong/screen/home/service.dart';
 import 'package:ngoc_huong/screen/home/top.dart';
 import 'package:ngoc_huong/screen/home/voucher.dart';
 
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:ngoc_huong/utils/notification_services.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final Function callBack;
+  const HomeScreen({super.key, required this.callBack});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -69,6 +72,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void dispose() {
     super.dispose();
     scrollController.dispose();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
     if (Platform.isAndroid) {
       SystemNavigator.pop();
     } else if (Platform.isIOS) {
@@ -88,6 +95,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
     print("-------------------------------------");
     print(storageCustomerToken.getItem("customer_token"));
     print("---------------------------------------");
@@ -95,16 +106,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       bottom: false,
       top: false,
       child: Scaffold(
-          key: scaffoldKey,
+          // key: scaffoldKey,
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           bottomNavigationBar: ScrollToHide(
               scrollController: scrollController,
-              height: 100,
+              height: Platform.isAndroid ? 75 : 100,
               child: const MyBottomMenu(
                 active: 0,
               )),
-          appBar: null,
+          appBar: AppBar(
+            leadingWidth: 45,
+            centerTitle: true,
+            toolbarHeight: 20,
+            automaticallyImplyLeading: false,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(0),
+              ),
+            ),
+          ),
           body: UpgradeAlert(
             upgrader: Upgrader(
               dialogStyle: UpgradeDialogStyle.cupertino,
@@ -131,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   const FlashSale(),
                   const ServicesPage(),
                   const ProductPage(),
+                  const ReviewPage(),
                   const Promotion()
                 ],
               ),

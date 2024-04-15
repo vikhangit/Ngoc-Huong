@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/models/loginModel.dart';
@@ -31,6 +32,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     Upgrader.clearSavedSettings();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
   }
 
   void changePhone(String value) {
@@ -80,12 +85,16 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     // print(phone);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
     return Form(
         key: _formKey,
         child: Builder(
             builder: (BuildContext context) => SafeArea(
-              
-              bottom: false, top: false,
+                  bottom: false,
+                  top: false,
                   child: Scaffold(
                       backgroundColor: Colors.white,
                       resizeToAvoidBottomInset: true,
@@ -103,7 +112,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             Expanded(
                                 child: ListView(children: [
-                              bannerLogin(context),
+                              bannerLogin(context, () {
+                                setState(() {});
+                              }),
                               introLogin(context),
                               phoneField((value) => changePhone(value)),
                             ])),

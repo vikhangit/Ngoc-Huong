@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
@@ -81,14 +83,14 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
   Widget build(BuildContext context) {
     print(rank);
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
             bottomNavigationBar: ScrollToHide(
                 scrollController: scrollController,
-                height: 100,
+                height: Platform.isAndroid ? 75 : 100,
                 child: const MyBottomMenu(
                   active: -1,
                 )),
@@ -321,15 +323,29 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                             Radius.circular(8)),
                                         color: Colors.grey[300]),
                                     child: index == 3
-                                        ? Text(
-                                            profile["Point"] >=
-                                                    rank[3]["PointUpLevel"]
-                                                ? "Bạn đã đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!"
-                                                : "Bạn cần hơn ${rank[3]["PointUpLevel"] - profile["Point"]} điểm nữa để đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!",
-                                            style: const TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w600),
-                                          )
+                                        ? profile["CardRank"] != null
+                                            ? Text(
+                                                profile["CardRank"]
+                                                            .toString()
+                                                            .toLowerCase() ==
+                                                        "diamond"
+                                                    ? "Bạn đã đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!"
+                                                    : "Bạn cần hơn ${rank[3]["PointUpLevel"] - profile["Point"]} điểm nữa để đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!",
+                                                style: const TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              )
+                                            : Text(
+                                                profile["Point"] >=
+                                                        rank[3]["PointUpLevel"]
+                                                    ? "Bạn đã đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!"
+                                                    : "Bạn cần hơn ${rank[3]["PointUpLevel"] - profile["Point"]} điểm nữa để đạt cấp độ tối đa và nhận những đặc quyền chỉ bạn mới có!",
+                                                style: const TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              )
                                         : Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -363,31 +379,71 @@ class _MyPhamScreenState extends State<ThanhVienScreen>
                                                     .width,
                                                 height: 3,
                                                 child: LinearProgressIndicator(
-                                                    value: profile["Point"] == 0
-                                                        ? 0
-                                                        : (profile["Point"] /
-                                                            (rank[index + 1][
-                                                                "PointUpLevel"])),
+                                                    value: profile["CardRank"] !=
+                                                            null
+                                                        ? profile["CardRank"]
+                                                                    .toString()
+                                                                    .toLowerCase() ==
+                                                                "silver"
+                                                            ? 0
+                                                            : (rank[rank.indexWhere((element) =>
+                                                                        element["CardName"] ==
+                                                                        profile["CardRank"])][
+                                                                    "PointUpLevel"] /
+                                                                (rank[index + 1]
+                                                                    [
+                                                                    "PointUpLevel"]))
+                                                        : profile["Point"] == 0
+                                                            ? 0
+                                                            : (profile["Point"] /
+                                                                (rank[index + 1]
+                                                                    ["PointUpLevel"])),
                                                     color: mainColor),
                                               ),
-                                              profile["Point"] == 0 ||
-                                                      rank[index + 1]
-                                                              ["PointUpLevel"] >
-                                                          profile["Point"]
-                                                  ? Text(
-                                                      "Cần thêm ${rank[index + 1]["PointUpLevel"] - profile["Point"]} điểm để thăng hạng ${rank[index + 1]["CardName"]}",
-                                                      style: const TextStyle(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    )
-                                                  : const Text(
-                                                      "Bạn đã đủ điều kiện để đạt hạng này rồi",
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    )
+                                              profile["CardRank"] != null
+                                                  ? profile["CardRank"]
+                                                                  .toString()
+                                                                  .toLowerCase() ==
+                                                              "silver" ||
+                                                          rank[index + 1]["PointUpLevel"] >
+                                                              rank[rank.indexWhere((element) => element["CardName"] == profile["CardRank"])]
+                                                                  [
+                                                                  "PointUpLevel"]
+                                                      ? Text(
+                                                          "Cần thêm ${rank[index + 1]["PointUpLevel"] - profile["Point"]} điểm để thăng hạng ${rank[index + 1]["CardName"]}",
+                                                          style: const TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600))
+                                                      : const Text(
+                                                          "Bạn đã đủ điều kiện để đạt hạng này rồi",
+                                                          style: TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        )
+                                                  : profile["Point"] == 0 ||
+                                                          rank[index + 1]
+                                                                  ["PointUpLevel"] >
+                                                              profile["Point"]
+                                                      ? Text(
+                                                          "Cần thêm ${rank[index + 1]["PointUpLevel"] - profile["Point"]} điểm để thăng hạng ${rank[index + 1]["CardName"]}",
+                                                          style: const TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        )
+                                                      : const Text(
+                                                          "Bạn đã đủ điều kiện để đạt hạng này rồi",
+                                                          style: TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        )
                                             ],
                                           ),
                                   ),

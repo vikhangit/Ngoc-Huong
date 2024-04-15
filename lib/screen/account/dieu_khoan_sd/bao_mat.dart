@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/appInfoController.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class BaoMatScreen extends StatefulWidget {
@@ -15,11 +18,18 @@ class BaoMatScreen extends StatefulWidget {
 
 class _BaoMatScreenState extends State<BaoMatScreen> {
   final AppInfoModel appInfoModel = AppInfoModel();
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Upgrader.clearSavedSettings();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
   }
 
   @override
@@ -53,7 +63,12 @@ class _BaoMatScreenState extends State<BaoMatScreen> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          bottomNavigationBar: const MyBottomMenu(active: 4),
+          bottomNavigationBar: ScrollToHide(
+              scrollController: scrollController,
+              height: Platform.isAndroid ? 75 : 100,
+              child: const MyBottomMenu(
+                active: 4,
+              )),
           body: UpgradeAlert(
               upgrader: Upgrader(
                 dialogStyle: UpgradeDialogStyle.cupertino,

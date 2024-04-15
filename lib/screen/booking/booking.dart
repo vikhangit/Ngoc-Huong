@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,8 @@ import 'package:upgrader/upgrader.dart';
 
 class BookingServices extends StatefulWidget {
   final Map? dichvudachon;
-  const BookingServices({super.key, this.dichvudachon});
+  final String? payMethod;
+  const BookingServices({super.key, this.dichvudachon, this.payMethod});
   @override
   State<BookingServices> createState() => _BookingServicesState();
 }
@@ -45,7 +47,7 @@ Map activeService = {};
 List chooseService = [];
 Map profile = {};
 List payments = ["Tiền mặt", "Xu"];
-String paymentMethod = "Tiền mặt";
+String paymentMethod = "";
 
 class _BookingServicesState extends State<BookingServices>
     with TickerProviderStateMixin {
@@ -137,6 +139,13 @@ class _BookingServicesState extends State<BookingServices>
     });
     Upgrader.clearSavedSettings();
     profileModel.getProfile().then((value) => setState(() => profile = value));
+    setState(() {
+      if (widget.payMethod != null) {
+        paymentMethod = payments[payments.indexOf(widget.payMethod!)];
+      } else {
+        paymentMethod = payments[0];
+      }
+    });
     super.initState();
   }
 
@@ -426,7 +435,7 @@ class _BookingServicesState extends State<BookingServices>
             ),
             bottomNavigationBar: ScrollToHide(
                 scrollController: scrollController,
-                height: 100,
+                height: Platform.isAndroid ? 75 : 100,
                 child: const MyBottomMenu(
                   active: 1,
                 )),

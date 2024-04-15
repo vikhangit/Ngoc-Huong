@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
@@ -68,8 +70,8 @@ class _BookingSuccessState extends State<BookingSuccess>
   Widget build(BuildContext context) {
     var details = widget.details;
     return SafeArea(
-        
-        bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -98,7 +100,7 @@ class _BookingSuccessState extends State<BookingSuccess>
             ),
             bottomNavigationBar: ScrollToHide(
                 scrollController: scrollController,
-                height: 100,
+                height: Platform.isAndroid ? 75 : 100,
                 child: const MyBottomMenu(
                   active: 1,
                 )),

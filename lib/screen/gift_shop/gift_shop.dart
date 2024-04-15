@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
@@ -10,6 +12,7 @@ import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
 import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
 import 'package:ngoc_huong/screen/gift_shop/product.dart';
 import 'package:ngoc_huong/screen/gift_shop/service.dart';
+import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/mission/mission.dart';
 import 'package:ngoc_huong/screen/services/all_service.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -65,6 +68,20 @@ class _GiftShopState extends State<GiftShop> {
     return rank[0]["CardName"];
   }
 
+  String checkRankWithName(String rank) {
+    rank = rank.toUpperCase();
+    if (rank == "SILVER") {
+      return "Bạc";
+    } else if (rank == "GOLD") {
+      return "Vàng";
+    } else if (rank == "PLATINUM") {
+      return "Bạc kim";
+    } else if (rank == "DIAMOND") {
+      return "Kim cương";
+    }
+    return "Bạc";
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -78,7 +95,14 @@ class _GiftShopState extends State<GiftShop> {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomeScreen(
+                                callBack: () {
+                                  setState(() {});
+                                },
+                              )));
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -98,7 +122,7 @@ class _GiftShopState extends State<GiftShop> {
           ),
           bottomNavigationBar: ScrollToHide(
               scrollController: scrollController,
-              height: 100,
+              height: Platform.isAndroid ? 75 : 100,
               child: const MyBottomMenu(
                 active: 0,
               )),
@@ -167,8 +191,11 @@ class _GiftShopState extends State<GiftShop> {
                                                   ),
                                                 ),
                                           profile.isNotEmpty
-                                              ? Text(
-                                                  "Hạng ${checkRank(profile["Point"])}")
+                                              ? profile["CardRank"] != null
+                                                  ? Text(
+                                                      "Hạng ${checkRankWithName(profile["CardRank"])}")
+                                                  : Text(
+                                                      "Hạng ${checkRank(profile["Point"])}")
                                               : const SizedBox(
                                                   width: 20,
                                                   height: 20,

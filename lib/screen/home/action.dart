@@ -40,6 +40,7 @@ List toolServices = [
 bool showMore = false;
 int count = 0;
 List rank = [];
+Map profile = {};
 
 class _ActionHomeState extends State<ActionHome> {
   final LocalStorage storageCustomerToken = LocalStorage('customer_token');
@@ -57,6 +58,9 @@ class _ActionHomeState extends State<ActionHome> {
     super.initState();
     memberModel.getAllRank().then((value) => setState(() {
           rank = value;
+        }));
+    profileModel.getProfile().then((value) => setState(() {
+          profile = value;
         }));
   }
 
@@ -475,293 +479,298 @@ class _ActionHomeState extends State<ActionHome> {
                           bottom:
                               BorderSide(width: 0.5, color: Colors.black38))),
                   child: storageCustomerToken.getItem("customer_token") != null
-                      ? FutureBuilder(
-                          future: profileModel.getProfile(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              Map profile = snapshot.data!;
-                              return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () async {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const AccountScreen()));
-                                          },
-                                          child: SizedBox(
-                                            width: 35,
-                                            height: 35,
-                                            child: CircleAvatar(
-                                              backgroundColor:
-                                                  const Color(0xff00A3FF),
-                                              backgroundImage: NetworkImage(
-                                                  "${profile["CustomerImage"]}"),
-                                              radius: 35.0,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 6,
-                                        ),
-                                        Expanded(
-                                            child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const AccountScreen()));
-                                              },
-                                              child: Text(
-                                                "Hi, ${profile["CustomerName"].toString().toUpperCase()}",
-                                                style: TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: mainColor),
-                                              ),
-                                            ),
-                                            checkRankPoint(profile["Point"])
-                                          ],
-                                        ))
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                      ? Container(
+                          child: profile.isNotEmpty
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Row(
                                         children: [
-                                          Text(
-                                            "${profile["Point"] ?? 0} điểm",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                                color: mainColor),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const AccountScreen()));
+                                            },
+                                            child: SizedBox(
+                                              width: 35,
+                                              height: 35,
+                                              child: CircleAvatar(
+                                                backgroundColor:
+                                                    const Color(0xff00A3FF),
+                                                backgroundImage: NetworkImage(
+                                                    "${profile["CustomerImage"]}"),
+                                                radius: 35.0,
+                                              ),
+                                            ),
                                           ),
-                                          Row(
+                                          const SizedBox(
+                                            width: 6,
+                                          ),
+                                          Expanded(
+                                              child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                "${profile["CustomerCoin"] ?? 0}",
-                                                style: TextStyle(
-                                                    fontSize: 9,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: mainColor),
-                                              ),
-                                              const SizedBox(
-                                                width: 1,
-                                              ),
-                                              Image.asset(
-                                                "assets/images/icon/Xu1.png",
-                                                width: 15,
-                                                height: 15,
-                                                fit: BoxFit.fill,
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      FutureBuilder(
-                                        future: cartModel.getProductCartList(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            return Container(
-                                              margin: const EdgeInsets.only(
-                                                  right: 5),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 3,
-                                                      vertical: 1),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(8)),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.3),
-                                                    spreadRadius: 2,
-                                                    blurRadius: 2,
-                                                    offset: const Offset(0,
-                                                        2), // changes position of shadow
-                                                  ),
-                                                ],
-                                              ),
-                                              child: GestureDetector(
+                                              GestureDetector(
                                                 onTap: () {
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
-                                                          builder: (contex) =>
-                                                              CartScreen()));
+                                                          builder: (context) =>
+                                                              const AccountScreen()));
                                                 },
-                                                child: Image.asset(
-                                                  "assets/images/icon/cart.png",
-                                                  width: 24,
-                                                  height: 24,
+                                                child: Text(
+                                                  "Hi, ${profile["CustomerName"].toString().toUpperCase()}",
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: mainColor),
                                                 ),
                                               ),
-                                            );
-                                          } else {
-                                            return const SizedBox(
-                                              width: 24,
-                                              height: 24,
-                                              child: LoadingIndicator(
-                                                colors: kDefaultRainbowColors,
-                                                indicatorType: Indicator
-                                                    .lineSpinFadeLoader,
-                                                strokeWidth: 1,
-                                                // pathBackgroundColor: Colors.black45,
-                                              ),
-                                            );
-                                          }
-                                        },
+                                              profile["CardRank"] != null
+                                                  ? checkRankWithName(
+                                                      profile["CardRank"])
+                                                  : checkRankPoint(
+                                                      profile["Point"])
+                                            ],
+                                          ))
+                                        ],
                                       ),
-                                      FutureBuilder(
-                                        future: bookingModel.getNotifications(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            List list = snapshot.data!
-                                                .toList()
-                                                .where((e) =>
-                                                    e["IsRead"] == null ||
-                                                    !e["IsRead"])
-                                                .toList();
-                                            return Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 3,
-                                                      vertical: 1),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(8)),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.3),
-                                                    spreadRadius: 2,
-                                                    blurRadius: 2,
-                                                    offset: const Offset(0,
-                                                        2), // changes position of shadow
-                                                  ),
-                                                ],
-                                              ),
-                                              child: GestureDetector(
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              "${profile["Point"] ?? 0} điểm",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: mainColor),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "${profile["CustomerCoin"] ?? 0}",
+                                                  style: TextStyle(
+                                                      fontSize: 9,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: mainColor),
+                                                ),
+                                                const SizedBox(
+                                                  width: 1,
+                                                ),
+                                                Image.asset(
+                                                  "assets/images/icon/Xu1.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                  fit: BoxFit.fill,
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        FutureBuilder(
+                                          future:
+                                              cartModel.getProductCartList(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              return Container(
+                                                margin: const EdgeInsets.only(
+                                                    right: 5),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 3,
+                                                        vertical: 1),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(8)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 2,
+                                                      offset: const Offset(0,
+                                                          2), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: GestureDetector(
                                                   onTap: () {
-                                                    if (storageCustomerToken
-                                                            .getItem(
-                                                                "customer_token") !=
-                                                        null) {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  const NotificationScreen()));
-                                                    } else {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  const LoginScreen()));
-                                                    }
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (contex) =>
+                                                                CartScreen()));
                                                   },
-                                                  child: Stack(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.notifications,
-                                                        color: mainColor,
-                                                      ),
-                                                      Positioned(
-                                                          right: 0,
-                                                          top: 4,
-                                                          child: Container(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              decoration: const BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                  color: Colors
-                                                                      .white),
-                                                              child: Container(
+                                                  child: Image.asset(
+                                                    "assets/images/icon/cart.png",
+                                                    width: 24,
+                                                    height: 24,
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              return const SizedBox(
+                                                width: 24,
+                                                height: 24,
+                                                child: LoadingIndicator(
+                                                  colors: kDefaultRainbowColors,
+                                                  indicatorType: Indicator
+                                                      .lineSpinFadeLoader,
+                                                  strokeWidth: 1,
+                                                  // pathBackgroundColor: Colors.black45,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                        FutureBuilder(
+                                          future:
+                                              bookingModel.getNotifications(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              List list = snapshot.data!
+                                                  .toList()
+                                                  .where((e) =>
+                                                      e["IsRead"] == null ||
+                                                      !e["IsRead"])
+                                                  .toList();
+                                              return Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 3,
+                                                        vertical: 1),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(8)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 2,
+                                                      offset: const Offset(0,
+                                                          2), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: GestureDetector(
+                                                    onTap: () {
+                                                      if (storageCustomerToken
+                                                              .getItem(
+                                                                  "customer_token") !=
+                                                          null) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const NotificationScreen()));
+                                                      } else {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const LoginScreen()));
+                                                      }
+                                                    },
+                                                    child: Stack(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.notifications,
+                                                          color: mainColor,
+                                                        ),
+                                                        Positioned(
+                                                            right: 0,
+                                                            top: 4,
+                                                            child: Container(
                                                                 alignment:
                                                                     Alignment
                                                                         .center,
-                                                                width: 10,
-                                                                height: 10,
-                                                                margin:
-                                                                    const EdgeInsets
-                                                                        .all(1),
-                                                                decoration: BoxDecoration(
+                                                                decoration: const BoxDecoration(
                                                                     shape: BoxShape
                                                                         .circle,
-                                                                    color:
-                                                                        mainColor),
-                                                                child: Text(
-                                                                    "${list.length}",
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            6,
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontWeight:
-                                                                            FontWeight.w400)),
-                                                              )))
-                                                    ],
-                                                  )),
-                                            );
-                                          } else {
-                                            return const SizedBox(
-                                              width: 24,
-                                              height: 24,
-                                              child: LoadingIndicator(
-                                                colors: kDefaultRainbowColors,
-                                                indicatorType: Indicator
-                                                    .lineSpinFadeLoader,
-                                                strokeWidth: 1,
-                                                // pathBackgroundColor: Colors.black45,
-                                              ),
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              );
-                            } else {
-                              return const SizedBox(
-                                width: 30,
-                                height: 30,
-                                child: LoadingIndicator(
-                                  colors: kDefaultRainbowColors,
-                                  indicatorType: Indicator.lineSpinFadeLoader,
-                                  strokeWidth: 1,
-                                  // pathBackgroundColor: Colors.black45,
-                                ),
-                              );
-                            }
-                          },
-                        )
+                                                                    color: Colors
+                                                                        .white),
+                                                                child:
+                                                                    Container(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  width: 10,
+                                                                  height: 10,
+                                                                  margin:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          1),
+                                                                  decoration: BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .circle,
+                                                                      color:
+                                                                          mainColor),
+                                                                  child: Text(
+                                                                      "${list.length}",
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              6,
+                                                                          color: Colors
+                                                                              .white,
+                                                                          fontWeight:
+                                                                              FontWeight.w400)),
+                                                                )))
+                                                      ],
+                                                    )),
+                                              );
+                                            } else {
+                                              return const SizedBox(
+                                                width: 24,
+                                                height: 24,
+                                                child: LoadingIndicator(
+                                                  colors: kDefaultRainbowColors,
+                                                  indicatorType: Indicator
+                                                      .lineSpinFadeLoader,
+                                                  strokeWidth: 1,
+                                                  // pathBackgroundColor: Colors.black45,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : const SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: LoadingIndicator(
+                                    colors: kDefaultRainbowColors,
+                                    indicatorType: Indicator.lineSpinFadeLoader,
+                                    strokeWidth: 1,
+                                    // pathBackgroundColor: Colors.black45,
+                                  ),
+                                ))
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/screen/account/dieu_khoan_sd/bao_hanh.dart';
 import 'package:ngoc_huong/screen/account/dieu_khoan_sd/bao_mat.dart';
 import 'package:ngoc_huong/screen/account/dieu_khoan_sd/van_chuyen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class DieuKhoanSudung extends StatefulWidget {
@@ -15,6 +18,7 @@ class DieuKhoanSudung extends StatefulWidget {
 
 class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
   CustomModal customModal = CustomModal();
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -22,10 +26,16 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -52,7 +62,12 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          bottomNavigationBar: const MyBottomMenu(active: 4),
+          bottomNavigationBar: ScrollToHide(
+              scrollController: scrollController,
+              height: Platform.isAndroid ? 75 : 100,
+              child: const MyBottomMenu(
+                active: 4,
+              )),
           body: UpgradeAlert(
             upgrader: Upgrader(
               dialogStyle: UpgradeDialogStyle.cupertino,

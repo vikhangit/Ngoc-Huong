@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class GioiThieuBanBe extends StatefulWidget {
@@ -10,6 +13,7 @@ class GioiThieuBanBe extends StatefulWidget {
 }
 
 class _GioiThieuBanBeState extends State<GioiThieuBanBe> {
+  final ScrollController scrollController = ScrollController();
   @override
   void initState() {
     // TODO: implement initState
@@ -18,10 +22,16 @@ class _GioiThieuBanBeState extends State<GioiThieuBanBe> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
@@ -48,7 +58,12 @@ class _GioiThieuBanBeState extends State<GioiThieuBanBe> {
                     fontWeight: FontWeight.w500,
                     color: Colors.white)),
           ),
-          bottomNavigationBar: const MyBottomMenu(active: 4),
+          bottomNavigationBar: ScrollToHide(
+              scrollController: scrollController,
+              height: Platform.isAndroid ? 75 : 100,
+              child: const MyBottomMenu(
+                active: 4,
+              )),
           body: UpgradeAlert(
               upgrader: Upgrader(
                 dialogStyle: UpgradeDialogStyle.cupertino,

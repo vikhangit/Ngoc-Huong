@@ -44,9 +44,10 @@ class _ModalBeautifyHistoryDetailState
     Map detailBooking = widget.detailBooking;
     List imageList = widget.listImageUsing;
     return SafeArea(
-      bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
-          key: scaffoldKey,
+            key: scaffoldKey,
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
@@ -81,309 +82,272 @@ class _ModalBeautifyHistoryDetailState
                   showReleaseNotes: false,
                 ),
                 child: ListView(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 20),
-                            children: [
-                              Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ImageDetail(items: imageList),
-                                    Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 15),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  children: [
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ImageDetail(items: imageList),
+                          Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    detailBooking["ServiceName"],
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  // Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  //   children: [
+                                  //     Text(
+                                  //       NumberFormat.currency(locale: "vi_VI", symbol: "đ")
+                                  //           .format(
+                                  //         detailProduct["PriceOutbound"],
+                                  //       ),
+                                  //       style: TextStyle(
+                                  //           fontSize: 16,
+                                  //           color: Theme.of(context).colorScheme.primary),
+                                  //     ),
+                                  //     // Row(
+                                  //     //   children: [
+                                  //     //     const Icon(
+                                  //     //       Icons.star,
+                                  //     //       size: 20,
+                                  //     //       color: Colors.orange,
+                                  //     //     ),
+                                  //     //     Container(
+                                  //     //       margin:
+                                  //     //       const EdgeInsets.symmetric(horizontal: 5),
+                                  //     //       child: const Text("4.8"),
+                                  //     //     ),
+                                  //     //     const Text(
+                                  //     //       "(130 đánh giá)",
+                                  //     //       style: TextStyle(fontWeight: FontWeight.w300),
+                                  //     //     )
+                                  //     //   ],
+                                  //     // )
+                                  //   ],
+                                  // ),
+                                  // const SizedBox(
+                                  //   height: 10,
+                                  // ),
+                                  // const Text(
+                                  //   "Chi tiết",
+                                  //   style: TextStyle(fontSize: 15),
+                                  // ),
+                                  // const SizedBox(
+                                  //   height: 5,
+                                  // ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Row(
                                           children: [
-                                            const SizedBox(
+                                            Image.asset(
+                                              "assets/images/calendar-solid-black.png",
+                                              width: 20,
                                               height: 20,
+                                              fit: BoxFit.contain,
                                             ),
-                                            Text(
-                                              detailBooking["ServiceName"],
-                                              style:
-                                                  const TextStyle(fontSize: 17),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            // Row(
-                                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            //   children: [
-                                            //     Text(
-                                            //       NumberFormat.currency(locale: "vi_VI", symbol: "đ")
-                                            //           .format(
-                                            //         detailProduct["PriceOutbound"],
-                                            //       ),
-                                            //       style: TextStyle(
-                                            //           fontSize: 16,
-                                            //           color: Theme.of(context).colorScheme.primary),
-                                            //     ),
-                                            //     // Row(
-                                            //     //   children: [
-                                            //     //     const Icon(
-                                            //     //       Icons.star,
-                                            //     //       size: 20,
-                                            //     //       color: Colors.orange,
-                                            //     //     ),
-                                            //     //     Container(
-                                            //     //       margin:
-                                            //     //       const EdgeInsets.symmetric(horizontal: 5),
-                                            //     //       child: const Text("4.8"),
-                                            //     //     ),
-                                            //     //     const Text(
-                                            //     //       "(130 đánh giá)",
-                                            //     //       style: TextStyle(fontWeight: FontWeight.w300),
-                                            //     //     )
-                                            //     //   ],
-                                            //     // )
-                                            //   ],
-                                            // ),
-                                            // const SizedBox(
-                                            //   height: 10,
-                                            // ),
-                                            // const Text(
-                                            //   "Chi tiết",
-                                            //   style: TextStyle(fontSize: 15),
-                                            // ),
-                                            // const SizedBox(
-                                            //   height: 5,
-                                            // ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Expanded(
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        "assets/images/calendar-solid-black.png",
-                                                        width: 20,
-                                                        height: 20,
-                                                        fit: BoxFit.contain,
-                                                      ),
-                                                      const Text(
-                                                          "Ngày thực hiện",
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Colors
-                                                                  .black)),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                        DateFormat("dd/MM/yyyy")
-                                                            .format(DateTime.parse(
-                                                                detailBooking[
-                                                                    "UsingServiceDate"])),
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: const TextStyle(
-                                                            fontSize: 12,
-                                                            color:
-                                                                Colors.black))),
-                                              ],
-                                            ),
-                                            if (detailBooking[
-                                                    "ReExaminationDate"] !=
-                                                null)
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                            if (detailBooking[
-                                                    "ReExaminationDate"] !=
-                                                null)
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Image.asset(
-                                                          "assets/images/calendar-solid-black.png",
-                                                          width: 20,
-                                                          height: 20,
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                        const Text(
-                                                            "Ngày hẹn kế tiếp",
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                color: Colors
-                                                                    .black)),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                      child: Text(
-                                                          DateFormat(
-                                                                  "dd/MM/yyyy")
-                                                              .format(DateTime.parse(
-                                                                  detailBooking[
-                                                                      "ReExaminationDate"])),
-                                                          textAlign:
-                                                              TextAlign.right,
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 12,
-                                                                  color: Colors
-                                                                      .black)))
-                                                ],
-                                              ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                const Expanded(
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.person,
-                                                        size: 22,
-                                                      ),
-                                                      Text(
-                                                          "Nhân viên thực hiện",
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Colors
-                                                                  .black)),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                        "${detailBooking["DetailList"][0]["StaffName"]}",
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: const TextStyle(
-                                                            fontSize: 12,
-                                                            color:
-                                                                Colors.black)))
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Expanded(
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        "assets/images/location-solid-black.png",
-                                                        width: 20,
-                                                        height: 20,
-                                                        fit: BoxFit.contain,
-                                                      ),
-                                                      const Text(
-                                                          "Chi nhánh thực hiện",
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Colors
-                                                                  .black)),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: FutureBuilder(
-                                                        future: branchsModel
-                                                            .getBranchDetails(
-                                                                detailBooking[
-                                                                    "BranchCode"]),
-                                                        builder: (context,
-                                                            snapshot) {
-                                                          if (snapshot
-                                                              .hasData) {
-                                                            return Text(
-                                                                "${detailBooking["BranchName"]} - ${snapshot.data!["Address"]}",
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .right,
-                                                                style: const TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    color: Colors
-                                                                        .black));
-                                                          } else {
-                                                            return const SizedBox(
-                                                              width: 20,
-                                                              height: 20,
-                                                              child:
-                                                                  LoadingIndicator(
-                                                                colors:
-                                                                    kDefaultRainbowColors,
-                                                                indicatorType:
-                                                                    Indicator
-                                                                        .lineSpinFadeLoader,
-                                                                strokeWidth: 1,
-                                                                // pathBackgroundColor: Colors.black45,
-                                                              ),
-                                                            );
-                                                          }
-                                                        }))
-                                              ],
-                                            ),
-
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Expanded(
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.description,
-                                                        size: 22,
-                                                      ),
-                                                      Text("Thông tin chi tiết",
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Colors
-                                                                  .black)),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: Text(
-                                                        "${detailBooking["DetailList"][0]["Status"][0]}"
-                                                                .toUpperCase() +
-                                                            "${detailBooking["DetailList"][0]["Status"]}"
-                                                                .substring(1)
-                                                                .toLowerCase(),
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: const TextStyle(
-                                                            fontSize: 12,
-                                                            color:
-                                                                Colors.black)))
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: 5,
-                                            ),
+                                            const Text("Ngày thực hiện",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black)),
                                           ],
-                                        )),
-                                  ])
-                            ],
-                          ))));
+                                        ),
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                              DateFormat("dd/MM/yyyy").format(
+                                                  DateTime.parse(detailBooking[
+                                                      "UsingServiceDate"])),
+                                              textAlign: TextAlign.right,
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black))),
+                                    ],
+                                  ),
+                                  if (detailBooking["ReExaminationDate"] !=
+                                      null)
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                  if (detailBooking["ReExaminationDate"] !=
+                                      null)
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/calendar-solid-black.png",
+                                                width: 20,
+                                                height: 20,
+                                                fit: BoxFit.contain,
+                                              ),
+                                              const Text("Ngày hẹn kế tiếp",
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.black)),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                            child: Text(
+                                                DateFormat("dd/MM/yyyy").format(
+                                                    DateTime.parse(detailBooking[
+                                                        "ReExaminationDate"])),
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black)))
+                                      ],
+                                    ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Expanded(
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.person,
+                                              size: 22,
+                                            ),
+                                            Text("Nhân viên thực hiện",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black)),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                              "${detailBooking["DetailList"][0]["StaffName"]}",
+                                              textAlign: TextAlign.right,
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black)))
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            Image.asset(
+                                              "assets/images/location-solid-black.png",
+                                              width: 20,
+                                              height: 20,
+                                              fit: BoxFit.contain,
+                                            ),
+                                            const Text("Chi nhánh thực hiện",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black)),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                          child: FutureBuilder(
+                                              future:
+                                                  branchsModel.getBranchDetails(
+                                                      detailBooking[
+                                                          "BranchCode"]),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData) {
+                                                  return Text(
+                                                      "${detailBooking["BranchName"]} - ${snapshot.data!["Address"]}",
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.black));
+                                                } else {
+                                                  return const SizedBox(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: LoadingIndicator(
+                                                      colors:
+                                                          kDefaultRainbowColors,
+                                                      indicatorType: Indicator
+                                                          .lineSpinFadeLoader,
+                                                      strokeWidth: 1,
+                                                      // pathBackgroundColor: Colors.black45,
+                                                    ),
+                                                  );
+                                                }
+                                              }))
+                                    ],
+                                  ),
+
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Expanded(
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.description,
+                                              size: 22,
+                                            ),
+                                            Text("Thông tin chi tiết",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.black)),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                          child: Text(
+                                              "${detailBooking["DetailList"][0]["Status"][0]}"
+                                                      .toUpperCase() +
+                                                  "${detailBooking["DetailList"][0]["Status"]}"
+                                                      .substring(1)
+                                                      .toLowerCase(),
+                                              textAlign: TextAlign.right,
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black)))
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                ],
+                              )),
+                        ])
+                  ],
+                ))));
   }
 }
 

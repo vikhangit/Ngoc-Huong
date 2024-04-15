@@ -67,4 +67,25 @@ class BannerModel {
     }
     return result;
   }
+
+  Future<List> getReviewServices() async {
+    List result = [];
+    try {
+      Response response =
+          await client.dio.get('$goodAppUrl/api/$idApp/service.review?$token',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                // 'Authorization':
+                //     '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
+      if (response.statusCode == 200) {
+        return result = response.data;
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
 }

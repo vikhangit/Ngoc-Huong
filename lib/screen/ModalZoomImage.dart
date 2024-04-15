@@ -1,5 +1,6 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -36,21 +37,12 @@ class _ModalZoomImageState extends State<ModalZoomImage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      
-      bottom: false, top: false,
+      bottom: false,
+      top: false,
       child: Scaffold(
           key: scaffoldKey,
           backgroundColor: Colors.black,
           resizeToAvoidBottomInset: true,
-          // bottomNavigationBar: ScrollToHide(
-          //     scrollController: scrollController,
-          //     height: 100,
-          //     child: Container(
-          //       height: 100,
-          //       decoration: const BoxDecoration(
-          //         color: Colors.black
-          //       ),
-          //     )),
           appBar: AppBar(
             backgroundColor: Colors.black,
             leadingWidth: 45,
@@ -58,6 +50,10 @@ class _ModalZoomImageState extends State<ModalZoomImage> {
             leading: GestureDetector(
                 onTap: () {
                   Navigator.of(context).pop();
+                  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                      statusBarColor: mainColor,
+                      systemNavigationBarColor: Colors.white,
+                      systemNavigationBarIconBrightness: Brightness.dark));
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 10),

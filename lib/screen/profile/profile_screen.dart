@@ -182,8 +182,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Future.delayed(const Duration(seconds: 2), () {
           profileModel.setProfile(data).then((value) {
             EasyLoading.dismiss();
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => HomeScreen(
+                          callBack: () {
+                            setState(() {});
+                          },
+                        )));
             setState(() {
               ElegantNotification.success(
                 width: MediaQuery.of(context).size.width,
@@ -211,8 +217,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         key: _formKey,
         child: Builder(
             builder: (context) => SafeArea(
-              
-              bottom: false, top: false,
+                  bottom: false,
+                  top: false,
                   child: Scaffold(
                       backgroundColor: Colors.white,
                       resizeToAvoidBottomInset: true,
@@ -243,8 +249,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const HomeScreen()));
+                                              builder: (context) => HomeScreen(
+                                                    callBack: () {
+                                                      setState(() {});
+                                                    },
+                                                  )));
                                     }, () => Navigator.of(context).pop());
                                   } else {
                                     customModal.showAlertDialog(
@@ -256,8 +265,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const HomeScreen()));
+                                              builder: (context) => HomeScreen(
+                                                    callBack: () {
+                                                      setState(() {});
+                                                    },
+                                                  )));
                                     }, () => Navigator.of(context).pop());
                                   }
                                 },

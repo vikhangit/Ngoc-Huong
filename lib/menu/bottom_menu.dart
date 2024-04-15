@@ -89,8 +89,14 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
         switch (index) {
           case 0:
             {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomeScreen(
+                            callBack: () {
+                              setState(() {});
+                            },
+                          )));
               break;
             }
           case 2:
