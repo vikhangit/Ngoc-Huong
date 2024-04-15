@@ -222,6 +222,7 @@ class _ProductPageState extends State<ProductPage> {
                       children: [
                         SizedBox(
                           height: 220,
+                          width: MediaQuery.of(context).size.width,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
                               aspectRatio: 16 / 9,

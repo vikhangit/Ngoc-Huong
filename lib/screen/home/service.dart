@@ -189,6 +189,7 @@ class _ServicesPageState extends State<ServicesPage> {
                       children: [
                         SizedBox(
                           height: 210,
+                          width: MediaQuery.of(context).size.width,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
                               aspectRatio: 2.0,

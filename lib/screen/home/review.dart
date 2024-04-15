@@ -98,9 +98,18 @@ class _ReviewPageState extends State<ReviewPage> {
                                   Container(
                                       width: MediaQuery.of(context).size.width,
                                       height: 150,
-                                      child: HtmlWidget(
+                                      child: Center(
+                                       child: HtmlWidget(
                                         list[i]["content"],
-                                      )),
+                                        customStylesBuilder:(element) {
+                                          if(element.localName == "iframe"){
+                                            return{
+                                              "width": "100%"
+                                              , "height": "100%"
+                                            };
+                                          }
+                                        },
+                                      ))),
                                   // Stack(
                                   //   children: [
 
@@ -144,6 +153,7 @@ class _ReviewPageState extends State<ReviewPage> {
                       children: [
                         SizedBox(
                           height: 225,
+                          width: MediaQuery.of(context).size.width,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
                               aspectRatio: 16 / 9,

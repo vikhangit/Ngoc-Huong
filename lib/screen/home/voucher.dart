@@ -160,6 +160,7 @@ class _VoucherState extends State<Voucher> {
             children: [
               SizedBox(
                 height: 250,
+                width: MediaQuery.of(context).size.width,
                 child: CarouselSlider.builder(
                   options: CarouselOptions(
                     aspectRatio: 2.0,

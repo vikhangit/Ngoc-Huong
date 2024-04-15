@@ -18,6 +18,8 @@ class _BannerSliderState extends State<BannerSlider> {
   Widget build(BuildContext context) {
     return SizedBox(
         height: 250,
+        
+                width: MediaQuery.of(context).size.width,
         child: FutureBuilder(
             future: bannerModel.getBannerList(),
             builder: (context, snapshot) {
@@ -27,6 +29,7 @@ class _BannerSliderState extends State<BannerSlider> {
                   options: CarouselOptions(
                       height: 250,
                       // aspectRatio: 26 / 14,
+                      
                       autoPlay: true,
                       autoPlayInterval: const Duration(seconds: 3),
                       viewportFraction: 1,
@@ -39,6 +42,7 @@ class _BannerSliderState extends State<BannerSlider> {
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(15)),
                       child: Image.network("$goodAppUrl${e["hinh_anh"]}?$token",
+                      width: MediaQuery.of(context).size.width,
                           fit: BoxFit.cover),
                     );
                   }).toList(),

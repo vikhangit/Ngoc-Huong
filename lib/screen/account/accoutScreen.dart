@@ -733,13 +733,16 @@ class _AccountScreenState extends State<AccountScreen> {
                                           )),
                                 ],
                               )),
-                          Expanded(
+                            Expanded(  
+                              child: Material(
+                                color: Colors.white,
+                                elevation: 0,
+                                child: Transform.translate(offset: Offset(0, -50),
                               child: ListView(
                                 controller: scrollController,
                             children: menu.map((element) {
                               int index = menu.indexOf(element);
                               return Container(
-                                transform: Matrix4.translationValues(0, -50, 0),
                                 height: 55,
                                 child: TextButton(
                                     style: ButtonStyle(
@@ -807,8 +810,12 @@ class _AccountScreenState extends State<AccountScreen> {
                                     )),
                               );
                             }).toList(),
-                          ))
-                        ],
+                          )
+                              )
+                          )
+                        ,
+                              )
+                          ],
                       )))),
     );
   }
