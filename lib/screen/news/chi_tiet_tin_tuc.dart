@@ -132,7 +132,9 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                             color: Colors.black),
                         "img": Style(
                             height: Height.auto(),
-                            width: Width(MediaQuery.of(context).size.width)),
+                            width:
+                                Width(MediaQuery.of(context).size.width - 20),
+                            margin: Margins(left: Margin(0))),
                         "*:not(img)": Style(
                             lineHeight: const LineHeight(1.5),
                             margin: Margins.only(left: 0, top: 10, bottom: 10))

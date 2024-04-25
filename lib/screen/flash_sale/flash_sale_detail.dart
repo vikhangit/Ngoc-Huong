@@ -189,12 +189,14 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                                 textDecoration: TextDecoration.none,
                                 color: Colors.black),
                             "img": Style(
-                              height: Height.auto(),
-                            ),
+                                height: Height.auto(),
+                                width: Width(
+                                    MediaQuery.of(context).size.width - 35),
+                                margin: Margins(left: Margin(0))),
                             "*:not(img)": Style(
                                 lineHeight: const LineHeight(1.5),
                                 margin:
-                                    Margins.only(left: 0, top: 10, bottom: 10))
+                                    Margins.only(left: 0, top: 5, bottom: 5))
                           },
                         ),
                       ),

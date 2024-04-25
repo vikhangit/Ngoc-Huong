@@ -10,6 +10,7 @@ import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/screen/ModalPlayVideo.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/cosmetic/special_cosmetic.dart';
+import 'package:ngoc_huong/screen/reviews/ReviewScreen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:video_player/video_player.dart';
@@ -40,13 +41,31 @@ class _ReviewPageState extends State<ReviewPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "REVIEW DỊCH VỤ TẠI THẨM MỸ VIỆN NGỌC HƯỜNG",
+                  "NGỌC HƯỜNG BEAUTY - GÓP Ý DỊCH VỤ",
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: mainColor,
                   ),
                 ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ReviewScreen()));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Text(
+                        "Xem thêm...",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            color: mainColor,
+                            fontStyle: FontStyle.italic),
+                      ),
+                    ))
               ],
             ),
           ),
@@ -54,17 +73,16 @@ class _ReviewPageState extends State<ReviewPage> {
             height: 15,
           ),
           SizedBox(
-            height: 260,
+            height: 230,
             child: FutureBuilder(
               future: bannerModel.getReviewServices(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List list = snapshot.data!.toList();
                   List<Widget> pages = List<Widget>.generate(
-                      list.length,
+                      list.length >= 4 ? 4 : (list.length / 2).round(),
                       (i) => GestureDetector(
                             onTap: () {
-                              print(list[i]["content"]);
                               // $goodAppUrl${list[i]["video"]}?$token'
                               Navigator.push(
                                   context,
@@ -77,10 +95,12 @@ class _ReviewPageState extends State<ReviewPage> {
                             child: Container(
                               margin: const EdgeInsets.only(
                                   left: 5, top: 5, bottom: 5, right: 5),
+                              padding: const EdgeInsets.only(
+                                  top: 6, left: 6, right: 6, bottom: 2),
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
                                 borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(15)),
+                                    top: Radius.circular(10)),
                                 color: Colors.white,
                                 boxShadow: [
                                   BoxShadow(
@@ -94,22 +114,22 @@ class _ReviewPageState extends State<ReviewPage> {
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
                                       width: MediaQuery.of(context).size.width,
-                                      height: 150,
-                                      child: Center(
-                                       child: HtmlWidget(
+                                      height: 140,
+                                      child: HtmlWidget(
                                         list[i]["content"],
-                                        customStylesBuilder:(element) {
-                                          if(element.localName == "iframe"){
-                                            return{
-                                              "width": "100%"
-                                              , "height": "100%"
-                                            };
-                                          }
+                                        customStylesBuilder: (element) {
+                                          // if (element.localName == "iframe") {
+                                          //   return {
+                                          //     "width": "100%",
+                                          //     "height": "100%"
+                                          //   };
+                                          // }
                                         },
-                                      ))),
+                                      )),
                                   // Stack(
                                   //   children: [
 
@@ -124,12 +144,7 @@ class _ReviewPageState extends State<ReviewPage> {
                                   // )))
                                   //   ],
                                   // ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
                                   Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
                                     child: Text(
                                       "${list[i]["title"]}",
                                       textAlign: TextAlign.left,
@@ -152,7 +167,7 @@ class _ReviewPageState extends State<ReviewPage> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 225,
+                          height: 210,
                           width: MediaQuery.of(context).size.width,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
@@ -191,22 +206,23 @@ class _ReviewPageState extends State<ReviewPage> {
                         const SizedBox(
                           height: 8,
                         ),
-                        DotsIndicator(
-                          dotsCount: (pages.length / 2).round(),
-                          position: currentIndexPr,
-                          decorator: DotsDecorator(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              size: Size(12, 8),
-                              activeSize: Size(24, 8),
-                              color: mainColor,
-                              activeColor: mainColor,
-                              activeShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              spacing: EdgeInsets.all(1)),
-                        )
+                        if (pages.length > 2)
+                          DotsIndicator(
+                            dotsCount: (pages.length / 2).round(),
+                            position: currentIndexPr,
+                            decorator: DotsDecorator(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.0),
+                                ),
+                                size: Size(12, 8),
+                                activeSize: Size(24, 8),
+                                color: mainColor,
+                                activeColor: mainColor,
+                                activeShape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.0),
+                                ),
+                                spacing: EdgeInsets.all(1)),
+                          )
                       ],
                     ),
                   );

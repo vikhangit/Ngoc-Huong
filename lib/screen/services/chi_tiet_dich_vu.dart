@@ -258,12 +258,13 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                       fontSize: FontSize(15),
                                       fontWeight: FontWeight.w300,
                                       textAlign: TextAlign.justify),
-                                  "img": Style(margin: Margins.only(top: 5))
-                                  //   "img": Style(
-                                  //     width: Width(MediaQuery.of(context).size.width * .85),
-                                  //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
-                                  //     textAlign: TextAlign.center
-                                  //   )
+                                  "img": Style(
+                                      height: Height.auto(),
+                                      width: Width(
+                                          MediaQuery.of(context).size.width -
+                                              30),
+                                      margin: Margins(
+                                          left: Margin(0), top: Margin(10))),
                                 },
                               ),
                             if (activeTab == 2)

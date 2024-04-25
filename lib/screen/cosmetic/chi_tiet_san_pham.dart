@@ -588,7 +588,10 @@ class _ProductDetailState extends State<ProductDetail>
                         fontSize: FontSize(15),
                         fontWeight: FontWeight.w300,
                         textAlign: TextAlign.justify),
-                    "img": Style(margin: Margins.only(top: 5))
+                    "img": Style(
+                        height: Height.auto(),
+                        width: Width(MediaQuery.of(context).size.width - 30),
+                        margin: Margins(left: Margin(0), top: Margin(10))),
                   },
                 )
               : SizedBox(
