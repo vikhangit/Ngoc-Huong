@@ -139,7 +139,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                           width: MediaQuery.of(context)
                                                       .size
                                                       .width /
-                                                  2 -
+                                                 (MediaQuery.of(context).size.width > 650 ?  4 : MediaQuery.of(context).size.width > 450 ? 3 : 2) -
                                               22.5,
                                           padding: const EdgeInsets.only(
                                               left: 6,
@@ -172,7 +172,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
-                                                  height: 130,
+                                                  height: MediaQuery.of(context).size.width > 450 ? 175 :  145,
                                                   child: HtmlWidget(
                                                     item["content"],
                                                     customStylesBuilder:

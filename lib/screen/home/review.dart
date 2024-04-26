@@ -73,7 +73,7 @@ class _ReviewPageState extends State<ReviewPage> {
             height: 15,
           ),
           SizedBox(
-            height: 230,
+            height: MediaQuery.of(context).size.width > 600 ? 480 : 230,
             child: FutureBuilder(
               future: bannerModel.getReviewServices(),
               builder: (context, snapshot) {
@@ -117,8 +117,8 @@ class _ReviewPageState extends State<ReviewPage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 140,
+                                      
+                                      height: MediaQuery.of(context).size.width > 600 ? 315: 140,
                                       child: HtmlWidget(
                                         list[i]["content"],
                                         customStylesBuilder: (element) {
@@ -167,7 +167,7 @@ class _ReviewPageState extends State<ReviewPage> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 210,
+                          height: MediaQuery.of(context).size.width > 600 ? 365 : 210,
                           width: MediaQuery.of(context).size.width,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
