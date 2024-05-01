@@ -69,8 +69,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     Upgrader.clearSavedSettings();
 
     if (Platform.isIOS) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          overlays: [SystemUiOverlay.bottom]);
+      // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      //     overlays: [SystemUiOverlay.bottom]);
     }
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: mainColor,
@@ -83,8 +83,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.dispose();
     scrollController.dispose();
     if (Platform.isIOS) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          overlays: [SystemUiOverlay.bottom]);
+      // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      //     overlays: [SystemUiOverlay.bottom]);
     }
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: mainColor,
@@ -110,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     if (Platform.isIOS) {
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          overlays: [SystemUiOverlay.bottom]);
+      // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      //     overlays: [SystemUiOverlay.bottom]);
     }
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: mainColor,
