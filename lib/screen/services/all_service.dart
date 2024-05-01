@@ -346,17 +346,16 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                   overflow:
                                                                       TextOverflow
                                                                           .ellipsis,
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
                                                                   style: TextStyle(
                                                                       fontSize:
                                                                           12,
                                                                       color:
                                                                           mainColor,
+                                                                      height:
+                                                                          1.3,
                                                                       fontWeight:
                                                                           FontWeight
-                                                                              .w600),
+                                                                              .w500),
                                                                 ),
                                                                 const SizedBox(
                                                                   height: 2,
@@ -452,14 +451,14 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                                                                   ),
                                                                                   Text(
                                                                                     "${item["ExchangeCoin"]}",
-                                                                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.amber),
+                                                                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.amber),
                                                                                   ),
                                                                                 ])
                                                                               : const Text(
                                                                                   "Đang cập nhật...",
-                                                                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.amber),
+                                                                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.white),
                                                                                 )
-                                                                          : const Text("Đặt lịch", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.amber)),
+                                                                          : const Text("Đặt lịch", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white)),
                                                                     )),
                                                           )
                                                         ],

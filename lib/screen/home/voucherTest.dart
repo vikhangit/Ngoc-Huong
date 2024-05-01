@@ -9,16 +9,16 @@ import 'package:ngoc_huong/screen/voucher_detail/voucher_detail.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
-class Voucher extends StatefulWidget {
-  const Voucher({super.key});
+class VoucherTest extends StatefulWidget {
+  const VoucherTest({super.key});
 
   @override
-  State<Voucher> createState() => _VoucherState();
+  State<VoucherTest> createState() => _VoucherTestState();
 }
 
 int activeDot = 0;
 
-class _VoucherState extends State<Voucher> {
+class _VoucherTestState extends State<VoucherTest> {
   final BannerModel bannerModel = BannerModel();
   final CustomModal customModal = CustomModal();
 
@@ -88,7 +88,7 @@ class _VoucherState extends State<Voucher> {
                                 () => Navigator.of(context).pop());
                           },
                           child: Container(
-                              height: 150,
+                              height: 120,
                               padding: const EdgeInsets.all(5),
                               margin: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -118,7 +118,7 @@ class _VoucherState extends State<Voucher> {
                       );
               } else {
                 return const SizedBox(
-                  height: 150,
+                  height: 120,
                   child: Center(
                     child: SizedBox(
                       width: 24,
@@ -139,28 +139,93 @@ class _VoucherState extends State<Voucher> {
   }
 
   Widget _buildCarousel(List list) {
-    var pages = list
-        .map((e) => GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => VoucherDetail(
-                              detail: e,
-                            )));
-              },
-              child: Container(
-                  // margin: EdgeInsets.symmetric(horizontal: 8),
-                  child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  "$goodAppUrl${e["picture"]}?$token",
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
+    var pages = list.map((e) {
+      int index = list.indexOf(e);
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => VoucherDetail(
+                            detail: e,
+                          )));
+            },
+            child: Container(
+                // margin: EdgeInsets.symmetric(horizontal: 8),
+                child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                "$goodAppUrl${e["picture"]}?$token",
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                fit: BoxFit.cover,
+              ),
+            )),
+          ),
+          Positioned(
+              right: activeDot == index ? 35 : 20,
+              left: activeDot == index ? 35 : 20,
+              bottom: -10,
+              child: GestureDetector(
+                onTap: () {},
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(1000),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 1,
+                        blurRadius: 2,
+                        offset:
+                            const Offset(0, 1), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        "LẤY NGAY",
+                        style: TextStyle(
+                            fontSize: 12,
+                            height: 1,
+                            color: mainColor,
+                            fontWeight: FontWeight.w800),
+                      ),
+                      Container(
+                          width: 20,
+                          height: 20,
+                          margin: EdgeInsets.only(right: 5),
+                          decoration: BoxDecoration(
+                              color: mainColor,
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(1000))),
+                          child: const Center(
+                            child: Text(
+                              ">",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  height: 1,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900),
+                            ),
+                          ))
+                    ],
+                  ),
                 ),
-              )),
-            ))
-        .toList();
+              ))
+        ],
+      );
+    }).toList();
 
     return pages.length > 1
         ? Column(
@@ -170,9 +235,10 @@ class _VoucherState extends State<Voucher> {
                 width: MediaQuery.of(context).size.width,
                 child: CarouselSlider.builder(
                   options: CarouselOptions(
-                    height: 150,
+                    clipBehavior: Clip.none,
+                    height: 120,
                     enlargeCenterPage: true,
-                    viewportFraction: 0.4,
+                    viewportFraction: 0.55,
                     enlargeStrategy: CenterPageEnlargeStrategy.scale,
                     scrollPhysics: pages.length == 1
                         ? const ScrollPhysics(
@@ -190,7 +256,7 @@ class _VoucherState extends State<Voucher> {
               ),
               Container(
                 width: 100,
-                margin: const EdgeInsets.only(top: 20),
+                margin: const EdgeInsets.only(top: 25),
                 child: DotsIndicator(
                   dotsCount: pages.length,
                   position: activeDot,

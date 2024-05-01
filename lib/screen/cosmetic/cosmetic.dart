@@ -229,6 +229,9 @@ class _CosmeticState extends State<Cosmetic> {
                                       fontWeight: FontWeight.w600,
                                       color: mainColor),
                                 ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
                                 SizedBox(
                                   height:
                                       MediaQuery.of(context).size.height - 250,
@@ -409,7 +412,7 @@ class _CosmeticState extends State<Cosmetic> {
                                                           Column(
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
-                                                                    .center,
+                                                                    .start,
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .spaceBetween,
@@ -464,17 +467,15 @@ class _CosmeticState extends State<Cosmetic> {
                                                                 overflow:
                                                                     TextOverflow
                                                                         .ellipsis,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         12,
                                                                     color:
                                                                         mainColor,
+                                                                    height: 1.3,
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .w600),
+                                                                            .w500),
                                                               ),
                                                               const SizedBox(
                                                                 height: 5,
@@ -537,8 +538,8 @@ class _CosmeticState extends State<Cosmetic> {
                                                                   ? item["ExchangeCoin"] !=
                                                                           null
                                                                       ? Row(
-                                                                          mainAxisAlignment: MainAxisAlignment
-                                                                              .center,
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
                                                                           children: [
                                                                               Image.asset(
                                                                                 "assets/images/icon/Xu1.png",
@@ -550,25 +551,44 @@ class _CosmeticState extends State<Cosmetic> {
                                                                               ),
                                                                               Text(
                                                                                 "${item["ExchangeCoin"]}",
-                                                                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.amber),
+                                                                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.amber),
                                                                               ),
                                                                             ])
                                                                       : const Text(
                                                                           "Đang cập nhật...",
                                                                           style: TextStyle(
                                                                               fontSize: 10,
-                                                                              fontWeight: FontWeight.w600,
-                                                                              color: Colors.amber),
+                                                                              fontWeight: FontWeight.w500,
+                                                                              color: Colors.white),
                                                                         )
-                                                                  : Text(
-                                                                      "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceInbound"])} Đ",
-                                                                      style: const TextStyle(
-                                                                          fontSize:
-                                                                              12,
-                                                                          fontWeight: FontWeight
-                                                                              .w400,
-                                                                          color:
-                                                                              Colors.amber)),
+                                                                  : Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        const Text(
+                                                                          "đ",
+                                                                          style: TextStyle(
+                                                                              fontSize: 12,
+                                                                              decoration: TextDecoration.underline,
+                                                                              decorationColor: Colors.white,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: Colors.white),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          width:
+                                                                              2,
+                                                                        ),
+                                                                        Text(
+                                                                          NumberFormat.currency(locale: "vi_VI", symbol: "")
+                                                                              .format(item["PriceInbound"]),
+                                                                          style: const TextStyle(
+                                                                              fontSize: 12,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: Colors.white),
+                                                                        )
+                                                                      ],
+                                                                    ),
                                                             )),
                                                           )
                                                         ],

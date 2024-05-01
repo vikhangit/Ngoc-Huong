@@ -79,7 +79,7 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                 if (snapshot.hasData) {
                   List list = snapshot.data!.toList();
                   List<Widget> pages = List<Widget>.generate(
-                      list.length,
+                      list.length >= 9 ? 9 : list.length,
                       (i) => GestureDetector(
                           onTap: () => Navigator.push(
                               context,
@@ -257,22 +257,23 @@ class _ShopServicesPageState extends State<ShopServicesPage> {
                         const SizedBox(
                           height: 8,
                         ),
-                        DotsIndicator(
-                          dotsCount: (pages.length / 3).round(),
-                          position: currentIndex,
-                          decorator: DotsDecorator(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              size: const Size(12, 8),
-                              activeSize: const Size(24, 8),
-                              color: mainColor,
-                              activeColor: mainColor,
-                              activeShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              spacing: const EdgeInsets.all(1)),
-                        )
+                        if (pages.length > 3)
+                          DotsIndicator(
+                            dotsCount: (pages.length / 3).round(),
+                            position: currentIndex,
+                            decorator: DotsDecorator(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.0),
+                                ),
+                                size: const Size(12, 8),
+                                activeSize: const Size(24, 8),
+                                color: mainColor,
+                                activeColor: mainColor,
+                                activeShape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.0),
+                                ),
+                                spacing: const EdgeInsets.all(1)),
+                          )
                       ],
                     ),
                   );

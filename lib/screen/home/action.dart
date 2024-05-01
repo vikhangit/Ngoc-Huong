@@ -30,7 +30,7 @@ class ActionHome extends StatefulWidget {
 }
 
 List toolServices = [
-  {"icon": "assets/images/icon/icon1.png", "title": "Đặt lịch"},
+  {"icon": "assets/images/icon/icon1.png", "title": "Đặt lịch làm đẹp"},
   {"icon": "assets/images/icon/icon-vi-tri.jpg", "title": "Tìm địa chỉ"},
   {"icon": "assets/images/icon/dich-vu.png", "title": "Dịch vụ làm đẹp"},
   {"icon": "assets/images/icon/my-pham.png", "title": "Mỹ phẩm cao cấp"},
@@ -449,22 +449,21 @@ class _ActionHomeState extends State<ActionHome> {
       left: 0,
       width: MediaQuery.of(context).size.width,
       child: Container(
-        margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
+        margin: const EdgeInsets.only(top: 20, left: 12.5, right: 12.5),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         child: Container(
-          margin: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: const BorderRadius.all(Radius.circular(20)),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(0, 3), // changes position of shadow
+                spreadRadius: 2,
+                blurRadius: 2,
+                offset: const Offset(0, 2), // changes position of shadow
               ),
             ],
           ),
@@ -553,20 +552,19 @@ class _ActionHomeState extends State<ActionHome> {
                                           children: [
                                             Text(
                                               "${profile["Point"] ?? 0} điểm",
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: mainColor),
+                                              style: const TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                             Row(
                                               children: [
                                                 Text(
                                                   "${profile["CustomerCoin"] ?? 0}",
-                                                  style: TextStyle(
-                                                      fontSize: 9,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: mainColor),
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                                 ),
                                                 const SizedBox(
                                                   width: 1,
@@ -591,26 +589,12 @@ class _ActionHomeState extends State<ActionHome> {
                                             if (snapshot.hasData) {
                                               return Container(
                                                 margin: const EdgeInsets.only(
-                                                    right: 5),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 3,
-                                                        vertical: 1),
-                                                decoration: BoxDecoration(
+                                                    right: 4),
+                                                decoration: const BoxDecoration(
                                                   color: Colors.white,
                                                   borderRadius:
-                                                      const BorderRadius.all(
+                                                      BorderRadius.all(
                                                           Radius.circular(8)),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.3),
-                                                      spreadRadius: 2,
-                                                      blurRadius: 2,
-                                                      offset: const Offset(0,
-                                                          2), // changes position of shadow
-                                                    ),
-                                                  ],
                                                 ),
                                                 child: GestureDetector(
                                                   onTap: () {
@@ -622,15 +606,15 @@ class _ActionHomeState extends State<ActionHome> {
                                                   },
                                                   child: Image.asset(
                                                     "assets/images/icon/cart.png",
-                                                    width: 24,
-                                                    height: 24,
+                                                    width: 28,
+                                                    height: 28,
                                                   ),
                                                 ),
                                               );
                                             } else {
                                               return const SizedBox(
-                                                width: 24,
-                                                height: 24,
+                                                width: 28,
+                                                height: 28,
                                                 child: LoadingIndicator(
                                                   colors: kDefaultRainbowColors,
                                                   indicatorType: Indicator
@@ -654,25 +638,11 @@ class _ActionHomeState extends State<ActionHome> {
                                                       !e["IsRead"])
                                                   .toList();
                                               return Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 3,
-                                                        vertical: 1),
-                                                decoration: BoxDecoration(
+                                                decoration: const BoxDecoration(
                                                   color: Colors.white,
                                                   borderRadius:
-                                                      const BorderRadius.all(
+                                                      BorderRadius.all(
                                                           Radius.circular(8)),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.3),
-                                                      spreadRadius: 2,
-                                                      blurRadius: 2,
-                                                      offset: const Offset(0,
-                                                          2), // changes position of shadow
-                                                    ),
-                                                  ],
                                                 ),
                                                 child: GestureDetector(
                                                     onTap: () {
@@ -700,6 +670,7 @@ class _ActionHomeState extends State<ActionHome> {
                                                         Icon(
                                                           Icons.notifications,
                                                           color: mainColor,
+                                                          size: 26,
                                                         ),
                                                         Positioned(
                                                             right: 0,
@@ -744,8 +715,8 @@ class _ActionHomeState extends State<ActionHome> {
                                               );
                                             } else {
                                               return const SizedBox(
-                                                width: 24,
-                                                height: 24,
+                                                width: 28,
+                                                height: 28,
                                                 child: LoadingIndicator(
                                                   colors: kDefaultRainbowColors,
                                                   indicatorType: Indicator
@@ -823,19 +794,10 @@ class _ActionHomeState extends State<ActionHome> {
                                   margin: const EdgeInsets.only(right: 5),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 3, vertical: 1),
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(8)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.3),
-                                        spreadRadius: 2,
-                                        blurRadius: 2,
-                                        offset: const Offset(
-                                            0, 2), // changes position of shadow
-                                      ),
-                                    ],
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
                                   ),
                                   child: GestureDetector(
                                     onTap: () {
@@ -855,19 +817,10 @@ class _ActionHomeState extends State<ActionHome> {
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 3, vertical: 1),
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(8)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.3),
-                                        spreadRadius: 2,
-                                        blurRadius: 2,
-                                        offset: const Offset(
-                                            0, 2), // changes position of shadow
-                                      ),
-                                    ],
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
                                   ),
                                   child: GestureDetector(
                                       onTap: () {
@@ -964,14 +917,14 @@ class _ActionHomeState extends State<ActionHome> {
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.grey.withOpacity(0.3),
-                                          spreadRadius: 2,
+                                          spreadRadius: 1,
                                           blurRadius: 2,
                                           offset: const Offset(0,
-                                              2), // changes position of shadow
+                                              1), // changes position of shadow
                                         ),
                                       ],
                                     ),
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         horizontal: 6, vertical: 6),
                                     child: Image.asset(
                                       width: 35,
@@ -980,15 +933,15 @@ class _ActionHomeState extends State<ActionHome> {
                                     ),
                                   ),
                             const SizedBox(
-                              height: 10,
+                              height: 3,
                             ),
                             Text(
                               "${item["title"]}",
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: mainColor,
+                              style: const TextStyle(
+                                  color: Colors.black,
                                   fontSize: 10,
-                                  fontWeight: FontWeight.w400),
+                                  fontWeight: FontWeight.w600),
                             )
                           ],
                         ),

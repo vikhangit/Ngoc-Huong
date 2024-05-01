@@ -31,12 +31,12 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 20, left: 3, right: 3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.5),
+            padding: EdgeInsets.symmetric(horizontal: 18.5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -56,13 +56,12 @@ class _ReviewPageState extends State<ReviewPage> {
                               builder: (context) => const ReviewScreen()));
                     },
                     child: Container(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Text(
+                      child: const Text(
                         "Xem thêm...",
                         style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w400,
-                            color: mainColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
                             fontStyle: FontStyle.italic),
                       ),
                     ))
@@ -80,7 +79,7 @@ class _ReviewPageState extends State<ReviewPage> {
                 if (snapshot.hasData) {
                   List list = snapshot.data!.toList();
                   List<Widget> pages = List<Widget>.generate(
-                      list.length >= 4 ? 4 : (list.length / 2).round(),
+                      list.length >= 6 ? 6 : list.length,
                       (i) => GestureDetector(
                             onTap: () {
                               // $goodAppUrl${list[i]["video"]}?$token'
@@ -117,8 +116,11 @@ class _ReviewPageState extends State<ReviewPage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                      
-                                      height: MediaQuery.of(context).size.width > 600 ? 315: 140,
+                                      height:
+                                          MediaQuery.of(context).size.width >
+                                                  600
+                                              ? 315
+                                              : 140,
                                       child: HtmlWidget(
                                         list[i]["content"],
                                         customStylesBuilder: (element) {
@@ -150,10 +152,10 @@ class _ReviewPageState extends State<ReviewPage> {
                                       textAlign: TextAlign.left,
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          height: 1.3,
-                                          color: mainColor,
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          height: 1.1,
+                                          color: Colors.black,
                                           fontWeight: FontWeight.w600),
                                     ),
                                   )
@@ -167,7 +169,9 @@ class _ReviewPageState extends State<ReviewPage> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: MediaQuery.of(context).size.width > 600 ? 365 : 210,
+                          height: MediaQuery.of(context).size.width > 600
+                              ? 365
+                              : 210,
                           width: MediaQuery.of(context).size.width,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
@@ -180,48 +184,52 @@ class _ReviewPageState extends State<ReviewPage> {
                                 });
                               },
                             ),
-                            itemCount: (pages.length / 2).round(),
+                            itemCount: (pages.length / 2).ceil(),
                             itemBuilder: (context, index, realIndex) {
                               final int first = index * 2;
-                              final int? three = pages.length - 1 == 2
-                                  ? null
-                                  : first > 2
-                                      ? null
-                                      : first + 1;
+                              final int? three = index * 2 < pages.length - 1
+                                  ? first + 1
+                                  : null;
+                              // pages.length - 1 == 2
+                              //     ? null
+                              //     : first > 2
+                              //         ? null
+                              //         : first + 1;
                               return Row(
                                 children: [first, three].map((idx) {
-                                  return idx != null
-                                      ? Expanded(
-                                          // flex: 1,
-                                          child: Container(
-                                            child: pages[idx],
-                                          ),
-                                        )
-                                      : Container();
+                                  return Expanded(
+                                    // flex: 1,
+                                    child: Container(
+                                      child: idx == null
+                                          ? Container()
+                                          : pages[idx],
+                                    ),
+                                  );
                                 }).toList(),
                               );
                             },
                           ),
                         ),
-                        const SizedBox(
-                          height: 8,
-                        ),
                         if (pages.length > 2)
-                          DotsIndicator(
-                            dotsCount: (pages.length / 2).round(),
-                            position: currentIndexPr,
-                            decorator: DotsDecorator(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4.0),
-                                ),
-                                size: Size(12, 8),
-                                activeSize: Size(24, 8),
-                                color: mainColor,
-                                activeColor: mainColor,
-                                activeShape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4.0),
-                                ),
-                                spacing: EdgeInsets.all(1)),
+                          Container(
+                            width: 300,
+                            margin: EdgeInsets.only(top: 8),
+                            child: DotsIndicator(
+                              dotsCount: (pages.length / 2).ceil(),
+                              position: currentIndexPr,
+                              decorator: DotsDecorator(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                  size: Size(24, 8),
+                                  activeSize: Size(24, 8),
+                                  color: Color(0xFFECECEC),
+                                  activeColor: mainColor,
+                                  activeShape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                  spacing: EdgeInsets.all(0)),
+                            ),
                           )
                       ],
                     ),
@@ -253,53 +261,5 @@ class _ReviewPageState extends State<ReviewPage> {
         ],
       ),
     );
-  }
-}
-
-class VideoPlay extends StatefulWidget {
-  final String path;
-  const VideoPlay({super.key, required this.path});
-
-  @override
-  State<VideoPlay> createState() => _VideoPlayState();
-}
-
-class _VideoPlayState extends State<VideoPlay>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late VideoPlayerController videoController;
-  @override
-  void initState() {
-    super.initState();
-    videoController = VideoPlayerController.networkUrl(Uri.parse(widget.path));
-    videoController.addListener(() {
-      setState(() {});
-    });
-    videoController.setLooping(true);
-    videoController.initialize().then((_) => setState(() {}));
-    _controller = AnimationController(vsync: this);
-    videoController.pause();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    videoController.dispose();
-    _controller.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print(widget.path);
-    return SizedBox.expand(
-        child: Container(
-      child: videoController.value.isInitialized
-          ? AspectRatio(
-              aspectRatio: videoController.value.aspectRatio,
-              child: VideoPlayer(videoController),
-            )
-          : Container(),
-    ));
   }
 }

@@ -23,12 +23,12 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.5),
+            padding: EdgeInsets.only(left: 22.5, right: 22.5, bottom: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -49,13 +49,12 @@ class _ProductPageState extends State<ProductPage> {
                                   const SpecialCosmeticScreen()));
                     },
                     child: Container(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Text(
+                      child: const Text(
                         "Xem thêm...",
                         style: TextStyle(
                             fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: mainColor,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
                             fontStyle: FontStyle.italic),
                       ),
                     ))
@@ -63,18 +62,14 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
           Container(
-            height: 15,
-          ),
-          SizedBox(
-            height: 240,
+            height: 750,
             child: FutureBuilder(
               future: productModel.getHotProduct(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List list = snapshot.data!.toList();
-                  print("List: $list");
                   List<Widget> pages = List<Widget>.generate(
-                      list.length,
+                      list.length >= 8 ? 8 : list.length,
                       (i) => GestureDetector(
                             onTap: () => Navigator.push(
                                 context,
@@ -84,24 +79,9 @@ class _ProductPageState extends State<ProductPage> {
                                           detailPage: true,
                                         ))),
                             child: Container(
-                              margin: EdgeInsets.only(
-                                  left: 5, top: 5, bottom: 5, right: 5),
                               width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 6),
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(15)),
+                              decoration: const BoxDecoration(
                                 color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.3),
-                                    spreadRadius: 2,
-                                    blurRadius: 2,
-                                    offset: Offset(
-                                        0, 1), // changes position of shadow
-                                  ),
-                                ],
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,122 +90,104 @@ class _ProductPageState extends State<ProductPage> {
                                 children: [
                                   Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
+                                      Image.network(
+                                        "${list[i]["Image_Name"]}",
+                                        // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 220,
+                                        fit: BoxFit.cover,
+                                      ),
                                       Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(15)),
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.3),
-                                                spreadRadius: 2,
-                                                blurRadius: 2,
-                                                offset: Offset(0,
-                                                    1), // changes position of shadow
-                                              ),
-                                            ],
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            child: Image.network(
-                                              "${list[i]["Image_Name"]}",
-                                              // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                              fit: BoxFit.contain,
-                                            ),
-                                          )),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        "${list[i]["Name"]}",
-                                        textAlign: TextAlign.center,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            height: 1.3,
-                                            color: mainColor,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        "${list[i]["CategoryCode"]}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            height: 1.2,
-                                            color: mainColor,
-                                            fontStyle: FontStyle.italic,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
+                                        margin: const EdgeInsets.only(
+                                            top: 10, left: 5, right: 5),
+                                        child: Text(
+                                          "${list[i]["Name"]}",
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              height: 1.2,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      )
                                     ],
                                   ),
                                   Container(
-                                    padding: EdgeInsets.all(2),
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(8)),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.3),
-                                          spreadRadius: 2,
-                                          blurRadius: 2,
-                                          offset: Offset(0,
-                                              1), // changes position of shadow
+                                    padding: const EdgeInsets.only(
+                                        left: 8, right: 5, bottom: 10, top: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                              child: Row(
+                                            children: [
+                                              Text(
+                                                "đ",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    decoration: TextDecoration
+                                                        .underline,
+                                                    decorationColor: mainColor,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: mainColor),
+                                              ),
+                                              SizedBox(
+                                                width: 2,
+                                              ),
+                                              Text(
+                                                NumberFormat.currency(
+                                                        locale: "vi_VI",
+                                                        symbol: "")
+                                                    .format(list[i]
+                                                        ["PriceInbound"]),
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: mainColor),
+                                              )
+                                            ],
+                                          )),
                                         ),
+                                        Expanded(
+                                            child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: mainColor,
+                                          ),
+                                          child: const Text("Mua Ngay",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white)),
+                                        ))
                                       ],
                                     ),
-                                    child: GestureDetector(
-                                        child: Container(
-                                      alignment: Alignment.center,
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8),
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(8)),
-                                        color: mainColor,
-                                      ),
-                                      child: Text(
-                                          "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(list[i]["PriceInbound"])} Đ",
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.amber)),
-                                    )),
                                   )
                                 ],
                               ),
                             ),
                           ));
-
-                  return Container(
+                  return SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: Column(
                       children: [
-                        SizedBox(
-                          height: 220,
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 7.5),
+                          color: const Color(0xFFCECECE),
                           width: MediaQuery.of(context).size.width,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
-                              aspectRatio: 16 / 9,
+                              height: 680,
                               enlargeCenterPage: false,
                               viewportFraction: 1,
                               onPageChanged: (index, reason) {
@@ -234,49 +196,65 @@ class _ProductPageState extends State<ProductPage> {
                                 });
                               },
                             ),
-                            itemCount: (pages.length / 3).round(),
+                            itemCount: (pages.length / 4).ceil(),
                             itemBuilder: (context, index, realIndex) {
-                              final int first = index * 3;
-                              final int? second = first + 1;
-                              final int? three =
-                                  (pages.length / 3).round() % 3 > 0 &&
-                                          first > 2
+                              final int first = index * 4;
+                              final int? second = index * 4 < pages.length - 3
+                                  ? first + 1 > pages.length - 3
                                       ? null
-                                      : second! + 1;
-                              return Row(
-                                children: [first, second, three].map((idx) {
-                                  return idx != null
-                                      ? Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            child: pages[idx],
-                                          ),
-                                        )
-                                      : Container();
+                                      : first + 1
+                                  : null;
+                              final int? three = index * 4 < pages.length - 2
+                                  ? first + 2 > pages.length - 2
+                                      ? null
+                                      : first + 2
+                                  : null;
+                              final int? four = index * 4 < pages.length - 1
+                                  ? first + 3 > pages.length - 1
+                                      ? null
+                                      : first + 3
+                                  : null;
+                              return Wrap(
+                                runSpacing: 15,
+                                spacing: 15,
+                                children:
+                                    [first, second, three, four].map((idx) {
+                                  return SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2 -
+                                            20,
+                                    child: Container(
+                                      child: idx != null
+                                          ? pages[idx]
+                                          : Container(),
+                                    ),
+                                  );
                                 }).toList(),
                               );
                             },
                           ),
                         ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        DotsIndicator(
-                          dotsCount: (pages.length / 3).round(),
-                          position: currentIndexPr,
-                          decorator: DotsDecorator(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              size: Size(12, 8),
-                              activeSize: Size(24, 8),
-                              color: mainColor,
-                              activeColor: mainColor,
-                              activeShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              spacing: EdgeInsets.all(1)),
-                        )
+                        if (pages.length > 4)
+                          Container(
+                            width: 100,
+                            margin: const EdgeInsets.only(top: 15),
+                            child: DotsIndicator(
+                              dotsCount: (pages.length / 4).ceil(),
+                              position: currentIndexPr,
+                              decorator: DotsDecorator(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                  size: const Size(24, 8),
+                                  activeSize: const Size(24, 8),
+                                  color: const Color(0xFFECECEC),
+                                  activeColor: mainColor,
+                                  activeShape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
+                                  spacing: const EdgeInsets.all(0)),
+                            ),
+                          )
                       ],
                     ),
                   );

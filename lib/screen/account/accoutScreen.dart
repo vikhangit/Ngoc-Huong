@@ -479,7 +479,6 @@ class _AccountScreenState extends State<AccountScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Row(
@@ -733,89 +732,99 @@ class _AccountScreenState extends State<AccountScreen> {
                                           )),
                                 ],
                               )),
-                            Expanded(  
-                              child: Material(
+                          Expanded(
+                            child: Material(
                                 color: Colors.white,
                                 elevation: 0,
-                                child: Transform.translate(offset: Offset(0, -50),
-                              child: ListView(
-                                controller: scrollController,
-                            children: menu.map((element) {
-                              int index = menu.indexOf(element);
-                              return Container(
-                                height: 55,
-                                child: TextButton(
-                                    style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 15))),
-                                    onPressed: () {
-                                      goAction(index);
-                                    },
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5,
-                                                        vertical: 5),
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary
-                                                        .withOpacity(0.2),
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                8))),
-                                                child: Image.asset(
-                                                  element["icon"],
-                                                  width: 24,
-                                                  height: 24,
-                                                )),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 20),
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width -
-                                                  95,
-                                              child: Text(
-                                                "${element["title"]}",
-                                                style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.w300),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        if (index < menu.length - 1)
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                left: 55, top: 5),
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                80,
-                                            color: Colors.grey.withOpacity(0.2),
-                                            height: 1,
-                                          )
-                                      ],
-                                    )),
-                              );
-                            }).toList(),
+                                child: Transform.translate(
+                                    offset: Offset(0, -40),
+                                    child: ListView(
+                                      controller: scrollController,
+                                      children: menu.map((element) {
+                                        int index = menu.indexOf(element);
+                                        return Container(
+                                          height: 55,
+                                          child: TextButton(
+                                              style: ButtonStyle(
+                                                  padding:
+                                                      MaterialStateProperty.all(
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 15))),
+                                              onPressed: () {
+                                                goAction(index);
+                                              },
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal: 5,
+                                                                  vertical: 5),
+                                                          decoration: BoxDecoration(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primary
+                                                                  .withOpacity(
+                                                                      0.2),
+                                                              borderRadius:
+                                                                  const BorderRadius
+                                                                      .all(
+                                                                      Radius.circular(
+                                                                          8))),
+                                                          child: Image.asset(
+                                                            element["icon"],
+                                                            width: 24,
+                                                            height: 24,
+                                                          )),
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .only(left: 20),
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width -
+                                                            95,
+                                                        child: Text(
+                                                          "${element["title"]}",
+                                                          style: const TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  if (index < menu.length - 1)
+                                                    Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 55, top: 5),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width -
+                                                              80,
+                                                      color: Colors.grey
+                                                          .withOpacity(0.2),
+                                                      height: 1,
+                                                    )
+                                                ],
+                                              )),
+                                        );
+                                      }).toList(),
+                                    ))),
                           )
-                              )
-                          )
-                        ,
-                              )
-                          ],
+                        ],
                       )))),
     );
   }

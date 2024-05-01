@@ -19,40 +19,42 @@ class _PromotionState extends State<Promotion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20, bottom: 20),
+      margin: const EdgeInsets.only(top: 20),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                "Khuyến mãi và tin làm đẹp".toUpperCase(),
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: mainColor,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TinTucScreen()));
-                },
-                child: Container(
-                  padding: EdgeInsets.only(right: 20),
-                  child: Text(
-                    "Xem thêm...",
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: mainColor,
-                        fontStyle: FontStyle.italic),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  "tin tức làm đẹp".toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: mainColor,
                   ),
                 ),
               )
+              // GestureDetector(
+              //   onTap: () {
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //             builder: (context) => const TinTucScreen()));
+              //   },
+              //   child: Container(
+              //     child: const Text(
+              //       "Xem thêm...",
+              //       style: TextStyle(
+              //           fontSize: 12,
+              //           fontWeight: FontWeight.w600,
+              //           color: Colors.black,
+              //           fontStyle: FontStyle.italic),
+              //     ),
+              //   ),
+              // )
             ],
           ),
           Container(
@@ -97,8 +99,6 @@ class _PromotionState extends State<Promotion> {
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width / 2 - 17.5,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 6),
                             decoration: BoxDecoration(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(15)),
@@ -132,21 +132,19 @@ class _PromotionState extends State<Promotion> {
                                         height: 200,
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Text(
-                                      "${item["title"]}",
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          height: 1.2,
-                                          color: mainColor,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 10),
+                                      child: Text(
+                                        "${item["title"].toString().substring(0, 1).toUpperCase()}${item["title"].toString().substring(1, item["title"].toString().length).toLowerCase()}",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontSize: 12,
+                                            height: 1.1,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600),
+                                      ),
                                     )
                                   ],
                                 ),

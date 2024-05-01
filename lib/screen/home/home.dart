@@ -20,6 +20,7 @@ import 'package:ngoc_huong/screen/home/review.dart';
 import 'package:ngoc_huong/screen/home/service.dart';
 import 'package:ngoc_huong/screen/home/top.dart';
 import 'package:ngoc_huong/screen/home/voucher.dart';
+import 'package:ngoc_huong/screen/home/voucherTest.dart';
 
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -66,12 +67,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       });
     });
     Upgrader.clearSavedSettings();
+
+    if (Platform.isIOS) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: [SystemUiOverlay.bottom]);
+    }
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: mainColor,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark));
   }
 
   @override
   void dispose() {
     super.dispose();
     scrollController.dispose();
+    if (Platform.isIOS) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: [SystemUiOverlay.bottom]);
+    }
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: mainColor,
         systemNavigationBarColor: Colors.white,
@@ -95,6 +109,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
+    if (Platform.isIOS) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: [SystemUiOverlay.bottom]);
+    }
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: mainColor,
         systemNavigationBarColor: Colors.white,
@@ -115,17 +133,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: const MyBottomMenu(
                 active: 0,
               )),
-          appBar: AppBar(
-            leadingWidth: 45,
-            centerTitle: true,
-            toolbarHeight: 20,
-            automaticallyImplyLeading: false,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(0),
-              ),
-            ),
-          ),
+          appBar: Platform.isIOS
+              ? null
+              : AppBar(
+                  leadingWidth: 45,
+                  centerTitle: true,
+                  toolbarHeight: 20,
+                  automaticallyImplyLeading: false,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(0),
+                    ),
+                  ),
+                ),
           body: UpgradeAlert(
             upgrader: Upgrader(
               dialogStyle: UpgradeDialogStyle.cupertino,
@@ -140,12 +160,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 padding: const EdgeInsets.only(bottom: 20),
                 controller: scrollController,
                 children: [
-                  
                   const TopBanner(),
                   storageCustomerToken.getItem("customer_token") == null
                       ? const Register()
                       : Container(),
-                  const Voucher(),
+                  const VoucherTest(),
                   const FlashSale(),
                   const ServicesPage(),
                   const ProductPage(),

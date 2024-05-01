@@ -278,14 +278,14 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                       : second! + 1;
                               return Row(
                                 children: [first, second, three].map((idx) {
-                                  return idx != null
-                                      ? Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            child: pages[idx],
-                                          ),
-                                        )
-                                      : Container();
+                                  return Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      child: idx != null
+                                          ? pages[idx]
+                                          : Container(),
+                                    ),
+                                  );
                                 }).toList(),
                               );
                             },

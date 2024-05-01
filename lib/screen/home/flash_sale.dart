@@ -25,16 +25,19 @@ class _FlashSaleState extends State<FlashSale> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20, left: 12.5, right: 12.5),
+      margin: const EdgeInsets.only(top: 20, left: 22.5, right: 22.5),
       width: MediaQuery.of(context).size.width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
           "ƯU ĐÃI GIÁ HỜI",
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
             color: mainColor,
           ),
+        ),
+        Container(
+          height: 15,
         ),
         FutureBuilder(
             future: bannerModel.getFlashSale(),
@@ -65,23 +68,7 @@ class _FlashSaleState extends State<FlashSale> {
                                 () => Navigator.of(context).pop());
                           },
                           child: Container(
-                              height: 200,
-                              padding: const EdgeInsets.all(5),
-                              margin: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: const Offset(
-                                        0, 3), // changes position of shadow
-                                  ),
-                                ],
-                              ),
+                              height: 180,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.asset(
@@ -95,7 +82,7 @@ class _FlashSaleState extends State<FlashSale> {
                       );
               } else {
                 return const SizedBox(
-                  height: 250,
+                  height: 180,
                   child: Center(
                     child: SizedBox(
                       width: 24,
@@ -118,42 +105,23 @@ class _FlashSaleState extends State<FlashSale> {
   Widget _buildCarousel(List list) {
     var pages = list
         .map((e) => GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FlashSaleDetail(
-                              detail: e,
-                            )));
-              },
-              child: Container(
-                  height: 250,
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.only(
-                      left: 5, right: 5, top: 5, bottom: 5),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      "$goodAppUrl${e["picture"]}?$token",
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      fit: BoxFit.cover,
-                    ),
-                  )),
-            ))
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FlashSaleDetail(
+                            detail: e,
+                          )));
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                "$goodAppUrl${e["picture"]}?$token",
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                fit: BoxFit.cover,
+              ),
+            )))
         .toList();
 
     return pages.length > 1
@@ -161,11 +129,11 @@ class _FlashSaleState extends State<FlashSale> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
-                height: 250,
                 width: MediaQuery.of(context).size.width,
                 child: CarouselSlider.builder(
                   options: CarouselOptions(
-                    aspectRatio: 2.0,
+                    height: 180,
+                    autoPlay: true,
                     enlargeCenterPage: false,
                     viewportFraction: 1,
                     scrollPhysics: pages.length == 1
@@ -182,24 +150,25 @@ class _FlashSaleState extends State<FlashSale> {
                   itemBuilder: (context, index, realIndex) => pages[index],
                 ),
               ),
-              const SizedBox(
-                height: 8,
-              ),
-              DotsIndicator(
-                dotsCount: pages.length,
-                position: activeDot,
-                decorator: DotsDecorator(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
-                    size: Size(12, 8),
-                    activeSize: Size(24, 8),
-                    color: mainColor,
-                    activeColor: mainColor,
-                    activeShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
-                    spacing: EdgeInsets.all(1)),
+              Container(
+                width: 100,
+                margin: EdgeInsets.only(top: 15),
+                child: DotsIndicator(
+                  dotsCount: pages.length,
+                  position: activeDot,
+                  decorator: DotsDecorator(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      size: Size(20, 8),
+                      activeSize: Size(20, 8),
+                      color: Color(0xFFECECEC),
+                      activeColor: mainColor,
+                      activeShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      spacing: EdgeInsets.all(0)),
+                ),
               )
             ],
           )
@@ -212,30 +181,14 @@ class _FlashSaleState extends State<FlashSale> {
                             detail: list[0],
                           )));
             },
-            child: Container(
-                padding: const EdgeInsets.all(5),
-                margin:
-                    const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    "$goodAppUrl${list[0]["picture"]}?$token",
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.cover,
-                  ),
-                )),
-          );
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                "$goodAppUrl${list[0]["picture"]}?$token",
+                width: MediaQuery.of(context).size.width,
+                height: 180,
+                fit: BoxFit.cover,
+              ),
+            ));
   }
 }

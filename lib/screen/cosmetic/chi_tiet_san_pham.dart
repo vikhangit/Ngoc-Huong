@@ -263,28 +263,28 @@ class _ProductDetailState extends State<ProductDetail>
                                         Row(
                                           children: [
                                             Text(
+                                              "đ",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  decorationColor: mainColor,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: mainColor),
+                                            ),
+                                            SizedBox(
+                                              width: 2,
+                                            ),
+                                            Text(
                                               NumberFormat.currency(
                                                       locale: "vi_VI",
                                                       symbol: "")
-                                                  .format(
-                                                productDetail["PriceInbound"],
-                                              ),
+                                                  .format(productDetail[
+                                                      "PriceInbound"]),
                                               style: TextStyle(
                                                   fontSize: 15,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary),
-                                            ),
-                                            Text(
-                                              "đ",
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                                fontSize: 15,
-                                                decoration:
-                                                    TextDecoration.underline,
-                                              ),
+                                                  fontWeight: FontWeight.w500,
+                                                  color: mainColor),
                                             )
                                           ],
                                         ),
