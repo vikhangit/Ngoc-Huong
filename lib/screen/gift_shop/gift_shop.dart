@@ -10,8 +10,10 @@ import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/check_in/CheckIn.dart';
 import 'package:ngoc_huong/screen/cosmetic/cosmetic.dart';
+import 'package:ngoc_huong/screen/gift_shop/allVoucher.dart';
 import 'package:ngoc_huong/screen/gift_shop/product.dart';
 import 'package:ngoc_huong/screen/gift_shop/service.dart';
+import 'package:ngoc_huong/screen/gift_shop/voucher.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/mission/mission.dart';
 import 'package:ngoc_huong/screen/services/all_service.dart';
@@ -352,42 +354,42 @@ class _GiftShopState extends State<GiftShop> {
                             const SizedBox(
                               width: 8,
                             ),
-                            // GestureDetector(
-                            //   onTap: () => Navigator.push(
-                            //       context,
-                            //       MaterialPageRoute(
-                            //           builder: (context) =>
-                            //               const AllVoucherScreen())),
-                            //   child: Column(
-                            //     children: [
-                            //       Container(
-                            //         padding: const EdgeInsets.symmetric(
-                            //             horizontal: 10, vertical: 10),
-                            //         decoration: BoxDecoration(
-                            //             color: Theme.of(context)
-                            //                 .colorScheme
-                            //                 .primary
-                            //                 .withOpacity(0.2),
-                            //             borderRadius: const BorderRadius.all(
-                            //                 Radius.circular(15))),
-                            //         child: Image.asset(
-                            //           "assets/images/Home/Services/thanh-vien.png",
-                            //           width: 40,
-                            //           height: 40,
-                            //         ),
-                            //       ),
-                            //       const SizedBox(
-                            //         height: 8,
-                            //       ),
-                            //       const Text(
-                            //         "Quà đối tác",
-                            //         style: TextStyle(
-                            //             fontWeight: FontWeight.w500,
-                            //             fontSize: 14),
-                            //       )
-                            //     ],
-                            //   ),
-                            // )
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AllVoucherScreen())),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.2),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(15))),
+                                    child: Image.asset(
+                                      "assets/images/coupon.png",
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  const Text(
+                                    "Voucher",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14),
+                                  )
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -423,7 +425,7 @@ class _GiftShopState extends State<GiftShop> {
                       }),
                       const ShopProductPage(),
                       const ShopServicesPage(),
-                      // const VoucherPage(),
+                      const VoucherPage(),
                       const SizedBox(
                         height: 20,
                       )

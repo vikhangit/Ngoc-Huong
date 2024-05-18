@@ -50,6 +50,7 @@ flutter:
     - assets/images/icon/profile-red.png
     - assets/images/voucher.png
     - assets/images/voucher1.png
+    - assets/images/coupon.png
     - assets/images/thanh-toan.png
     - assets/images/calendar-solid-red.png
     - assets/images/calendar-white.png
@@ -92,6 +93,7 @@ flutter:
     - assets/images/account/ve-chung-toi.png
     - assets/images/account/dang-xuat.png
     - assets/images/account/img.webp
+    - assets/images/account/voucher.png
     - assets/images/dieu-tri.png
     - assets/images/may.png
     - assets/images/tre-hoa.png

@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/models/banner.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -21,6 +22,7 @@ int activeDot = 0;
 class _VoucherState extends State<Voucher> {
   final BannerModel bannerModel = BannerModel();
   final CustomModal customModal = CustomModal();
+  final LocalStorage storageCustomerToken = LocalStorage('customer_token');
 
   @override
   Widget build(BuildContext context) {
@@ -65,57 +67,59 @@ class _VoucherState extends State<Voucher> {
               if (snapshot.hasData) {
                 DateTime now = DateTime.now();
                 List list = snapshot.data!;
-                List newList = [];
-                for (var i = 0; i < list.length; i++) {
-                  if (DateTime.parse(list[i]["tu_ngay"]).isBefore(now) &&
-                      DateTime.parse(list[i]["den_ngay"]).isAfter(now) &&
-                      list[i]["trang_thai"] == "1") {
-                    newList.add(list[i]);
-                  }
-                }
-                return newList.isNotEmpty
-                    ? _buildCarousel(newList)
-                    : Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            customModal.showAlertDialog(
-                                context,
-                                "error",
-                                "Voucher",
-                                "Các voucher đã hết hạn",
-                                () => Navigator.of(context).pop(),
-                                () => Navigator.of(context).pop());
-                          },
-                          child: Container(
-                              height: 150,
-                              padding: const EdgeInsets.all(5),
-                              margin: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: const Offset(
-                                        0, 3), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.asset(
-                                  "assets/images/voucher1.png",
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height,
-                                  fit: BoxFit.cover,
-                                ),
-                              )),
-                        ),
-                      );
+                //   List newList = [];
+                //   for (var i = 0; i < list.length; i++) {
+                //     if (DateTime.parse(list[i]["tu_ngay"]).isBefore(now) &&
+                //         DateTime.parse(list[i]["den_ngay"]).isAfter(now) &&
+                //         list[i]["trang_thai"] == "1") {
+                //       newList.add(list[i]);
+                //     }
+                //   }
+                //   return newList.isNotEmpty
+                //       ? _buildCarousel(newList)
+                //       : Container(
+                //           margin: const EdgeInsets.only(top: 10),
+                //           child: GestureDetector(
+                //             onTap: () {
+                //               customModal.showAlertDialog(
+                //                   context,
+                //                   "error",
+                //                   "Voucher",
+                //                   "Các voucher đã hết hạn",
+                //                   () => Navigator.of(context).pop(),
+                //                   () => Navigator.of(context).pop());
+                //             },
+                //             child: Container(
+                //                 height: 150,
+                //                 padding: const EdgeInsets.all(5),
+                //                 margin: const EdgeInsets.all(5),
+                //                 decoration: BoxDecoration(
+                //                   color: Colors.white,
+                //                   borderRadius:
+                //                       const BorderRadius.all(Radius.circular(10)),
+                //                   boxShadow: [
+                //                     BoxShadow(
+                //                       color: Colors.grey.withOpacity(0.5),
+                //                       spreadRadius: 5,
+                //                       blurRadius: 7,
+                //                       offset: const Offset(
+                //                           0, 3), // changes position of shadow
+                //                     ),
+                //                   ],
+                //                 ),
+                //                 child: ClipRRect(
+                //                   borderRadius: BorderRadius.circular(10),
+                //                   child: Image.asset(
+                //                     "assets/images/voucher1.png",
+                //                     width: MediaQuery.of(context).size.width,
+                //                     height: MediaQuery.of(context).size.height,
+                //                     fit: BoxFit.cover,
+                //                   ),
+                //                 )),
+                //           ),
+                //         );
+
+                return _buildCarousel(list);
               } else {
                 return const SizedBox(
                   height: 150,
@@ -154,7 +158,7 @@ class _VoucherState extends State<Voucher> {
                   child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
-                  "$goodAppUrl${e["picture"]}?$token",
+                  "$goodAppUrl${e["banner1"]}?$token",
                   width: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,
                 ),
@@ -239,7 +243,7 @@ class _VoucherState extends State<Voucher> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                    "$goodAppUrl${list[0]["picture"]}?$token",
+                    "$goodAppUrl${list[0]["banner1"]}?$token",
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
                   ),

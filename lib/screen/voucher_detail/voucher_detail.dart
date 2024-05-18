@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html_v3/flutter_html.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/controllers/dio_client.dart';
-import 'package:ngoc_huong/models/cartModel.dart';
-import 'package:ngoc_huong/models/servicesModel.dart';
+import 'package:ngoc_huong/models/banner.dart';
+import 'package:ngoc_huong/models/checkinModel.dart';
+import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/ModalZoomImage.dart';
-import 'package:ngoc_huong/screen/booking/booking.dart';
-import 'package:ngoc_huong/screen/cart/cart_success.dart';
+import 'package:ngoc_huong/screen/account/voucher/voucher.dart';
+import 'package:ngoc_huong/screen/account/voucher/voucherSuccess.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
-import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
-import 'package:ngoc_huong/utils/makeCallPhone.dart';
 import 'package:upgrader/upgrader.dart';
 
 class VoucherDetail extends StatefulWidget {
@@ -26,81 +24,32 @@ class VoucherDetail extends StatefulWidget {
   State<VoucherDetail> createState() => _VoucherDetailState();
 }
 
+Map profile = {};
+Map voucherBuy = {};
+
 class _VoucherDetailState extends State<VoucherDetail> {
   final ScrollController scrollController = ScrollController();
   final LocalStorage storageCustomerToken = LocalStorage('customer_token');
   final LocalStorage localStorageCustomerCart = LocalStorage("customer_cart");
-  final CartModel cartModel = CartModel();
   final CustomModal customModal = CustomModal();
-  final ServicesModel servicesModel = ServicesModel();
+  final ProfileModel profileModel = ProfileModel();
+  final BannerModel bannerModel = BannerModel();
+  final CheckInModel checkInModel = CheckInModel();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Upgrader.clearSavedSettings();
+    profileModel.getProfile().then((value) => setState(() {
+          profile = value;
+        }));
   }
 
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     Map newsDetail = widget.detail;
-
-    void addToCart() async {
-      customModal.showAlertDialog(context, "error", "Giỏ hàng",
-          "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.of(context).pop();
-        EasyLoading.show(status: "Vui lòng chờ...");
-        Future.delayed(const Duration(seconds: 2), () {
-          Map data = {
-            "DetailList": [
-              {
-                "Amount": newsDetail["Price"] * 1,
-                "Price": newsDetail["Price"],
-                "PrinceTest": newsDetail["Price"] * 1,
-                "ProductCode": newsDetail["ProductCode"],
-                "ProductId": newsDetail["ProductId"],
-                "Quantity": 1,
-              }
-            ]
-          };
-          cartModel.addToCart(data).then((value) {
-            EasyLoading.dismiss();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddCartSuccess()));
-          });
-        });
-      }, () => Navigator.of(context).pop());
-    }
-
-    void updateCart(Map item) async {
-      customModal.showAlertDialog(context, "error", "Giỏ hàng",
-          "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.of(context).pop();
-        EasyLoading.show(status: "Vui lòng chờ...");
-        Future.delayed(const Duration(seconds: 2), () {
-          cartModel.updateProductInCart({
-            // "Id": 1,
-            "DetailList": [
-              {
-                ...item,
-                "Ammount": (item["Quantity"] + 1) * item["Price"],
-                "Quantity": (item["Quantity"] + 1)
-              }
-            ]
-          }).then((value) {
-            EasyLoading.dismiss();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddCartSuccess()));
-          });
-        });
-      }, () => Navigator.of(context).pop());
-    }
-
     return SafeArea(
       bottom: false,
       top: false,
@@ -125,7 +74,7 @@ class _VoucherDetailState extends State<VoucherDetail> {
                     color: Colors.black,
                   ),
                 )),
-            title: const Text("Chi tiêt Voucher",
+            title: const Text("Chi tiết Voucher",
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -156,11 +105,11 @@ class _VoucherDetailState extends State<VoucherDetail> {
                         children: [
                           Expanded(
                             child: Text(
-                              newsDetail["ten_chietkhau"],
+                              newsDetail["ten"],
                               textAlign: TextAlign.left,
                               style: const TextStyle(
                                   fontSize: 20,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                   color: Colors.black),
                             ),
                           )
@@ -169,17 +118,149 @@ class _VoucherDetailState extends State<VoucherDetail> {
                       const SizedBox(
                         height: 5,
                       ),
+                      // Row(
+                      //   children: [
+                      //     const Text(
+                      //       "Giá bán:",
+                      //       textAlign: TextAlign.left,
+                      //       overflow: TextOverflow.ellipsis,
+                      //       maxLines: 1,
+                      //       style: TextStyle(
+                      //           fontSize: 14, fontWeight: FontWeight.w600),
+                      //     ),
+                      //     const SizedBox(
+                      //       width: 5,
+                      //     ),
+                      //     Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Image.asset(
+                      //           "assets/images/icon/Xu1.png",
+                      //           width: 20,
+                      //           height: 20,
+                      //         ),
+                      //         const SizedBox(
+                      //           width: 3,
+                      //         ),
+                      //         Text(
+                      //           "${newsDetail["giabanxu"]}",
+                      //           style: const TextStyle(
+                      //               fontSize: 14,
+                      //               fontWeight: FontWeight.w400,
+                      //               color: Colors.black),
+                      //         ),
+                      //       ],
+                      //     )
+                      //   ],
+                      // ),
+
+                      Row(
+                        children: [
+                          const Text(
+                            "Số lần dùng:",
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "${newsDetail["so_lan_sd"]}",
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                            "Ưu đãi nhận được:",
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Row(
+                            children: [
+                              const Text(
+                                "Giảm",
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
+                              const SizedBox(
+                                width: 6,
+                              ),
+                              const Text(
+                                "đ",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    decoration: TextDecoration.underline,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              const SizedBox(
+                                width: 1,
+                              ),
+                              Text(
+                                NumberFormat.currency(
+                                        locale: "vi_VI", symbol: "")
+                                    .format(newsDetail["so_tien"]),
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                            "Hạn sử dụng:",
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["hieu_luc_tu"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["hieu_luc_den"]))}",
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Text(
-                        "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["tu_ngay"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["den_ngay"]))}",
+                        "Mô tả chi tiết về voucher".toUpperCase(),
                         textAlign: TextAlign.left,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w400),
+                            fontSize: 15, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(
                         child: Html(
-                          data: newsDetail["dien_giai"],
+                          data: newsDetail["voucher"]["content"],
                           style: {
                             "*": Style(
                                 fontSize: FontSize(15),
@@ -201,279 +282,160 @@ class _VoucherDetailState extends State<VoucherDetail> {
                     ],
                   ),
                 ),
-                Column(
-                  children: [
-                    Container(
-                      height: 20,
-                    ),
-                    Container(
-                      height: 50,
-                      margin: const EdgeInsets.symmetric(horizontal: 15),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.grey),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(15))),
-                      child: TextButton(
-                          style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(horizontal: 20)),
-                          ),
-                          onPressed: () {
-                            makingPhoneCall();
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Điện thoại nhận tư vấn",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Image.asset(
-                                "assets/images/call-black.png",
-                                width: 24,
-                                height: 24,
-                                fit: BoxFit.contain,
-                              ),
-                            ],
-                          )),
-                    ),
-                    newsDetail["TypeProduct"] == "service"
-                        ? Container(
-                            height: 50,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 15),
-                            child: FutureBuilder(
-                                future: servicesModel.getServiceByCode(
-                                    newsDetail["ProductCode"]),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return TextButton(
-                                        style: ButtonStyle(
-                                            padding: MaterialStateProperty.all(
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 20)),
-                                            shape: MaterialStateProperty.all(
-                                                const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                15)))),
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primary
-                                                        .withOpacity(0.4))),
-                                        onPressed: () {
-                                          if (storageCustomerToken
-                                                  .getItem("customer_token") ==
-                                              null) {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const LoginScreen()));
-                                          } else {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        BookingServices(
-                                                          dichvudachon:
-                                                              snapshot.data,
-                                                        )));
-                                          }
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Text(
-                                              "Đặt lịch hẹn",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                            const SizedBox(width: 15),
-                                            Image.asset(
-                                              "assets/images/calendar-black.png",
-                                              width: 24,
-                                              height: 24,
-                                              fit: BoxFit.contain,
-                                            ),
-                                          ],
-                                        ));
-                                  } else {
-                                    return const Center(
-                                      child: SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: LoadingIndicator(
-                                          colors: kDefaultRainbowColors,
-                                          indicatorType:
-                                              Indicator.lineSpinFadeLoader,
-                                          strokeWidth: 1,
-                                          // pathBackgroundColor: Colors.black45,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                }))
-                        : newsDetail["TypeProduct"] == "product"
-                            ? Container(
-                                height: 50,
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 15),
-                                color: Colors.white,
-                                child: FutureBuilder(
-                                  future: cartModel.getDetailCartByCode(
-                                      newsDetail["ProductCode"].toString()),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return TextButton(
-                                          style: ButtonStyle(
-                                              padding: MaterialStateProperty.all(
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20)),
-                                              shape: MaterialStateProperty.all(
-                                                  const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  15)))),
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Theme.of(context)
-                                                          .colorScheme
-                                                          .primary
-                                                          .withOpacity(0.4))),
-                                          onPressed: () {
-                                            if (storageCustomerToken.getItem(
-                                                    "customer_token") !=
-                                                null) {
-                                              // print(snapshot.data!);
-                                              if (snapshot.data!.isNotEmpty) {
-                                                updateCart(snapshot.data!);
-                                              } else {
-                                                addToCart();
-                                              }
-                                            } else {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const LoginScreen()));
-                                            }
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              const Text(
-                                                "Thêm vào giỏ hàng",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                              ),
-                                              const SizedBox(width: 15),
-                                              Image.asset(
-                                                "assets/images/cart-black.png",
-                                                width: 24,
-                                                height: 24,
-                                                fit: BoxFit.contain,
-                                              ),
-                                            ],
-                                          ));
-                                    } else {
-                                      return const Center(
-                                        child: SizedBox(
-                                          width: 40,
-                                          height: 40,
-                                          child: LoadingIndicator(
-                                            colors: kDefaultRainbowColors,
-                                            indicatorType:
-                                                Indicator.lineSpinFadeLoader,
-                                            strokeWidth: 1,
-                                            // pathBackgroundColor: Colors.black45,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                              )
-                            : Container(
-                                height: 50,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 15),
-                                child: TextButton(
-                                    style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 20)),
-                                        shape: MaterialStateProperty.all(
-                                            const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)))),
-                                        backgroundColor: MaterialStateProperty.all(Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withOpacity(0.4))),
-                                    onPressed: () {
-                                      if (storageCustomerToken
-                                              .getItem("customer_token") ==
-                                          null) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const LoginScreen()));
-                                      } else {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const BookingServices(
-                                                      payMethod: "Tiền mặt",
-                                                    )));
-                                      }
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          "Đặt lịch hẹn",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Image.asset(
-                                          "assets/images/calendar-black.png",
-                                          width: 24,
-                                          height: 24,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ],
-                                    ))),
-                    const SizedBox(
-                      height: 5,
-                    )
-                  ],
-                )
+                // Container(
+                //     height: 50,
+                //     margin: const EdgeInsets.symmetric(
+                //         vertical: 15, horizontal: 15),
+                //     child: TextButton(
+                //         style: ButtonStyle(
+                //             padding: MaterialStateProperty.all(
+                //                 const EdgeInsets.symmetric(horizontal: 20)),
+                //             shape: MaterialStateProperty.all(
+                //                 RoundedRectangleBorder(
+                //                     side:
+                //                         BorderSide(color: mainColor, width: 1),
+                //                     borderRadius:
+                //                         BorderRadius.all(Radius.circular(15)))),
+                //             backgroundColor:
+                //                 MaterialStateProperty.all(Colors.white)),
+                //         onPressed: () {
+                //           if (storageCustomerToken.getItem("customer_token") ==
+                //               null) {
+                //             Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                     builder: (context) => const LoginScreen()));
+                //           } else {
+                //             DateTime now = DateTime.now();
+                //             if (DateTime.parse(newsDetail["hieu_luc_den"])
+                //                     .isBefore(now) &&
+                //                 newsDetail["status"]) {
+                //               customModal.showAlertDialog(
+                //                   context,
+                //                   "error",
+                //                   "Lỗi mua voucher",
+                //                   "Xin lỗi quý khách hàng voucher này đã hết hạn!!!",
+                //                   () => Navigator.of(context).pop(),
+                //                   () => Navigator.of(context).pop());
+                //             } else {
+                //               bannerModel
+                //                   .getVoucherBuyWithMaVoucher(
+                //                       profile["Phone"], newsDetail["ma"])
+                //                   .then((value) {
+                //                 if (value.isNotEmpty) {
+                //                   customModal.showAlertDialog(
+                //                       context,
+                //                       "error",
+                //                       "Lỗi mua voucher",
+                //                       "Bạn đã mua voucher này rồi vui lòng kiểm tra lại",
+                //                       () => Navigator.push(
+                //                           context,
+                //                           MaterialPageRoute(
+                //                               builder: (context) => VoucherBuy(
+                //                                   profile: profile))),
+                //                       () => Navigator.of(context).pop());
+                //                 } else {
+                //                   if (profile["CustomerCoin"] == null ||
+                //                       profile["CustomerCoin"] <
+                //                           newsDetail["giabanxu"]) {
+                //                     customModal.showAlertDialog(
+                //                         context,
+                //                         "error",
+                //                         "Lỗi mua voucher",
+                //                         "Bạn không đủ xu để mua voucher này",
+                //                         () => Navigator.of(context).pop(),
+                //                         () => Navigator.of(context).pop());
+                //                   } else {
+                //                     customModal.showAlertDialog(
+                //                         context,
+                //                         "error",
+                //                         "Xác nhận mua voucher",
+                //                         "Bạn chắc chắn dùng ${newsDetail["giabanxu"]} xu để mua voucher này?",
+                //                         () {
+                //                       Map item = {
+                //                         "status": true,
+                //                         "ngay_ct": DateFormat("yyyy/MM/dd")
+                //                             .format(DateTime.now()),
+                //                         "trang_thai": "0",
+                //                         "t_sl": 1,
+                //                         "t_tien_nt": 0,
+                //                         "t_ck_nt": 0,
+                //                         "t_thue_nt": 0,
+                //                         "t_tt_nt": 0,
+                //                         "han_tt": 0,
+                //                         "id_ct_chuyen": "",
+                //                         "ma_kh": profile["Phone"],
+                //                         "dien_giai": "0 lần",
+                //                         "details": [
+                //                           {
+                //                             "sl_xuat": 1,
+                //                             "gia_ban_nt": 0,
+                //                             "tien_nt": 0,
+                //                             "ty_le_ck": 0,
+                //                             "tien_ck_nt": 0,
+                //                             "tien_thue_nt": 0,
+                //                             "ma_evoucher": newsDetail["ma"],
+                //                             "ten_evoucher": newsDetail["ten"],
+                //                             "dien_giai": newsDetail["ten"],
+                //                             "tk_dt": "1111",
+                //                             "ten_tk_dt": "Tiền Việt Nam",
+                //                             "line": 1715071092771
+                //                           }
+                //                         ],
+                //                         "tk_no": "1111",
+                //                         "ten_tk_no": "Tiền Việt Nam",
+                //                         "so_ct": "1",
+                //                         "ten_trang_thai": "Lập chứng từ",
+                //                         "hinh_thuc_tt": "KHAC"
+                //                       };
+                //                       Navigator.of(context).pop();
+                //                       EasyLoading.show();
+                //                       Future.delayed(const Duration(seconds: 2),
+                //                           () {
+                //                         bannerModel
+                //                             .addVoucherBuy(item)
+                //                             .then((value) {
+                //                           checkInModel
+                //                               .userUsingCoin(
+                //                                   newsDetail["giabanxu"])
+                //                               .then((value2) {
+                //                             Navigator.push(
+                //                                 context,
+                //                                 MaterialPageRoute(
+                //                                     builder: (context) =>
+                //                                         VoucherSuccess(
+                //                                           details: value,
+                //                                           profile: profile,
+                //                                         )));
+                //                             EasyLoading.dismiss();
+                //                           });
+                //                         });
+                //                       });
+                //                     }, () => Navigator.of(context).pop());
+                //                   }
+                //                 }
+                //               });
+                //             }
+                //           }
+                //         },
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.center,
+                //           children: [
+                //             Text(
+                //               "Mua voucher",
+                //               style: TextStyle(
+                //                   color: mainColor,
+                //                   fontSize: 14,
+                //                   fontWeight: FontWeight.w500),
+                //             ),
+                //             const SizedBox(width: 10),
+                //             Image.asset(
+                //               "assets/images/coupon.png",
+                //               width: 26,
+                //               height: 26,
+                //             ),
+                //           ],
+                //         ))),
               ],
             ),
           )),
@@ -514,9 +476,12 @@ class _ImageDetailState extends State<ImageDetail> {
   @override
   Widget build(BuildContext context) {
     List newList = [
-      widget.item["picture"],
-      widget.item["picture2"],
-      widget.item["picture3"]
+      widget.item["banner1"],
+      widget.item["banner2"],
+      widget.item["banner3"],
+      widget.item["banner4"],
+      widget.item["banner5"],
+      widget.item["banner6"]
     ];
     List<String> result = [];
     for (var x in newList) {
@@ -663,7 +628,7 @@ class _ImageDetailState extends State<ImageDetail> {
                                       ])));
                     },
                     child: Image.network(
-                      "$goodAppUrl${widget.item["picture"]}?$token",
+                      "$goodAppUrl${widget.item["banner1"]}?$token",
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
                       fit: BoxFit.cover,

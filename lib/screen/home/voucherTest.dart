@@ -1,9 +1,17 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/models/banner.dart';
+import 'package:ngoc_huong/models/checkinModel.dart';
+import 'package:ngoc_huong/models/profileModel.dart';
+import 'package:ngoc_huong/screen/account/voucher/voucher.dart';
+import 'package:ngoc_huong/screen/account/voucher/voucherSuccess.dart';
+import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/screen/voucher_detail/voucher_detail.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
@@ -17,10 +25,23 @@ class VoucherTest extends StatefulWidget {
 }
 
 int activeDot = 0;
+Map profile = {};
 
 class _VoucherTestState extends State<VoucherTest> {
   final BannerModel bannerModel = BannerModel();
   final CustomModal customModal = CustomModal();
+  final CheckInModel checkInModel = CheckInModel();
+  final LocalStorage storageCustomerToken = LocalStorage('customer_token');
+
+  final ProfileModel profileModel = ProfileModel();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    profileModel.getProfile().then((value) => setState(() {
+          profile = value;
+        }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +86,13 @@ class _VoucherTestState extends State<VoucherTest> {
               if (snapshot.hasData) {
                 DateTime now = DateTime.now();
                 List list = snapshot.data!;
+
                 List newList = [];
                 for (var i = 0; i < list.length; i++) {
-                  if (DateTime.parse(list[i]["tu_ngay"]).isBefore(now) &&
-                      DateTime.parse(list[i]["den_ngay"]).isAfter(now) &&
-                      list[i]["trang_thai"] == "1") {
+                  if (
+                      // DateTime.parse(list[i]["hieu_luc_tu"]).isBefore(now) &&
+                      //   DateTime.parse(list[i]["hieu_luc_den"]).isAfter(now) &&
+                      list[i]["shared"]) {
                     newList.add(list[i]);
                   }
                 }
@@ -83,12 +106,12 @@ class _VoucherTestState extends State<VoucherTest> {
                                 context,
                                 "error",
                                 "Voucher",
-                                "Các voucher đã hết hạn",
+                                "Rất tiếc các voucher đã hết hạn",
                                 () => Navigator.of(context).pop(),
                                 () => Navigator.of(context).pop());
                           },
                           child: Container(
-                              height: 120,
+                              height: 220,
                               padding: const EdgeInsets.all(5),
                               margin: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -116,6 +139,7 @@ class _VoucherTestState extends State<VoucherTest> {
                               )),
                         ),
                       );
+                // return _buildCarousel(list);
               } else {
                 return const SizedBox(
                   height: 120,
@@ -146,19 +170,30 @@ class _VoucherTestState extends State<VoucherTest> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => VoucherDetail(
-                            detail: e,
-                          )));
+              DateTime now = DateTime.now();
+              if (DateTime.parse(e["hieu_luc_den"]).isBefore(now)) {
+                customModal.showAlertDialog(
+                    context,
+                    "error",
+                    "Lỗi mua voucher",
+                    "Rất tiếc voucher này đã hết hạn!!!",
+                    () => Navigator.of(context).pop(),
+                    () => Navigator.of(context).pop());
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => VoucherDetail(
+                              detail: e,
+                            )));
+              }
             },
             child: Container(
                 // margin: EdgeInsets.symmetric(horizontal: 8),
                 child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
-                "$goodAppUrl${e["picture"]}?$token",
+                "$goodAppUrl${e["banner1"]}?$token",
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 fit: BoxFit.cover,
@@ -170,7 +205,211 @@ class _VoucherTestState extends State<VoucherTest> {
               left: activeDot == index ? 35 : 20,
               bottom: -10,
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  DateTime now = DateTime.now();
+                  if (DateTime.parse(e["hieu_luc_den"]).isBefore(now)) {
+                    customModal.showAlertDialog(
+                        context,
+                        "error",
+                        "Lỗi mua voucher",
+                        "Rất tiếc voucher này đã hết hạn!!!",
+                        () => Navigator.of(context).pop(),
+                        () => Navigator.of(context).pop());
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => VoucherDetail(
+                                  detail: e,
+                                )));
+                  }
+                  // if (storageCustomerToken.getItem("customer_token") == null) {
+                  //   Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => const LoginScreen()));
+                  // } else {
+                  //   DateTime now = DateTime.now();
+                  //   if (DateTime.parse(e["hieu_luc_den"]).isBefore(now) &&
+                  //       e["status"]) {
+                  //     customModal.showAlertDialog(
+                  //         context,
+                  //         "error",
+                  //         "Lỗi mua voucher",
+                  //         "Xin lỗi quý khách hàng voucher này đã hết hạn!!!",
+                  //         () => Navigator.of(context).pop(),
+                  //         () => Navigator.of(context).pop());
+                  //   } else {
+                  //     bannerModel
+                  //         .getVoucherBuyWithMaVoucher(profile["Phone"], e["ma"])
+                  //         .then((value) {
+                  //       if (value.isNotEmpty) {
+                  //         if (value["dien_giai"]
+                  //                 .toString()
+                  //                 .trim()
+                  //                 .toLowerCase() ==
+                  //             "${e["so_lan_sd"]} lần".trim().toLowerCase()) {
+                  //           if (profile["CustomerCoin"] == null ||
+                  //               profile["CustomerCoin"] < e["giabanxu"]) {
+                  //             customModal.showAlertDialog(
+                  //                 context,
+                  //                 "error",
+                  //                 "Lỗi mua voucher",
+                  //                 "Bạn không đủ xu để mua voucher này",
+                  //                 () => Navigator.of(context).pop(),
+                  //                 () => Navigator.of(context).pop());
+                  //           } else {
+                  //             customModal.showAlertDialog(
+                  //                 context,
+                  //                 "error",
+                  //                 "Xác nhận mua voucher",
+                  //                 "Bạn chắc chắn dùng ${e["giabanxu"]} xu để mua voucher này?",
+                  //                 () {
+                  //               Map item = {
+                  //                 "status": true,
+                  //                 "ngay_ct": DateFormat("yyyy/MM/dd")
+                  //                     .format(DateTime.now()),
+                  //                 "trang_thai": "0",
+                  //                 "t_sl": 1,
+                  //                 "t_tien_nt": 0,
+                  //                 "t_ck_nt": 0,
+                  //                 "t_thue_nt": 0,
+                  //                 "t_tt_nt": 0,
+                  //                 "han_tt": 0,
+                  //                 "id_ct_chuyen": "",
+                  //                 "ma_kh": profile["Phone"],
+                  //                 "dien_giai": "0 lần",
+                  //                 "details": [
+                  //                   {
+                  //                     "sl_xuat": 1,
+                  //                     "gia_ban_nt": 0,
+                  //                     "tien_nt": 0,
+                  //                     "ty_le_ck": 0,
+                  //                     "tien_ck_nt": 0,
+                  //                     "tien_thue_nt": 0,
+                  //                     "ma_evoucher": e["ma"],
+                  //                     "ten_evoucher": e["ten"],
+                  //                     "dien_giai": e["ten"],
+                  //                     "tk_dt": "1111",
+                  //                     "ten_tk_dt": "Tiền Việt Nam",
+                  //                     "line": 1715071092771
+                  //                   }
+                  //                 ],
+                  //                 "tk_no": "1111",
+                  //                 "ten_tk_no": "Tiền Việt Nam",
+                  //                 "so_ct": "1",
+                  //                 "ten_trang_thai": "Lập chứng từ",
+                  //                 "hinh_thuc_tt": "KHAC"
+                  //               };
+                  //               Navigator.of(context).pop();
+                  //               EasyLoading.show();
+                  //               Future.delayed(const Duration(seconds: 2), () {
+                  //                 bannerModel.addVoucherBuy(item).then((value) {
+                  //                   Navigator.push(
+                  //                       context,
+                  //                       MaterialPageRoute(
+                  //                           builder: (context) =>
+                  //                               VoucherSuccess(
+                  //                                 details: value,
+                  //                                 profile: profile,
+                  //                               )));
+                  //                   EasyLoading.dismiss();
+                  //                 });
+                  //               });
+                  //             }, () => Navigator.of(context).pop());
+                  //           }
+                  //         } else {
+                  //           customModal.showAlertDialog(
+                  //               context,
+                  //               "error",
+                  //               "Lỗi mua voucher",
+                  //               "Bạn đã mua voucher này rồi vui lòng kiểm tra lại",
+                  //               () => Navigator.push(
+                  //                   context,
+                  //                   MaterialPageRoute(
+                  //                       builder: (context) =>
+                  //                           VoucherBuy(profile: profile))),
+                  //               () => Navigator.of(context).pop());
+                  //         }
+                  //       } else {
+                  //         if (profile["CustomerCoin"] == null ||
+                  //             profile["CustomerCoin"] < e["giabanxu"]) {
+                  //           customModal.showAlertDialog(
+                  //               context,
+                  //               "error",
+                  //               "Lỗi mua voucher",
+                  //               "Bạn không đủ xu để mua voucher này",
+                  //               () => Navigator.of(context).pop(),
+                  //               () => Navigator.of(context).pop());
+                  //         } else {
+                  //           customModal.showAlertDialog(
+                  //               context,
+                  //               "error",
+                  //               "Xác nhận mua voucher",
+                  //               "Bạn chắc chắn dùng ${e["giabanxu"]} xu để mua voucher này?",
+                  //               () {
+                  //             Map item = {
+                  //               "status": true,
+                  //               "ngay_ct": DateFormat("yyyy/MM/dd")
+                  //                   .format(DateTime.now()),
+                  //               "trang_thai": "0",
+                  //               "t_sl": 1,
+                  //               "t_tien_nt": 0,
+                  //               "t_ck_nt": 0,
+                  //               "t_thue_nt": 0,
+                  //               "t_tt_nt": 0,
+                  //               "han_tt": 0,
+                  //               "id_ct_chuyen": "",
+                  //               "ma_kh": profile["Phone"],
+                  //               "dien_giai": "0 lần",
+                  //               "details": [
+                  //                 {
+                  //                   "sl_xuat": 1,
+                  //                   "gia_ban_nt": 0,
+                  //                   "tien_nt": 0,
+                  //                   "ty_le_ck": 0,
+                  //                   "tien_ck_nt": 0,
+                  //                   "tien_thue_nt": 0,
+                  //                   "ma_evoucher": e["ma"],
+                  //                   "ten_evoucher": e["ten"],
+                  //                   "dien_giai": e["ten"],
+                  //                   "tk_dt": "1111",
+                  //                   "ten_tk_dt": "Tiền Việt Nam",
+                  //                   "line": 1715071092771
+                  //                 }
+                  //               ],
+                  //               "tk_no": "1111",
+                  //               "ten_tk_no": "Tiền Việt Nam",
+                  //               "so_ct": "1",
+                  //               "ten_trang_thai": "Lập chứng từ",
+                  //               "hinh_thuc_tt": "KHAC"
+                  //             };
+                  //             Navigator.of(context).pop();
+                  //             EasyLoading.show();
+                  //             Future.delayed(const Duration(seconds: 2), () {
+                  //               bannerModel.addVoucherBuy(item).then((value) {
+                  //                 checkInModel
+                  //                     .userUsingCoin(e["giabanxu"])
+                  //                     .then((value2) {
+                  //                   Navigator.push(
+                  //                       context,
+                  //                       MaterialPageRoute(
+                  //                           builder: (context) =>
+                  //                               VoucherSuccess(
+                  //                                 details: value,
+                  //                                 profile: profile,
+                  //                               )));
+                  //                   EasyLoading.dismiss();
+                  //                 });
+                  //               });
+                  //             });
+                  //           }, () => Navigator.of(context).pop());
+                  //         }
+                  //       }
+                  //     });
+                  //   }
+                  // }
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   decoration: BoxDecoration(
@@ -305,7 +544,7 @@ class _VoucherTestState extends State<VoucherTest> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                    "$goodAppUrl${list[0]["picture"]}?$token",
+                    "$goodAppUrl${list[0]["banner1"]}?$token",
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
                   ),

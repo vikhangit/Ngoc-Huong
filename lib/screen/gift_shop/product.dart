@@ -73,7 +73,7 @@ class _ShopProductPageState extends State<ShopProductPage> {
             height: 15,
           ),
           SizedBox(
-            height: 270,
+            height: 260,
             child: FutureBuilder(
               future: productModel.getHotProduct(),
               builder: (context, snapshot) {
@@ -155,28 +155,13 @@ class _ShopProductPageState extends State<ShopProductPage> {
                                       ),
                                       Text(
                                         "${list[i]["Name"]}",
-                                        maxLines: 3,
+                                        maxLines: 4,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                             fontSize: 10,
                                             height: 1.3,
                                             color: mainColor,
                                             fontWeight: FontWeight.w600),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        "${list[i]["CategoryCode"]}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            height: 1.2,
-                                            color: mainColor,
-                                            fontStyle: FontStyle.italic,
-                                            fontWeight: FontWeight.w400),
                                       ),
                                       const SizedBox(
                                         height: 5,
@@ -257,8 +242,7 @@ class _ShopProductPageState extends State<ShopProductPage> {
                         SizedBox(
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
-                              height: 250,
-                              aspectRatio: 16 / 9,
+                              height: 240,
                               enlargeCenterPage: false,
                               viewportFraction: 1,
                               onPageChanged: (index, reason) {

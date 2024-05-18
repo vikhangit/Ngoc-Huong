@@ -302,14 +302,6 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const Text("Tháng 3/2024",
-                                                  style: TextStyle(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.w400)),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
                                               Column(
                                                 children: List.generate(
                                                     usageHistory.length,
@@ -338,7 +330,7 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
                                                           DateFormat(
                                                                   "dd/MM/yyyy")
                                                               .format(DateTime.parse(
-                                                                  receiptHistory[
+                                                                  usageHistory[
                                                                           index]
                                                                       [
                                                                       "CreatedDate"])),
@@ -347,7 +339,7 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
                                                                   fontSize: 12),
                                                         ),
                                                         Text(
-                                                          "${receiptHistory[index]["Type"] == "DailyReport" ? "Điểm danh" : receiptHistory[index]["Type"] == "Mission" ? "Làm nhiêmhj vụ" : ""}  nhận ${receiptHistory[index]["Coin"]} xu",
+                                                          "${usageHistory[index]["Type"] == "Expiry" ? "Hết hạn trừ ${usageHistory[index]["Coin"]} xu" : "Mua hàng dùng ${usageHistory[index]["Coin"]} xu"} ",
                                                           style:
                                                               const TextStyle(
                                                                   fontSize: 12),

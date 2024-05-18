@@ -21,6 +21,7 @@ import 'package:ngoc_huong/screen/account/gioi_thieu_ban_be/gioi_thieu_ban_be.da
 import 'package:ngoc_huong/screen/account/my_order/my_order.dart';
 import 'package:ngoc_huong/screen/account/quan_li_dia_chi/quan_li_dia_chi.dart';
 import 'package:ngoc_huong/screen/account/tran_history/tran_history.dart';
+import 'package:ngoc_huong/screen/account/voucher/voucher.dart';
 import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/member/thanh_vien.dart';
@@ -54,10 +55,10 @@ List menu = [
     "icon": "assets/images/cart-black.png",
     "title": "Lịch sử mua hàng",
   },
-  // {
-  //   "icon": "assets/images/account/giao-dich.png",
-  //   "title": "Đơn hàng của tôi",
-  // },
+  {
+    "icon": "assets/images/account/voucher.png",
+    "title": "Voucher của tôi",
+  },
   {
     "icon": "assets/images/icon/Xu1.png",
     "title": "Lịch sử giao dịch xu",
@@ -376,37 +377,37 @@ class _AccountScreenState extends State<AccountScreen> {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const BuyHistory()));
           break;
-        // case 4:
-        //   orderModel.getStatusList().then((value) => Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (context) => MyOrder(
-        //                 listTab: value,
-        //               ))));
-        //   break;
         case 4:
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const TranHistory()));
+          bookingModel.getListBookinfStatus().then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => VoucherBuy(
+                        profile: profile,
+                      ))));
           break;
         case 5:
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
+              MaterialPageRoute(builder: (context) => const TranHistory()));
           break;
         case 6:
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
+              MaterialPageRoute(builder: (context) => const QuanLiDiaChi()));
           break;
         case 7:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const GioiThieuBanBe()));
+          break;
+        case 8:
           {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const AboutUs()));
             break;
           }
-        case 8:
+        case 9:
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const DieuKhoanSudung()));
           break;
-        case 9:
+        case 10:
           customModal.showAlertDialog(context, "error", "Xóa tài khoản",
               "Bạn có chắc chắn muốn xóa tài khoản không?", () {
             EasyLoading.show(status: "Đang xử lý...");
@@ -425,7 +426,7 @@ class _AccountScreenState extends State<AccountScreen> {
             });
           }, () => Navigator.of(context).pop());
           break;
-        case 10:
+        case 11:
           handleLogout();
           break;
         default:

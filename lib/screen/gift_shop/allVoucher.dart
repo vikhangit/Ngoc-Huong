@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
+import 'package:ngoc_huong/models/banner.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/screen/cart/cart_success.dart';
 import 'package:ngoc_huong/screen/gift_shop/chi_tiet_uu_dai.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/screen/voucher_detail/voucher_detail.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
@@ -28,6 +31,8 @@ class _AllVoucherScreenState extends State<AllVoucherScreen> {
   final ProductModel productModel = ProductModel();
   final CustomModal customModal = CustomModal();
   final CartModel cartModel = CartModel();
+  final BannerModel bannerModel = BannerModel();
+  @override
   final ScrollController scrollController = ScrollController();
 
   final LocalStorage storageToken = LocalStorage("customer_token");
@@ -46,57 +51,6 @@ class _AllVoucherScreenState extends State<AllVoucherScreen> {
     super.dispose();
     showIndex = "";
     scrollController.dispose();
-  }
-
-  void addToCart(Map item) async {
-    Map data = {
-      "DetailList": [
-        {
-          "Amount": item["PriceOutbound"] * 1,
-          "Price": item["PriceOutbound"],
-          "PrinceTest": item["PriceOutbound"] * 1,
-          "ProductCode": item["Code"],
-          "ProductId": item["Id"],
-          "Quantity": 1,
-        }
-      ]
-    };
-    customModal.showAlertDialog(context, "error", "Giỏ hàng",
-        "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-      Navigator.of(context).pop();
-      EasyLoading.show(status: "Vui lòng chờ...");
-      Future.delayed(const Duration(seconds: 2), () {
-        cartModel.addToCart(data).then((value) {
-          EasyLoading.dismiss();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-        });
-      });
-    }, () => Navigator.of(context).pop());
-  }
-
-  void updateCart(Map item) async {
-    customModal.showAlertDialog(context, "error", "Giỏ hàng",
-        "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-      Navigator.of(context).pop();
-      EasyLoading.show(status: "Vui lòng chờ...");
-      Future.delayed(const Duration(seconds: 2), () {
-        cartModel.updateProductInCart({
-          "Id": 1,
-          "DetailList": [
-            {
-              ...item,
-              "Amount": (item["Quantity"] + 1) * item["Price"],
-              "Quantity": item["Quantity"] + 1
-            }
-          ]
-        }).then((value) {
-          EasyLoading.dismiss();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-        });
-      });
-    }, () => Navigator.of(context).pop());
   }
 
   @override
@@ -130,7 +84,7 @@ class _AllVoucherScreenState extends State<AllVoucherScreen> {
                       color: Colors.black,
                     ),
                   )),
-              title: const Text("Quà đối tác",
+              title: const Text("Voucher",
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -145,196 +99,239 @@ class _AllVoucherScreenState extends State<AllVoucherScreen> {
                   showReleaseNotes: false,
                 ),
                 child: FutureBuilder(
-                  future: productModel.getHotProduct(),
+                  future: bannerModel.getVoucher(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List list = snapshot.data!.toList();
+                      List newList = [];
+                      for (var i = 0; i < list.length; i++) {
+                        if (
+                            // DateTime.parse(list[i]["hieu_luc_tu"]).isBefore(now) &&
+                            //   DateTime.parse(list[i]["hieu_luc_den"]).isAfter(now) &&
+                            list[i]["shared"]) {
+                          newList.add(list[i]);
+                        }
+                      }
                       return ListView(
                           controller: scrollController,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 20),
                           children: [
-                            Wrap(
-                                runSpacing: 15,
-                                alignment: WrapAlignment.spaceBetween,
-                                children: list.map((item) {
-                                  return GestureDetector(
-                                      onTap: () => {
+                            newList.isEmpty
+                                ? Column(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            top: 0, bottom: 10),
+                                        child: Image.asset(
+                                          "assets/images/account/img.webp",
+                                        ),
+                                      ),
+                                      Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 40),
+                                        child: const Text(
+                                          "Xin lỗi! Hiện tại Ngọc Hường chưa phát hành voucher",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : Wrap(
+                                    runSpacing: 15,
+                                    alignment: WrapAlignment.spaceBetween,
+                                    children: newList.map((item) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          DateTime now = DateTime.now();
+                                          if (DateTime.parse(
+                                                  item["hieu_luc_den"])
+                                              .isBefore(now)) {
+                                            customModal.showAlertDialog(
+                                                context,
+                                                "error",
+                                                "Lỗi mua voucher",
+                                                "Rất tiếc voucher này đã hết hạn!!!",
+                                                () =>
+                                                    Navigator.of(context).pop(),
+                                                () => Navigator.of(context)
+                                                    .pop());
+                                          } else {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        GiftShopDetail(
-                                                          details: item,
-                                                          type: "product",
-                                                        )))
-                                          },
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                              width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      2 -
-                                                  22.5,
-                                              height: 275,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 6,
-                                                      vertical: 6),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(15)),
-                                                color: Colors.white,
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.3),
-                                                    spreadRadius: 2,
-                                                    blurRadius: 2,
-                                                    offset: Offset(0,
-                                                        1), // changes position of shadow
+                                                        VoucherDetail(
+                                                          detail: item,
+                                                        )));
+                                          }
+                                        },
+                                        child: Container(
+                                            width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    2 -
+                                                22.5,
+                                            height: 255,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 6, vertical: 6),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(15)),
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.3),
+                                                  spreadRadius: 2,
+                                                  blurRadius: 2,
+                                                  offset: Offset(0,
+                                                      1), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        height: 140,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          15)),
+                                                          color: Colors.white,
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors.grey
+                                                                  .withOpacity(
+                                                                      0.3),
+                                                              spreadRadius: 2,
+                                                              blurRadius: 2,
+                                                              offset: Offset(0,
+                                                                  1), // changes position of shadow
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(15),
+                                                          child: Image.network(
+                                                            "$goodAppUrl${item["banner1"]}?$token",
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            height:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        )),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      item["ten"],
+                                                      maxLines: 2,
+                                                      textAlign: TextAlign.left,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontSize: 13,
+                                                          color: mainColor,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.all(2),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(8)),
+                                                    color: Colors.white,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.3),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 2,
+                                                        offset: Offset(0,
+                                                            1), // changes position of shadow
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Container(
-                                                          width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width,
-                                                          height: 140,
+                                                  child: GestureDetector(
+                                                      child: Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical: 8),
                                                           decoration:
                                                               BoxDecoration(
                                                             borderRadius:
                                                                 const BorderRadius
                                                                     .all(Radius
                                                                         .circular(
-                                                                            15)),
-                                                            color: Colors.white,
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .withOpacity(
-                                                                        0.3),
-                                                                spreadRadius: 2,
-                                                                blurRadius: 2,
-                                                                offset: Offset(
-                                                                    0,
-                                                                    1), // changes position of shadow
+                                                                            8)),
+                                                            color: mainColor,
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              // Image.asset(
+                                                              //   "assets/images/icon/Xu1.png",
+                                                              //   width: 20,
+                                                              //   height: 20,
+                                                              // ),
+                                                              // const SizedBox(
+                                                              //   width: 3,
+                                                              // ),
+                                                              Text(
+                                                                "Xem chi tiết",
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    color: Colors
+                                                                        .white),
                                                               ),
                                                             ],
-                                                          ),
-                                                          child: ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                            child: Image.asset(
-                                                              "assets/images/voucher1.png",
-                                                              fit: BoxFit
-                                                                  .fitHeight,
-                                                            ),
-                                                          )),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Text(
-                                                        "Voucher giảm 200k cho tất cả dịch vụ",
-                                                        maxLines: 3,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                            fontSize: 13,
-                                                            color: mainColor,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.all(2),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                              Radius.circular(
-                                                                  8)),
-                                                      color: Colors.white,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey
-                                                              .withOpacity(0.3),
-                                                          spreadRadius: 2,
-                                                          blurRadius: 2,
-                                                          offset: Offset(0,
-                                                              1), // changes position of shadow
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: GestureDetector(
-                                                        child: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    vertical:
-                                                                        8),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  const BorderRadius
-                                                                      .all(
-                                                                      Radius.circular(
-                                                                          8)),
-                                                              color: mainColor,
-                                                            ),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Image.asset(
-                                                                  "assets/images/icon/Xu1.png",
-                                                                  width: 20,
-                                                                  height: 20,
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 3,
-                                                                ),
-                                                                Text(
-                                                                  "400",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                              ],
-                                                            ))),
-                                                  )
-                                                ],
-                                              )),
-                                        ],
-                                      ));
-                                }).toList())
+                                                          ))),
+                                                )
+                                              ],
+                                            )),
+                                      );
+                                    }).toList())
                           ]);
                     } else {
                       return const Center(

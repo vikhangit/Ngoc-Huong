@@ -2,10 +2,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:ngoc_huong/controllers/dio_client.dart';
+import 'package:ngoc_huong/models/banner.dart';
 import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/screen/gift_shop/allVoucher.dart';
 import 'package:ngoc_huong/screen/gift_shop/chi_tiet_uu_dai.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
+import 'package:ngoc_huong/screen/voucher_detail/voucher_detail.dart';
+import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class VoucherPage extends StatefulWidget {
@@ -19,6 +23,8 @@ int currentIndexPr = 0;
 
 class _VoucherPageState extends State<VoucherPage> {
   final ProductModel productModel = ProductModel();
+  final BannerModel bannerModel = BannerModel();
+  final CustomModal customModal = CustomModal();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,7 +38,7 @@ class _VoucherPageState extends State<VoucherPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "QUÀ ĐỐI TÁC",
+                  "VOUCHER",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -66,18 +72,48 @@ class _VoucherPageState extends State<VoucherPage> {
           SizedBox(
             height: 240,
             child: FutureBuilder(
-              future: productModel.getHotProduct(),
+              future: bannerModel.getVoucher(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List list = snapshot.data!.toList();
+                  List newList = [];
+                  for (var i = 0; i < list.length; i++) {
+                    if (
+                        // DateTime.parse(list[i]["hieu_luc_tu"]).isBefore(now) &&
+                        //   DateTime.parse(list[i]["hieu_luc_den"]).isAfter(now) &&
+                        list[i]["shared"]) {
+                      newList.add(list[i]);
+                    }
+                  }
                   List<Widget> pages = List<Widget>.generate(
-                      list.length,
+                      newList.length >= 6 ? 6 : newList.length,
                       (i) => GestureDetector(
-                            onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => GiftShopDetail(
-                                        details: list[i], type: "product"))),
+                            onTap: () {
+                              DateTime now = DateTime.now();
+                              if (DateTime.parse(newList[i]["hieu_luc_den"])
+                                  .isBefore(now)) {
+                                customModal.showAlertDialog(
+                                    context,
+                                    "error",
+                                    "Lỗi mua voucher",
+                                    "Rất tiếc voucher này đã hết hạn!!!",
+                                    () => Navigator.of(context).pop(),
+                                    () => Navigator.of(context).pop());
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => VoucherDetail(
+                                              detail: newList[i],
+                                            )));
+                              }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => VoucherDetail(
+                                            detail: list[i],
+                                          )));
+                            },
                             child: Container(
                               margin: const EdgeInsets.only(
                                   left: 5, top: 5, bottom: 5, right: 5),
@@ -132,18 +168,22 @@ class _VoucherPageState extends State<VoucherPage> {
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(15),
-                                            child: Image.asset(
-                                              "assets/images/voucher1.png",
-
-                                              // "http://api_ngochuong.osales.vn/assets/css/images/noimage.gif",
-                                              fit: BoxFit.fitHeight,
+                                            child: Image.network(
+                                              "$goodAppUrl${list[i]["banner1"]}?$token",
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .height,
+                                              fit: BoxFit.cover,
                                             ),
                                           )),
                                       const SizedBox(
                                         height: 10,
                                       ),
                                       Text(
-                                        "Voucher giảm 200k cho tất cả dịch vụ",
+                                        list[i]["ten"],
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -182,7 +222,7 @@ class _VoucherPageState extends State<VoucherPage> {
                                               borderRadius:
                                                   const BorderRadius.all(
                                                       Radius.circular(8)),
-                                              color: mainColor.withOpacity(0.6),
+                                              color: mainColor,
                                             ),
                                             child: Row(
                                               mainAxisAlignment:
@@ -193,16 +233,16 @@ class _VoucherPageState extends State<VoucherPage> {
                                                   width: 20,
                                                   height: 20,
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   width: 3,
                                                 ),
                                                 Text(
-                                                  "400",
-                                                  style: TextStyle(
+                                                  "${list[i]["giabanxu"]}",
+                                                  style: const TextStyle(
                                                       fontSize: 12,
                                                       fontWeight:
                                                           FontWeight.w600,
-                                                      color: Colors.white),
+                                                      color: Colors.amber),
                                                 ),
                                               ],
                                             ))),
@@ -214,66 +254,99 @@ class _VoucherPageState extends State<VoucherPage> {
 
                   return Container(
                     width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          child: CarouselSlider.builder(
-                            options: CarouselOptions(
-                              height: 220,
-                              aspectRatio: 16 / 9,
-                              enlargeCenterPage: false,
-                              viewportFraction: 1,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  currentIndexPr = index;
-                                });
-                              },
-                            ),
-                            itemCount: (pages.length / 3).round(),
-                            itemBuilder: (context, index, realIndex) {
-                              final int first = index * 3;
-                              final int? second = first + 1;
-                              final int? three =
-                                  (pages.length / 3).round() % 3 > 0 &&
-                                          first > 2
-                                      ? null
-                                      : second! + 1;
-                              return Row(
-                                children: [first, second, three].map((idx) {
-                                  return idx != null
-                                      ? Expanded(
+                    child: pages.isEmpty
+                        ? Column(
+                            children: [
+                              Container(
+                                margin:
+                                    const EdgeInsets.only(top: 0, bottom: 10),
+                                child: Image.asset(
+                                  "assets/images/account/img.webp",
+                                  height: 140,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 40),
+                                child: const Text(
+                                  "Xin lỗi! Hiện tại Ngọc Hường chưa phát hành voucher",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              )
+                            ],
+                          )
+                        : Column(
+                            children: [
+                              SizedBox(
+                                child: CarouselSlider.builder(
+                                  options: CarouselOptions(
+                                    height: 220,
+                                    aspectRatio: 16 / 9,
+                                    enlargeCenterPage: false,
+                                    viewportFraction: 1,
+                                    onPageChanged: (index, reason) {
+                                      setState(() {
+                                        currentIndexPr = index;
+                                      });
+                                    },
+                                  ),
+                                  itemCount: (pages.length / 3).ceil(),
+                                  itemBuilder: (context, index, realIndex) {
+                                    final int first = index * 3;
+                                    final int? second =
+                                        index * 3 < pages.length - 2
+                                            ? first + 1 > pages.length - 2
+                                                ? null
+                                                : first + 1
+                                            : null;
+                                    final int? three =
+                                        index * 3 < pages.length - 1
+                                            ? first + 2 > pages.length - 1
+                                                ? null
+                                                : first + 2
+                                            : null;
+                                    return Row(
+                                      children:
+                                          [first, second, three].map((idx) {
+                                        return Expanded(
                                           flex: 1,
-                                          child: Container(
-                                            child: pages[idx],
-                                          ),
-                                        )
-                                      : Container();
-                                }).toList(),
-                              );
-                            },
+                                          child: idx != null
+                                              ? Container(
+                                                  child: pages[idx],
+                                                )
+                                              : Container(),
+                                        );
+                                      }).toList(),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              if (pages.length > 3)
+                                DotsIndicator(
+                                  dotsCount: (pages.length / 3).ceil(),
+                                  position: currentIndexPr,
+                                  decorator: DotsDecorator(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(4.0),
+                                      ),
+                                      size: Size(12, 8),
+                                      activeSize: Size(24, 8),
+                                      color: mainColor,
+                                      activeColor: mainColor,
+                                      activeShape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(4.0),
+                                      ),
+                                      spacing: EdgeInsets.all(1)),
+                                )
+                            ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        DotsIndicator(
-                          dotsCount: (pages.length / 3).round(),
-                          position: currentIndexPr,
-                          decorator: DotsDecorator(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              size: Size(12, 8),
-                              activeSize: Size(24, 8),
-                              color: mainColor,
-                              activeColor: mainColor,
-                              activeShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4.0),
-                              ),
-                              spacing: EdgeInsets.all(1)),
-                        )
-                      ],
-                    ),
                   );
                 } else {
                   return const Row(

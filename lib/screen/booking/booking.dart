@@ -46,7 +46,7 @@ Map activeBranch = {};
 Map activeService = {};
 List chooseService = [];
 Map profile = {};
-List payments = ["Tiền mặt", "Xu"];
+List payments = ["Tiền mặt", "xu"];
 String paymentMethod = "";
 
 class _BookingServicesState extends State<BookingServices>
@@ -316,12 +316,14 @@ class _BookingServicesState extends State<BookingServices>
               "DueDate": "",
               "Note": "",
               "PaymentMethod": paymentMethod,
+              "TotalAmount": activeService["PriceInbound"] ??
+                  activeService["PriceOutbound"],
               "DetailList": [
                 activeService["Id"],
               ]
             };
 
-            if (paymentMethod == "Xu") {
+            if (paymentMethod == "xu") {
               if (activeService["ExchangeCoin"] == null) {
                 customModal.showAlertDialog(
                     context,

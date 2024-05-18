@@ -48,6 +48,27 @@ class CheckInModel {
     }
   }
 
+  Future userUsingCoin(int coin) async {
+    try {
+      Response response =
+          await client.dio.post('${client.apiUrl}/Customer/usingCustomerCoin',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }),
+              data: {"Coin": coin});
+      if (response.statusCode == 200) {
+        print(response.data);
+        return response.data;
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<List> getMission() async {
     List result = [];
     try {
@@ -88,9 +109,6 @@ class CheckInModel {
             result.add(item);
           }
         }
-        print("=================================");
-        print(result);
-
         return result;
       } else {
         return result;
