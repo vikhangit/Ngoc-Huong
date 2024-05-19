@@ -17,6 +17,8 @@ import 'package:ngoc_huong/screen/voucher_detail/voucher_detail.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
+import 'package:ngoc_huong/screen/gift_shop/allVoucher.dart';
+
 class VoucherTest extends StatefulWidget {
   const VoucherTest({super.key});
 
@@ -63,7 +65,12 @@ class _VoucherTestState extends State<VoucherTest> {
                 ),
               ),
               GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AllVoucherScreen()));
+                  },
                   child: Container(
                     child: const Text(
                       "Xem thêm...",
