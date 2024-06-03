@@ -139,6 +139,7 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                         if (snapshot.hasData) {
                                           Map detail = snapshot.data!;
                                           DateTime now = DateTime.now();
+
                                           return TextButton(
                                               onPressed: () {
                                                 if (DateTime.parse(
@@ -161,6 +162,24 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                                       "error",
                                                       "Lỗi mua voucher",
                                                       "Rất tiếc voucher này không còn được phát hành!!!",
+                                                      () =>
+                                                          Navigator.of(context)
+                                                              .pop(),
+                                                      () =>
+                                                          Navigator.of(context)
+                                                              .pop());
+                                                } else if (detail[
+                                                        "so_lan_sd"] ==
+                                                    int.tryParse(list[index]
+                                                            ["dien_giai"]
+                                                        .toString()
+                                                        .replaceAll(
+                                                            "lần", ""))) {
+                                                  customModal.showAlertDialog(
+                                                      context,
+                                                      "error",
+                                                      "Lỗi mua voucher",
+                                                      "Rất tiếc số lần dùng voucher đã hết!!!",
                                                       () =>
                                                           Navigator.of(context)
                                                               .pop(),

@@ -12,6 +12,7 @@ import 'package:ngoc_huong/screen/gift_shop/gift_shop.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/scan_order/orderPage.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
+import 'package:ngoc_huong/screen/scan_order/ratingPage.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 
@@ -53,22 +54,34 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => OrderPage(item: barCodeScanRes)));
+            builder: (context) => RatingPage(item: barCodeScanRes)));
   }
 
   Future<void> scanQR() async {
     String barCodeScanRes;
-    try {
-      barCodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          "#ff6666", "Cancel", true, ScanMode.QR);
-    } on PlatformException {
-      barCodeScanRes = "Fail to get platform version.";
-    }
-    if (!mounted) return;
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => OrderPage(item: barCodeScanRes)));
+    customModal.showAlertDialog(context, "error", "Lưu ý",
+        "Quý khách hãy quét mã vạch (QR) trên hóa đơn", () async {
+      try {
+        barCodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+            "#ff6666", "Cancel", true, ScanMode.QR);
+      } on PlatformException {
+        barCodeScanRes = "Fail to get platform version.";
+      }
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => RatingPage(item: barCodeScanRes)));
+    }, () {
+      Navigator.of(context).pop();
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => HomeScreen(callBack: () {
+      //               setState(() {});
+      //             })));
+    });
   }
 
   @override
@@ -111,14 +124,14 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
           switch (index) {
             case 1:
               {
-                // scanQR();
-                customModal.showAlertDialog(
-                    context,
-                    "error",
-                    "Quét hóa đơn",
-                    "Chúng tôi đang nâng câp tính năng này",
-                    () => Navigator.of(context).pop(),
-                    () => Navigator.of(context).pop());
+                scanQR();
+                // customModal.showAlertDialog(
+                //     context,
+                //     "error",
+                //     "Quét hóa đơn",
+                //     "Chúng tôi đang nâng câp tính năng này",
+                //     () => Navigator.of(context).pop(),
+                //     () => Navigator.of(context).pop());
                 break;
               }
             case 3:

@@ -91,217 +91,211 @@ class _VoucherBuyDetailState extends State<VoucherBuyDetail> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       Map newsDetail = snapshot.data!;
-                      return Expanded(
-                        child: ListView(
-                          controller: scrollController,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          children: [
-                            ImageDetail(item: newsDetail),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    newsDetail["ten"],
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black),
-                                  ),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                const Text(
-                                  "Số lần dùng:",
+                      print(newsDetail);
+                      return ListView(
+                        controller: scrollController,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 15),
+                        children: [
+                          ImageDetail(item: newsDetail),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  newsDetail["ten"],
                                   textAlign: TextAlign.left,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "${newsDetail["so_lan_sd"]}",
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
                                   style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text(
-                                  "Ưu đãi nhận được:",
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Row(
-                                  children: [
-                                    const Text(
-                                      "Giảm",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    const SizedBox(
-                                      width: 6,
-                                    ),
-                                    const Text(
-                                      "đ",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          decoration: TextDecoration.underline,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    const SizedBox(
-                                      width: 1,
-                                    ),
-                                    Text(
-                                      NumberFormat.currency(
-                                              locale: "vi_VI", symbol: "")
-                                          .format(newsDetail["so_tien"]),
-                                      textAlign: TextAlign.left,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text(
-                                  "Hạn sử dụng:",
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["hieu_luc_tu"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["hieu_luc_den"]))}",
-                                  textAlign: TextAlign.left,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
-                            ),
-                            // Row(
-                            //   children: [
-                            //     const Text(
-                            //       "Đã thanh toán: ",
-                            //       textAlign: TextAlign.left,
-                            //       overflow: TextOverflow.ellipsis,
-                            //       maxLines: 1,
-                            //       style: TextStyle(
-                            //           fontSize: 14,
-                            //           fontWeight: FontWeight.w600),
-                            //     ),
-                            //     const SizedBox(
-                            //       width: 5,
-                            //     ),
-                            // Text(
-                            //   // widget.detail["hinh_thuc_tt"] == "KHAC"
-                            //   //     ? "Xu"
-                            //   //     : widget.detail["hinh_thuc_tt"] == "TM"
-                            //   //         ? "Tiền mặt"
-                            //   //         : "",
-                            //   "${newsDetail["giabanxu"]} xu",
-                            //   textAlign: TextAlign.left,
-                            //   overflow: TextOverflow.ellipsis,
-                            //   maxLines: 1,
-                            //   style: const TextStyle(
-                            //       fontSize: 14,
-                            //       fontWeight: FontWeight.w400),
-                            // ),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.center,
-                            //   children: [
-                            //     Image.asset(
-                            //       "assets/images/icon/Xu1.png",
-                            //       width: 20,
-                            //       height: 20,
-                            //     ),
-                            //     const SizedBox(
-                            //       width: 3,
-                            //     ),
-                            //     Text(
-                            //       "${newsDetail["giabanxu"]}",
-                            //       style: const TextStyle(
-                            //           fontSize: 14,
-                            //           fontWeight: FontWeight.w400,
-                            //           color: Colors.black),
-                            //     ),
-                            //   ],
-                            // )
-                            //   ],
-                            // ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "Mô tả chi tiết về voucher".toUpperCase(),
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w600),
-                            ),
-                            SizedBox(
-                              child: Html(
-                                data: newsDetail["voucher"]["content"],
-                                style: {
-                                  "*": Style(
-                                      fontSize: FontSize(15),
-                                      textAlign: TextAlign.justify),
-                                  "a": Style(
-                                      textDecoration: TextDecoration.none,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
                                       color: Colors.black),
-                                  "img": Style(
-                                      height: Height.auto(),
-                                      width: Width(
-                                          MediaQuery.of(context).size.width)),
-                                  "*:not(img)": Style(
-                                      lineHeight: const LineHeight(1.5),
-                                      margin: Margins.only(
-                                          left: 0, top: 10, bottom: 10))
-                                },
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              const Text(
+                                "Số lần dùng:",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w600),
                               ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "${int.tryParse(widget.detail["dien_giai"].toString().replaceAll("lần", ""))}/${newsDetail["so_lan_sd"]}",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Text(
+                                "Ưu đãi nhận được:",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Row(
+                                children: [
+                                  const Text(
+                                    "Giảm",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
+                                  const Text(
+                                    "đ",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  const SizedBox(
+                                    width: 1,
+                                  ),
+                                  Text(
+                                    NumberFormat.currency(
+                                            locale: "vi_VI", symbol: "")
+                                        .format(newsDetail["so_tien"]),
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Text(
+                                "Hạn sử dụng:",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["hieu_luc_tu"]))} - ${DateFormat("dd/MM/yyyy").format(DateTime.parse(newsDetail["hieu_luc_den"]))}",
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          ),
+                          // Row(
+                          //   children: [
+                          //     const Text(
+                          //       "Đã thanh toán: ",
+                          //       textAlign: TextAlign.left,
+                          //       overflow: TextOverflow.ellipsis,
+                          //       maxLines: 1,
+                          //       style: TextStyle(
+                          //           fontSize: 14,
+                          //           fontWeight: FontWeight.w600),
+                          //     ),
+                          //     const SizedBox(
+                          //       width: 5,
+                          //     ),
+                          // Text(
+                          //   // widget.detail["hinh_thuc_tt"] == "KHAC"
+                          //   //     ? "Xu"
+                          //   //     : widget.detail["hinh_thuc_tt"] == "TM"
+                          //   //         ? "Tiền mặt"
+                          //   //         : "",
+                          //   "${newsDetail["giabanxu"]} xu",
+                          //   textAlign: TextAlign.left,
+                          //   overflow: TextOverflow.ellipsis,
+                          //   maxLines: 1,
+                          //   style: const TextStyle(
+                          //       fontSize: 14,
+                          //       fontWeight: FontWeight.w400),
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     Image.asset(
+                          //       "assets/images/icon/Xu1.png",
+                          //       width: 20,
+                          //       height: 20,
+                          //     ),
+                          //     const SizedBox(
+                          //       width: 3,
+                          //     ),
+                          //     Text(
+                          //       "${newsDetail["giabanxu"]}",
+                          //       style: const TextStyle(
+                          //           fontSize: 14,
+                          //           fontWeight: FontWeight.w400,
+                          //           color: Colors.black),
+                          //     ),
+                          //   ],
+                          // )
+                          //   ],
+                          // ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "Mô tả chi tiết về voucher".toUpperCase(),
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(
+                            child: Html(
+                              data: newsDetail["voucher"]["content"],
+                              style: {
+                                "*": Style(
+                                    fontSize: FontSize(15),
+                                    textAlign: TextAlign.justify),
+                                "a": Style(
+                                    textDecoration: TextDecoration.none,
+                                    color: Colors.black),
+                                "img": Style(
+                                    height: Height.auto(),
+                                    width: Width(
+                                        MediaQuery.of(context).size.width)),
+                                "*:not(img)": Style(
+                                    lineHeight: const LineHeight(1.5),
+                                    margin: Margins.only(
+                                        left: 0, top: 10, bottom: 10))
+                              },
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       );
                     } else {
                       return const Center(

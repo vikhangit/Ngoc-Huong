@@ -39,6 +39,7 @@ dependencies:
   flutter_barcode_scanner: ^2.0.0
   photo_view: ^0.14.0
   flutter_widget_from_html: ^0.14.11
+  flutter_rating_stars: ^1.0.3+4
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -96,6 +97,9 @@ flutter:
     - assets/images/account/voucher.png
     - assets/images/dieu-tri.png
     - assets/images/may.png
+    - assets/images/editing.png
+    - assets/images/star-solid.png
+    - assets/images/star-outline.png
     - assets/images/tre-hoa.png
     - assets/images/waxing.png
     - assets/images/banner-flash.png
