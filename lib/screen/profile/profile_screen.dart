@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
@@ -400,23 +400,7 @@ Widget modalChinhSach(BuildContext context) {
         Column(
           children: [
             const Text("Chính sách thông tin"),
-            Html(
-              data: desc,
-              style: {
-                "*": Style(
-                    margin: Margins.only(left: 0),
-                    textAlign: TextAlign.justify),
-                "a": Style(textDecoration: TextDecoration.none),
-                "p": Style(
-                    lineHeight: const LineHeight(1.2),
-                    fontSize: FontSize(15),
-                    fontWeight: FontWeight.w400),
-              },
-              onLinkTap: (url, context, attributes, element) {
-                if (url!.contains("tel:")) {}
-              },
-            ),
-          ],
+                  ],
         ),
         Container(
           width: MediaQuery.of(context).size.width,

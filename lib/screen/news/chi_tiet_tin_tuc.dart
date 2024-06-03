@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:upgrader/upgrader.dart';
@@ -121,24 +121,24 @@ class _ChiTietTinTucState extends State<ChiTietTinTuc> {
                         fontSize: 14, fontWeight: FontWeight.w300),
                   ),
                   SizedBox(
-                    child: Html(
-                      data: newsDetail["content"],
-                      style: {
-                        "*": Style(
-                            fontSize: FontSize(15),
-                            textAlign: TextAlign.justify),
-                        "a": Style(
-                            textDecoration: TextDecoration.none,
-                            color: Colors.black),
-                        "img": Style(
-                            height: Height.auto(),
-                            width:
-                                Width(MediaQuery.of(context).size.width - 20),
-                            margin: Margins(left: Margin(0))),
-                        "*:not(img)": Style(
-                            lineHeight: const LineHeight(1.5),
-                            margin: Margins.only(left: 0, top: 10, bottom: 10))
-                      },
+                    child: HtmlWidget(
+                     newsDetail["content"],
+                      // style: {
+                      //   "*": Style(
+                      //       fontSize: FontSize(15),
+                      //       textAlign: TextAlign.justify),
+                      //   "a": Style(
+                      //       textDecoration: TextDecoration.none,
+                      //       color: Colors.black),
+                      //   "img": Style(
+                      //       height: Height.auto(),
+                      //       width:
+                      //           Width(MediaQuery.of(context).size.width - 20),
+                      //       margin: Margins(left: Margin(0))),
+                      //   "*:not(img)": Style(
+                      //       lineHeight: const LineHeight(1.5),
+                      //       margin: Margins.only(left: 0, top: 10, bottom: 10))
+                      // },
                     ),
                   ),
                 ],

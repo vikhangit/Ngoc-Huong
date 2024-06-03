@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/appInfoController.dart';
@@ -90,25 +90,27 @@ class _AboutUsState extends State<AboutUs> {
                                   snapshot.data![0]["content"]
                                       .toString()
                                       .isNotEmpty
-                              ? Html(
-                                  data: "${snapshot.data![0]["content"]}",
-                                  style: {
-                                    "*": Style(
-                                        fontSize: FontSize(15),
-                                        margin: Margins.only(left: 0, right: 0),
-                                        textAlign: TextAlign.justify),
-                                    "p": Style(
-                                        lineHeight: const LineHeight(1.8),
-                                        fontSize: FontSize(15),
-                                        fontWeight: FontWeight.w300,
-                                        textAlign: TextAlign.justify),
-                                    "img": Style(margin: Margins.only(top: 5))
+                              ? HtmlWidget(
+                                  "${snapshot.data![0]["content"]}",
+                                  // style: {
+                                  //   "*": Style(
+                                  //       fontSize: FontSize(15),
+                                  //       margin: Margins.only(left: 0, right: 0),
+                                  //       textAlign: TextAlign.justify),
+                                  //   "p": Style(
+                                  //       lineHeight: const LineHeight(1.8),
+                                  //       fontSize: FontSize(15),
+                                  //       fontWeight: FontWeight.w300,
+                                  //       textAlign: TextAlign.justify),
+                                  //   "img": Style(margin: Margins.only(top: 5)
+                                    
+                                    // )
                                     //   "img": Style(
                                     //     width: Width(MediaQuery.of(context).size.width * .85),
                                     //     margin: Margins.only(top: 10, bottom: 6, left: 15, right: 0),
                                     //     textAlign: TextAlign.center
                                     //   )
-                                  },
+                                  // },
                                 )
                               : Column(
                                   children: [

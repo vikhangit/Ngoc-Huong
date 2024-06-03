@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
@@ -275,24 +275,24 @@ class _VoucherBuyDetailState extends State<VoucherBuyDetail> {
                                 fontSize: 15, fontWeight: FontWeight.w600),
                           ),
                           SizedBox(
-                            child: Html(
-                              data: newsDetail["voucher"]["content"],
-                              style: {
-                                "*": Style(
-                                    fontSize: FontSize(15),
-                                    textAlign: TextAlign.justify),
-                                "a": Style(
-                                    textDecoration: TextDecoration.none,
-                                    color: Colors.black),
-                                "img": Style(
-                                    height: Height.auto(),
-                                    width: Width(
-                                        MediaQuery.of(context).size.width)),
-                                "*:not(img)": Style(
-                                    lineHeight: const LineHeight(1.5),
-                                    margin: Margins.only(
-                                        left: 0, top: 10, bottom: 10))
-                              },
+                            child: HtmlWidget(
+                              newsDetail["voucher"]["content"],
+                              // style: {
+                              //   "*": Style(
+                              //       fontSize: FontSize(15),
+                              //       textAlign: TextAlign.justify),
+                              //   "a": Style(
+                              //       textDecoration: TextDecoration.none,
+                              //       color: Colors.black),
+                              //   "img": Style(
+                              //       height: Height.auto(),
+                              //       width: Width(
+                              //           MediaQuery.of(context).size.width)),
+                              //   "*:not(img)": Style(
+                              //       lineHeight: const LineHeight(1.5),
+                              //       margin: Margins.only(
+                              //           left: 0, top: 10, bottom: 10))
+                              // },
                             ),
                           ),
                         ],

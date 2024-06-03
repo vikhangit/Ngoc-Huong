@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
@@ -577,22 +577,22 @@ class _ProductDetailState extends State<ProductDetail>
         ),
         SizedBox(
           child: activeTab == 1
-              ? Html(
-                  data: mieuTa,
-                  style: {
-                    "*": Style(
-                        margin: Margins.only(left: 0),
-                        textAlign: TextAlign.justify),
-                    "p": Style(
-                        lineHeight: const LineHeight(1.8),
-                        fontSize: FontSize(15),
-                        fontWeight: FontWeight.w300,
-                        textAlign: TextAlign.justify),
-                    "img": Style(
-                        height: Height.auto(),
-                        width: Width(MediaQuery.of(context).size.width - 30),
-                        margin: Margins(left: Margin(0), top: Margin(10))),
-                  },
+              ? HtmlWidget(
+                 mieuTa,
+                  // style: {
+                  //   "*": Style(
+                  //       margin: Margins.only(left: 0),
+                  //       textAlign: TextAlign.justify),
+                  //   "p": Style(
+                  //       lineHeight: const LineHeight(1.8),
+                  //       fontSize: FontSize(15),
+                  //       fontWeight: FontWeight.w300,
+                  //       textAlign: TextAlign.justify),
+                  //   "img": Style(
+                  //       height: Height.auto(),
+                  //       width: Width(MediaQuery.of(context).size.width - 30),
+                  //       margin: Margins(left: Margin(0), top: Margin(10))),
+                  // },
                 )
               : SizedBox(
                   child: Text(

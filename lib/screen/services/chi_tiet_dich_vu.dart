@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_html_v3/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
@@ -247,25 +247,25 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                         Column(
                           children: [
                             if (activeTab == 1)
-                              Html(
-                                data: detail["Description"] ?? "",
-                                style: {
-                                  "*": Style(
-                                      margin: Margins.only(left: 0, right: 0),
-                                      textAlign: TextAlign.justify),
-                                  "p": Style(
-                                      lineHeight: const LineHeight(1.8),
-                                      fontSize: FontSize(15),
-                                      fontWeight: FontWeight.w300,
-                                      textAlign: TextAlign.justify),
-                                  "img": Style(
-                                      height: Height.auto(),
-                                      width: Width(
-                                          MediaQuery.of(context).size.width -
-                                              30),
-                                      margin: Margins(
-                                          left: Margin(0), top: Margin(10))),
-                                },
+                              HtmlWidget(
+                                detail["Description"] ?? "",
+                                // style: {
+                                //   "*": Style(
+                                //       margin: Margins.only(left: 0, right: 0),
+                                //       textAlign: TextAlign.justify),
+                                //   "p": Style(
+                                //       lineHeight: const LineHeight(1.8),
+                                //       fontSize: FontSize(15),
+                                //       fontWeight: FontWeight.w300,
+                                //       textAlign: TextAlign.justify),
+                                //   "img": Style(
+                                //       height: Height.auto(),
+                                //       width: Width(
+                                //           MediaQuery.of(context).size.width -
+                                //               30),
+                                //       margin: Margins(
+                                //           left: Margin(0), top: Margin(10))),
+                                // },
                               ),
                             if (activeTab == 2)
                               const SizedBox(
