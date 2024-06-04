@@ -6,14 +6,17 @@ Widget loginButton(BuildContext context, VoidCallback submit, bool loading) {
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
           style: ButtonStyle(
-              padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+              padding: WidgetStateProperty.all(const EdgeInsets.symmetric(
                 horizontal: 20,
                 vertical: 15,
               )),
-              backgroundColor: MaterialStateProperty.all(
+              backgroundColor: WidgetStateProperty.all(
                   Theme.of(context).colorScheme.primary.withOpacity(0.9)),
-              shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+              shape: WidgetStateProperty.all(const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))))),
           onPressed: submit,
-          child: const Text("Đăng nhập", style: TextStyle(color: Colors.white),)));
+          child: const Text(
+            "Đăng nhập",
+            style: TextStyle(color: Colors.white),
+          )));
 }

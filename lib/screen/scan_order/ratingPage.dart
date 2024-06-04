@@ -9,6 +9,12 @@ import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/ratingModel.dart';
 import 'package:ngoc_huong/screen/home/home.dart';
+import 'package:ngoc_huong/screen/scan_order/Ques1.dart';
+import 'package:ngoc_huong/screen/scan_order/Ques2.dart';
+import 'package:ngoc_huong/screen/scan_order/Ques3.dart';
+import 'package:ngoc_huong/screen/scan_order/Ques4.dart';
+import 'package:ngoc_huong/screen/scan_order/Ques5.dart';
+import 'package:ngoc_huong/screen/scan_order/Ques6.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -25,12 +31,6 @@ class RatingPage extends StatefulWidget {
 
 List dataQuestionRating = [];
 List listRating = [];
-double value1 = 1;
-double value2 = 1;
-double value3 = 1;
-double value4 = 1;
-double value5 = 1;
-double value6 = 1;
 String nhanxet = '';
 bool focusInput = false;
 bool loading = true;
@@ -49,12 +49,6 @@ class _RatingPageState extends State<RatingPage> {
     Upgrader.clearSavedSettings();
     setState(() {
       focusInput = false;
-      value1 = 1;
-      value2 = 1;
-      value3 = 1;
-      value4 = 1;
-      value5 = 1;
-      value6 = 1;
     });
     profileModel.getProfile().then((value) => setState(() {
           profile = value;
@@ -73,12 +67,6 @@ class _RatingPageState extends State<RatingPage> {
     super.dispose();
     controller.dispose();
     focusInput = false;
-    value1 = 1;
-    value2 = 1;
-    value3 = 1;
-    value4 = 1;
-    value5 = 1;
-    value6 = 1;
   }
 
   void changeComent(String value) {
@@ -166,84 +154,24 @@ class _RatingPageState extends State<RatingPage> {
                                       ),
                                       Column(
                                         children: [
-                                          Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 25),
-                                              child: RatingQuestion(
-                                                valueRating: value1,
-                                                question: dataQuestionRating[0]
-                                                    ["cauhoi1"],
-                                                setRating: (v) {
-                                                  setState(() {
-                                                    value1 = v;
-                                                  });
-                                                },
-                                              )),
-                                          Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 25),
-                                              child: RatingQuestion(
-                                                valueRating: value2,
-                                                question: dataQuestionRating[0]
-                                                    ["cauhoi2"],
-                                                setRating: (v) {
-                                                  setState(() {
-                                                    value2 = v;
-                                                  });
-                                                },
-                                              )),
-                                          Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 25),
-                                              child: RatingQuestion(
-                                                valueRating: value3,
-                                                question: dataQuestionRating[0]
-                                                    ["cauhoi3"],
-                                                setRating: (v) {
-                                                  setState(() {
-                                                    value3 = v;
-                                                  });
-                                                },
-                                              )),
-                                          Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 25),
-                                              child: RatingQuestion(
-                                                valueRating: value4,
-                                                question: dataQuestionRating[0]
-                                                    ["cauhoi4"],
-                                                setRating: (v) {
-                                                  setState(() {
-                                                    value4 = v;
-                                                  });
-                                                },
-                                              )),
-                                          Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 25),
-                                              child: RatingQuestion(
-                                                valueRating: value5,
-                                                question: dataQuestionRating[0]
-                                                    ["cauhoi5"],
-                                                setRating: (v) {
-                                                  setState(() {
-                                                    value5 = v;
-                                                  });
-                                                },
-                                              )),
-                                          Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 25),
-                                              child: RatingQuestion(
-                                                valueRating: value6,
-                                                question: dataQuestionRating[0]
-                                                    ["cauhoi6"],
-                                                setRating: (v) {
-                                                  setState(() {
-                                                    value6 = v;
-                                                  });
-                                                },
-                                              ))
+                                          Ques1(
+                                              question: dataQuestionRating[0]
+                                                  ["cauhoi1"]),
+                                          Ques2(
+                                              question: dataQuestionRating[0]
+                                                  ["cauhoi2"]),
+                                          Ques3(
+                                              question: dataQuestionRating[0]
+                                                  ["cauhoi3"]),
+                                          Ques4(
+                                              question: dataQuestionRating[0]
+                                                  ["cauhoi4"]),
+                                          Ques5(
+                                              question: dataQuestionRating[0]
+                                                  ["cauhoi5"]),
+                                          Ques6(
+                                              question: dataQuestionRating[0]
+                                                  ["cauhoi6"])
                                         ],
                                       ),
                                       GestureDetector(
@@ -299,12 +227,18 @@ class _RatingPageState extends State<RatingPage> {
                                         "ma_kh": profile["Phone"],
                                         "ten_kh": profile["CustomerName"],
                                         "dia_chi": profile["Address"],
-                                        "cauhoi1_sodiemsao": value1.round(),
-                                        "cauhoi2_sodiemsao": value2.round(),
-                                        "cauhoi3_sodiemsao": value3.round(),
-                                        "cauhoi4_sodiemsao": value4.round(),
-                                        "cauhoi5_sodiemsao": value5.round(),
-                                        "cauhoi6_sodiemsao": value6.round(),
+                                        "cauhoi1_sodiemsao":
+                                            valueRating1.round(),
+                                        "cauhoi2_sodiemsao":
+                                            valueRating2.round(),
+                                        "cauhoi3_sodiemsao":
+                                            valueRating3.round(),
+                                        "cauhoi4_sodiemsao":
+                                            valueRating4.round(),
+                                        "cauhoi5_sodiemsao":
+                                            valueRating5.round(),
+                                        "cauhoi6_sodiemsao":
+                                            valueRating6.round(),
                                         "ngaydanhgia": DateFormat("yyyy/MM/dd")
                                             .format(DateTime.now()),
                                         "chinhanh": widget.item != "-1"
@@ -312,6 +246,7 @@ class _RatingPageState extends State<RatingPage> {
                                             : "",
                                         "nhanxet": controller.text
                                       };
+
                                       customModal.showAlertDialog(
                                           context,
                                           "error",

@@ -264,18 +264,16 @@ class _CosmeticState extends State<Cosmetic> {
                                                 50,
                                             child: TextButton(
                                               style: ButtonStyle(
-                                                  padding:
-                                                      MaterialStateProperty.all(
-                                                          const EdgeInsets.symmetric(
-                                                              vertical: 0,
-                                                              horizontal: 2)),
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          activeCode == item["GroupCode"]
-                                                              ? Colors.white
-                                                              : Colors
-                                                                  .red[100]),
-                                                  shape: MaterialStateProperty.all(
+                                                  padding: WidgetStateProperty.all(
+                                                      const EdgeInsets.symmetric(
+                                                          vertical: 0,
+                                                          horizontal: 2)),
+                                                  backgroundColor: WidgetStateProperty
+                                                      .all(activeCode ==
+                                                              item["GroupCode"]
+                                                          ? Colors.white
+                                                          : Colors.red[100]),
+                                                  shape: WidgetStateProperty.all(
                                                       const RoundedRectangleBorder(
                                                           borderRadius:
                                                               BorderRadius.all(

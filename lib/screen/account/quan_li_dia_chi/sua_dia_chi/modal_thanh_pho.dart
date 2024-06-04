@@ -120,7 +120,7 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
                               changeAddress(item["Id"], item["Name"]);
                             },
                             style: ButtonStyle(
-                                padding: MaterialStateProperty.all(
+                                padding: WidgetStateProperty.all(
                                     const EdgeInsets.symmetric(
                                         vertical: 0, horizontal: 10))),
                             child: Row(
@@ -190,7 +190,7 @@ class _ModalDiaDiemState extends State<ModalThanhPho> {
                         widget.saveAddress();
                       },
                       style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                               const EdgeInsets.all(0.0))),
                       child: const Text("Xác nhận",
                           style: TextStyle(fontSize: 14, color: Colors.white))),

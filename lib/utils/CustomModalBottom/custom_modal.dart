@@ -64,12 +64,12 @@ class CustomModal {
                     Expanded(
                         child: ElevatedButton(
                             style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
+                                shape: WidgetStateProperty.all(
                                     RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(10)))),
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.blue[900])),
+                                backgroundColor:
+                                    WidgetStateProperty.all(Colors.blue[900])),
                             onPressed: () => okFuc(),
                             child: const Text(
                               "Đồng ý",
@@ -82,8 +82,8 @@ class CustomModal {
                         child: ElevatedButton(
                             style: ButtonStyle(
                                 backgroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                shape: MaterialStateProperty.all(
+                                    WidgetStateProperty.all(Colors.white),
+                                shape: WidgetStateProperty.all(
                                     RoundedRectangleBorder(
                                         side: BorderSide(
                                             width: 0.5, color: Colors.black),
@@ -152,9 +152,9 @@ class CustomModal {
                           makingPhoneCall();
                         },
                         style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
+                            padding: WidgetStateProperty.all(
                                 const EdgeInsets.all(0.0)),
-                            shape: MaterialStateProperty.all(
+                            shape: WidgetStateProperty.all(
                                 const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(9999))))),
@@ -203,9 +203,9 @@ class CustomModal {
                           }
                         },
                         style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
+                            padding: WidgetStateProperty.all(
                                 const EdgeInsets.all(0.0)),
-                            shape: MaterialStateProperty.all(
+                            shape: WidgetStateProperty.all(
                                 const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(9999))))),
@@ -248,9 +248,9 @@ class CustomModal {
                           });
                         },
                         style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
+                            padding: WidgetStateProperty.all(
                                 const EdgeInsets.all(0.0)),
-                            shape: MaterialStateProperty.all(
+                            shape: WidgetStateProperty.all(
                                 const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(9999))))),
@@ -284,9 +284,9 @@ class CustomModal {
                               "https://zalo.me/1153947579240797013?gidzl=bSlKCNNPH6IHrzKqVy55OvtMqJPaanLfqO7KDZR5HsFItDHcPvb6OuEErM5Zpq8tXudQOsFN8A1cSzD3Rm");
                         },
                         style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
+                            padding: WidgetStateProperty.all(
                                 const EdgeInsets.all(0.0)),
-                            shape: MaterialStateProperty.all(
+                            shape: WidgetStateProperty.all(
                                 const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(9999))))),
@@ -325,10 +325,10 @@ class CustomModal {
                       },
                       style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                          padding: MaterialStateProperty.all(
+                              WidgetStateProperty.all(Colors.white),
+                          padding: WidgetStateProperty.all(
                               const EdgeInsets.all(0.0)),
-                          shape: MaterialStateProperty.all(
+                          shape: WidgetStateProperty.all(
                               const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(9999))))),

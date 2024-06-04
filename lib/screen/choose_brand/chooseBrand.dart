@@ -63,8 +63,8 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      
-      bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
@@ -137,15 +137,13 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
                                                 },
                                                 style: ButtonStyle(
                                                     padding:
-                                                        MaterialStateProperty
-                                                            .all(
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    top: 0,
-                                                                    left: 0,
-                                                                    right: 0,
-                                                                    bottom:
-                                                                        10))),
+                                                        WidgetStateProperty.all(
+                                                            const EdgeInsets
+                                                                .only(
+                                                                top: 0,
+                                                                left: 0,
+                                                                right: 0,
+                                                                bottom: 10))),
                                                 child: Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -431,13 +429,13 @@ class _ChooseBrandScreenState extends State<ChooseBrandScreen> {
                                   const EdgeInsets.symmetric(horizontal: 15.0),
                               child: TextButton(
                                 style: ButtonStyle(
-                                    shape: MaterialStateProperty.all(
+                                    shape: WidgetStateProperty.all(
                                         const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(30)))),
-                                    backgroundColor: MaterialStateProperty.all(
+                                    backgroundColor: WidgetStateProperty.all(
                                         Theme.of(context).colorScheme.primary),
-                                    padding: MaterialStateProperty.all(
+                                    padding: WidgetStateProperty.all(
                                         const EdgeInsets.symmetric(
                                             vertical: 12, horizontal: 20))),
                                 onPressed: () {

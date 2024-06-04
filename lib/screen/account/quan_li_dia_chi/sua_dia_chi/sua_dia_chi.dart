@@ -775,18 +775,17 @@ class _QuanLiDiaChiState extends State<SuaDiaChi> {
                                         editAddress();
                                       },
                                       style: ButtonStyle(
-                                          shape: MaterialStateProperty.all(
+                                          shape: WidgetStateProperty.all(
                                               const RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              15)))),
+                                                      BorderRadius.all(Radius
+                                                          .circular(15)))),
                                           backgroundColor:
-                                              MaterialStateProperty.all(
+                                              WidgetStateProperty.all(
                                                   Theme.of(context)
                                                       .colorScheme
                                                       .primary),
-                                          padding: MaterialStateProperty.all(
+                                          padding: WidgetStateProperty.all(
                                               const EdgeInsets.symmetric(
                                                   vertical: 14,
                                                   horizontal: 20))),

@@ -56,7 +56,7 @@ class _ModalVoucherState extends State<ModalPayment> {
                         height: 20,
                         child: TextButton(
                             style: ButtonStyle(
-                                padding: MaterialStateProperty.all(
+                                padding: WidgetStateProperty.all(
                                     const EdgeInsets.all(0))),
                             onPressed: () => Navigator.of(context).pop(),
                             child: const Icon(
@@ -75,7 +75,7 @@ class _ModalVoucherState extends State<ModalPayment> {
                         children: paymentMethod.map((item) {
                       return TextButton(
                           style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
+                              padding: WidgetStateProperty.all(
                                   const EdgeInsets.symmetric(
                                       vertical: 20, horizontal: 15))),
                           onPressed: () {
@@ -142,7 +142,7 @@ class _ModalVoucherState extends State<ModalPayment> {
                   },
                   style: ButtonStyle(
                       padding:
-                          MaterialStateProperty.all(const EdgeInsets.all(0.0))),
+                          WidgetStateProperty.all(const EdgeInsets.all(0.0))),
                   child: const Text("Xác nhận",
                       style: TextStyle(fontSize: 14, color: Colors.white))),
             )

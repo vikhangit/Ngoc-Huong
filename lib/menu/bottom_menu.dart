@@ -13,6 +13,7 @@ import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/scan_order/orderPage.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/scan_order/ratingPage.dart';
+import 'package:ngoc_huong/screen/scan_order/scanQr.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 
@@ -59,29 +60,17 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
 
   Future<void> scanQR() async {
     String barCodeScanRes;
-    customModal.showAlertDialog(context, "error", "Lưu ý",
-        "Quý khách hãy quét mã vạch (QR) trên hóa đơn", () async {
-      try {
-        barCodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-            "#ff6666", "Cancel", true, ScanMode.QR);
-      } on PlatformException {
-        barCodeScanRes = "Fail to get platform version.";
-      }
-      if (!mounted) return;
-      Navigator.of(context).pop();
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => RatingPage(item: barCodeScanRes)));
-    }, () {
-      Navigator.of(context).pop();
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => HomeScreen(callBack: () {
-      //               setState(() {});
-      //             })));
-    });
+    try {
+      barCodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.QR);
+    } on PlatformException {
+      barCodeScanRes = "Fail to get platform version.";
+    }
+    if (!mounted) return;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RatingPage(item: barCodeScanRes)));
   }
 
   @override
@@ -124,14 +113,9 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
           switch (index) {
             case 1:
               {
-                scanQR();
-                // customModal.showAlertDialog(
-                //     context,
-                //     "error",
-                //     "Quét hóa đơn",
-                //     "Chúng tôi đang nâng câp tính năng này",
-                //     () => Navigator.of(context).pop(),
-                //     () => Navigator.of(context).pop());
+                // scanQR();
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => ScanQR()));
                 break;
               }
             case 3:
@@ -190,7 +174,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                   alignment: Alignment.center,
                   child: TextButton(
                       style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                               const EdgeInsets.symmetric(
                                   vertical: 0.0, horizontal: 0.0))),
                       onPressed: () => onItemTapped(index),
@@ -242,7 +226,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
                 alignment: Alignment.center,
                 child: TextButton(
                     style: ButtonStyle(
-                        padding: MaterialStateProperty.all(
+                        padding: WidgetStateProperty.all(
                             const EdgeInsets.symmetric(
                                 vertical: 0.0, horizontal: 0.0))),
                     onPressed: () => onItemTapped(index),
@@ -274,7 +258,7 @@ class _MyBottomMenuState extends State<MyBottomMenu> {
               alignment: Alignment.center,
               child: GestureDetector(
                   // style: ButtonStyle(
-                  //     padding: MaterialStateProperty.all(
+                  //     padding: WidgetStateProperty.all(
                   //         const EdgeInsets.symmetric(
                   //             vertical: 0.0, horizontal: 0.0))),
                   onTap: () => onItemTapped(index),

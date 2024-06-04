@@ -305,7 +305,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                           )));
                                                             },
                                                             style: ButtonStyle(
-                                                              padding: MaterialStateProperty.all(
+                                                              padding: WidgetStateProperty.all(
                                                                   const EdgeInsets
                                                                       .symmetric(
                                                                       vertical:
@@ -313,10 +313,10 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                       horizontal:
                                                                           8)),
                                                               backgroundColor:
-                                                                  MaterialStateProperty
+                                                                  WidgetStateProperty
                                                                       .all(Colors
                                                                           .white),
-                                                              shape: MaterialStateProperty.all(
+                                                              shape: WidgetStateProperty.all(
                                                                   const RoundedRectangleBorder(
                                                                       borderRadius:
                                                                           BorderRadius.all(
@@ -663,18 +663,18 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                     margin: const EdgeInsets.only(top: 20),
                                     child: TextButton(
                                         style: ButtonStyle(
-                                            padding: MaterialStateProperty.all(
+                                            padding: WidgetStateProperty.all(
                                                 const EdgeInsets.symmetric(
                                                     vertical: 12,
                                                     horizontal: 20)),
-                                            shape: MaterialStateProperty.all(
+                                            shape: WidgetStateProperty.all(
                                                 const RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
                                                                 15)))),
                                             backgroundColor:
-                                                MaterialStateProperty.all(
+                                                WidgetStateProperty.all(
                                                     Theme.of(context)
                                                         .colorScheme
                                                         .primary

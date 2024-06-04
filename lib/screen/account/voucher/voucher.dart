@@ -199,20 +199,20 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                               },
                                               style: ButtonStyle(
                                                 padding:
-                                                    MaterialStateProperty.all(
+                                                    WidgetStateProperty.all(
                                                         const EdgeInsets
                                                             .symmetric(
                                                             vertical: 10,
                                                             horizontal: 8)),
                                                 backgroundColor:
-                                                    MaterialStateProperty.all(
+                                                    WidgetStateProperty.all(
                                                         DateTime.parse(detail[
                                                                     "hieu_luc_den"])
                                                                 .isBefore(now)
                                                             ? Colors
                                                                 .grey.shade300
                                                             : Colors.white),
-                                                shape: MaterialStateProperty.all(
+                                                shape: WidgetStateProperty.all(
                                                     const RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius.all(

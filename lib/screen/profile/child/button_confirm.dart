@@ -12,7 +12,7 @@ Widget buttonConfirm(BuildContext context, VoidCallback saveUserInfo) {
         child: TextButton(
             onPressed: saveUserInfo,
             style: ButtonStyle(
-                padding: MaterialStateProperty.all(const EdgeInsets.all(0.0))),
+                padding: WidgetStateProperty.all(const EdgeInsets.all(0.0))),
             child: const Text("Tiếp tục",
                 style: TextStyle(fontSize: 16, color: Colors.white))),
       ));

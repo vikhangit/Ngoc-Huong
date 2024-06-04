@@ -199,7 +199,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                           : BorderSide.none)),
                               child: TextButton(
                                 style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
+                                    padding: WidgetStateProperty.all(
                                         const EdgeInsets.all(0))),
                                 onPressed: () => goToTab(1),
                                 child: Text(
@@ -227,7 +227,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                           : BorderSide.none)),
                               child: TextButton(
                                 style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
+                                    padding: WidgetStateProperty.all(
                                         const EdgeInsets.all(0))),
                                 onPressed: () => goToTab(2),
                                 child: Text("Đánh giá dịch vụ",
@@ -298,7 +298,7 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                                     Radius.circular(15))),
                             child: TextButton(
                                 style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
+                                  padding: WidgetStateProperty.all(
                                       const EdgeInsets.symmetric(
                                           horizontal: 20)),
                                 ),
@@ -332,14 +332,14 @@ class _ChiTietScreenState extends State<ChiTietScreen>
                             margin: const EdgeInsets.only(top: 15),
                             child: TextButton(
                                 style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
+                                    padding: WidgetStateProperty.all(
                                         const EdgeInsets.symmetric(
                                             horizontal: 20)),
-                                    shape: MaterialStateProperty.all(
+                                    shape: WidgetStateProperty.all(
                                         const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(15)))),
-                                    backgroundColor: MaterialStateProperty.all(
+                                    backgroundColor: WidgetStateProperty.all(
                                         Theme.of(context)
                                             .colorScheme
                                             .primary

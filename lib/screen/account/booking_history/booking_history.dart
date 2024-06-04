@@ -217,17 +217,17 @@ class _BookingHistoryState extends State<BookingHistory>
                                                                           )));
                                                         },
                                                         style: ButtonStyle(
-                                                          padding: MaterialStateProperty
+                                                          padding: WidgetStateProperty
                                                               .all(const EdgeInsets
                                                                   .symmetric(
                                                                   vertical: 10,
                                                                   horizontal:
                                                                       8)),
                                                           backgroundColor:
-                                                              MaterialStateProperty
+                                                              WidgetStateProperty
                                                                   .all(Colors
                                                                       .white),
-                                                          shape: MaterialStateProperty.all(
+                                                          shape: WidgetStateProperty.all(
                                                               const RoundedRectangleBorder(
                                                                   borderRadius:
                                                                       BorderRadius.all(

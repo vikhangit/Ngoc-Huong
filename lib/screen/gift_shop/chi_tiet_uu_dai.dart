@@ -265,19 +265,18 @@ class _GiftShopDetailState extends State<GiftShopDetail>
                             if (snapshot.hasData) {
                               return TextButton(
                                   style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
+                                      padding: WidgetStateProperty.all(
                                           const EdgeInsets.symmetric(
                                               horizontal: 20)),
-                                      shape: MaterialStateProperty.all(
+                                      shape: WidgetStateProperty.all(
                                           const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(15)))),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withOpacity(0.4))),
+                                      backgroundColor: WidgetStateProperty.all(
+                                          Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withOpacity(0.4))),
                                   onPressed: () {
                                     // if (storageCustomerToken
                                     //         .getItem("customer_token") !=
@@ -355,7 +354,7 @@ class _GiftShopDetailState extends State<GiftShopDetail>
                 child: TextButton(
                   style: ButtonStyle(
                       padding:
-                          MaterialStateProperty.all(const EdgeInsets.all(0))),
+                          WidgetStateProperty.all(const EdgeInsets.all(0))),
                   onPressed: () => goToTab(1),
                   child: Text(
                     "Chi tiết sản phẩm",
@@ -379,7 +378,7 @@ class _GiftShopDetailState extends State<GiftShopDetail>
                 child: TextButton(
                   style: ButtonStyle(
                       padding:
-                          MaterialStateProperty.all(const EdgeInsets.all(0))),
+                          WidgetStateProperty.all(const EdgeInsets.all(0))),
                   onPressed: () => goToTab(2),
                   child: Text("Đánh giá sản phẩm",
                       style: TextStyle(

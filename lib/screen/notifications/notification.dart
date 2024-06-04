@@ -107,7 +107,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       if (snapshot.hasData) {
                         return IconButton(
                             style: ButtonStyle(
-                                padding: MaterialStateProperty.all(
+                                padding: WidgetStateProperty.all(
                                     const EdgeInsets.symmetric(horizontal: 5))),
                             onPressed: () {
                               readAll(snapshot.data!.toList());
@@ -188,11 +188,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   ),
                                   child: TextButton(
                                     style: ButtonStyle(
-                                        shape: MaterialStateProperty.all(
+                                        shape: WidgetStateProperty.all(
                                             const RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(10)))),
-                                        padding: MaterialStateProperty.all(
+                                        padding: WidgetStateProperty.all(
                                             const EdgeInsets.symmetric(
                                                 vertical: 15, horizontal: 5))),
                                     onPressed: () {

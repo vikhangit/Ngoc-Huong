@@ -218,7 +218,7 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                               const BorderRadius.all(Radius.circular(15))),
                       child: TextButton(
                           style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
+                            padding: WidgetStateProperty.all(
                                 const EdgeInsets.symmetric(horizontal: 20)),
                           ),
                           onPressed: () {
@@ -258,17 +258,17 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                                   if (snapshot.hasData) {
                                     return TextButton(
                                         style: ButtonStyle(
-                                            padding: MaterialStateProperty.all(
+                                            padding: WidgetStateProperty.all(
                                                 const EdgeInsets.symmetric(
                                                     horizontal: 20)),
-                                            shape: MaterialStateProperty.all(
+                                            shape: WidgetStateProperty.all(
                                                 const RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
                                                                 15)))),
                                             backgroundColor:
-                                                MaterialStateProperty.all(
+                                                WidgetStateProperty.all(
                                                     Theme.of(context)
                                                         .colorScheme
                                                         .primary
@@ -343,17 +343,17 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                                     if (snapshot.hasData) {
                                       return TextButton(
                                           style: ButtonStyle(
-                                              padding: MaterialStateProperty.all(
+                                              padding: WidgetStateProperty.all(
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 20)),
-                                              shape: MaterialStateProperty.all(
+                                              shape: WidgetStateProperty.all(
                                                   const RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.all(
                                                               Radius.circular(
                                                                   15)))),
                                               backgroundColor:
-                                                  MaterialStateProperty.all(
+                                                  WidgetStateProperty.all(
                                                       Theme.of(context)
                                                           .colorScheme
                                                           .primary
@@ -421,14 +421,14 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                                     vertical: 15, horizontal: 15),
                                 child: TextButton(
                                     style: ButtonStyle(
-                                        padding: MaterialStateProperty.all(
+                                        padding: WidgetStateProperty.all(
                                             const EdgeInsets.symmetric(
                                                 horizontal: 20)),
-                                        shape: MaterialStateProperty.all(
+                                        shape: WidgetStateProperty.all(
                                             const RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(15)))),
-                                        backgroundColor: MaterialStateProperty.all(Theme.of(context)
+                                        backgroundColor: WidgetStateProperty.all(Theme.of(context)
                                             .colorScheme
                                             .primary
                                             .withOpacity(0.4))),

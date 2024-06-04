@@ -200,8 +200,8 @@ class _InfomationAccountState extends State<InfomationAccount> {
         key: _formKey,
         child: Builder(
             builder: (context) => SafeArea(
-                  
-                  bottom: false, top: false,
+                  bottom: false,
+                  top: false,
                   child: Scaffold(
                       backgroundColor: Colors.white,
                       resizeToAvoidBottomInset: true,
@@ -337,18 +337,18 @@ Widget modalChinhSach(BuildContext context) {
         Column(
           children: [
             const Text("Chính sách thông tin"),
-            ],
+          ],
         ),
         Container(
           width: MediaQuery.of(context).size.width,
           margin: const EdgeInsets.only(bottom: 10),
           child: TextButton(
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(
                       Theme.of(context).colorScheme.primary),
-                  shape: MaterialStateProperty.all(const RoundedRectangleBorder(
+                  shape: WidgetStateProperty.all(const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(40)))),
-                  padding: MaterialStateProperty.all(
+                  padding: WidgetStateProperty.all(
                       const EdgeInsets.symmetric(vertical: 15))),
               onPressed: () {
                 Navigator.of(context).pop();

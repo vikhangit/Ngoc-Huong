@@ -299,7 +299,7 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                                                       children: [
                                                         TextButton(
                                                             style: ButtonStyle(
-                                                                padding: MaterialStateProperty.all(
+                                                                padding: WidgetStateProperty.all(
                                                                     const EdgeInsets
                                                                         .symmetric(
                                                                         vertical:
@@ -418,13 +418,13 @@ class _ModalDiaChiState extends State<ModalDiaChi> {
                   margin: const EdgeInsets.all(15.0),
                   child: TextButton(
                     style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStateProperty.all(
                             const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(15)))),
-                        backgroundColor: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(
                             Theme.of(context).colorScheme.primary),
-                        padding: MaterialStateProperty.all(
+                        padding: WidgetStateProperty.all(
                             const EdgeInsets.symmetric(
                                 vertical: 12, horizontal: 20))),
                     onPressed: () {

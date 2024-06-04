@@ -230,7 +230,7 @@ class _MyOrderState extends State<MyOrder> with TickerProviderStateMixin {
                                                                           )));
                                                             },
                                                             style: ButtonStyle(
-                                                              padding: MaterialStateProperty.all(
+                                                              padding: WidgetStateProperty.all(
                                                                   const EdgeInsets
                                                                       .symmetric(
                                                                       vertical:
@@ -238,10 +238,10 @@ class _MyOrderState extends State<MyOrder> with TickerProviderStateMixin {
                                                                       horizontal:
                                                                           8)),
                                                               backgroundColor:
-                                                                  MaterialStateProperty
+                                                                  WidgetStateProperty
                                                                       .all(Colors
                                                                           .white),
-                                                              shape: MaterialStateProperty.all(
+                                                              shape: WidgetStateProperty.all(
                                                                   const RoundedRectangleBorder(
                                                                       borderRadius:
                                                                           BorderRadius.all(

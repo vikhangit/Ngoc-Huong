@@ -748,7 +748,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                           child: TextButton(
                                               style: ButtonStyle(
                                                   padding:
-                                                      MaterialStateProperty.all(
+                                                      WidgetStateProperty.all(
                                                           const EdgeInsets
                                                               .symmetric(
                                                               horizontal: 15))),

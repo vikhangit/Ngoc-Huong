@@ -192,15 +192,14 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                                     MediaQuery.of(context).size.height / 4 - 60,
                                 child: TextButton(
                                   style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
+                                      padding: WidgetStateProperty.all(
                                           const EdgeInsets.symmetric(
                                               vertical: 18, horizontal: 10)),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              activeCode == item["code"]
-                                                  ? Colors.white
-                                                  : Colors.red[100]),
-                                      shape: MaterialStateProperty.all(
+                                      backgroundColor: WidgetStateProperty.all(
+                                          activeCode == item["code"]
+                                              ? Colors.white
+                                              : Colors.red[100]),
+                                      shape: WidgetStateProperty.all(
                                           const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(0))))),

@@ -210,7 +210,7 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
                     //                     child: TextButton(
                     //                         style: ButtonStyle(
                     //                             padding:
-                    //                                 MaterialStateProperty.all(
+                    //                                 WidgetStateProperty.all(
                     //                                     const EdgeInsets
                     //                                             .symmetric(
                     //                                         vertical: 3,
@@ -930,13 +930,13 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
                         }, () => Navigator.of(context).pop());
                       },
                       style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
+                          shape: WidgetStateProperty.all(
                               const RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15)))),
-                          backgroundColor: MaterialStateProperty.all(
+                          backgroundColor: WidgetStateProperty.all(
                               Theme.of(context).colorScheme.primary),
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                               const EdgeInsets.symmetric(
                                   vertical: 12, horizontal: 20))),
                       child: Row(

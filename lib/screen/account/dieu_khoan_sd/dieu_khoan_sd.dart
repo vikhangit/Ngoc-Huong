@@ -87,7 +87,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                                 builder: (context) => const BaoHanhScreen()));
                       },
                       style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                               const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 20))),
                       child: const Row(
@@ -111,7 +111,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                                 builder: (context) => const BaoMatScreen()));
                       },
                       style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                               const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 20))),
                       child: const Row(
@@ -135,7 +135,7 @@ class _DieuKhoanSudungState extends State<DieuKhoanSudung> {
                                 builder: (context) => const VanChuyenScreen()));
                       },
                       style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
+                          padding: WidgetStateProperty.all(
                               const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 20))),
                       child: const Row(

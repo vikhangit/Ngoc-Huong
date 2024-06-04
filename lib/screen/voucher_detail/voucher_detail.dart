@@ -288,16 +288,16 @@ class _VoucherDetailState extends State<VoucherDetail> {
                 //         vertical: 15, horizontal: 15),
                 //     child: TextButton(
                 //         style: ButtonStyle(
-                //             padding: MaterialStateProperty.all(
+                //             padding: WidgetStateProperty.all(
                 //                 const EdgeInsets.symmetric(horizontal: 20)),
-                //             shape: MaterialStateProperty.all(
+                //             shape: WidgetStateProperty.all(
                 //                 RoundedRectangleBorder(
                 //                     side:
                 //                         BorderSide(color: mainColor, width: 1),
                 //                     borderRadius:
                 //                         BorderRadius.all(Radius.circular(15)))),
                 //             backgroundColor:
-                //                 MaterialStateProperty.all(Colors.white)),
+                //                 WidgetStateProperty.all(Colors.white)),
                 //         onPressed: () {
                 //           if (storageCustomerToken.getItem("customer_token") ==
                 //               null) {

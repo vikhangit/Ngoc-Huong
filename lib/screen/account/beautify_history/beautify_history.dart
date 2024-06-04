@@ -157,16 +157,14 @@ class _BeautifyHistoryState extends State<BeautifyHistory>
                                                           )));
                                             },
                                             style: ButtonStyle(
-                                              padding:
-                                                  MaterialStateProperty.all(
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                          vertical: 10,
-                                                          horizontal: 8)),
+                                              padding: WidgetStateProperty.all(
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10,
+                                                      horizontal: 8)),
                                               backgroundColor:
-                                                  MaterialStateProperty.all(
+                                                  WidgetStateProperty.all(
                                                       Colors.white),
-                                              shape: MaterialStateProperty.all(
+                                              shape: WidgetStateProperty.all(
                                                   const RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.all(

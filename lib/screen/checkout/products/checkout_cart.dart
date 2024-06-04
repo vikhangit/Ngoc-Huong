@@ -209,14 +209,14 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                     width: MediaQuery.of(context).size.width,
                     child: TextButton(
                         style: ButtonStyle(
-                            shape: MaterialStateProperty.all(
+                            shape: WidgetStateProperty.all(
                                 RoundedRectangleBorder(
                                     side: BorderSide(
                                         width: 0.5, color: mainColor),
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(10)))),
                             backgroundColor:
-                                MaterialStateProperty.all(Colors.white)),
+                                WidgetStateProperty.all(Colors.white)),
                         onPressed: () {
                           if (widget.totalCatCoin == 0) {
                             customModal.showAlertDialog(
@@ -283,9 +283,8 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                     width: MediaQuery.of(context).size.width,
                     child: TextButton(
                         style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(mainColor),
-                            shape: MaterialStateProperty.all(
+                            backgroundColor: WidgetStateProperty.all(mainColor),
+                            shape: WidgetStateProperty.all(
                                 RoundedRectangleBorder(
                                     side: BorderSide(
                                         width: 0.5, color: mainColor),
@@ -526,10 +525,9 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                               child: TextButton(
                                                 style: ButtonStyle(
                                                     padding:
-                                                        MaterialStateProperty
-                                                            .all(
-                                                                const EdgeInsets
-                                                                    .all(0.0))),
+                                                        WidgetStateProperty.all(
+                                                            const EdgeInsets
+                                                                .all(0.0))),
                                                 onPressed: () {
                                                   showModalBottomSheet<void>(
                                                       backgroundColor:
@@ -737,18 +735,15 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                                                   },
                                                   style: ButtonStyle(
                                                     padding:
-                                                        MaterialStateProperty
-                                                            .all(
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    vertical:
-                                                                        12,
-                                                                    horizontal:
-                                                                        8)),
+                                                        WidgetStateProperty.all(
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 12,
+                                                                horizontal: 8)),
                                                     backgroundColor:
-                                                        MaterialStateProperty
-                                                            .all(Colors.white),
-                                                    shape: MaterialStateProperty.all(
+                                                        WidgetStateProperty.all(
+                                                            Colors.white),
+                                                    shape: WidgetStateProperty.all(
                                                         const RoundedRectangleBorder(
                                                             borderRadius:
                                                                 BorderRadius.all(
@@ -1009,12 +1004,12 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                               ]),
                           child: TextButton(
                             style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
+                              padding: WidgetStateProperty.all(
                                   const EdgeInsets.symmetric(
                                       vertical: 20, horizontal: 8)),
                               backgroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              shape: MaterialStateProperty.all(
+                                  WidgetStateProperty.all(Colors.white),
+                              shape: WidgetStateProperty.all(
                                   const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(10)))),
@@ -1097,12 +1092,12 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                         //       ]),
                         //   child: TextButton(
                         //     style: ButtonStyle(
-                        //       padding: MaterialStateProperty.all(
+                        //       padding: WidgetStateProperty.all(
                         //           const EdgeInsets.symmetric(
                         //               vertical: 20, horizontal: 8)),
-                        //       backgroundColor: MaterialStateProperty.all(
+                        //       backgroundColor: WidgetStateProperty.all(
                         //           diem == 0 ? Colors.grey[400] : Colors.white),
-                        //       shape: MaterialStateProperty.all(
+                        //       shape: WidgetStateProperty.all(
                         //           const RoundedRectangleBorder(
                         //               borderRadius:
                         //                   BorderRadius.all(Radius.circular(10)))),
@@ -1180,12 +1175,12 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                               ]),
                           child: TextButton(
                             style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
+                              padding: WidgetStateProperty.all(
                                   const EdgeInsets.symmetric(
                                       vertical: 20, horizontal: 8)),
                               backgroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              shape: MaterialStateProperty.all(
+                                  WidgetStateProperty.all(Colors.white),
+                              shape: WidgetStateProperty.all(
                                   const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(10)))),
@@ -1336,14 +1331,14 @@ class _CheckOutScreenState extends State<CheckOutCart> {
                             margin: const EdgeInsets.only(bottom: 30, top: 20),
                             child: TextButton(
                                 style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
+                                    padding: WidgetStateProperty.all(
                                         const EdgeInsets.symmetric(
                                             vertical: 12, horizontal: 20)),
-                                    shape: MaterialStateProperty.all(
+                                    shape: WidgetStateProperty.all(
                                         const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(15)))),
-                                    backgroundColor: MaterialStateProperty.all(
+                                    backgroundColor: WidgetStateProperty.all(
                                         Theme.of(context)
                                             .colorScheme
                                             .primary

@@ -248,7 +248,7 @@ class _OrderHistoryState extends State<OrderHistory>
                                                                           )));
                                                             },
                                                             style: ButtonStyle(
-                                                              padding: MaterialStateProperty.all(
+                                                              padding: WidgetStateProperty.all(
                                                                   const EdgeInsets
                                                                       .symmetric(
                                                                       vertical:
@@ -256,10 +256,10 @@ class _OrderHistoryState extends State<OrderHistory>
                                                                       horizontal:
                                                                           8)),
                                                               backgroundColor:
-                                                                  MaterialStateProperty
+                                                                  WidgetStateProperty
                                                                       .all(Colors
                                                                           .white),
-                                                              shape: MaterialStateProperty.all(
+                                                              shape: WidgetStateProperty.all(
                                                                   const RoundedRectangleBorder(
                                                                       borderRadius:
                                                                           BorderRadius.all(

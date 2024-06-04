@@ -31,7 +31,7 @@ class _ModalVoucherState extends State<ModalVoucher> {
                       height: 20,
                       child: TextButton(
                           style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
+                              padding: WidgetStateProperty.all(
                                   const EdgeInsets.all(0))),
                           onPressed: () => Navigator.of(context).pop(),
                           child: const Icon(
@@ -94,13 +94,13 @@ class _ModalVoucherState extends State<ModalVoucher> {
                           child: TextButton(
                               onPressed: () {},
                               style: ButtonStyle(
-                                  shape: MaterialStateProperty.all(
+                                  shape: WidgetStateProperty.all(
                                       RoundedRectangleBorder(
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(10)))),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.grey[400]),
-                                  padding: MaterialStateProperty.all(
+                                  backgroundColor:
+                                      WidgetStateProperty.all(Colors.grey[400]),
+                                  padding: WidgetStateProperty.all(
                                       const EdgeInsets.symmetric(
                                           vertical: 15))),
                               child: const Text(
@@ -186,7 +186,7 @@ class _ModalVoucherState extends State<ModalVoucher> {
                   },
                   style: ButtonStyle(
                       padding:
-                          MaterialStateProperty.all(const EdgeInsets.all(0.0))),
+                          WidgetStateProperty.all(const EdgeInsets.all(0.0))),
                   child: const Text("Xác nhận",
                       style: TextStyle(fontSize: 14, color: Colors.white))),
             )

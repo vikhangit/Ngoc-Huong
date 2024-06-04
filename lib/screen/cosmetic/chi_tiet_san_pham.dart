@@ -396,7 +396,7 @@ class _ProductDetailState extends State<ProductDetail>
                                         Radius.circular(15))),
                                 child: TextButton(
                                     style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
+                                      padding: WidgetStateProperty.all(
                                           const EdgeInsets.symmetric(
                                               horizontal: 20)),
                                     ),
@@ -438,17 +438,17 @@ class _ProductDetailState extends State<ProductDetail>
                                     if (snapshot.hasData) {
                                       return TextButton(
                                           style: ButtonStyle(
-                                              padding: MaterialStateProperty.all(
+                                              padding: WidgetStateProperty.all(
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 20)),
-                                              shape: MaterialStateProperty.all(
+                                              shape: WidgetStateProperty.all(
                                                   const RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.all(
                                                               Radius.circular(
                                                                   15)))),
                                               backgroundColor:
-                                                  MaterialStateProperty.all(
+                                                  WidgetStateProperty.all(
                                                       Theme.of(context)
                                                           .colorScheme
                                                           .primary
@@ -536,7 +536,7 @@ class _ProductDetailState extends State<ProductDetail>
                 child: TextButton(
                   style: ButtonStyle(
                       padding:
-                          MaterialStateProperty.all(const EdgeInsets.all(0))),
+                          WidgetStateProperty.all(const EdgeInsets.all(0))),
                   onPressed: () => goToTab(1),
                   child: Text(
                     "Chi tiết sản phẩm",
@@ -560,7 +560,7 @@ class _ProductDetailState extends State<ProductDetail>
                 child: TextButton(
                   style: ButtonStyle(
                       padding:
-                          MaterialStateProperty.all(const EdgeInsets.all(0))),
+                          WidgetStateProperty.all(const EdgeInsets.all(0))),
                   onPressed: () => goToTab(2),
                   child: Text("Đánh giá sản phẩm",
                       style: TextStyle(
@@ -578,7 +578,7 @@ class _ProductDetailState extends State<ProductDetail>
         SizedBox(
           child: activeTab == 1
               ? HtmlWidget(
-                 mieuTa,
+                  mieuTa,
                   // style: {
                   //   "*": Style(
                   //       margin: Margins.only(left: 0),

@@ -43,8 +43,8 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
         widget.history != null ? widget.details : widget.details["Data"];
     DateTime databook = DateTime.parse(details["StartDate"]);
     return SafeArea(
-      
-      bottom: false, top: false,
+        bottom: false,
+        top: false,
         child: Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: true,
@@ -634,13 +634,13 @@ class _ModalChiTietBookingState extends State<ModalChiTietBooking> {
                                   }, () => Navigator.of(context).pop());
                                 },
                                 style: ButtonStyle(
-                                    shape: MaterialStateProperty.all(
+                                    shape: WidgetStateProperty.all(
                                         const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(15)))),
-                                    backgroundColor: MaterialStateProperty.all(
+                                    backgroundColor: WidgetStateProperty.all(
                                         Theme.of(context).colorScheme.primary),
-                                    padding: MaterialStateProperty.all(
+                                    padding: WidgetStateProperty.all(
                                         const EdgeInsets.symmetric(
                                             vertical: 12, horizontal: 20))),
                                 child: Row(

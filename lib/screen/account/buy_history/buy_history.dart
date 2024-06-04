@@ -146,14 +146,14 @@ class _BuyHistoryState extends State<BuyHistory> {
                                                         )));
                                           },
                                           style: ButtonStyle(
-                                            padding: MaterialStateProperty.all(
+                                            padding: WidgetStateProperty.all(
                                                 const EdgeInsets.symmetric(
                                                     vertical: 30,
                                                     horizontal: 15)),
                                             backgroundColor:
-                                                MaterialStateProperty.all(
+                                                WidgetStateProperty.all(
                                                     Colors.white),
-                                            shape: MaterialStateProperty.all(
+                                            shape: WidgetStateProperty.all(
                                                 const RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.all(
