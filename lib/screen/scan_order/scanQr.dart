@@ -64,7 +64,7 @@ class _ScanQRState extends State<ScanQR> {
                 scrollController: scrollController,
                 height: Platform.isAndroid ? 75 : 100,
                 child: const MyBottomMenu(
-                  active: 0,
+                  active: 1,
                 )),
             appBar: AppBar(
               leadingWidth: 45,
@@ -111,7 +111,7 @@ class _ScanQRState extends State<ScanQR> {
                     ),
                     Container(
                       margin:
-                          EdgeInsets.only(bottom: 20, left: 12.5, right: 12.5),
+                          EdgeInsets.only(bottom: 20, left: 12.5, right: 12.5, top: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
