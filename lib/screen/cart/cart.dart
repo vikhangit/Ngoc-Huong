@@ -350,6 +350,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                                                 Expanded(
                                                                     child:
                                                                         Column(
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
                                                                   children: [
                                                                     Text(
                                                                       "${ele["ProductName"]}",

@@ -651,11 +651,13 @@ class _AccountScreenState extends State<AccountScreen> {
                             height: 20,
                           ),
                           Container(
+                            width: MediaQuery.of(context).size.width,
                               margin: const EdgeInsets.only(
                                 left: 15,
                                 right: 15,
                               ),
                               child: Stack(
+                                
                                 clipBehavior: Clip.none,
                                 children: [
                                   profile["CardRank"] != null
