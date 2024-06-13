@@ -97,27 +97,32 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                 showIgnore: false,
                 showReleaseNotes: false,
               ),
-              child: FutureBuilder(
-                future: bannerModel.getVoucherBuy(widget.profile["Phone"]),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List list = snapshot.data!.toList();
-                    if (snapshot.data!.isNotEmpty) {
-                      return RefreshIndicator(
-                        onRefresh: refreshData,
-                        child: ListView.builder(
+              child: RefreshIndicator(
+                onRefresh: () => refreshData(),
+                child: FutureBuilder(
+                  future: bannerModel.getVoucherBuy(widget.profile["Phone"]),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List list = snapshot.data!.toList();
+                      if (snapshot.data!.isNotEmpty) {
+                        List arr = [];
+                        for (var i = 0; i < list.length; i++) {
+                          Map map = list[i]["details"].asMap();
+                          for (var value in map.values)
+                            arr.add({...value, "ngay": list[i]["ngay_ct"]});
+                        }
+                        return ListView.builder(
                           controller: scrollController,
-                          itemCount: list.length,
+                          itemCount: arr.length,
                           itemBuilder: (context, index) {
-                            return list[index]["details"].isEmpty
+                            return arr.isEmpty
                                 ? Container()
                                 : Container(
                                     margin: EdgeInsets.only(
-                                        left: 15,
-                                        right: 15,
-                                        top: index != 0 ? 20 : 30,
-                                        bottom:
-                                            index == list.length - 1 ? 20 : 0),
+                                      left: 15,
+                                      right: 15,
+                                      top: index != 0 ? 20 : 30,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       boxShadow: [
@@ -130,11 +135,10 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                         ),
                                       ],
                                     ),
-                                    height: 130,
+                                    height: 140,
                                     child: FutureBuilder(
                                       future: bannerModel.getVoucherByMaVoucher(
-                                          list[index]["details"][0]
-                                              ["ma_evoucher"]),
+                                          arr[index]["ma_evoucher"]),
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData) {
                                           Map detail = snapshot.data!;
@@ -168,13 +172,9 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                                       () =>
                                                           Navigator.of(context)
                                                               .pop());
-                                                } else if (detail[
-                                                        "so_lan_sd"] ==
-                                                    int.tryParse(list[index]
-                                                            ["dien_giai"]
-                                                        .toString()
-                                                        .replaceAll(
-                                                            "lần", ""))) {
+                                                } else if (arr[index]
+                                                        ["sl_xuat"] ==
+                                                    0) {
                                                   customModal.showAlertDialog(
                                                       context,
                                                       "error",
@@ -192,8 +192,9 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               VoucherBuyDetail(
-                                                                detail:
-                                                                    list[index],
+                                                                detail: detail,
+                                                                detail2:
+                                                                    arr[index],
                                                               )));
                                                 }
                                               },
@@ -264,7 +265,7 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                                             .ellipsis,
                                                         maxLines: 2,
                                                         style: TextStyle(
-                                                            fontSize: 15,
+                                                            fontSize: 14,
                                                             height: 1.2,
                                                             fontWeight:
                                                                 FontWeight.w700,
@@ -382,6 +383,50 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                                       //     )
                                                       //   ],
                                                       // ),
+                                                      // Row(
+                                                      //   children: [
+                                                      //     Text(
+                                                      //       "Số lần được dùng: ",
+                                                      //       style: TextStyle(
+                                                      //           color: DateTime.parse(detail[
+                                                      //                       "hieu_luc_den"])
+                                                      //                   .isBefore(
+                                                      //                       now)
+                                                      //               ? Colors
+                                                      //                   .grey
+                                                      //                   .shade600
+                                                      //               : Colors
+                                                      //                   .black,
+                                                      //           fontSize: 12,
+                                                      //           fontWeight:
+                                                      //               FontWeight
+                                                      //                   .w700),
+                                                      //     ),
+                                                      //     const SizedBox(
+                                                      //       width: 2,
+                                                      //     ),
+                                                      //     Expanded(
+                                                      //       child: Text(
+                                                      //         "${detail["so_lan_sd"]} lần",
+                                                      //         style: TextStyle(
+                                                      //             color: DateTime.parse(detail[
+                                                      //                         "hieu_luc_den"])
+                                                      //                     .isBefore(
+                                                      //                         now)
+                                                      //                 ? Colors
+                                                      //                     .grey
+                                                      //                     .shade600
+                                                      //                 : Colors
+                                                      //                     .black,
+                                                      //             fontSize: 12,
+                                                      //             fontWeight:
+                                                      //                 FontWeight
+                                                      //                     .w500),
+                                                      //       ),
+                                                      //     )
+                                                      //   ],
+                                                      // ),
+
                                                       Row(
                                                         children: [
                                                           Text(
@@ -406,7 +451,9 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                                           ),
                                                           Expanded(
                                                             child: Text(
-                                                              "${detail["so_lan_sd"]} lần",
+                                                              arr[index][
+                                                                      "sl_xuat"]
+                                                                  .toString(),
                                                               style: TextStyle(
                                                                   color: DateTime.parse(detail[
                                                                               "hieu_luc_den"])
@@ -425,11 +472,10 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                                           )
                                                         ],
                                                       ),
-
                                                       Row(
                                                         children: [
                                                           Text(
-                                                            "Số lần đã dùng: ",
+                                                            "Ngày mua: ",
                                                             style: TextStyle(
                                                                 color: DateTime.parse(detail[
                                                                             "hieu_luc_den"])
@@ -450,13 +496,7 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                                           ),
                                                           Expanded(
                                                             child: Text(
-                                                              list[index]["dien_giai"]
-                                                                          .toString()
-                                                                          .trim()
-                                                                          .toLowerCase() ==
-                                                                      "0 lần"
-                                                                  ? "Chưa dùng"
-                                                                  : "${list[index]["dien_giai"]}",
+                                                              "${DateFormat("dd/MM/yyyy").format(DateTime.parse(arr[index]["ngay"]))}",
                                                               style: TextStyle(
                                                                   color: DateTime.parse(detail[
                                                                               "hieu_luc_den"])
@@ -542,52 +582,54 @@ class _VoucherBuyState extends State<VoucherBuy> with TickerProviderStateMixin {
                                     ),
                                   );
                           },
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            Container(
+                              margin:
+                                  const EdgeInsets.only(top: 40, bottom: 15),
+                              child:
+                                  Image.asset("assets/images/account/img.webp"),
+                            ),
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: const Text(
+                                "Bạn chưa có voucher đã mua. Hãy mua voucher ngay hôm nay để nhận được nhiều ưu đãi",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w300),
+                              ),
+                            )
+                          ],
+                        );
+                      }
+                    } else {
+                      return const Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: LoadingIndicator(
+                                colors: kDefaultRainbowColors,
+                                indicatorType: Indicator.lineSpinFadeLoader,
+                                strokeWidth: 1,
+                                // pathBackgroundColor: Colors.black45,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Đang lấy dữ liệu")
+                          ],
                         ),
                       );
-                    } else {
-                      return Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 40, bottom: 15),
-                            child:
-                                Image.asset("assets/images/account/img.webp"),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                            child: const Text(
-                              "Bạn chưa có voucher đã mua. Hãy mua voucher ngay hôm nay để nhận được nhiều ưu đãi",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w300),
-                            ),
-                          )
-                        ],
-                      );
                     }
-                  } else {
-                    return const Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: LoadingIndicator(
-                              colors: kDefaultRainbowColors,
-                              indicatorType: Indicator.lineSpinFadeLoader,
-                              strokeWidth: 1,
-                              // pathBackgroundColor: Colors.black45,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text("Đang lấy dữ liệu")
-                        ],
-                      ),
-                    );
-                  }
-                },
+                  },
+                ),
               ))),
     );
   }

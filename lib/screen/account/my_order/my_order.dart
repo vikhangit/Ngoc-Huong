@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/order.dart';
+import 'package:ngoc_huong/screen/account/accoutScreen.dart';
 import 'package:ngoc_huong/screen/account/my_order/my_order_detail.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
@@ -91,7 +92,8 @@ class _MyOrderState extends State<MyOrder> with TickerProviderStateMixin {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AccountScreen()));
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),
@@ -157,22 +159,14 @@ class _MyOrderState extends State<MyOrder> with TickerProviderStateMixin {
                                             snapshot.data!
                                                 .where((e) => e["DetailList"]
                                                     .where((x) =>
-                                                        x["ProductType"] ==
-                                                        "product")
+                                                        x["ProductType"] !=
+                                                        "service")
                                                     .toList()
                                                     .isNotEmpty)
                                                 .toList()
                                                 .isNotEmpty) {
                                           List list = snapshot.data!;
-                                          print("==================");
-                                          print(snapshot.data!
-                                              .where((e) => e["DetailList"]
-                                                  .where((x) =>
-                                                      x["ProductType"] ==
-                                                      "product")
-                                                  .toList()
-                                                  .isNotEmpty)
-                                              .toList());
+
                                           return RefreshIndicator(
                                             onRefresh: refreshData,
                                             child: ListView.builder(
@@ -181,8 +175,8 @@ class _MyOrderState extends State<MyOrder> with TickerProviderStateMixin {
                                               itemBuilder: (context, index) {
                                                 return list[index]["DetailList"]
                                                         .where((x) =>
-                                                            x["ProductType"] ==
-                                                            "product")
+                                                            x["ProductType"] !=
+                                                            "service")
                                                         .toList()
                                                         .isNotEmpty
                                                     ? Container(

@@ -50,13 +50,8 @@ class BannerModel {
   Future<List> getVoucher() async {
     List result = [];
     try {
-      Response response = await client.dio
-          .get('$goodAppUrl/api/$idApp/voucher.ngochuong?$token',
-              options: Options(headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                // 'Authorization':
-                //     '${localStorageCustomerToken.getItem("customer_token")}',
-              }));
+      Response response =
+          await client.dio.get('$goodAppUrl/api/$idApp/evoucher?$token');
       if (response.statusCode == 200) {
         return result = response.data;
       } else {
@@ -71,13 +66,8 @@ class BannerModel {
   Future<Map> getVoucherByMaVoucher(String maVoucher) async {
     Map result = {};
     try {
-      Response response = await client.dio
-          .get('$goodAppUrl/api/$idApp/voucher.ngochuong?$token',
-              options: Options(headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                // 'Authorization':
-                //     '${localStorageCustomerToken.getItem("customer_token")}',
-              }));
+      Response response =
+          await client.dio.get('$goodAppUrl/api/$idApp/evoucher?$token');
       if (response.statusCode == 200) {
         return result = response.data
             .toList()
@@ -116,12 +106,7 @@ class BannerModel {
     List result = [];
     try {
       Response response =
-          await client.dio.get('$goodAppUrl/api/$idApp/hd1.voucher.nh?$token',
-              options: Options(headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                // 'Authorization':
-                //     '${localStorageCustomerToken.getItem("customer_token")}',
-              }));
+          await client.dio.get('$goodAppUrl/api/$idApp/hd1.voucher.nh?$token');
       if (response.statusCode == 200) {
         for (var item in response.data) {
           if (item["ma_kh"].toString() == phone.toString()) {

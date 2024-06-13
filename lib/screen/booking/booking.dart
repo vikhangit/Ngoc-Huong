@@ -316,8 +316,7 @@ class _BookingServicesState extends State<BookingServices>
               "DueDate": "",
               "Note": "",
               "PaymentMethod": paymentMethod,
-              "TotalAmount": activeService["PriceInbound"] ??
-                  activeService["PriceOutbound"],
+              "TotalAmount": activeService["PriceOutbound"],
               "DetailList": [
                 activeService["Id"],
               ]
@@ -439,7 +438,7 @@ class _BookingServicesState extends State<BookingServices>
                 scrollController: scrollController,
                 height: Platform.isAndroid ? 75 : 100,
                 child: const MyBottomMenu(
-                  active: 1,
+                  active: 2,
                 )),
             body: UpgradeAlert(
                 upgrader: Upgrader(
@@ -1011,7 +1010,7 @@ class _BookingServicesState extends State<BookingServices>
                                                                       Container(),
                                                                   secondChild:
                                                                       FutureBuilder(
-                                                                          future: servicesModel.getAllServiceByGroup(item[
+                                                                          future: servicesModel.getServiceByGroup(item[
                                                                               "code"]),
                                                                           builder: (context,
                                                                               snapshot) {

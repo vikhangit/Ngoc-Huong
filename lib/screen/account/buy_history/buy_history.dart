@@ -6,6 +6,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/order.dart';
 import 'package:ngoc_huong/screen/account/buy_history/modal_chi_tiet_buy.dart';
+import 'package:ngoc_huong/screen/account/my_order/my_order_detail.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
@@ -143,7 +144,13 @@ class _BuyHistoryState extends State<BuyHistory> {
                                                           save: () {
                                                             setState(() {});
                                                           },
-                                                        )));
+                                                        )
+                                                    // :
+                                                    // ModalOrderDetail(
+                                                    //     product:
+                                                    //         list[index],
+                                                    //     type: "product")
+                                                    ));
                                           },
                                           style: ButtonStyle(
                                             padding: WidgetStateProperty.all(

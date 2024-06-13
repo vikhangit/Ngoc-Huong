@@ -8,14 +8,12 @@ class RatingrModel {
   Future<List> getQuestionList() async {
     List result = [];
     try {
-      Response response =
-          await client.dio.get('$goodAppUrl/api/$idApp/startquote?$token',
-              options: Options(headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                // 'Authorization':
-                //     '${localStorageCustomerToken.getItem("customer_token")}',
-              }));
+      Response response = await client.dio
+          .get('$goodAppUrl/api/$idApp/starquote_question?$token');
       if (response.statusCode == 200) {
+        print("=====");
+        print(response.data);
+        print("=====");
         return result = response.data;
       } else {
         return result;
@@ -30,12 +28,7 @@ class RatingrModel {
     List result = [];
     try {
       Response response =
-          await client.dio.get('$goodAppUrl/api/$idApp/startquote.data?$token',
-              options: Options(headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                // 'Authorization':
-                //     '${localStorageCustomerToken.getItem("customer_token")}',
-              }));
+          await client.dio.get('$goodAppUrl/api/$idApp/startquote?$token');
       if (response.statusCode == 200) {
         return result = response.data;
       } else {
@@ -48,15 +41,12 @@ class RatingrModel {
   }
 
   Future addRatingForUser(Map data) async {
+    print("=====");
+    print(data);
+    print("=====");
     try {
-      Response response =
-          await client.dio.post('$goodAppUrl/api/$idApp/startquote.data?$token',
-              options: Options(headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                // 'Authorization':
-                //     '${localStorageCustomerToken.getItem("customer_token")}',
-              }),
-              data: data);
+      Response response = await client.dio
+          .post('$goodAppUrl/api/$idApp/starquote?$token', data: data);
       if (response.statusCode == 200) {
         print("=====");
         print(response.data);

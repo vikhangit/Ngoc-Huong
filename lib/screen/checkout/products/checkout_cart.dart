@@ -85,101 +85,120 @@ class _CheckOutScreenState extends State<CheckOutCart> {
     }
 
     void setCheckOutCart() {
-      if (activePayment == "Thanh toán bằng xu") {
-        if (widget.totalCatCoin == 0) {
-          customModal.showAlertDialog(
-              context,
-              "error",
-              "Lỗi tính năng",
-              "Tính năng không áp dụng cho sản phẩm này",
-              () => Navigator.pop(context),
-              () => Navigator.pop(context));
-        } else {
-          if (profile.isEmpty && profile["CustomerCoin"] == null) {
+      if (selectAddress.isNotEmpty) {
+        List details = [];
+        List idList = [];
+        for (var i = 0; i < listProductPayment.length; i++) {
+          details.add({
+            "Amount": listProductPayment[i]["Amount"],
+            "Price": listProductPayment[i]["Amount"] /
+                listProductPayment[i]["Quantity"],
+            "Quantity": listProductPayment[i]["Quantity"],
+            "ProductId": listProductPayment[i]["ProductId"],
+            "ProductType": "product"
+          });
+          idList.add(listProductPayment[i]["Id"]);
+        }
+        Map data = {
+          "CreatedDate": DateFormat("yyyy/MM/dd").format(DateTime.now()),
+          "Address": selectAddress,
+          "TotalAmount": widget.total,
+          "BranchName": storageBranch.getItem("branch") == null
+              ? ""
+              : jsonDecode(storageBranch.getItem("branch"))["Name"],
+          "DetailList": [...details]
+        };
+        if (activePayment == "Thanh toán bằng xu") {
+          if (widget.totalCatCoin == 0) {
             customModal.showAlertDialog(
                 context,
                 "error",
-                "Lỗi thanh toán",
-                "Tài khoản chưa có xu. Hãy nhận xu ở phần shop quà tặng hoặc nhiệm vụ nhận quà",
-                () => Navigator.pop(context),
-                () => Navigator.pop(context));
-          } else if (profile["CustomerCoin"] < widget.totalCatCoin) {
-            customModal.showAlertDialog(
-                context,
-                "error",
-                "Lỗi thanh toán",
-                "Bạn chưa đủ xu để thanh toán",
+                "Lỗi tính năng",
+                "Tính năng không áp dụng cho sản phẩm này",
                 () => Navigator.pop(context),
                 () => Navigator.pop(context));
           } else {
-            customModal.showAlertDialog(context, "error",
-                "Hê thống đang bảo trì", "Quý khách hànng xin thử lại sau", () {
-              Navigator.of(context).pop();
-            }, () {
-              Navigator.of(context).pop();
-            });
+            if (profile.isEmpty && profile["CustomerCoin"] == null) {
+              customModal.showAlertDialog(
+                  context,
+                  "error",
+                  "Lỗi thanh toán",
+                  "Tài khoản chưa có xu. Hãy nhận xu ở phần shop quà tặng hoặc nhiệm vụ nhận quà",
+                  () => Navigator.pop(context),
+                  () => Navigator.pop(context));
+            } else if (profile["CustomerCoin"] < widget.totalCatCoin) {
+              customModal.showAlertDialog(
+                  context,
+                  "error",
+                  "Lỗi thanh toán",
+                  "Bạn chưa đủ xu để thanh toán",
+                  () => Navigator.pop(context),
+                  () => Navigator.pop(context));
+            } else {
+              customModal.showAlertDialog(context, "error", "Đặt Hàng",
+                  "Bạn có chắc chắn đăt hàng không?", () {
+                Navigator.of(context).pop();
+                EasyLoading.show(status: "Vui lòng chờ...");
+                Future.delayed(const Duration(seconds: 2), () {
+                  for (var i = 0; i < listProductPayment.length; i++) {
+                    cartModel.updateProductInCart({
+                      // "Id": 1,
+                      "DetailList": [
+                        {...listProductPayment[i], "IsDeleted": true}
+                      ]
+                    }).then((value) => setState(() {}));
+                  }
+                  orderModel
+                      .setOrder({...data, "PaymentMethod": "Xu"}).then((value) {
+                    EasyLoading.dismiss();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CheckoutSuccess(
+                                  detail: value,
+                                )));
+                  });
+                });
+              }, () => Navigator.of(context).pop());
+            }
           }
+        } else {
+          customModal.showAlertDialog(
+              context, "error", "Đặt Hàng", "Bạn có chắc chắn đăt hàng không?",
+              () {
+            Navigator.of(context).pop();
+            EasyLoading.show(status: "Vui lòng chờ...");
+            Future.delayed(const Duration(seconds: 2), () {
+              for (var i = 0; i < listProductPayment.length; i++) {
+                cartModel.updateProductInCart({
+                  // "Id": 1,
+                  "DetailList": [
+                    {...listProductPayment[i], "IsDeleted": true}
+                  ]
+                }).then((value) => setState(() {}));
+              }
+              orderModel.setOrder({...data, "PaymentMethod": "Tiền mặt"}).then(
+                  (value) {
+                EasyLoading.dismiss();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CheckoutSuccess(
+                              detail: value,
+                            )));
+              });
+            });
+          }, () => Navigator.of(context).pop());
         }
       } else {
-        customModal.showAlertDialog(context, "error", "Hê thống đang bảo trì",
-            "Quý khách hànng xin thử lại sau", () {
+        customModal.showAlertDialog(
+            context, "error", "Đặt Hàng", "Bạn chưa chọn địa chỉ giao hàng",
+            () {
           Navigator.of(context).pop();
         }, () {
           Navigator.of(context).pop();
         });
       }
-      // if (selectAddress.isNotEmpty) {
-      //   List details = [];
-      //   List idList = [];
-      //   for (var i = 0; i < listProductPayment.length; i++) {
-      //     details.add({
-      //       "Amount": listProductPayment[i]["Amount"],
-      //       "Price": listProductPayment[i]["Amount"] /
-      //           listProductPayment[i]["Quantity"],
-      //       "Quantity": listProductPayment[i]["Quantity"],
-      //       "ProductId": listProductPayment[i]["ProductId"],
-      //     });
-      //     idList.add(listProductPayment[i]["Id"]);
-      //   }
-      //   Map data = {
-      //     "Address": selectAddress,
-      //     "TotalAmount": widget.total,
-      //     "BranchName": storageBranch.getItem("branch") == null
-      //         ? ""
-      //         : jsonDecode(storageBranch.getItem("branch"))["Name"],
-      //     "DetailList": [...details]
-      //   };
-      //   customModal.showAlertDialog(
-      //       context, "error", "Đặt Hàng", "Bạn có chắc chắn đăt hàng không?",
-      //       () {
-      //     Navigator.of(context).pop();
-      //     EasyLoading.show(status: "Vui lòng chờ...");
-      //     Future.delayed(const Duration(seconds: 2), () {
-      //       for (var i = 0; i < listProductPayment.length; i++) {
-      //         cartModel.updateProductInCart({
-      //           // "Id": 1,
-      //           "DetailList": [
-      //             {...listProductPayment[i], "IsDeleted": true}
-      //           ]
-      //         }).then((value) => setState(() {}));
-      //       }
-      //       print(data);
-      //       // orderModel.setOrder(data).then((value) {
-      //       //   EasyLoading.dismiss();
-      //       //   Navigator.push(context,
-      //       //       MaterialPageRoute(builder: (context) => CheckoutSuccess()));
-      //       // });
-      //     });
-      //   }, () => Navigator.of(context).pop());
-      // } else {
-      //   customModal.showAlertDialog(
-      //       context, "error", "Đặt Hàng", "Bạn chưa chọn địa chỉ giao hàng",
-      //       () {
-      //     Navigator.of(context).pop();
-      //   }, () {
-      //     Navigator.of(context).pop();
-      //   });
-      // }
     }
 
     void showAlertDialog(BuildContext context) {

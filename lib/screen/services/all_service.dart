@@ -132,7 +132,7 @@ class _AllServiceScreenState extends State<AllServiceScreen>
                 scrollController: scrollController,
                 height: Platform.isAndroid ? 75 : 100,
                 child: const MyBottomMenu(
-                  active: 1,
+                  active: 2,
                 )),
             appBar: AppBar(
               leadingWidth: 45,

@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:ngoc_huong/screen/scan_order/ratingPage.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
 
 class Ques1 extends StatefulWidget {
   final String question;
-  const Ques1({super.key, required this.question});
+  final int index;
+  const Ques1({super.key, required this.question, required this.index});
 
   @override
   State<Ques1> createState() => _Ques1State();
@@ -18,9 +20,9 @@ class _Ques1State extends State<Ques1> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    setState(() {
-      valueRating1 = 1.0;
-    });
+    // setState(() {
+    //   activeIndex = widget.index;
+    // });
   }
 
   @override
@@ -40,6 +42,7 @@ class _Ques1State extends State<Ques1> {
                 onValueChanged: (v) {
                   setState(() {
                     valueRating1 = v;
+                    star[widget.index] = v.round();
                   });
                 },
                 starCount: 5,

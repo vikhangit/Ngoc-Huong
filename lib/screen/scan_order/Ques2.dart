@@ -18,9 +18,9 @@ class _Ques2State extends State<Ques2> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    setState(() {
-      valueRating2 = 1.0;
-    });
+    // setState(() {
+    //   valueRating2 = 1.0;
+    // });
   }
 
   @override

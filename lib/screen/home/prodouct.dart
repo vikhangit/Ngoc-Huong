@@ -62,7 +62,7 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
           Container(
-            height: 750,
+            height: 745,
             child: FutureBuilder(
               future: productModel.getHotProduct(),
               builder: (context, snapshot) {
@@ -107,7 +107,7 @@ class _ProductPageState extends State<ProductPage> {
                                             top: 10, left: 5, right: 5),
                                         child: Text(
                                           "${list[i]["Name"]}",
-                                          maxLines: 3,
+                                          maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                               fontSize: 12,
@@ -146,7 +146,7 @@ class _ProductPageState extends State<ProductPage> {
                                                         locale: "vi_VI",
                                                         symbol: "")
                                                     .format(list[i]
-                                                        ["PriceInbound"]),
+                                                        ["PriceOutbound"]),
                                                 style: TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.w600,

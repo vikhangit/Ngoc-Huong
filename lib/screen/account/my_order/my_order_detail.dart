@@ -291,6 +291,7 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
                     //
                     //   ],
                     // ),
+
                     if (widget.product["Status"] != "delete")
                       Container(
                           margin: const EdgeInsets.only(
@@ -501,143 +502,122 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
                                   .getProductCode(item["ProductCode"]),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
-                                  Map pra = snapshot.data!;
-                                  return FutureBuilder(
-                                    future:
-                                        productModel.getProductByGroupAndCode(
-                                            pra["CategoryCode"], pra["Code"]),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        Map detail = snapshot.data!;
-                                        return GestureDetector(
-                                          onTap: () {
-                                            showModalBottomSheet<void>(
-                                                backgroundColor: Colors.white,
-                                                clipBehavior:
-                                                    Clip.antiAliasWithSaveLayer,
-                                                context: context,
-                                                isScrollControlled: true,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return Container(
-                                                    padding: EdgeInsets.only(
-                                                        bottom: MediaQuery.of(
-                                                                context)
-                                                            .viewInsets
-                                                            .bottom),
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.85,
-                                                    child: ProductDetail(
-                                                        details: detail),
-                                                  );
-                                                });
-                                          },
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                                top: index != 0 ? 10 : 0),
-                                            padding: EdgeInsets.only(
-                                                top: index != 0 ? 10 : 0),
-                                            decoration: BoxDecoration(
-                                                border: Border(
-                                                    top: index != 0
-                                                        ? const BorderSide(
-                                                            width: 1,
-                                                            color: Colors.grey)
-                                                        : BorderSide.none)),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(10)),
-                                                  child: Image.network(
-                                                    "${item["Image_Name"]}",
-                                                    // width: 110,
-                                                    height: 60,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                    child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Wrap(
-                                                      children: [
-                                                        Text(
-                                                          "${item["ProductName"]}",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          maxLines: 1,
-                                                          style:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .black),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 30,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                                "${item["Quantity"] ?? 1}",
-                                                                style: TextStyle(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary)),
-                                                            const SizedBox(
-                                                              width: 3,
-                                                            ),
-                                                            Text("x",
-                                                                style: TextStyle(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary)),
-                                                            const SizedBox(
-                                                              width: 3,
-                                                            ),
-                                                            Text(
-                                                              NumberFormat.currency(
-                                                                      locale:
-                                                                          "vi_VI",
-                                                                      symbol:
-                                                                          "đ")
-                                                                  .format(
-                                                                item["Price"],
-                                                              ),
-                                                              style: TextStyle(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .primary),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ))
-                                              ],
+                                  return GestureDetector(
+                                    onTap: () {
+                                      showModalBottomSheet<void>(
+                                          backgroundColor: Colors.white,
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          context: context,
+                                          isScrollControlled: true,
+                                          builder: (BuildContext context) {
+                                            return Container(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.85,
+                                              child: ProductDetail(
+                                                  details: snapshot.data!),
+                                            );
+                                          });
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(
+                                          top: index != 0 ? 10 : 0),
+                                      padding: EdgeInsets.only(
+                                          top: index != 0 ? 10 : 0),
+                                      decoration: BoxDecoration(
+                                          border: Border(
+                                              top: index != 0
+                                                  ? const BorderSide(
+                                                      width: 1,
+                                                      color: Colors.grey)
+                                                  : BorderSide.none)),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10)),
+                                            child: Image.network(
+                                              "${snapshot.data!["ImageList"][0]["Image_Name"]}",
+                                              // width: 110,
+                                              height: 60,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
-                                        );
-                                      } else {
-                                        return Container();
-                                      }
-                                    },
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                              child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Wrap(
+                                                children: [
+                                                  Text(
+                                                    "${item["ProductName"]}",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                          "${item["Quantity"] ?? 1}",
+                                                          style: TextStyle(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primary)),
+                                                      const SizedBox(
+                                                        width: 3,
+                                                      ),
+                                                      Text("x",
+                                                          style: TextStyle(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primary)),
+                                                      const SizedBox(
+                                                        width: 3,
+                                                      ),
+                                                      Text(
+                                                        NumberFormat.currency(
+                                                                locale: "vi_VI",
+                                                                symbol: "đ")
+                                                            .format(
+                                                          item["Price"],
+                                                        ),
+                                                        style: TextStyle(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primary),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ))
+                                        ],
+                                      ),
+                                    ),
                                   );
                                 } else {
                                   return const Center(
@@ -757,7 +737,7 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
                                       height: 5,
                                     ),
                                     Text(
-                                        "${widget.product["PaymentMethod"] ?? "Thanh toán khi nhận hàng"} ",
+                                        "Thanh toán bằng ${widget.product["PaymentMethod"].toLowerCase() ?? "Thanh toán khi nhận hàng"}",
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w300,
                                             color: Colors.black45)),
@@ -838,7 +818,10 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
                                 Text(
                                   DateFormat("dd-MM-yyyy HH:mm").format(
                                       getPSTTime(DateTime.parse(
-                                          list[0]["CreatedDate"]))),
+                                          widget.type == "1"
+                                              ? DateTime.now().toIso8601String()
+                                              : widget.product["DetailList"][0]
+                                                  ["CreatedDate"]))),
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w400,
@@ -880,7 +863,8 @@ class _ModalOrderDetailState extends State<ModalOrderDetail> {
                                       Text(
                                         DateFormat("dd-MM-yyyy HH:mm").format(
                                             getPSTTime(DateTime.parse(
-                                                list[0]["CreatedDate"]))),
+                                                widget.product["DetailList"][0]
+                                                    ["CreatedDate"]))),
                                         textAlign: TextAlign.right,
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w400,

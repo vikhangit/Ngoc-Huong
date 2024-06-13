@@ -35,6 +35,8 @@ String nhanxet = '';
 bool focusInput = false;
 bool loading = true;
 Map profile = {};
+List detailList = [];
+List star = [];
 
 class _RatingPageState extends State<RatingPage> {
   final ScrollController scrollController = ScrollController();
@@ -49,15 +51,19 @@ class _RatingPageState extends State<RatingPage> {
     Upgrader.clearSavedSettings();
     setState(() {
       focusInput = false;
+      star.clear();
     });
     profileModel.getProfile().then((value) => setState(() {
           profile = value;
         }));
-    ratingrModel.getRatingList().then((value) => setState(() {
-          listRating = value;
-        }));
+    // ratingrModel.getRatingList().then((value) => setState(() {
+    //       listRating = value;
+    //     }));
     ratingrModel.getQuestionList().then((value) => setState(() {
           dataQuestionRating = value;
+          for (var i = 0; i < value.length; i++) {
+            star.add(1);
+          }
           loading = false;
         }));
   }
@@ -67,6 +73,7 @@ class _RatingPageState extends State<RatingPage> {
     super.dispose();
     controller.dispose();
     focusInput = false;
+    star.clear();
   }
 
   void changeComent(String value) {
@@ -79,7 +86,6 @@ class _RatingPageState extends State<RatingPage> {
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    print(widget.item);
     return Form(
         key: _formKey,
         child: Builder(
@@ -153,26 +159,13 @@ class _RatingPageState extends State<RatingPage> {
                                         height: 20,
                                       ),
                                       Column(
-                                        children: [
-                                          Ques1(
-                                              question: dataQuestionRating[0]
-                                                  ["cauhoi1"]),
-                                          Ques2(
-                                              question: dataQuestionRating[0]
-                                                  ["cauhoi2"]),
-                                          Ques3(
-                                              question: dataQuestionRating[0]
-                                                  ["cauhoi3"]),
-                                          Ques4(
-                                              question: dataQuestionRating[0]
-                                                  ["cauhoi4"]),
-                                          Ques5(
-                                              question: dataQuestionRating[0]
-                                                  ["cauhoi5"]),
-                                          Ques6(
-                                              question: dataQuestionRating[0]
-                                                  ["cauhoi6"])
-                                        ],
+                                        children: dataQuestionRating.map((e) {
+                                          int index =
+                                              dataQuestionRating.indexOf(e);
+                                          return Ques1(
+                                              question: e["cau_hoi"],
+                                              index: index);
+                                        }).toList(),
                                       ),
                                       GestureDetector(
                                         onTap: () {
@@ -222,36 +215,32 @@ class _RatingPageState extends State<RatingPage> {
                                           _formKey.currentState!.validate();
                                       FocusManager.instance.primaryFocus!
                                           .unfocus();
+                                      List detail = [];
+
+                                      for (var i = 0;
+                                          i < dataQuestionRating.length;
+                                          i++) {
+                                        detail.add({
+                                          "cau_hoi": dataQuestionRating[i]
+                                              ["cau_hoi"],
+                                          "diem": star[i],
+                                          "id_starquote_question":
+                                              dataQuestionRating[i]["_id"]
+                                        });
+                                      }
                                       Map data = {
-                                        "so_phieu": listRating.length + 1,
-                                        "ma_kh": profile["Phone"],
-                                        "ten_kh": profile["CustomerName"],
-                                        "dia_chi": profile["Address"],
-                                        "cauhoi1_sodiemsao":
-                                            valueRating1.round(),
-                                        "cauhoi2_sodiemsao":
-                                            valueRating2.round(),
-                                        "cauhoi3_sodiemsao":
-                                            valueRating3.round(),
-                                        "cauhoi4_sodiemsao":
-                                            valueRating4.round(),
-                                        "cauhoi5_sodiemsao":
-                                            valueRating5.round(),
-                                        "cauhoi6_sodiemsao":
-                                            valueRating6.round(),
-                                        "ngaydanhgia": DateFormat("yyyy/MM/dd")
+                                        "ngay": DateFormat("yyyy/MM/dd")
                                             .format(DateTime.now()),
-                                        "chinhanh": widget.item != "-1"
-                                            ? widget.item
-                                            : "",
-                                        "nhanxet": controller.text
+                                        "mo_ta": controller.text,
+                                        "details": [...detail],
+                                        "ma_kh": profile["Phone"]
                                       };
 
                                       customModal.showAlertDialog(
                                           context,
                                           "error",
                                           "Gửi đánh giá",
-                                          "Bạn có chắc chắn gửi đánh giá cho chúng tôi?",
+                                          "Bạn có chắc chắn gửi đánh giá đên Ngọc Hường?",
                                           () {
                                         Navigator.of(context).pop();
                                         EasyLoading.show(
@@ -262,6 +251,8 @@ class _RatingPageState extends State<RatingPage> {
                                               .addRatingForUser(data)
                                               .then((value) {
                                             EasyLoading.dismiss();
+                                            star.clear();
+
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -272,6 +263,12 @@ class _RatingPageState extends State<RatingPage> {
                                                           },
                                                         )));
                                             setState(() {
+                                              valueRating1 = 1.0;
+                                              for (var i = 0;
+                                                  i < dataQuestionRating.length;
+                                                  i++) {
+                                                star.add(1);
+                                              }
                                               ElegantNotification.success(
                                                 width: MediaQuery.of(context)
                                                     .size
@@ -286,7 +283,7 @@ class _RatingPageState extends State<RatingPage> {
                                                     AnimationType.fromTop,
                                                 // title: const Text('Cập nhật'),
                                                 description: const Text(
-                                                  'Gửi đánh giá thành công',
+                                                  'Gửi đánh giá thành công!!! Cảm ơn quý khách đã đòng góp ý kiến',
                                                   style: TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:

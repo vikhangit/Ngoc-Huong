@@ -92,9 +92,9 @@ class _GiftShopDetailState extends State<GiftShopDetail>
           Map data = {
             "DetailList": [
               {
-                "Amount": productDetail["PriceInbound"] * quantity,
-                "Price": productDetail["PriceInbound"],
-                "PrinceTest": productDetail["PriceInbound"] * quantity,
+                "Amount": productDetail["PriceOutbound"] * quantity,
+                "Price": productDetail["PriceOutbound"],
+                "PrinceTest": productDetail["PriceOutbound"] * quantity,
                 "ProductCode": productDetail["Code"],
                 "ProductId": productDetail["Id"],
                 "Quantity": quantity,

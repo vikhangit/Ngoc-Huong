@@ -11,6 +11,7 @@ import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/screen/checkout/products/checkout_cart.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
+import 'package:ngoc_huong/screen/home/home.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -163,7 +164,12 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
             centerTitle: true,
             leading: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomeScreen(callBack: () {
+                                setState(() {});
+                              })));
                 },
                 child: Container(
                   margin: const EdgeInsets.only(left: 15),

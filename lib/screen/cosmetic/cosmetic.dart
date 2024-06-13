@@ -119,46 +119,6 @@ class _CosmeticState extends State<Cosmetic> {
     scrollController.dispose();
   }
 
-  void addToCart(Map item) async {
-    // customModal.showAlertDialog(context, "error", "Giỏ hàng",
-    //     "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-    //   Navigator.of(context).pop();
-    //   EasyLoading.show(status: "Vui lòng chờ...");
-    //   Future.delayed(const Duration(seconds: 2), () {
-    //     cartModel.addProductToCart({"quantity": 1, ...item}).then((value) {
-    //       EasyLoading.dismiss();
-    //       Navigator.push(context,
-    //           MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-    //     });
-    //   });
-    // }, () => Navigator.of(context).pop());
-
-    Map data = {
-      "DetailList": [
-        {
-          "Amount": item["PriceOutbound"] * 1,
-          "Price": item["PriceOutbound"],
-          "ProductCode": item["Code"],
-          "ProductId": item["Id"],
-          "Quantity": 1,
-        }
-      ]
-    };
-    customModal.showAlertDialog(context, "error", "Giỏ hàng",
-        "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-      Navigator.of(context).pop();
-      EasyLoading.show(status: "Vui lòng chờ...");
-      Future.delayed(const Duration(seconds: 2), () {
-        cartModel.addToCart(data).then((value) {
-          print(value);
-          EasyLoading.dismiss();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-        });
-      });
-    }, () => Navigator.of(context).pop());
-  }
-
   void goToAction(String code) {
     setState(() {
       activeCode = code;
@@ -579,7 +539,7 @@ class _CosmeticState extends State<Cosmetic> {
                                                                         ),
                                                                         Text(
                                                                           NumberFormat.currency(locale: "vi_VI", symbol: "")
-                                                                              .format(item["PriceInbound"]),
+                                                                              .format(item["PriceOutbound"]),
                                                                           style: const TextStyle(
                                                                               fontSize: 12,
                                                                               fontWeight: FontWeight.w600,

@@ -18,9 +18,9 @@ class _Ques3State extends State<Ques3> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    setState(() {
-      valueRating3 = 1.0;
-    });
+    // setState(() {
+    //   valueRating3 = 1.0;
+    // });
   }
 
   @override

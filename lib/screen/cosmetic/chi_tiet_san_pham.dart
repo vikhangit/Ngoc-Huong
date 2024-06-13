@@ -97,9 +97,9 @@ class _ProductDetailState extends State<ProductDetail>
           Map data = {
             "DetailList": [
               {
-                "Amount": productDetail["PriceInbound"] * quantity,
-                "Price": productDetail["PriceInbound"],
-                "PrinceTest": productDetail["PriceInbound"] * quantity,
+                "Amount": productDetail["PriceOutbound"] * quantity,
+                "Price": productDetail["PriceOutbound"],
+                "PrinceTest": productDetail["PriceOutbound"] * quantity,
                 "ProductCode": productDetail["Code"],
                 "ProductId": productDetail["Id"],
                 "ExchangeCoin": productDetail["ExchangeCoin"],
@@ -280,7 +280,7 @@ class _ProductDetailState extends State<ProductDetail>
                                                       locale: "vi_VI",
                                                       symbol: "")
                                                   .format(productDetail[
-                                                      "PriceInbound"]),
+                                                      "PriceOutbound"]),
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w500,

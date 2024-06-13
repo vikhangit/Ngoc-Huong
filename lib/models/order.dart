@@ -84,14 +84,11 @@ class OrderModel {
                     '${localStorageCustomerToken.getItem("customer_token")}',
               }));
       if (response.statusCode == 200) {
-        print(response.data["Data"]);
         for (var item in response.data["Data"]) {
           if (item["Status"] == status) {
             result.add(item);
           }
         }
-        print("=================================");
-        print(result);
 
         return result;
       } else {
@@ -137,15 +134,11 @@ class OrderModel {
                     '${localStorageCustomerToken.getItem("customer_token")}',
               }));
       if (response.statusCode == 200) {
-        print(response.data["Data"]);
         for (var item in response.data["Data"]) {
           if (item["Status"] == status) {
             result.add(item);
           }
         }
-        print("=================================");
-        print(result);
-
         return result;
       } else {
         return result;
@@ -167,8 +160,7 @@ class OrderModel {
               }),
               data: data);
       if (response.statusCode == 200) {
-        print(response);
-        return response.data;
+        return response.data["Data"];
       } else {
         return;
       }
@@ -187,7 +179,6 @@ class OrderModel {
                 '${localStorageCustomerToken.getItem("customer_token")}',
           }));
       if (response.statusCode == 200) {
-        print(response);
         return response.data;
       } else {
         return;

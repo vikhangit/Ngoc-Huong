@@ -50,57 +50,6 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
     scrollController.dispose();
   }
 
-  void addToCart(Map item) async {
-    Map data = {
-      "DetailList": [
-        {
-          "Amount": item["PriceOutbound"] * 1,
-          "Price": item["PriceOutbound"],
-          "PrinceTest": item["PriceOutbound"] * 1,
-          "ProductCode": item["Code"],
-          "ProductId": item["Id"],
-          "Quantity": 1,
-        }
-      ]
-    };
-    customModal.showAlertDialog(context, "error", "Giỏ hàng",
-        "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-      Navigator.of(context).pop();
-      EasyLoading.show(status: "Vui lòng chờ...");
-      Future.delayed(const Duration(seconds: 2), () {
-        cartModel.addToCart(data).then((value) {
-          EasyLoading.dismiss();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-        });
-      });
-    }, () => Navigator.of(context).pop());
-  }
-
-  void updateCart(Map item) async {
-    customModal.showAlertDialog(context, "error", "Giỏ hàng",
-        "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-      Navigator.of(context).pop();
-      EasyLoading.show(status: "Vui lòng chờ...");
-      Future.delayed(const Duration(seconds: 2), () {
-        cartModel.updateProductInCart({
-          "Id": 1,
-          "DetailList": [
-            {
-              ...item,
-              "Amount": (item["Quantity"] + 1) * item["Price"],
-              "Quantity": item["Quantity"] + 1
-            }
-          ]
-        }).then((value) {
-          EasyLoading.dismiss();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddCartSuccess()));
-        });
-      });
-    }, () => Navigator.of(context).pop());
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -330,7 +279,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                         color: mainColor,
                                                       ),
                                                       child: Text(
-                                                          "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceInbound"])} Đ",
+                                                          "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceOutbound"])} Đ",
                                                           style: TextStyle(
                                                               fontSize: 11,
                                                               fontWeight:

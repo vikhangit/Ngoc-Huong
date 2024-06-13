@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/order.dart';
+import 'package:ngoc_huong/screen/account/my_order/my_order.dart';
+import 'package:ngoc_huong/screen/account/my_order/my_order_detail.dart';
+import 'package:ngoc_huong/screen/cart/cart.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:scroll_to_hide/scroll_to_hide.dart';
 import 'package:upgrader/upgrader.dart';
 
 class CheckoutSuccess extends StatefulWidget {
-  const CheckoutSuccess({super.key});
+  final Map detail;
+  const CheckoutSuccess({super.key, required this.detail});
 
   @override
   State<CheckoutSuccess> createState() => _CheckoutSuccessState();
@@ -55,11 +59,16 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
     checkController.dispose();
     scrollController.dispose();
     loading = true;
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => CartScreen()));
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("=====================");
+    print(widget.detail);
+    print("================================");
     return SafeArea(
         bottom: false,
         top: false,
@@ -77,7 +86,8 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
               centerTitle: true,
               leading: GestureDetector(
                   onTap: () {
-                    Navigator.of(context).pop();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => CartScreen()));
                   },
                   child: Container(
                     margin: const EdgeInsets.only(left: 15),
@@ -173,63 +183,63 @@ class _CheckoutSuccessState extends State<CheckoutSuccess>
                           ],
                         ),
                         FutureBuilder(
-                          future: orderModel.getOrderListByStatus("pending"),
+                          future: orderModel.getMyOrderListByStatus("pending"),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              List list = snapshot.data!.toList();
+                              Map list = snapshot.data!.toList().firstWhere(
+                                  (e) => e["Id"] == widget.detail["Id"],
+                                  orElse: () => null);
                               return FutureBuilder(
                                 future: orderModel.getStatusList(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     return GestureDetector(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1, color: Colors.grey),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(15))),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Text("Xem chi tiết",
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w400,
-                                                )),
-                                            const SizedBox(
-                                              width: 15,
-                                            ),
-                                            Image.asset(
-                                              "assets/images/cart-black.png",
-                                              width: 24,
-                                              height: 24,
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ],
+                                        child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  width: 1, color: Colors.grey),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(15))),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Text("Xem chi tiết",
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w400,
+                                                  )),
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                              Image.asset(
+                                                "assets/images/cart-black.png",
+                                                width: 24,
+                                                height: 24,
+                                                fit: BoxFit.fill,
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      // onTap: () {
-                                      //   Navigator.push(
-                                      //       context,
-                                      //       MaterialPageRoute(
-                                      //           builder: (context) => MyOrder(
-                                      //               listTab:
-                                      //                   snapshot.data!)));
-                                      //   Navigator.push(
-                                      //       context,
-                                      //       MaterialPageRoute(
-                                      //           builder: (context) =>
-                                      //               ModalOrderDetail(
-                                      //                   product: list[
-                                      //                       list.length - 1],
-                                      //                   type: "")));
-                                      // }
-                                    );
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => MyOrder(
+                                                      listTab:
+                                                          snapshot.data!)));
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ModalOrderDetail(
+                                                          product: list,
+                                                          type: "")));
+                                        });
                                   } else {
                                     return Container();
                                   }

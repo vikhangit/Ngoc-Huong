@@ -223,12 +223,12 @@ class _BookingSuccessState extends State<VoucherSuccess>
                                       MaterialPageRoute(
                                           builder: (context) => VoucherBuy(
                                               profile: widget.profile)));
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              VoucherBuyDetail(
-                                                  detail: details)));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) =>
+                                  //             VoucherBuyDetail(
+                                  //                 detail: details)));
                                 }),
                           ],
                         ))))));

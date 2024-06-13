@@ -81,7 +81,30 @@ class ProductModel {
     return result;
   }
 
-    Future<Map> getProductByGroupAndCode(String groupCode, String code) async {
+  Future<Map> getProductById(int id) async {
+    Map result = {};
+    try {
+      Response response =
+          await client.dio.get('${client.apiUrl}/Product/getAllProduct',
+              options: Options(headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization':
+                    '${localStorageCustomerToken.getItem("customer_token")}',
+              }));
+      if (response.statusCode == 200) {
+        return result = response.data["Data"]
+            .toList()
+            .firstWhere((e) => e["Id"] == id, orElse: () => null);
+      } else {
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
+  Future<Map> getProductByGroupAndCode(String groupCode, String code) async {
     Map result = {};
     try {
       Response response = await client.dio.get(
@@ -101,7 +124,6 @@ class ProductModel {
     }
     return result;
   }
-
 
   Future<List> getHotProduct() async {
     List result = [];

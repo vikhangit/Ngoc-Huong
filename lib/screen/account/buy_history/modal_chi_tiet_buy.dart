@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:ngoc_huong/menu/bottom_menu.dart';
 import 'package:ngoc_huong/models/bookingModel.dart';
@@ -8,6 +9,7 @@ import 'package:ngoc_huong/models/productModel.dart';
 import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/ModalZoomImage.dart';
+import 'package:ngoc_huong/screen/account/my_order/my_order.dart';
 import 'package:ngoc_huong/screen/cosmetic/chi_tiet_san_pham.dart';
 import 'package:ngoc_huong/screen/services/chi_tiet_dich_vu.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
@@ -36,6 +38,7 @@ class ModalChiTietBuy extends StatefulWidget {
 }
 
 int selectedIndex = 0;
+Map profile = {};
 
 class _ModalChiTietBuyState extends State<ModalChiTietBuy>
     with TickerProviderStateMixin {
@@ -51,6 +54,23 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
   void initState() {
     super.initState();
     Upgrader.clearSavedSettings();
+    profileModel.getProfile().then(
+      (value) {
+        setState(() {
+          profile = value;
+        });
+      },
+    );
+    widget.product["DetailList"]
+            .where((x) => x["ProductType"] == "service")
+            .toList()
+            .isNotEmpty
+        ? setState(() {
+            selectedIndex = 0;
+          })
+        : setState(() {
+            selectedIndex = 1;
+          });
   }
 
   @override
@@ -71,7 +91,7 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
         .where((x) => x["ProductType"] == "service")
         .toList();
     List listProduct = widget.product["DetailList"]
-        .where((x) => x["ProductType"] == "product")
+        .where((x) => x["ProductType"] != "service")
         .toList();
     // num totalBooking() {
     //   num total = 0;
@@ -111,895 +131,1072 @@ class _ModalChiTietBuyState extends State<ModalChiTietBuy>
                       color: Colors.white)),
             ),
             body: UpgradeAlert(
-              upgrader: Upgrader(
-                dialogStyle: UpgradeDialogStyle.cupertino,
-                canDismissDialog: false,
-                showLater: false,
-                showIgnore: false,
-                showReleaseNotes: false,
-              ),
-              child: ListView(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                      margin:
-                          const EdgeInsets.only(top: 10, left: 15, right: 15),
-                      child: Row(
+                upgrader: Upgrader(
+                  dialogStyle: UpgradeDialogStyle.cupertino,
+                  canDismissDialog: false,
+                  showLater: false,
+                  showIgnore: false,
+                  showReleaseNotes: false,
+                ),
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: ListView(
                         children: [
-                          Image.asset(
-                            "assets/images/account/dia-chi.png",
-                            width: 28,
-                            height: 28,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          const Text("Thông tin khách hàng",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black))
-                        ],
-                      )),
-                  Container(
-                      margin: const EdgeInsets.only(
-                          left: 15, right: 15, top: 20, bottom: 0),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(14)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                            offset: const Offset(
-                                4, 4), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  "Tên khách hàng",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black),
-                                ),
-                              ),
-                              Expanded(
-                                child: FutureBuilder(
-                                  future: profileModel.getProfile(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Text(
-                                        snapshot.data!["CustomerName"],
-                                        textAlign: TextAlign.right,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black),
-                                      );
-                                    } else {
-                                      return const Row(
+                          FutureBuilder(
+                              future: orderModel
+                                  .getStatusByCode(widget.product["Status"]),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      margin: const EdgeInsets.only(top: 15),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 25),
+                                      color: widget.product["Status"] ==
+                                              "complete"
+                                          ? Colors.green
+                                          : widget.product["Status"] == "delete"
+                                              ? Colors.black
+                                              : Colors.amber[800],
+                                      child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          SizedBox(
-                                            width: 15,
-                                            height: 15,
-                                            child: LoadingIndicator(
-                                              colors: kDefaultRainbowColors,
-                                              indicatorType:
-                                                  Indicator.lineSpinFadeLoader,
-                                              strokeWidth: 1,
-                                              // pathBackgroundColor: Colors.black45,
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Đơn hàng ${snapshot.data!["GroupName"].toString().toLowerCase()}",
+                                                  style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Colors.white),
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                const Text(
+                                                  "Cảm ơn bạn đã mua hàng tại Ngọc Hường",
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                      color: Colors.white),
+                                                )
+                                              ],
                                             ),
                                           ),
+                                          Image.asset(
+                                            "assets/images/account/file-white.png",
+                                            width: 45,
+                                            height: 45,
+                                            fit: BoxFit.contain,
+                                          )
                                         ],
-                                      );
-                                    }
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(vertical: 15),
-                            width: MediaQuery.of(context).size.width,
-                            height: 1,
-                            color: Colors.grey,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Expanded(
-                                  child: Text(
-                                "Số điện thoại",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )),
-                              Expanded(
-                                child: FutureBuilder(
-                                  future: profileModel.getProfile(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return Text(
-                                        snapshot.data!["Phone"],
-                                        textAlign: TextAlign.right,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black),
-                                      );
-                                    } else {
-                                      return const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          SizedBox(
-                                            width: 40,
-                                            height: 40,
-                                            child: LoadingIndicator(
-                                              colors: kDefaultRainbowColors,
-                                              indicatorType:
-                                                  Indicator.lineSpinFadeLoader,
-                                              strokeWidth: 1,
-                                              // pathBackgroundColor: Colors.black45,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(vertical: 15),
-                            width: MediaQuery.of(context).size.width,
-                            height: 1,
-                            color: Colors.grey,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Expanded(
-                                  flex: 30,
-                                  child: Text(
-                                    "Địa chỉ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black),
-                                  )),
-                              Expanded(
-                                  flex: 70,
-                                  child: Text(
-                                    widget.product["BranchName"] ?? "",
-                                    textAlign: TextAlign.right,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.black),
-                                  ))
-                            ],
-                          )
-                        ],
-                      )),
-                  FutureBuilder(
-                      future: bookingModel
-                          .getImageUsingBooking(widget.productInvoice),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  margin: const EdgeInsets.only(
-                                      top: 10, left: 15, right: 15),
-                                  child: Row(
+                                      ));
+                                } else {
+                                  return const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Image.asset(
-                                        "assets/images/account/dieu-khoan.png",
+                                      SizedBox(
+                                        width: 40,
+                                        height: 40,
+                                        child: LoadingIndicator(
+                                          colors: kDefaultRainbowColors,
+                                          indicatorType:
+                                              Indicator.lineSpinFadeLoader,
+                                          strokeWidth: 1,
+                                          // pathBackgroundColor: Colors.black45,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text("Đang lấy dữ liệu")
+                                    ],
+                                  );
+                                }
+                              }),
+                          Container(
+                              margin: const EdgeInsets.only(
+                                  top: 10, left: 15, right: 15),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/account/dia-chi.png",
+                                    width: 28,
+                                    height: 28,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Text("Thông tin khách hàng",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black))
+                                ],
+                              )),
+                          Container(
+                              margin: const EdgeInsets.only(
+                                  left: 15, right: 15, top: 20, bottom: 0),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(14)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 1,
+                                    blurRadius: 8,
+                                    offset: const Offset(
+                                        4, 4), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Expanded(
+                                        child: Text(
+                                          "Tên khách hàng",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: FutureBuilder(
+                                          future: profileModel.getProfile(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              return Text(
+                                                snapshot.data!["CustomerName"],
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black),
+                                              );
+                                            } else {
+                                              return const Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 15,
+                                                    height: 15,
+                                                    child: LoadingIndicator(
+                                                      colors:
+                                                          kDefaultRainbowColors,
+                                                      indicatorType: Indicator
+                                                          .lineSpinFadeLoader,
+                                                      strokeWidth: 1,
+                                                      // pathBackgroundColor: Colors.black45,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Expanded(
+                                          child: Text(
+                                        "Số điện thoại",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      )),
+                                      Expanded(
+                                        child: FutureBuilder(
+                                          future: profileModel.getProfile(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              return Text(
+                                                snapshot.data!["Phone"],
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black),
+                                              );
+                                            } else {
+                                              return const Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 40,
+                                                    height: 40,
+                                                    child: LoadingIndicator(
+                                                      colors:
+                                                          kDefaultRainbowColors,
+                                                      indicatorType: Indicator
+                                                          .lineSpinFadeLoader,
+                                                      strokeWidth: 1,
+                                                      // pathBackgroundColor: Colors.black45,
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                          flex: 30,
+                                          child: Text(
+                                            selectedIndex == 0
+                                                ? "Chi nhánh"
+                                                : "Nhận hàng",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                          )),
+                                      Expanded(
+                                          flex: 70,
+                                          child: Text(
+                                            selectedIndex == 0
+                                                ? (widget.product[
+                                                        "BranchName"] ??
+                                                    "")
+                                                : (widget.product["Address"] ??
+                                                    "Trực tiếp tại cửa hàng"),
+                                            textAlign: TextAlign.right,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                          ))
+                                    ],
+                                  )
+                                ],
+                              )),
+                          FutureBuilder(
+                              future: bookingModel
+                                  .getImageUsingBooking(widget.productInvoice),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          margin: const EdgeInsets.only(
+                                              top: 10, left: 15, right: 15),
+                                          child: Row(
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/account/dieu-khoan.png",
+                                                width: 20,
+                                                height: 20,
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              const Text("Hình ảnh đơn hàng",
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.black))
+                                            ],
+                                          )),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        margin: const EdgeInsets.only(
+                                            left: 15,
+                                            right: 15,
+                                            top: 10,
+                                            bottom: 0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15, vertical: 20),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(14)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 1,
+                                              blurRadius: 8,
+                                              offset: const Offset(4,
+                                                  4), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        child: snapshot.data!.isEmpty
+                                            ? const Text(
+                                                "Chưa có hình ảnh đơn hàng",
+                                                textAlign: TextAlign.center,
+                                              )
+                                            : ImageDetail(
+                                                items: snapshot.data!.toList()),
+                                      )
+                                    ],
+                                  );
+                                } else {
+                                  return const SizedBox(
+                                    height: 120,
+                                    child: Center(
+                                      child: SizedBox(
                                         width: 20,
                                         height: 20,
+                                        child: LoadingIndicator(
+                                          colors: kDefaultRainbowColors,
+                                          indicatorType:
+                                              Indicator.lineSpinFadeLoader,
+                                          strokeWidth: 0.5,
+                                          // pathBackgroundColor: Colors.black45,
+                                        ),
                                       ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      const Text("Hình ảnh đơn hàng",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black))
-                                    ],
-                                  )),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.only(
-                                    left: 15, right: 15, top: 10, bottom: 0),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 20),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(14)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 1,
-                                      blurRadius: 8,
-                                      offset: const Offset(
-                                          4, 4), // changes position of shadow
                                     ),
-                                  ],
+                                  );
+                                }
+                              }),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedIndex = 0;
+                                  });
+                                },
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  margin: const EdgeInsets.only(
+                                      right: 10, left: 15),
+                                  decoration: BoxDecoration(
+                                    color: selectedIndex == 0
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Colors.white,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 5,
+                                        blurRadius: 7,
+                                        offset: const Offset(
+                                            0, 3), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    "Dịch vụ",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: selectedIndex == 0
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
                                 ),
-                                child: snapshot.data!.isEmpty
-                                    ? const Text(
-                                        "Chưa có hình ảnh đơn hàng",
-                                        textAlign: TextAlign.center,
-                                      )
-                                    : ImageDetail(
-                                        items: snapshot.data!.toList()),
-                              )
-                            ],
-                          );
-                        } else {
-                          return const SizedBox(
-                            height: 120,
-                            child: Center(
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: LoadingIndicator(
-                                  colors: kDefaultRainbowColors,
-                                  indicatorType: Indicator.lineSpinFadeLoader,
-                                  strokeWidth: 0.5,
-                                  // pathBackgroundColor: Colors.black45,
+                              )),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedIndex = 1;
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    margin: const EdgeInsets.only(
+                                        left: 10, right: 15),
+                                    decoration: BoxDecoration(
+                                      color: selectedIndex == 1
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : Colors.white,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.5),
+                                          spreadRadius: 5,
+                                          blurRadius: 7,
+                                          offset: const Offset(0,
+                                              3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
+                                    child: Text(
+                                      "Mỹ phẩm",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: selectedIndex == 1
+                                              ? Colors.white
+                                              : Colors.black),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        }
-                      }),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedIndex = 0;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          margin: const EdgeInsets.only(right: 10, left: 15),
-                          decoration: BoxDecoration(
-                            color: selectedIndex == 0
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.white,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset: const Offset(
-                                    0, 3), // changes position of shadow
                               ),
                             ],
                           ),
-                          child: Text(
-                            "Dịch vụ",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: selectedIndex == 0
-                                    ? Colors.white
-                                    : Colors.black),
-                          ),
-                        ),
-                      )),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedIndex = 1;
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            margin: const EdgeInsets.only(left: 10, right: 15),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 15),
+                            margin: const EdgeInsets.only(
+                                left: 15, right: 15, top: 10),
                             decoration: BoxDecoration(
-                              color: selectedIndex == 1
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.white,
+                              color: Colors.white,
                               borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
+                                  const BorderRadius.all(Radius.circular(14)),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
+                                  spreadRadius: 1,
+                                  blurRadius: 8,
                                   offset: const Offset(
-                                      0, 3), // changes position of shadow
+                                      4, 4), // changes position of shadow
                                 ),
                               ],
                             ),
-                            child: Text(
-                              "Mỹ phẩm",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: selectedIndex == 1
-                                      ? Colors.white
-                                      : Colors.black),
+                            child: selectedIndex == 1
+                                ? listProduct.isNotEmpty
+                                    ? Column(
+                                        children: listProduct.map((item) {
+                                        int index = listProduct.indexOf(item);
+                                        return FutureBuilder(
+                                          future: productModel.getProductCode(
+                                              item["ProductCode"]),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              Map detail = snapshot.data!;
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              ProductDetail(
+                                                                  details:
+                                                                      detail)));
+                                                },
+                                                child: Container(
+                                                  margin: EdgeInsets.only(
+                                                      top: index != 0 ? 20 : 0),
+                                                  padding: EdgeInsets.only(
+                                                      top: index != 0 ? 10 : 0),
+                                                  decoration: BoxDecoration(
+                                                      border: Border(
+                                                          top: index != 0
+                                                              ? const BorderSide(
+                                                                  width: 1,
+                                                                  color: Colors
+                                                                      .grey)
+                                                              : BorderSide
+                                                                  .none)),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    10)),
+                                                        child: Image.network(
+                                                          "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                          errorBuilder:
+                                                              (context,
+                                                                  exception,
+                                                                  stackTrace) {
+                                                            return Image
+                                                                .network(
+                                                              'http://ngochuong.osales.vn/assets/css/images/noimage.gif',
+                                                              width: 110,
+                                                              height: 110,
+                                                              fit: BoxFit.cover,
+                                                            );
+                                                          },
+                                                          width: 110,
+                                                          height: 110,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Expanded(
+                                                          child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Wrap(
+                                                            children: [
+                                                              Text(
+                                                                "${item["ProductName"]}",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 15,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                      "${item["Quantity"] ?? 1}",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight: FontWeight
+                                                                              .w600,
+                                                                          color: Theme.of(context)
+                                                                              .colorScheme
+                                                                              .primary)),
+                                                                  const SizedBox(
+                                                                    width: 3,
+                                                                  ),
+                                                                  Text("x",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight: FontWeight
+                                                                              .w600,
+                                                                          color: Theme.of(context)
+                                                                              .colorScheme
+                                                                              .primary)),
+                                                                  const SizedBox(
+                                                                    width: 3,
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        NumberFormat.currency(
+                                                                                locale: "vi_VI",
+                                                                                symbol: "")
+                                                                            .format(
+                                                                          item[
+                                                                              "Price"],
+                                                                        ),
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            color: Theme.of(context).colorScheme.primary),
+                                                                      ),
+                                                                      Text(
+                                                                        "đ",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            decoration: TextDecoration.underline,
+                                                                            decorationColor: Theme.of(context).colorScheme.primary,
+                                                                            color: Theme.of(context).colorScheme.primary),
+                                                                      )
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ))
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              return const SizedBox(
+                                                height: 120,
+                                                child: Center(
+                                                  child: SizedBox(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: LoadingIndicator(
+                                                      colors:
+                                                          kDefaultRainbowColors,
+                                                      indicatorType: Indicator
+                                                          .lineSpinFadeLoader,
+                                                      strokeWidth: 0.5,
+                                                      // pathBackgroundColor: Colors.black45,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        );
+                                      }).toList())
+                                    : const Text(
+                                        "Chưa có đơn hàng",
+                                        textAlign: TextAlign.center,
+                                      )
+                                : listSerive.isNotEmpty
+                                    ? Column(
+                                        children: listSerive.map((item) {
+                                        int index = listSerive.indexOf(item);
+                                        return FutureBuilder(
+                                          future: serviceModel.getServiceByCode(
+                                              item["ProductCode"]),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              Map detail = snapshot.data!;
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              ChiTietScreen(
+                                                                detail: detail,
+                                                              )));
+                                                },
+                                                child: Container(
+                                                  margin: EdgeInsets.only(
+                                                      top: index != 0 ? 10 : 0),
+                                                  padding: EdgeInsets.only(
+                                                      top: index != 0 ? 10 : 0),
+                                                  decoration: BoxDecoration(
+                                                      border: Border(
+                                                          top: index != 0
+                                                              ? const BorderSide(
+                                                                  width: 1,
+                                                                  color: Colors
+                                                                      .grey)
+                                                              : BorderSide
+                                                                  .none)),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    10)),
+                                                        child: Image.network(
+                                                          "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
+                                                          errorBuilder:
+                                                              (context,
+                                                                  exception,
+                                                                  stackTrace) {
+                                                            return Image.network(
+                                                                width: 110,
+                                                                height: 110,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
+                                                          },
+                                                          width: 110,
+                                                          height: 110,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Expanded(
+                                                          child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Wrap(
+                                                            children: [
+                                                              Text(
+                                                                "${item["ProductName"]}",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 15,
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                      "${item["Quantity"] ?? 1}",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight: FontWeight
+                                                                              .w600,
+                                                                          color: Theme.of(context)
+                                                                              .colorScheme
+                                                                              .primary)),
+                                                                  const SizedBox(
+                                                                    width: 3,
+                                                                  ),
+                                                                  Text("x",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight: FontWeight
+                                                                              .w600,
+                                                                          color: Theme.of(context)
+                                                                              .colorScheme
+                                                                              .primary)),
+                                                                  const SizedBox(
+                                                                    width: 3,
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        NumberFormat.currency(
+                                                                                locale: "vi_VI",
+                                                                                symbol: "")
+                                                                            .format(
+                                                                          item[
+                                                                              "Price"],
+                                                                        ),
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            color: Theme.of(context).colorScheme.primary),
+                                                                      ),
+                                                                      Text(
+                                                                        "đ",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            decoration: TextDecoration.underline,
+                                                                            decorationColor: Theme.of(context).colorScheme.primary,
+                                                                            color: Theme.of(context).colorScheme.primary),
+                                                                      )
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              if (item[
+                                                                      "NgayHenTaiKham"] !=
+                                                                  null)
+                                                                Text(
+                                                                  "Ngày tái khám: ${DateFormat("dd/MM/yyyy").format(DateTime.parse(item["NgayHenTaiKham"]))}",
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .black),
+                                                                ),
+                                                              if (item["Status"] !=
+                                                                      null &&
+                                                                  item["Status"] !=
+                                                                      "*")
+                                                                Text(
+                                                                  "Tình trạng: ${item["Status"].toString().toLowerCase()}",
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .black),
+                                                                ),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ))
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              return const SizedBox(
+                                                height: 120,
+                                                child: Center(
+                                                  child: SizedBox(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child: LoadingIndicator(
+                                                      colors:
+                                                          kDefaultRainbowColors,
+                                                      indicatorType: Indicator
+                                                          .lineSpinFadeLoader,
+                                                      strokeWidth: 0.5,
+                                                      // pathBackgroundColor: Colors.black45,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        );
+                                      }).toList())
+                                    : const Text(
+                                        "Chưa có đơn hàng",
+                                        textAlign: TextAlign.center,
+                                      ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 15, right: 15, top: 15),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 15),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 1,
+                                    blurRadius: 8,
+                                    offset: const Offset(
+                                        4, 4), // changes position of shadow
+                                  ),
+                                ]),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/thanh-toan.png",
+                                      width: 28,
+                                      height: 28,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Phương thức thanh toán",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                            "Thanh toán bằng ${widget.product["PaymentMethod"].toLowerCase() ?? "tiền mặt"} ",
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w300,
+                                                color: Colors.black45)),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                const Icon(Icons.keyboard_arrow_right_outlined,
+                                    color: Colors.black45)
+                              ],
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 15),
-                    margin: const EdgeInsets.only(left: 15, right: 15, top: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(14)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 8,
-                          offset:
-                              const Offset(4, 4), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: selectedIndex == 1
-                        ? listProduct.isNotEmpty
-                            ? Column(
-                                children: listProduct.map((item) {
-                                int index = listProduct.indexOf(item);
-                                return FutureBuilder(
-                                  future: productModel
-                                      .getProductCode(item["ProductCode"]),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      Map detail = snapshot.data!;
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProductDetail(
-                                                          details: detail)));
-                                        },
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              top: index != 0 ? 20 : 0),
-                                          padding: EdgeInsets.only(
-                                              top: index != 0 ? 10 : 0),
-                                          decoration: BoxDecoration(
-                                              border: Border(
-                                                  top: index != 0
-                                                      ? const BorderSide(
-                                                          width: 1,
-                                                          color: Colors.grey)
-                                                      : BorderSide.none)),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(10)),
-                                                child: Image.network(
-                                                  "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                  errorBuilder: (context,
-                                                      exception, stackTrace) {
-                                                    return Image.network(
-                                                      'http://ngochuong.osales.vn/assets/css/images/noimage.gif',
-                                                      width: 110,
-                                                      height: 110,
-                                                      fit: BoxFit.cover,
-                                                    );
-                                                  },
-                                                  width: 110,
-                                                  height: 110,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                  child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Wrap(
-                                                    children: [
-                                                      Text(
-                                                        "${item["ProductName"]}",
-                                                        style: const TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 15,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                              "${item["Quantity"] ?? 1}",
-                                                              style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .primary)),
-                                                          const SizedBox(
-                                                            width: 3,
-                                                          ),
-                                                          Text("x",
-                                                              style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .primary)),
-                                                          const SizedBox(
-                                                            width: 3,
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                NumberFormat.currency(
-                                                                        locale:
-                                                                            "vi_VI",
-                                                                        symbol:
-                                                                            "")
-                                                                    .format(
-                                                                  item["Price"],
-                                                                ),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary),
-                                                              ),
-                                                              Text(
-                                                                "đ",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    decoration:
-                                                                        TextDecoration
-                                                                            .underline,
-                                                                    decorationColor: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary),
-                                                              )
-                                                            ],
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  )
-                                                ],
-                                              ))
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return const SizedBox(
-                                        height: 120,
-                                        child: Center(
-                                          child: SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: LoadingIndicator(
-                                              colors: kDefaultRainbowColors,
-                                              indicatorType:
-                                                  Indicator.lineSpinFadeLoader,
-                                              strokeWidth: 0.5,
-                                              // pathBackgroundColor: Colors.black45,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                );
-                              }).toList())
-                            : const Text(
-                                "Chưa có đơn hàng",
-                                textAlign: TextAlign.center,
-                              )
-                        : listSerive.isNotEmpty
-                            ? Column(
-                                children: listSerive.map((item) {
-                                int index = listSerive.indexOf(item);
-                                return FutureBuilder(
-                                  future: serviceModel
-                                      .getServiceByCode(item["ProductCode"]),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      Map detail = snapshot.data!;
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ChiTietScreen(
-                                                        detail: detail,
-                                                      )));
-                                        },
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              top: index != 0 ? 10 : 0),
-                                          padding: EdgeInsets.only(
-                                              top: index != 0 ? 10 : 0),
-                                          decoration: BoxDecoration(
-                                              border: Border(
-                                                  top: index != 0
-                                                      ? const BorderSide(
-                                                          width: 1,
-                                                          color: Colors.grey)
-                                                      : BorderSide.none)),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(10)),
-                                                child: Image.network(
-                                                  "${detail["Image_Name"] ?? "http://ngochuong.osales.vn/assets/css/images/noimage.gif"}",
-                                                  errorBuilder: (context,
-                                                      exception, stackTrace) {
-                                                    return Image.network(
-                                                        width: 110,
-                                                        height: 110,
-                                                        fit: BoxFit.cover,
-                                                        'http://ngochuong.osales.vn/assets/css/images/noimage.gif');
-                                                  },
-                                                  width: 110,
-                                                  height: 110,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                  child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Wrap(
-                                                    children: [
-                                                      Text(
-                                                        "${item["ProductName"]}",
-                                                        style: const TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w600),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 15,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                              "${item["Quantity"] ?? 1}",
-                                                              style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .primary)),
-                                                          const SizedBox(
-                                                            width: 3,
-                                                          ),
-                                                          Text("x",
-                                                              style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .primary)),
-                                                          const SizedBox(
-                                                            width: 3,
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                NumberFormat.currency(
-                                                                        locale:
-                                                                            "vi_VI",
-                                                                        symbol:
-                                                                            "")
-                                                                    .format(
-                                                                  item["Price"],
-                                                                ),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary),
-                                                              ),
-                                                              Text(
-                                                                "đ",
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    decoration:
-                                                                        TextDecoration
-                                                                            .underline,
-                                                                    decorationColor: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary),
-                                                              )
-                                                            ],
-                                                          )
-                                                        ],
-                                                      ),
-                                                      if (item[
-                                                              "NgayHenTaiKham"] !=
-                                                          null)
-                                                        Text(
-                                                          "Ngày tái khám: ${DateFormat("dd/MM/yyyy").format(DateTime.parse(item["NgayHenTaiKham"]))}",
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 12,
-                                                                  color: Colors
-                                                                      .black),
-                                                        ),
-                                                      if (item["Status"] !=
-                                                              null &&
-                                                          item["Status"] != "*")
-                                                        Text(
-                                                          "Tình trạng: ${item["Status"].toString().toLowerCase()}",
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 12,
-                                                                  color: Colors
-                                                                      .black),
-                                                        ),
-                                                    ],
-                                                  )
-                                                ],
-                                              ))
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return const SizedBox(
-                                        height: 120,
-                                        child: Center(
-                                          child: SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: LoadingIndicator(
-                                              colors: kDefaultRainbowColors,
-                                              indicatorType:
-                                                  Indicator.lineSpinFadeLoader,
-                                              strokeWidth: 0.5,
-                                              // pathBackgroundColor: Colors.black45,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                );
-                              }).toList())
-                            : const Text(
-                                "Chưa có đơn hàng",
-                                textAlign: TextAlign.center,
+                          Container(
+                              margin: const EdgeInsets.only(
+                                  left: 15, right: 15, top: 20),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(14)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 1,
+                                    blurRadius: 8,
+                                    offset: const Offset(
+                                        4, 4), // changes position of shadow
+                                  ),
+                                ],
                               ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 15),
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                            offset: const Offset(
-                                4, 4), // changes position of shadow
-                          ),
-                        ]),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset(
-                              "assets/images/thanh-toan.png",
-                              width: 28,
-                              height: 28,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("Mã đơn hàng",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black)),
+                                  Text("${widget.product["Code"]}",
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black))
+                                ],
+                              )),
+                          Container(
+                              margin: const EdgeInsets.only(
+                                  left: 15, right: 15, top: 20, bottom: 20),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(14)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 1,
+                                    blurRadius: 8,
+                                    offset: const Offset(
+                                        4, 4), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Expanded(
+                                          child: Text(
+                                        "Thời gian đặt hàng",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      )),
+                                      Text(
+                                        DateFormat("dd-MM-yyyy HH:mm").format(
+                                            getPSTTime(DateTime.parse(widget
+                                                .product["CreatedDate"]))),
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              )),
+                        ],
+                      ),
+                    ),
+                    if (widget.product["Status"] == "pending")
+                      Container(
+                        margin: EdgeInsets.only(
+                            bottom:
+                                MediaQuery.of(context).viewInsets.bottom + 20,
+                            left: 15,
+                            right: 15),
+                        child: TextButton(
+                            onPressed: () {
+                              customModal.showAlertDialog(
+                                  context,
+                                  "error",
+                                  "Hủy Đơn Hàng",
+                                  "Bạn có chắc chắn hủy đơn hàng không?", () {
+                                Navigator.of(context).pop();
+                                EasyLoading.show(status: "Vui lòng chờ...");
+                                Future.delayed(const Duration(seconds: 2), () {
+                                  orderModel.putStatusOrder(
+                                      widget.product["Id"], "delete");
+                                  orderModel.getStatusList().then((value) {
+                                    Future.delayed(const Duration(seconds: 2),
+                                        () {
+                                      EasyLoading.dismiss();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MyOrder(
+                                                    listTab: value,
+                                                    ac: value.length - 1,
+                                                  )));
+                                      widget.save!();
+                                    });
+                                  });
+                                });
+                              }, () => Navigator.of(context).pop());
+                            },
+                            style: ButtonStyle(
+                                shape: WidgetStateProperty.all(
+                                    const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15)))),
+                                backgroundColor: WidgetStateProperty.all(
+                                    Theme.of(context).colorScheme.primary),
+                                padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 20))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Text(
-                                  "Phương thức thanh toán",
+                                  "Hủy đơn hàng",
                                   style: TextStyle(
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w400,
-                                      color: Colors.black),
+                                      color: Colors.white),
                                 ),
                                 const SizedBox(
-                                  height: 5,
+                                  width: 15,
                                 ),
-                                Text(
-                                    "${widget.product["PaymentMethod"] ?? "Tiền mặt"} ",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.black45)),
+                                Image.asset(
+                                  "assets/images/cart-white.png",
+                                  width: 24,
+                                  height: 34,
+                                  fit: BoxFit.contain,
+                                ),
                               ],
-                            )
-                          ],
-                        ),
-                        const Icon(Icons.keyboard_arrow_right_outlined,
-                            color: Colors.black45)
-                      ],
-                    ),
-                  ),
-                  Container(
-                      margin:
-                          const EdgeInsets.only(left: 15, right: 15, top: 20),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(14)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                            offset: const Offset(
-                                4, 4), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("Mã đơn hàng",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black)),
-                          Text("${widget.product["Code"]}",
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black))
-                        ],
-                      )),
-                  Container(
-                      margin: const EdgeInsets.only(
-                          left: 15, right: 15, top: 20, bottom: 20),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(14)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 8,
-                            offset: const Offset(
-                                4, 4), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Expanded(
-                                  child: Text(
-                                "Thời gian đặt hàng",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )),
-                              Text(
-                                DateFormat("dd-MM-yyyy HH:mm").format(
-                                    getPSTTime(DateTime.parse(
-                                        widget.product["CreatedDate"]))),
-                                textAlign: TextAlign.right,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ],
-                      )),
-                ],
-              ),
-            )));
+                            )),
+                      )
+                  ],
+                ))));
   }
 }
 
