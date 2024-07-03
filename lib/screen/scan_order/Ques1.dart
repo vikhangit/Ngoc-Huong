@@ -13,7 +13,7 @@ class Ques1 extends StatefulWidget {
   State<Ques1> createState() => _Ques1State();
 }
 
-double valueRating1 = 1.0;
+double valueRating1 = 0;
 
 class _Ques1State extends State<Ques1> {
   @override
@@ -52,19 +52,19 @@ class _Ques1State extends State<Ques1> {
                 maxValueVisibility: true,
                 valueLabelVisibility: false,
                 animationDuration: const Duration(milliseconds: 1000),
-                starBuilder: (index1, color) {
-                  return SizedBox(
-                    child: valueRating1.round() >= index1 + 1
-                        ? Image.asset(
-                            "assets/images/star-solid.png",
-                            width: 28,
-                            height: 28,
-                          )
-                        : Image.asset("assets/images/star-outline.png",
-                            width: 28, height: 28),
-                  );
-                },
-                starOffColor: mainColor,
+                // starBuilder: (index1, color) {
+                //   return SizedBox(
+                //     child: valueRating1.round() >= index1 + 1
+                //         ? Image.asset(
+                //             "assets/images/star-solid.png",
+                //             width: 28,
+                //             height: 28,
+                //           )
+                //         : Image.asset("assets/images/star-outline.png",
+                //             width: 28, height: 28),
+                //   );
+                // },
+                starOffColor: Colors.grey.shade300,
                 starColor: mainColor,
               ),
             )

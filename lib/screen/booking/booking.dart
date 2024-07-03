@@ -316,7 +316,10 @@ class _BookingServicesState extends State<BookingServices>
               "DueDate": "",
               "Note": "",
               "PaymentMethod": paymentMethod,
-              "TotalAmount": activeService["PriceOutbound"],
+              "TotalAmount": activeService["CusomterPrice"] != null &&
+                      activeService["CusomterPrice"] > 0
+                  ? activeService["CusomterPrice"]
+                  : activeService["PriceOutbound"],
               "DetailList": [
                 activeService["Id"],
               ]
@@ -1052,10 +1055,6 @@ class _BookingServicesState extends State<BookingServices>
                                                                                                   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
                                                                                                 ),
                                                                                               )),
-                                                                                              // Text(
-                                                                                              //   NumberFormat.currency(locale: "vi_VI", symbol: "đ").format(abc["PriceOutbound"]),
-                                                                                              //   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: Colors.black),
-                                                                                              // )
                                                                                             ],
                                                                                           )),
                                                                                     );

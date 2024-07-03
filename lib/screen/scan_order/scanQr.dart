@@ -27,15 +27,20 @@ class _ScanQRState extends State<ScanQR> {
     String barCodeScanRes;
     try {
       barCodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          "#ff6666", "Cancel", true, ScanMode.QR);
+          "#ff6666", "Hủy ", true, ScanMode.QR);
     } on PlatformException {
       barCodeScanRes = "Fail to get platform version.";
     }
     if (!mounted) return;
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => RatingPage(item: barCodeScanRes)));
+    if (barCodeScanRes.isNotEmpty && barCodeScanRes != "-1") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => RatingPage(item: barCodeScanRes)));
+    } else {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ScanQR()));
+    }
   }
 
   @override
@@ -100,18 +105,21 @@ class _ScanQRState extends State<ScanQR> {
                 child: ListView(
                   controller: scrollController,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 50,
                     ),
-                    Text(
-                      "Quý khách vui lòng quét mã QR hoặc mã vạch có in trên hóa đơn để đánh giá về chất lượng dịch vụ của chúng tôi",
-                      textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 12.5),
+                      child: const Text(
+                        "Quý khách vui lòng quét mã QR hoặc mã vạch có in trên hóa đơn để đánh giá về chất lượng dịch vụ của chúng tôi",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w300),
+                      ),
                     ),
                     Container(
-                      margin:
-                          EdgeInsets.only(bottom: 20, left: 12.5, right: 12.5, top: 20),
+                      margin: EdgeInsets.only(
+                          bottom: 20, left: 12.5, right: 12.5, top: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

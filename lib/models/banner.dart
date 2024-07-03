@@ -29,14 +29,13 @@ class BannerModel {
   Future<List> getFlashSale() async {
     List result = [];
     try {
-      Response response = await client.dio
-          .get('$goodAppUrl/api/$idApp/ecompromotion_flashsales?$token',
-              options: Options(headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                // 'Authorization':
-                //     '${localStorageCustomerToken.getItem("customer_token")}',
-              }));
+      Response response = await client.dio.get(
+        '$goodAppUrl/api/$idApp/ecompromotion_flashsales?$token',
+      );
       if (response.statusCode == 200) {
+        print("=====================================");
+        print(response.data);
+        print("=====================================");
         return result = response.data;
       } else {
         return result;

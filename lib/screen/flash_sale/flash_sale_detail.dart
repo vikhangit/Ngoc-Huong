@@ -7,10 +7,13 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:ngoc_huong/controllers/dio_client.dart';
 import 'package:ngoc_huong/models/cartModel.dart';
+import 'package:ngoc_huong/models/productModel.dart';
+import 'package:ngoc_huong/models/profileModel.dart';
 import 'package:ngoc_huong/models/servicesModel.dart';
 import 'package:ngoc_huong/screen/ModalZoomImage.dart';
 import 'package:ngoc_huong/screen/booking/booking.dart';
 import 'package:ngoc_huong/screen/cart/cart_success.dart';
+import 'package:ngoc_huong/screen/checkout/products/checkout_cart.dart';
 import 'package:ngoc_huong/screen/login/loginscreen/login_screen.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
@@ -26,6 +29,8 @@ class FlashSaleDetail extends StatefulWidget {
   State<FlashSaleDetail> createState() => _FlashSaleDetailState();
 }
 
+Map profile = {};
+
 class _FlashSaleDetailState extends State<FlashSaleDetail> {
   final ScrollController scrollController = ScrollController();
   final LocalStorage storageCustomerToken = LocalStorage('customer_token');
@@ -33,12 +38,19 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
   final CartModel cartModel = CartModel();
   final CustomModal customModal = CustomModal();
   final ServicesModel servicesModel = ServicesModel();
+  final ProductModel productModel = ProductModel();
+  final ProfileModel profileModel = ProfileModel();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Upgrader.clearSavedSettings();
+    profileModel.getProfile().then((value) {
+      setState(() {
+        profile = value;
+      });
+    });
   }
 
   @override
@@ -246,14 +258,136 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                             ],
                           )),
                     ),
-                    newsDetail["TypeProduct"] == "service"
+                    // newsDetail["is_service"] != null &&
+                    //         newsDetail["is_service"] == true
+                    //     ?
+
+                    newsDetail["is_service"] == null ||
+                            newsDetail["is_service"] == false
                         ? Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width,
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 15),
+                            color: Colors.white,
+                            child: FutureBuilder(
+                              future: productModel.getProductCode(
+                                  newsDetail["details"][0]["ma_vt"].toString()),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return TextButton(
+                                      style: ButtonStyle(
+                                          padding: WidgetStateProperty.all(
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 20)),
+                                          shape: WidgetStateProperty.all(
+                                              const RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              15)))),
+                                          backgroundColor:
+                                              WidgetStateProperty.all(
+                                                  Theme.of(context)
+                                                      .colorScheme
+                                                      .primary
+                                                      .withOpacity(0.4))),
+                                      onPressed: () {
+                                        if (storageCustomerToken
+                                                .getItem("customer_token") !=
+                                            null) {
+                                          Map detailProduct = snapshot.data!;
+                                          productModel
+                                              .getProductByGroupAndCode(
+                                                  detailProduct["CategoryCode"],
+                                                  detailProduct["Code"])
+                                              .then((value) {
+                                            num totalP =
+                                                value["CusomterPrice"] !=
+                                                            null &&
+                                                        value["CusomterPrice"] >
+                                                            0
+                                                    ? value["CusomterPrice"]
+                                                    : value["PriceOutbound"];
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CheckOutCart(
+                                                            total: totalP,
+                                                            listCart: [
+                                                              {
+                                                                "Amount":
+                                                                    totalP,
+                                                                "Price": totalP,
+                                                                "Quantity": 1,
+                                                                "ProductCode":
+                                                                    value[
+                                                                        "Code"],
+                                                                "ProductId":
+                                                                    value["Id"],
+                                                                "ExchangeCoin":
+                                                                    value[
+                                                                        "ExchangeCoin"]
+                                                              }
+                                                            ],
+                                                            totalCatCoin: value[
+                                                                "ExchangeCoin"],
+                                                            profile: profile)));
+                                          });
+                                        } else {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LoginScreen()));
+                                        }
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            "Đặt hàng",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          const SizedBox(width: 15),
+                                          Image.asset(
+                                            "assets/images/cart-black.png",
+                                            width: 24,
+                                            height: 24,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ],
+                                      ));
+                                } else {
+                                  return const Center(
+                                    child: SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: LoadingIndicator(
+                                        colors: kDefaultRainbowColors,
+                                        indicatorType:
+                                            Indicator.lineSpinFadeLoader,
+                                        strokeWidth: 1,
+                                        // pathBackgroundColor: Colors.black45,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          )
+                        : Container(
                             height: 50,
                             margin: const EdgeInsets.symmetric(
                                 vertical: 15, horizontal: 15),
                             child: FutureBuilder(
                                 future: servicesModel.getServiceByCode(
-                                    newsDetail["ProductCode"]),
+                                    newsDetail["details"][0]["ma_vt"]),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     return TextButton(
@@ -328,147 +462,8 @@ class _FlashSaleDetailState extends State<FlashSaleDetail> {
                                       ),
                                     );
                                   }
-                                }))
-                        : newsDetail["TypeProduct"] == "product"
-                            ? Container(
-                                height: 50,
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 15),
-                                color: Colors.white,
-                                child: FutureBuilder(
-                                  future: cartModel.getDetailCartByCode(
-                                      newsDetail["ProductCode"].toString()),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      return TextButton(
-                                          style: ButtonStyle(
-                                              padding: WidgetStateProperty.all(
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20)),
-                                              shape: WidgetStateProperty.all(
-                                                  const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  15)))),
-                                              backgroundColor:
-                                                  WidgetStateProperty.all(
-                                                      Theme.of(context)
-                                                          .colorScheme
-                                                          .primary
-                                                          .withOpacity(0.4))),
-                                          onPressed: () {
-                                            if (storageCustomerToken.getItem(
-                                                    "customer_token") !=
-                                                null) {
-                                              // print(snapshot.data!);
-                                              if (snapshot.data!.isNotEmpty) {
-                                                updateCart(snapshot.data!);
-                                              } else {
-                                                addToCart();
-                                              }
-                                            } else {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const LoginScreen()));
-                                            }
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              const Text(
-                                                "Thêm vào giỏ hàng",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                              ),
-                                              const SizedBox(width: 15),
-                                              Image.asset(
-                                                "assets/images/cart-black.png",
-                                                width: 24,
-                                                height: 24,
-                                                fit: BoxFit.contain,
-                                              ),
-                                            ],
-                                          ));
-                                    } else {
-                                      return const Center(
-                                        child: SizedBox(
-                                          width: 40,
-                                          height: 40,
-                                          child: LoadingIndicator(
-                                            colors: kDefaultRainbowColors,
-                                            indicatorType:
-                                                Indicator.lineSpinFadeLoader,
-                                            strokeWidth: 1,
-                                            // pathBackgroundColor: Colors.black45,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                              )
-                            : Container(
-                                height: 50,
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 15),
-                                child: TextButton(
-                                    style: ButtonStyle(
-                                        padding: WidgetStateProperty.all(
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 20)),
-                                        shape: WidgetStateProperty.all(
-                                            const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)))),
-                                        backgroundColor: WidgetStateProperty.all(Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withOpacity(0.4))),
-                                    onPressed: () {
-                                      if (storageCustomerToken
-                                              .getItem("customer_token") ==
-                                          null) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const LoginScreen()));
-                                      } else {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    BookingServices()));
-                                      }
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          "Đặt lịch hẹn",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Image.asset(
-                                          "assets/images/calendar-black.png",
-                                          width: 24,
-                                          height: 24,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ],
-                                    ))),
+                                })),
+
                     const SizedBox(
                       height: 5,
                     )

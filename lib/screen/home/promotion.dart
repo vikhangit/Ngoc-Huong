@@ -19,7 +19,7 @@ class _PromotionState extends State<Promotion> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20),
+      margin: const EdgeInsets.only(top: 5),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: [

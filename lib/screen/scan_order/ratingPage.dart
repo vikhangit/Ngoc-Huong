@@ -1,6 +1,8 @@
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +17,7 @@ import 'package:ngoc_huong/screen/scan_order/Ques3.dart';
 import 'package:ngoc_huong/screen/scan_order/Ques4.dart';
 import 'package:ngoc_huong/screen/scan_order/Ques5.dart';
 import 'package:ngoc_huong/screen/scan_order/Ques6.dart';
+import 'package:ngoc_huong/screen/scan_order/scanQr.dart';
 import 'package:ngoc_huong/screen/start/start_screen.dart';
 import 'package:ngoc_huong/utils/CustomModalBottom/custom_modal.dart';
 import 'package:ngoc_huong/utils/CustomTheme/custom_theme.dart';
@@ -53,6 +56,7 @@ class _RatingPageState extends State<RatingPage> {
       focusInput = false;
       star.clear();
     });
+
     profileModel.getProfile().then((value) => setState(() {
           profile = value;
         }));
@@ -62,7 +66,7 @@ class _RatingPageState extends State<RatingPage> {
     ratingrModel.getQuestionList().then((value) => setState(() {
           dataQuestionRating = value;
           for (var i = 0; i < value.length; i++) {
-            star.add(1);
+            star.add(0);
           }
           loading = false;
         }));
@@ -84,6 +88,10 @@ class _RatingPageState extends State<RatingPage> {
 
   @override
   Widget build(BuildContext context) {
+    // if (widget.item == "-1") {
+    //   Navigator.push(
+    //       context, MaterialPageRoute(builder: (context) => ScanQR()));
+    // }
     final scaffoldKey = GlobalKey<ScaffoldState>();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     return Form(
@@ -216,85 +224,98 @@ class _RatingPageState extends State<RatingPage> {
                                       FocusManager.instance.primaryFocus!
                                           .unfocus();
                                       List detail = [];
+                                      int findzero = star.indexOf(0);
 
-                                      for (var i = 0;
-                                          i < dataQuestionRating.length;
-                                          i++) {
-                                        detail.add({
-                                          "cau_hoi": dataQuestionRating[i]
-                                              ["cau_hoi"],
-                                          "diem": star[i],
-                                          "id_starquote_question":
-                                              dataQuestionRating[i]["_id"]
-                                        });
-                                      }
-                                      Map data = {
-                                        "ngay": DateFormat("yyyy/MM/dd")
-                                            .format(DateTime.now()),
-                                        "mo_ta": controller.text,
-                                        "details": [...detail],
-                                        "ma_kh": profile["Phone"]
-                                      };
+                                      if (findzero >= 0) {
+                                        customModal.showAlertDialog(
+                                            context,
+                                            "error",
+                                            "Lỗi đánh giá",
+                                            "Bạn vui lòng chọn sao đánh giá cho câu hỏi số ${findzero + 1}",
+                                            () {
+                                          Navigator.of(context).pop();
+                                        }, () => Navigator.of(context).pop());
+                                      } else {
+                                        for (var i = 0;
+                                            i < dataQuestionRating.length;
+                                            i++) {
+                                          detail.add({
+                                            "cau_hoi": dataQuestionRating[i]
+                                                ["cau_hoi"],
+                                            "diem": star[i],
+                                            "id_starquote_question":
+                                                dataQuestionRating[i]["_id"]
+                                          });
+                                        }
+                                        Map data = {
+                                          "ngay": DateFormat("yyyy/MM/dd")
+                                              .format(DateTime.now()),
+                                          "mo_ta": controller.text,
+                                          "details": [...detail],
+                                          "ma_kh": profile["Phone"]
+                                        };
 
-                                      customModal.showAlertDialog(
-                                          context,
-                                          "error",
-                                          "Gửi đánh giá",
-                                          "Bạn có chắc chắn gửi đánh giá đên Ngọc Hường?",
-                                          () {
-                                        Navigator.of(context).pop();
-                                        EasyLoading.show(
-                                            status: "Vui lòng chờ...");
-                                        Future.delayed(
-                                            const Duration(seconds: 2), () {
-                                          ratingrModel
-                                              .addRatingForUser(data)
-                                              .then((value) {
-                                            EasyLoading.dismiss();
-                                            star.clear();
-
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        HomeScreen(
-                                                          callBack: () {
-                                                            setState(() {});
-                                                          },
-                                                        )));
-                                            setState(() {
-                                              valueRating1 = 1.0;
-                                              for (var i = 0;
-                                                  i < dataQuestionRating.length;
-                                                  i++) {
-                                                star.add(1);
-                                              }
-                                              ElegantNotification.success(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 50,
-                                                notificationPosition:
-                                                    NotificationPosition
-                                                        .topCenter,
-                                                toastDuration: const Duration(
-                                                    milliseconds: 2000),
-                                                animation:
-                                                    AnimationType.fromTop,
-                                                // title: const Text('Cập nhật'),
-                                                description: const Text(
-                                                  'Gửi đánh giá thành công!!! Cảm ơn quý khách đã đòng góp ý kiến',
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w300),
-                                                ),
-                                                onDismiss: () {},
-                                              ).show(context);
+                                        customModal.showAlertDialog(
+                                            context,
+                                            "error",
+                                            "Gửi đánh giá",
+                                            "Bạn có chắc chắn gửi đánh giá đên Ngọc Hường?",
+                                            () {
+                                          Navigator.of(context).pop();
+                                          EasyLoading.show(
+                                              status: "Vui lòng chờ...");
+                                          Future.delayed(
+                                              const Duration(seconds: 2), () {
+                                            ratingrModel
+                                                .addRatingForUser(data)
+                                                .then((value) {
+                                              EasyLoading.dismiss();
+                                              star.clear();
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HomeScreen(
+                                                            callBack: () {
+                                                              setState(() {});
+                                                            },
+                                                          )));
+                                              setState(() {
+                                                valueRating1 = 0;
+                                                for (var i = 0;
+                                                    i <
+                                                        dataQuestionRating
+                                                            .length;
+                                                    i++) {
+                                                  star.add(0);
+                                                }
+                                                ElegantNotification.success(
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  height: 50,
+                                                  notificationPosition:
+                                                      NotificationPosition
+                                                          .topCenter,
+                                                  toastDuration: const Duration(
+                                                      milliseconds: 4000),
+                                                  animation:
+                                                      AnimationType.fromTop,
+                                                  // title: const Text('Cập nhật'),
+                                                  description: const Text(
+                                                    'Gửi đánh giá thành công!!! Cảm ơn quý khách đã đòng góp ý kiến',
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w300),
+                                                  ),
+                                                  onDismiss: () {},
+                                                ).show(context);
+                                              });
                                             });
                                           });
-                                        });
-                                      }, () => Navigator.of(context).pop());
+                                        }, () => Navigator.of(context).pop());
+                                      }
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
@@ -340,64 +361,6 @@ class _RatingPageState extends State<RatingPage> {
                               ),
                             ),
                     )))));
-  }
-}
-
-class RatingQuestion extends StatefulWidget {
-  final double valueRating;
-  final String question;
-  final Function(double a) setRating;
-  const RatingQuestion(
-      {super.key,
-      required this.valueRating,
-      required this.question,
-      required this.setRating});
-
-  @override
-  State<RatingQuestion> createState() => _RatingQuestionState();
-}
-
-class _RatingQuestionState extends State<RatingQuestion> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          child: Text(widget.question),
-        ),
-        Center(
-          child: RatingStars(
-            value: widget.valueRating,
-            onValueChanged: (v) {
-              widget.setRating(v);
-            },
-            starCount: 5,
-            starSize: 24,
-            maxValue: 5,
-            starSpacing: 5,
-            maxValueVisibility: true,
-            valueLabelVisibility: false,
-            animationDuration: const Duration(milliseconds: 1000),
-            starBuilder: (index1, color) {
-              return SizedBox(
-                child: widget.valueRating.round() >= index1 + 1
-                    ? Image.asset(
-                        "assets/images/star-solid.png",
-                        width: 28,
-                        height: 28,
-                      )
-                    : Image.asset("assets/images/star-outline.png",
-                        width: 28, height: 28),
-              );
-            },
-            starOffColor: mainColor,
-            starColor: mainColor,
-          ),
-        )
-      ],
-    );
   }
 }
 

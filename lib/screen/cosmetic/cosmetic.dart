@@ -538,8 +538,9 @@ class _CosmeticState extends State<Cosmetic> {
                                                                               2,
                                                                         ),
                                                                         Text(
-                                                                          NumberFormat.currency(locale: "vi_VI", symbol: "")
-                                                                              .format(item["PriceOutbound"]),
+                                                                          NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["CusomterPrice"] != null && item["CusomterPrice"] > 0
+                                                                              ? item["CusomterPrice"]
+                                                                              : item["PriceOutbound"]),
                                                                           style: const TextStyle(
                                                                               fontSize: 12,
                                                                               fontWeight: FontWeight.w600,

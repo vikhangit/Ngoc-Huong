@@ -97,9 +97,19 @@ class _ProductDetailState extends State<ProductDetail>
           Map data = {
             "DetailList": [
               {
-                "Amount": productDetail["PriceOutbound"] * quantity,
-                "Price": productDetail["PriceOutbound"],
-                "PrinceTest": productDetail["PriceOutbound"] * quantity,
+                "Amount": (productDetail["CusomterPrice"] != null &&
+                            productDetail["CusomterPrice"] > 0
+                        ? productDetail["CusomterPrice"]
+                        : productDetail["PriceOutbound"]) *
+                    quantity,
+                "Price": productDetail["CusomterPrice"] != null &&
+                        productDetail["CusomterPrice"] > 0
+                    ? productDetail["CusomterPrice"]
+                    : productDetail["PriceOutbound"],
+                "PrinceTest": productDetail["CusomterPrice"] != null &&
+                        productDetail["CusomterPrice"] > 0
+                    ? productDetail["CusomterPrice"]
+                    : productDetail["PriceOutbound"] * quantity,
                 "ProductCode": productDetail["Code"],
                 "ProductId": productDetail["Id"],
                 "ExchangeCoin": productDetail["ExchangeCoin"],
@@ -280,7 +290,15 @@ class _ProductDetailState extends State<ProductDetail>
                                                       locale: "vi_VI",
                                                       symbol: "")
                                                   .format(productDetail[
-                                                      "PriceOutbound"]),
+                                                                  "CusomterPrice"] !=
+                                                              null &&
+                                                          productDetail[
+                                                                  "CusomterPrice"] >
+                                                              0
+                                                      ? productDetail[
+                                                          "CusomterPrice"]
+                                                      : productDetail[
+                                                          "PriceOutbound"]),
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w500,

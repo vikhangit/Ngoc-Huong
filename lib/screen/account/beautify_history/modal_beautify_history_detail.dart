@@ -105,48 +105,6 @@ class _ModalBeautifyHistoryDetailState
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  //   children: [
-                                  //     Text(
-                                  //       NumberFormat.currency(locale: "vi_VI", symbol: "đ")
-                                  //           .format(
-                                  //         detailProduct["PriceOutbound"],
-                                  //       ),
-                                  //       style: TextStyle(
-                                  //           fontSize: 16,
-                                  //           color: Theme.of(context).colorScheme.primary),
-                                  //     ),
-                                  //     // Row(
-                                  //     //   children: [
-                                  //     //     const Icon(
-                                  //     //       Icons.star,
-                                  //     //       size: 20,
-                                  //     //       color: Colors.orange,
-                                  //     //     ),
-                                  //     //     Container(
-                                  //     //       margin:
-                                  //     //       const EdgeInsets.symmetric(horizontal: 5),
-                                  //     //       child: const Text("4.8"),
-                                  //     //     ),
-                                  //     //     const Text(
-                                  //     //       "(130 đánh giá)",
-                                  //     //       style: TextStyle(fontWeight: FontWeight.w300),
-                                  //     //     )
-                                  //     //   ],
-                                  //     // )
-                                  //   ],
-                                  // ),
-                                  // const SizedBox(
-                                  //   height: 10,
-                                  // ),
-                                  // const Text(
-                                  //   "Chi tiết",
-                                  //   style: TextStyle(fontSize: 15),
-                                  // ),
-                                  // const SizedBox(
-                                  //   height: 5,
-                                  // ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -303,7 +261,6 @@ class _ModalBeautifyHistoryDetailState
                                               }))
                                     ],
                                   ),
-
                                   const SizedBox(
                                     height: 5,
                                   ),

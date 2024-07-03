@@ -279,45 +279,6 @@ class _BookingHistoryState extends State<BookingHistory>
                                                                       color: Colors
                                                                           .black),
                                                                 ),
-                                                                // Container(
-                                                                //     margin:
-                                                                //     const EdgeInsets
-                                                                //         .only(
-                                                                //         bottom:
-                                                                //         0,
-                                                                //         top: 5),
-                                                                //     child: Html(
-                                                                //         style: {
-                                                                //           "*": Style(
-                                                                //               margin: Margins.only(
-                                                                //                   top:
-                                                                //                   0,
-                                                                //                   left:
-                                                                //                   0),
-                                                                //               maxLines:
-                                                                //               2,
-                                                                //               fontSize: FontSize(
-                                                                //                   14),
-                                                                //               fontWeight: FontWeight
-                                                                //                   .w300,
-                                                                //               textOverflow:
-                                                                //               TextOverflow.ellipsis),
-                                                                //         },
-                                                                //         data: "")),
-                                                                // const SizedBox(height: 5,),
-                                                                //  Text(
-                                                                //    NumberFormat.currency(
-                                                                //        locale:
-                                                                //        "vi_VI",
-                                                                //        symbol:
-                                                                //        "đ")
-                                                                //        .format(
-                                                                //        detail["PriceOutbound"],
-                                                                //    ),
-                                                                //   style: const TextStyle(
-                                                                //     color: Colors.black
-                                                                //   ),
-                                                                //  ),
                                                                 const SizedBox(
                                                                   height: 5,
                                                                 ),

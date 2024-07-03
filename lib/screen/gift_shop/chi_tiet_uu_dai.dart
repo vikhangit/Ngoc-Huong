@@ -83,60 +83,6 @@ class _GiftShopDetailState extends State<GiftShopDetail>
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     Map productDetail = widget.details;
-    void addToCart() async {
-      customModal.showAlertDialog(context, "error", "Giỏ hàng",
-          "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.of(context).pop();
-        EasyLoading.show(status: "Vui lòng chờ...");
-        Future.delayed(const Duration(seconds: 2), () {
-          Map data = {
-            "DetailList": [
-              {
-                "Amount": productDetail["PriceOutbound"] * quantity,
-                "Price": productDetail["PriceOutbound"],
-                "PrinceTest": productDetail["PriceOutbound"] * quantity,
-                "ProductCode": productDetail["Code"],
-                "ProductId": productDetail["Id"],
-                "Quantity": quantity,
-              }
-            ]
-          };
-          cartModel.addToCart(data).then((value) {
-            EasyLoading.dismiss();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddCartSuccess()));
-          });
-        });
-      }, () => Navigator.of(context).pop());
-    }
-
-    void updateCart(Map item) async {
-      customModal.showAlertDialog(context, "error", "Giỏ hàng",
-          "Bạn có chắc chắn thêm sản phẩm vào giỏ hàng?", () {
-        Navigator.of(context).pop();
-        EasyLoading.show(status: "Vui lòng chờ...");
-        Future.delayed(const Duration(seconds: 2), () {
-          cartModel.updateProductInCart({
-            // "Id": 1,
-            "DetailList": [
-              {
-                ...item,
-                "Ammount": item["Quantity"] + quantity * item["Price"],
-                "Quantity": item["Quantity"] + quantity
-              }
-            ]
-          }).then((value) {
-            EasyLoading.dismiss();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddCartSuccess()));
-          });
-        });
-      }, () => Navigator.of(context).pop());
-    }
 
     return SafeArea(
         bottom: false,

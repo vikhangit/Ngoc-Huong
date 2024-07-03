@@ -25,7 +25,7 @@ class _FlashSaleState extends State<FlashSale> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20, left: 22.5, right: 22.5),
+      margin: const EdgeInsets.only(top: 10, left: 22.5, right: 22.5),
       width: MediaQuery.of(context).size.width,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
@@ -45,11 +45,13 @@ class _FlashSaleState extends State<FlashSale> {
               if (snapshot.hasData) {
                 DateTime now = DateTime.now();
                 List list = snapshot.data!;
+
                 List newList = [];
                 for (var i = 0; i < list.length; i++) {
                   if (DateTime.parse(list[i]["tu_ngay"]).isBefore(now) &&
                       DateTime.parse(list[i]["den_ngay"]).isAfter(now) &&
-                      list[i]["trang_thai"] == "1") {
+                      list[i]["trang_thai"] == "2" &&
+                      list[i]["shared"] == true) {
                     newList.add(list[i]);
                   }
                 }
@@ -66,6 +68,11 @@ class _FlashSaleState extends State<FlashSale> {
                                 "Các chương trình flash sale đã hết hạn",
                                 () => Navigator.of(context).pop(),
                                 () => Navigator.of(context).pop());
+                            bannerModel.getFlashSale().then((value) {
+                              print("=====================================");
+                              print(value);
+                              print("=====================================");
+                            });
                           },
                           child: Container(
                               height: 180,

@@ -30,21 +30,23 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20, left: 3, right: 3),
+      margin: const EdgeInsets.only(top: 10, left: 3, right: 3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 18.5),
+            padding: EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
-                  "NGỌC HƯỜNG BEAUTY - GÓP Ý DỊCH VỤ",
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: mainColor,
+                Expanded(
+                  child: Text(
+                    "REVIEW DỊCH VỤ TẠI THẨM MỸ VIỆN NGỌC HƯỜNG",
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: mainColor,
+                    ),
                   ),
                 ),
                 GestureDetector(
@@ -68,10 +70,10 @@ class _ReviewPageState extends State<ReviewPage> {
             ),
           ),
           Container(
-            height: 15,
+            height: 5,
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.width > 600 ? 480 : 230,
+            height: MediaQuery.of(context).size.width > 600 ? 480 : 215,
             child: FutureBuilder(
               future: bannerModel.getReviewServices(),
               builder: (context, snapshot) {
@@ -115,22 +117,22 @@ class _ReviewPageState extends State<ReviewPage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                      height:
-                                          MediaQuery.of(context).size.width >
-                                                  600
-                                              ? 315
-                                              : 140,
+                                      // height:
+                                      //     MediaQuery.of(context).size.width >
+                                      //             600
+                                      //         ? 315
+                                      //         : 140,
                                       child: HtmlWidget(
-                                        list[i]["content"],
-                                        customStylesBuilder: (element) {
-                                          // if (element.localName == "iframe") {
-                                          //   return {
-                                          //     "width": "100%",
-                                          //     "height": "100%"
-                                          //   };
-                                          // }
-                                        },
-                                      )),
+                                    list[i]["content"],
+                                    customStylesBuilder: (element) {
+                                      // if (element.localName == "iframe") {
+                                      //   return {
+                                      //     "width": "100%",
+                                      //     "height": "100%"
+                                      //   };
+                                      // }
+                                    },
+                                  )),
                                   // Stack(
                                   //   children: [
 
@@ -146,13 +148,14 @@ class _ReviewPageState extends State<ReviewPage> {
                                   //   ],
                                   // ),
                                   Container(
+                                    margin: EdgeInsets.only(top: 8),
                                     child: Text(
                                       "${list[i]["title"]}",
                                       textAlign: TextAlign.left,
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 13,
                                           height: 1.1,
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600),
@@ -170,7 +173,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         SizedBox(
                           height: MediaQuery.of(context).size.width > 600
                               ? 365
-                              : 210,
+                              : 185,
                           width: MediaQuery.of(context).size.width,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(

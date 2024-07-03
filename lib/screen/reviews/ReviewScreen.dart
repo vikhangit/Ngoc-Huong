@@ -71,9 +71,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
                       color: Colors.black,
                     ),
                   )),
-              title: const Text("NGỌC HƯỜNG BEAUTY - GÓP Ý DỊCH VỤ",
+              title: const Text("REVIEW DỊCH VỤ TẠI THẨM MỸ VIỆN NGỌC HƯỜNG",
                   style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: Colors.white)),
             ),
@@ -139,8 +139,19 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                           width: MediaQuery.of(context)
                                                       .size
                                                       .width /
-                                                 (MediaQuery.of(context).size.width > 650 ?  4 : MediaQuery.of(context).size.width > 450 ? 3 : 2) -
+                                                  (MediaQuery.of(context)
+                                                              .size
+                                                              .width >
+                                                          650
+                                                      ? 4
+                                                      : MediaQuery.of(context)
+                                                                  .size
+                                                                  .width >
+                                                              450
+                                                          ? 3
+                                                          : 2) -
                                               22.5,
+                                          height: 170,
                                           padding: const EdgeInsets.only(
                                               left: 6,
                                               right: 6,
@@ -172,7 +183,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
-                                                  height: MediaQuery.of(context).size.width > 450 ? 175 :  145,
+                                                  // height: MediaQuery.of(context)
+                                                  //             .size
+                                                  //             .width >
+                                                  //         450
+                                                  //     ? 175
+                                                  //     : 100,
+                                                  alignment: Alignment.center,
                                                   child: HtmlWidget(
                                                     item["content"],
                                                     customStylesBuilder:
@@ -186,16 +203,19 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                                       }
                                                     },
                                                   )),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
                                               Text(
                                                 "${item["title"]}",
-                                                maxLines: 2,
+                                                maxLines: 3,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                    fontSize: 10,
-                                                    height: 1.2,
+                                                    fontSize: 12,
+                                                    height: 1.1,
                                                     color: mainColor,
                                                     fontWeight:
-                                                        FontWeight.w500),
+                                                        FontWeight.w600),
                                               ),
                                             ],
                                           ),

@@ -90,11 +90,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         statusBarColor: mainColor,
         systemNavigationBarColor: Colors.white,
         systemNavigationBarIconBrightness: Brightness.dark));
-    if (Platform.isAndroid) {
-      SystemNavigator.pop();
-    } else if (Platform.isIOS) {
-      exit(0);
-    }
   }
 
   Future refreshData() async {
@@ -104,6 +99,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void goPage(index, reason) {
     activeCarousel = index;
+  }
+
+  Future someFunction() async {
+    return customModal.showAlertDialog(context, "error", "Thoát ứng dụng",
+        "Bạn có chắc chắn thoát ứng dụng không?", () {
+      if (Platform.isAndroid) {
+        SystemNavigator.pop();
+      } else if (Platform.isIOS) {
+        exit(0);
+      }
+    }, () => Navigator.of(context).pop());
   }
 
   @override
@@ -121,59 +127,67 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     print(storageCustomerToken.getItem("customer_token"));
     print("---------------------------------------");
     return SafeArea(
-      bottom: false,
-      top: false,
-      child: Scaffold(
-          // key: scaffoldKey,
-          backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: true,
-          bottomNavigationBar: ScrollToHide(
-              scrollController: scrollController,
-              height: Platform.isAndroid ? 75 : 100,
-              child: const MyBottomMenu(
-                active: 0,
-              )),
-          appBar: Platform.isIOS
-              ? null
-              : AppBar(
-                  leadingWidth: 45,
-                  centerTitle: true,
-                  toolbarHeight: 20,
-                  automaticallyImplyLeading: false,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(0),
+        bottom: false,
+        top: false,
+        child: PopScope(
+          canPop: false,
+          onPopInvoked: (didPop) async {
+            if (didPop) {
+              return;
+            }
+            return await someFunction();
+          },
+          child: Scaffold(
+              // key: scaffoldKey,
+              backgroundColor: Colors.white,
+              resizeToAvoidBottomInset: true,
+              bottomNavigationBar: ScrollToHide(
+                  scrollController: scrollController,
+                  height: Platform.isAndroid ? 75 : 100,
+                  child: const MyBottomMenu(
+                    active: 0,
+                  )),
+              appBar: Platform.isIOS
+                  ? null
+                  : AppBar(
+                      leadingWidth: 45,
+                      centerTitle: true,
+                      toolbarHeight: 20,
+                      automaticallyImplyLeading: false,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.circular(0),
+                        ),
+                      ),
                     ),
+              body: UpgradeAlert(
+                upgrader: Upgrader(
+                  dialogStyle: UpgradeDialogStyle.cupertino,
+                  canDismissDialog: false,
+                  showLater: false,
+                  showIgnore: false,
+                  showReleaseNotes: false,
+                ),
+                child: RefreshIndicator(
+                  onRefresh: () => refreshData(),
+                  child: ListView(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    controller: scrollController,
+                    children: [
+                      const TopBanner(),
+                      storageCustomerToken.getItem("customer_token") == null
+                          ? const Register()
+                          : Container(),
+                      const VoucherTest(),
+                      const FlashSale(),
+                      const ServicesPage(),
+                      const ProductPage(),
+                      const ReviewPage(),
+                      const Promotion()
+                    ],
                   ),
                 ),
-          body: UpgradeAlert(
-            upgrader: Upgrader(
-              dialogStyle: UpgradeDialogStyle.cupertino,
-              canDismissDialog: false,
-              showLater: false,
-              showIgnore: false,
-              showReleaseNotes: false,
-            ),
-            child: RefreshIndicator(
-              onRefresh: () => refreshData(),
-              child: ListView(
-                padding: const EdgeInsets.only(bottom: 20),
-                controller: scrollController,
-                children: [
-                  const TopBanner(),
-                  storageCustomerToken.getItem("customer_token") == null
-                      ? const Register()
-                      : Container(),
-                  const VoucherTest(),
-                  const FlashSale(),
-                  const ServicesPage(),
-                  const ProductPage(),
-                  const ReviewPage(),
-                  const Promotion()
-                ],
-              ),
-            ),
-          )),
-    );
+              )),
+        ));
   }
 }

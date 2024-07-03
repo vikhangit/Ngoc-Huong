@@ -279,7 +279,7 @@ class _SpecialCosmeticScreenState extends State<SpecialCosmeticScreen> {
                                                         color: mainColor,
                                                       ),
                                                       child: Text(
-                                                          "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["PriceOutbound"])} Đ",
+                                                          "${NumberFormat.currency(locale: "vi_VI", symbol: "").format(item["CusomterPrice"] != null && item["CusomterPrice"] > 0 ? item["CusomterPrice"] : item["PriceOutbound"])} Đ",
                                                           style: TextStyle(
                                                               fontSize: 11,
                                                               fontWeight:

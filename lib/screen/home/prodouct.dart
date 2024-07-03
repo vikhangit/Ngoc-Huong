@@ -23,7 +23,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 30),
+      margin: const EdgeInsets.only(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -62,7 +62,7 @@ class _ProductPageState extends State<ProductPage> {
             ),
           ),
           Container(
-            height: 745,
+            height: 715,
             child: FutureBuilder(
               future: productModel.getHotProduct(),
               builder: (context, snapshot) {
@@ -145,8 +145,14 @@ class _ProductPageState extends State<ProductPage> {
                                                 NumberFormat.currency(
                                                         locale: "vi_VI",
                                                         symbol: "")
-                                                    .format(list[i]
-                                                        ["PriceOutbound"]),
+                                                    .format(list[i]["CusomterPrice"] !=
+                                                                null &&
+                                                            list[i]["CusomterPrice"] >
+                                                                0
+                                                        ? list[i]
+                                                            ["CusomterPrice"]
+                                                        : list[i]
+                                                            ["PriceOutbound"]),
                                                 style: TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.w600,
@@ -187,7 +193,7 @@ class _ProductPageState extends State<ProductPage> {
                           width: MediaQuery.of(context).size.width,
                           child: CarouselSlider.builder(
                             options: CarouselOptions(
-                              height: 680,
+                              height: 650,
                               enlargeCenterPage: false,
                               viewportFraction: 1,
                               onPageChanged: (index, reason) {
