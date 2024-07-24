@@ -81,8 +81,7 @@ class _BaoMatScreenState extends State<BaoMatScreen> {
                   future: appInfoModel.getAboutUs("policy2"),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Expanded(
-                          child: ListView(
+                      return ListView(
                         padding: const EdgeInsets.only(
                             left: 15, right: 15, top: 20, bottom: 30),
                         children: [
@@ -132,7 +131,7 @@ class _BaoMatScreenState extends State<BaoMatScreen> {
                                   ],
                                 )
                         ],
-                      ));
+                      );
                     } else {
                       return const Center(
                         child: Row(

@@ -81,8 +81,7 @@ class _AboutUsState extends State<AboutUs> {
                   future: appInfoModel.getAboutUs("intro"),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Expanded(
-                          child: ListView(
+                      return ListView(
                         padding: const EdgeInsets.only(
                             left: 15, right: 15, top: 20, bottom: 30),
                         children: [
@@ -134,7 +133,7 @@ class _AboutUsState extends State<AboutUs> {
                                   ],
                                 )
                         ],
-                      ));
+                      );
                     } else {
                       return const Center(
                         child: Row(

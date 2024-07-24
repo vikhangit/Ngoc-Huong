@@ -206,59 +206,53 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
                                                 )
                                               ],
                                             ))
-                                        : Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Column(
-                                                children: List.generate(
-                                                    receiptHistory.length,
-                                                    (index) {
-                                                  return Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 8),
-                                                    margin: EdgeInsets.only(
-                                                        top:
-                                                            index != 0 ? 5 : 0),
-                                                    decoration: BoxDecoration(
-                                                        color: mainColor
-                                                            .withOpacity(0.3),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    5))),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          DateFormat(
-                                                                  "dd/MM/yyyy")
-                                                              .format(DateTime.parse(
-                                                                  receiptHistory[
-                                                                          index]
-                                                                      [
-                                                                      "CreatedDate"])),
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 12),
-                                                        ),
-                                                        Text(
-                                                          "${receiptHistory[index]["Type"] == "DailyReport" ? "Điểm danh" : receiptHistory[index]["Type"] == "Mission" ? "Làm nhiêmhj vụ" : ""}  nhận ${receiptHistory[index]["Coin"]} xu",
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 12),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  );
-                                                }),
-                                              )
-                                            ],
-                                          ),
+                                        : SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height -
+                                                245,
+                                            child: ListView(
+                                              children: List.generate(
+                                                  receiptHistory.length,
+                                                  (index) {
+                                                return Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(horizontal: 8),
+                                                  margin: EdgeInsets.only(
+                                                      top: index != 0 ? 5 : 0),
+                                                  decoration: BoxDecoration(
+                                                      color: mainColor
+                                                          .withOpacity(0.3),
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                              Radius.circular(
+                                                                  5))),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        DateFormat("dd/MM/yyyy")
+                                                            .format(DateTime.parse(
+                                                                receiptHistory[
+                                                                        index][
+                                                                    "CreatedDate"])),
+                                                        style: const TextStyle(
+                                                            fontSize: 12),
+                                                      ),
+                                                      Text(
+                                                        "${receiptHistory[index]["Type"] == "DailyReport" ? "Điểm danh" : receiptHistory[index]["Type"] == "Mission" ? "Làm nhiêmhj vụ" : ""}  nhận ${receiptHistory[index]["Coin"]} xu",
+                                                        style: const TextStyle(
+                                                            fontSize: 12),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                            ),
+                                          )
                                   ],
                                 ),
                               ),
@@ -298,59 +292,51 @@ class _MyWidgetState extends State<TranHistory> with TickerProviderStateMixin {
                                                 )
                                               ],
                                             ))
-                                        : Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Column(
-                                                children: List.generate(
-                                                    usageHistory.length,
-                                                    (index) {
-                                                  return Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 8),
-                                                    margin: EdgeInsets.only(
-                                                        top:
-                                                            index != 0 ? 5 : 0),
-                                                    decoration: BoxDecoration(
-                                                        color: mainColor
-                                                            .withOpacity(0.3),
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                                Radius.circular(
-                                                                    5))),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          DateFormat(
-                                                                  "dd/MM/yyyy")
-                                                              .format(DateTime.parse(
-                                                                  usageHistory[
-                                                                          index]
-                                                                      [
-                                                                      "CreatedDate"])),
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 12),
-                                                        ),
-                                                        Text(
-                                                          "${usageHistory[index]["Type"] == "Expiry" ? "Hết hạn trừ ${usageHistory[index]["Coin"]} xu" : "Mua hàng dùng ${usageHistory[index]["Coin"]} xu"} ",
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 12),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  );
-                                                }),
-                                              )
-                                            ],
-                                          ),
+                                        : SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height -
+                                                245,
+                                            child: ListView(
+                                              children: List.generate(
+                                                  usageHistory.length, (index) {
+                                                return Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(horizontal: 8),
+                                                  margin: EdgeInsets.only(
+                                                      top: index != 0 ? 5 : 0),
+                                                  decoration: BoxDecoration(
+                                                      color: mainColor
+                                                          .withOpacity(0.3),
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                              Radius.circular(
+                                                                  5))),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        DateFormat("dd/MM/yyyy")
+                                                            .format(DateTime.parse(
+                                                                usageHistory[
+                                                                        index][
+                                                                    "CreatedDate"])),
+                                                        style: const TextStyle(
+                                                            fontSize: 12),
+                                                      ),
+                                                      Text(
+                                                        "${usageHistory[index]["Type"] == "Expiry" ? "Hết hạn trừ ${usageHistory[index]["Coin"]} xu" : "Mua hàng dùng ${usageHistory[index]["Coin"]} xu"} ",
+                                                        style: const TextStyle(
+                                                            fontSize: 12),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                            ))
                                   ],
                                 ),
                               ),
